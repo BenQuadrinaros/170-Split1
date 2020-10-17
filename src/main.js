@@ -7,6 +7,7 @@ let config = {
     scene: [Menu, Play, Settings]
 };
 
+//hi
 let game = new Phaser.Game(config);
 
 //reserve some keyboard variables
