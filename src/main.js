@@ -8,7 +8,11 @@ let config = {
 };
 
 //hi
+let testSong = [[0,0,1,0],
+                [1,[0,1],0,0]];
+
+let newSong = new Song(testSong,[4,4],60);
 let game = new Phaser.Game(config);
 
 //reserve some keyboard variables
-let keyF, keyLEFT, keyRIGHT;
+let keyP, keyESCAPE, keyLEFT, keyRIGHT;
