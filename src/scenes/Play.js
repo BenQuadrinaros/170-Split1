@@ -6,6 +6,7 @@ class Play extends Phaser.Scene {
     preload() {
         //load images
         this.load.image("rhythm meter", "./assets/RhythmMeter.png");
+        this.load.image("noteTemp", "./assets/white.png");
 
         //load audio files
     }
@@ -40,6 +41,31 @@ class Play extends Phaser.Scene {
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESCAPE);
+
+        // Some notes to test
+        this.time.addEvent({
+            delay: 2500,
+            callback: () => {
+                this.allNotes.push(new Note(this, "noteTemp", 0, "left", "left", 2));
+            },
+            loop: true,
+            callbackScope: this
+        });
+        this.time.addEvent({
+            delay: 1250,
+            callback: () => {
+                this.time.addEvent({
+                    delay: 2500,
+                    callback: () => {
+                        this.allNotes.push(new Note(this, "noteTemp", 0, "right", "right", 2));
+                    },
+                    loop: true,
+                    callbackScope: this
+                });
+            },
+            loop: false,
+            callbackScope: this
+        });
     }
 
     update() {
@@ -56,15 +82,24 @@ class Play extends Phaser.Scene {
             }
 
             for (let i = 0; i < this.allNotes.length; i++) {
-                allNotes[i].update();
+                this.allNotes[i].update();
+                if (this.allNotes[i].side == "left" && this.allNotes[i].x > this.meter.x + 15) {
+                    this.tiltFactor -= 5;
+                    this.allNotes[i].destroy();
+                    this.allNotes.splice(i, 1);
+                } else if (this.allNotes[i].side == "right" && this.allNotes[i].x < this.meter.x - 15) {
+                    this.tiltFactor += 5;
+                    this.allNotes[i].destroy();
+                    this.allNotes.splice(i, 1);
+                }
             }
-            
-            this.tiltText.text = "Tilt angle: " + this.tiltFactor;
+
+            this.tiltText.text = "Tilt angle: " + this.tiltFactor.toFixed(2);
 
             if (Math.abs(this.tiltFactor) >= this.tiltLimit) {
                 this.gameOver = true;
                 this.gameOverText = this.add.text(.5 * game.config.width, game.config.height / 2, "GAME OVER",
-                this.textConfig).setOrigin(.5);
+                    this.textConfig).setOrigin(.5);
             }
         }
 
@@ -75,25 +110,21 @@ class Play extends Phaser.Scene {
     }
 
     checkKey(key) {
-        let tiltChange
-        for (let i = 0; i < this.allNotes.length; i--) {
+        let tiltChange;
+        for (let i = 0; i < this.allNotes.length; i++) {
             if (this.allNotes[i].keyValue == key) {
-                tiltChange = (allNotes[i].x - this.meter.x) / 50;
+                tiltChange = (this.allNotes[i].x - this.meter.x) / 25;
                 if (tiltChange > 5) { tiltChange = 5; }
                 if (tiltChange < -5) { tiltChange = -5; }
                 this.tiltFactor += tiltChange;
                 this.allNotes[i].destroy();
+                this.allNotes.splice(i, 1);
                 return;
             }
         }
-        if (this.allNotes.length == 0) {
-            if (key == "left") { tiltChange = -5; }
-            else { tiltChange = 5; }
-        } else {
-            tiltChange = (this.allNotes[0].x - this.meter.x) / 50;
-        }
-        if (tiltChange < 0) { this.tiltFactor -= 5; }
-        else { this.tiltFactor += 5; }
+        if (key == "left") { tiltChange = -5; }
+        else { tiltChange = 5; }
+        this.tiltFactor += tiltChange;
     }
 
 }
