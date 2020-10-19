@@ -42,7 +42,33 @@ class Play extends Phaser.Scene {
         keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESCAPE);
 
+
+        //hi
+        let testSong = [[0, 0, 1, 0],
+        [1, [0, 1], 0, 0]];
+
+        let newSong = new Song(testSong, [4, 4], 60);
+        console.log(newSong);
+
+        let songIndex = 0;
+        this.songNotes = this.time.addEvent({
+            delay: 1000 * newSong.output[songIndex],
+            callback: () => {
+                if(songIndex % 2 == 0) {
+                    this.allNotes.push(new Note(this, "noteTemp", 0, "left", "left", 2));
+                } else {
+                    this.allNotes.push(new Note(this, "noteTemp", 0, "right", "right", 2));
+                }
+                songIndex++;
+                this.songNotes.delay = 1000 * (newSong.output[songIndex] - newSong.output[songIndex - 1]);
+                if(songIndex >= newSong.output.length) { this.songNotes.loop = false; }
+            },
+            loop: true,
+            callbackScope: this
+        });
+
         // Some notes to test
+        /*
         this.time.addEvent({
             delay: 2500,
             callback: () => {
@@ -65,7 +91,7 @@ class Play extends Phaser.Scene {
             },
             loop: false,
             callbackScope: this
-        });
+        });*/
     }
 
     update() {

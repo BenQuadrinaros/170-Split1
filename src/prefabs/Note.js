@@ -1,6 +1,6 @@
 class Note extends Phaser.GameObjects.Sprite {
 
-    constructor(scene, texture, frame, side, keyValue, tempo) {
+    constructor(scene, texture, frame, side, keyValue, tempo = 2) {
         if(side == "left") {
             super(scene, scene.meter.x - (scene.meter.width/2), scene.meter.y, texture, frame);
         } else {
