@@ -15,13 +15,13 @@ class Song {
                         if (this.song[bar][beat][eighthNote] === 1){
                             this.output.push(time)
                         }
-                        time += beatsPerSecond/2
+                        time += beatsPerSecond/2;
                     }
                 } else {
                     if (this.song[bar][beat] === 1) {
                         this.output.push(time)
                     }
-                    time += beatsPerSecond
+                    time += beatsPerSecond;
                 }
             }
 
