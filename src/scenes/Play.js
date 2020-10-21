@@ -6,9 +6,11 @@ class Play extends Phaser.Scene {
     preload() {
         //load images
         this.load.image("rhythm meter", "./assets/RhythmMeter.png");
-        this.load.image("noteTemp", "./assets/white.png");
+        this.load.image("LeftArrow", "./assets/LeftArrow.png");
+        this.load.image("RightArrow", "./assets/RightArrow.png");
 
         //load audio files
+        this.load.audio("music", "./assets/BackgroundMusic.wav");
     }
 
     create() {
@@ -51,24 +53,34 @@ class Play extends Phaser.Scene {
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
 
+        //start up looping background music
+        this.music = this.sound.add("music");
+        this.music.volume = .7;
+        this.music.play();
+
         //song for level
         //CHANGE TO LEVEL PARAMETER FOR FINAL LEVELS
-        let testSong = [[0, 0, 1, 0],
-        [1, [0, 1], 0, 1],
-        [0, 1, [1, 1], 1],
-        [0, 0, 1, 1]];
+        let testSong = [
+            [[1, 1], [0, 1], 0, 0],
+            [[1, 1], [0, 1], 0, 0],
+            [[1, 1], [0, 1], 0, 0],
+            [[1, 1], [0, 1], 0, 0],
+            [[1, 1], [0, 1], 0, 0],
+            [[1, 1], [0, 1], 0, 0],
+            [[1, 1], [0, 1], [0, 1], [1, 1]]
+        ];
 
         this.tempo = 2;
-        let newSong = new Song(testSong, [4, 4], 60);
+        let newSong = new Song(testSong, [4, 4], 30);
 
         let songIndex = 0;
         this.songNotes = this.time.addEvent({
             delay: 1000 * newSong.output[songIndex],
             callback: () => {
                 if (songIndex % 2 == 0) {
-                    this.allNotes.push(new Note(this, "noteTemp", 0, "left", "left", this.tempo));
+                    this.allNotes.push(new Note(this, "LeftArrow", 0, "left", "left", this.tempo));
                 } else {
-                    this.allNotes.push(new Note(this, "noteTemp", 0, "right", "right", this.tempo));
+                    this.allNotes.push(new Note(this, "RightArrow", 0, "right", "right", this.tempo));
                 }
                 songIndex++;
                 this.songNotes.delay = 1000 * (newSong.output[songIndex] - newSong.output[songIndex - 1]);
@@ -128,6 +140,11 @@ class Play extends Phaser.Scene {
                 this.pauseText.alpha = 0;
             }
             this.songNotes.paused = !this.songNotes.paused;
+            if (this.paused) {
+                this.music.pause();
+            } else {
+                this.music.resume();
+            }
         }
 
     }
