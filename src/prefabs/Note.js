@@ -26,6 +26,10 @@ class Note extends Phaser.GameObjects.Sprite {
         }
     }
 
+    setTempo(newTempo) {
+        this.tempo = newTempo;
+    }
+
     destroy() {
         super.destroy();
     }
