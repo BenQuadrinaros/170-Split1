@@ -33,7 +33,7 @@ class Menu extends Phaser.Scene {
         //Setting interactive behaviors
         play.on('pointerover', () => play.setFrame(1));
         play.on("pointerout", () => play.setFrame(0));
-        play.on('pointerup', () => {this.scene.start('playScene');});
+        play.on('pointerup', () => {this.scene.start('mapScene');});
         settings.on('pointerover', () => settings.setFrame(1));
         settings.on("pointerout", () => settings.setFrame(0));
         settings.on('pointerup', () => {this.scene.start('settingsScene');});
