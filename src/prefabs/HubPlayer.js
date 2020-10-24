@@ -34,7 +34,6 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
             }
         }
 
-
     }
 
 }
