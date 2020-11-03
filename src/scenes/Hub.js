@@ -58,7 +58,7 @@ class Hub extends Phaser.Scene {
             this.interactText.y = this.map.y;
             this.interactText.setVisible(true)
             if (Phaser.Input.Keyboard.JustDown(keySPACE)){
-                this.scene.start('mapScene')
+                this.scene.start('mapScene', { arrivingAt:1 })
             }
         } else {
             this.interactText.setVisible(false)
