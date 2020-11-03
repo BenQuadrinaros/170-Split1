@@ -135,7 +135,11 @@ class Map extends Phaser.Scene {
     //Checks whether the player can depart to the selected location from their current location
     isValidPlay(selectedLoc){
         if(this.isValidPath(selectedLoc)){
-            this.scene.start('playScene');
+            if(selectedLoc == 0) { this.scene.start('playScene', songLibrary[3]); }
+            else if(selectedLoc == 2) { this.scene.start('playScene', songLibrary[1]); }
+            else if(selectedLoc == 3) { this.scene.start('playScene', songLibrary[2]); }
+            else { this.scene.start('playScene', songLibrary[0]); }
+            
         }
     }
 

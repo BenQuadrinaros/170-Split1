@@ -3,6 +3,14 @@ class Play extends Phaser.Scene {
         super("playScene");
     }
 
+    init(data) {
+        this.songName = data[0];
+        this.timeSigniture = data[1];
+        this.bpm = data[2];
+        this.tempo = data[3];
+        this.allSongNotes = data[4];
+    }
+
     preload() {
         //load images
         this.load.image("rhythm meter", "./assets/RhythmMeter.png");
@@ -10,11 +18,11 @@ class Play extends Phaser.Scene {
         this.load.image("RightArrow", "./assets/RightArrow.png");
 
         //load audio files
-        this.load.audio("music", "./assets/BackgroundMusic.wav");
+        this.load.audio("music", "./assets/"+this.songName);
     }
 
     create() {
-        this.cameras.main.setBackgroundColor("#AAA");
+        this.cameras.main.setBackgroundColor("#999");
 
         //meter and tilting factors
         this.meter = this.add.image(game.config.width / 2, 7 * game.config.height / 8, "rhythm meter").setOrigin(.5);
@@ -59,19 +67,7 @@ class Play extends Phaser.Scene {
         this.music.play();
 
         //song for level
-        //CHANGE TO LEVEL PARAMETER FOR FINAL LEVELS
-        let testSong = [
-            [[1, 1], [0, 1], 0, 0],
-            [[1, 1], [0, 1], 0, 0],
-            [[1, 1], [0, 1], 0, 0],
-            [[1, 1], [0, 1], 0, 0],
-            [[1, 1], [0, 1], 0, 0],
-            [[1, 1], [0, 1], 0, 0],
-            [[1, 1], [0, 1], [0, 1], [1, 1]]
-        ];
-
-        this.tempo = 2;
-        let newSong = new Song(testSong, [4, 4], 30);
+        let newSong = new Song(this.allSongNotes, this.timeSigniture, this.bpm);
 
         let songIndex = 0;
         this.songNotes = this.time.addEvent({
@@ -129,6 +125,11 @@ class Play extends Phaser.Scene {
                 this.gameOverText = this.add.text(.5 * game.config.width, game.config.height / 2, "GAME OVER",
                     this.textConfig).setOrigin(.5);
                 this.songNotes.paused = !this.songNotes.paused;
+            }
+
+            if (this.songNotes.loop == false && this.allNotes.length == 0) {
+                this.cache.audio.remove("music");
+                this.scene.start('menuScene');
             }
         }
 
