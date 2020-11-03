@@ -4,11 +4,12 @@ class Play extends Phaser.Scene {
     }
 
     init(data) {
-        this.songName = data[0];
-        this.timeSigniture = data[1];
-        this.bpm = data[2];
-        this.tempo = data[3];
-        this.allSongNotes = data[4];
+        this.songName = data.song[0];
+        this.timeSigniture = data.song[1];
+        this.bpm = data.song[2];
+        this.tempo = data.song[3];
+        this.allSongNotes = data.song[4];
+        this.destination = data.destination;
     }
 
     preload() {
@@ -129,7 +130,7 @@ class Play extends Phaser.Scene {
 
             if (this.songNotes.loop == false && this.allNotes.length == 0) {
                 this.cache.audio.remove("music");
-                this.scene.start('menuScene');
+                this.scene.start('mapScene', { arrivingAt:this.destination });
             }
         }
 

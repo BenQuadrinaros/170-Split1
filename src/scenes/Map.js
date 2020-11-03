@@ -3,6 +3,10 @@ class Map extends Phaser.Scene {
         super("mapScene");
     }
 
+    init(data){
+        this.justArrivedAt = data.arrivingAt;
+    }
+
     preload() {
         //load audio files
 
@@ -20,6 +24,7 @@ class Map extends Phaser.Scene {
         this.load.spritesheet('PathWork_2','./assets/RoadWork_2.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
         this.load.spritesheet('PathWork_3','./assets/RoadWork_3.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
         this.load.spritesheet('PathWork_4','./assets/RoadWork_4.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
+        this.load.image('PlayerIcon', './assets/playerMapIcon.png');
     }
     
     create() {
@@ -58,7 +63,7 @@ class Map extends Phaser.Scene {
 
 
         //Creating Valid Paths
-        this.currentPlayerLoc = 1;
+        this.currentPlayerLoc = this.justArrivedAt;
         //0 = Bees, 1 = Company, 2 on = respective house
         //Houses are numbered top-down, left-right
         //Number stored at [x][y] is the number of the path
@@ -110,6 +115,14 @@ class Map extends Phaser.Scene {
         house5.on('pointerover', () => {this.isValidHover(6);});
         house5.on("pointerout", () => {this.unhighlightImages(6);});
         house5.on('pointerup', () => {this.isValidPlay(6);});
+
+
+        //Creating a player icon and putting it at the correct location
+        let iconXSpacer = 40;
+        let iconYSpacer = 40;
+        let curLocX = this.locations[this.currentPlayerLoc].x;
+        let curLocY = this.locations[this.currentPlayerLoc].y;
+        this.playerIcon = this.add.image(curLocX + iconXSpacer, curLocY + iconYSpacer, 'PlayerIcon').setOrigin(0.5);
     }
 
     update() {
@@ -135,10 +148,10 @@ class Map extends Phaser.Scene {
     //Checks whether the player can depart to the selected location from their current location
     isValidPlay(selectedLoc){
         if(this.isValidPath(selectedLoc)){
-            if(selectedLoc == 0) { this.scene.start('playScene', songLibrary[3]); }
-            else if(selectedLoc == 2) { this.scene.start('playScene', songLibrary[1]); }
-            else if(selectedLoc == 3) { this.scene.start('playScene', songLibrary[2]); }
-            else { this.scene.start('playScene', songLibrary[0]); }
+            if(selectedLoc == 0) { this.scene.start('playScene', { song:songLibrary[3], destination:0 }); }
+            else if(selectedLoc == 2) { this.scene.start('playScene', { song:songLibrary[1], destination:2}); }
+            else if(selectedLoc == 3) { this.scene.start('playScene', {song:songLibrary[2], destination:3 }); }
+            else { this.scene.start('playScene', { song:songLibrary[0], destination:selectedLoc}); }
             
         }
     }
