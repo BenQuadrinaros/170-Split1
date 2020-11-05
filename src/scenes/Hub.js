@@ -129,10 +129,14 @@ class Hub extends Phaser.Scene {
             this.interactText.setVisible(true)
             this.bikeUpgrades.setVisible(true)
             if (Phaser.Input.Keyboard.JustDown(keySPACE)){
-                this.turnsRemaining -=1;
-                this.fadeText("Your bike is sturdier. :D");
-                upgrades.bike+=1;
-                this.bikeUpgrades.text = "Your bike is at level:" + upgrades.bike;
+                if (this.turnsRemaining > 0) {
+                    this.turnsRemaining -= 1;
+                    this.fadeText("Your bike is sturdier. :)");
+                    upgrades.bike += 1;
+                    this.bikeUpgrades.text = "Your bike is at level:" + upgrades.bike;
+                } else {
+                    this.fadeText("You are out of time today.\nMake your deliveries.");
+                }
             }
         } else {
             this.bikeUpgrades.setVisible(false);
@@ -140,20 +144,24 @@ class Hub extends Phaser.Scene {
 
 
         // Check if player is near the tools
-        if (Math.abs(Phaser.Math.Distance.Between(this.tools.x,this.tools.y, this.player.x,this.player.y)) < 100){
+        if (Math.abs(Phaser.Math.Distance.Between(this.tools.x,this.tools.y, this.player.x,this.player.y)) < 100) {
             this.tools.y += this.bounceFactor;
             this.interactText.x = this.tools.x;
             this.interactText.y = this.tools.y;
             this.interactText.setVisible(true)
             this.toolUpgrades.setVisible(true)
-            if (Phaser.Input.Keyboard.JustDown(keySPACE)){
-                this.turnsRemaining -=1;
-                this.fadeText("Your tools are tool-ier. :]");
-                upgrades.tools+=1;
-                this.toolUpgrades.text = "Your tools are at level:" + upgrades.tools;
+            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+                if (this.turnsRemaining > 0) {
+                    this.turnsRemaining -= 1;
+                    this.fadeText("Your tools are tool-ier. :)");
+                    upgrades.tools += 1;
+                    this.toolUpgrades.text = "Your tools are at level:" + upgrades.tools;
+                } else {
+                    this.fadeText("You are out of time today.\nMake your deliveries.");
+                }
+            } else {
+                this.toolUpgrades.setVisible(false);
             }
-        } else {
-            this.toolUpgrades.setVisible(false);
         }
 
         this.player.update();
