@@ -3,6 +3,21 @@ class Hub extends Phaser.Scene {
         super("hubScene");
     }
 
+    init(data){
+        //track the current amounts of honey and money that the player has
+        this.honey = data.currentHoney;
+        this.money = data.currentMoney;
+        //if either was undefined, give it the default value
+        if(typeof this.honey == 'undefined'){
+            console.log("Honey was undefined");
+            this.honey = 10;
+        }
+        if(typeof this.money == 'undefined'){
+            console.log("Money was undefined");
+            this.money = 0;
+        }
+    }
+
     // Load all needed assets for main hub scene. Player/walls/npcs
     preload() {
         this.load.image("player", './assets/HubPlayer.png')
@@ -67,7 +82,8 @@ class Hub extends Phaser.Scene {
             this.interactText.y = this.map.y;
             this.interactText.setVisible(true)
             if (Phaser.Input.Keyboard.JustDown(keySPACE)){
-                this.scene.start('mapScene', { arrivingAt:1 })
+                //-1 to indicate that it just left the hub
+                this.scene.start('mapScene', { arrivingAt:-1, currentHoney:this.honey, currentMoney:this.money })
             }
         } else {
             this.interactText.setVisible(false)

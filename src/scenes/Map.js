@@ -4,7 +4,16 @@ class Map extends Phaser.Scene {
     }
 
     init(data){
-        this.justArrivedAt = data.arrivingAt;
+
+        //if it is returning to the hub, do that instead
+        if(data.arrivingAt == 1){
+            this.scene.start("hubScene", { currentHoney:data.currentHoney, currentMoney:data.currentMoney });
+        }
+        //As a -1 indicates that it just came from the hub, this cleanses that
+        this.justArrivedAt = Math.abs(data.arrivingAt);
+        this.honey = data.currentHoney;
+        this.money = data.currentMoney;
+        this.honeyDemand = data.honeyDemand;
     }
 
     preload() {
@@ -38,6 +47,21 @@ class Map extends Phaser.Scene {
 
         //Setting Background
         this.menu = this.add.image(centerX, centerY, 'TownMap').setOrigin(0.5);
+
+        //Setting text
+        this.scoreConfig = {
+            fontFamily: "Courier",
+            fontSize: "14px",
+            color: "#000000",
+            align: "center",
+            padding: {
+                top: 5,
+                bottom: 5
+            },
+        };
+
+        //Show current player stats
+        this.playerStats = this.add.text(centerX, 60, "Honey: "+this.honey+"\nMoney: "+this.money, this.scoreConfig).setOrigin(.5,.5);
 
 
         //Creating images for paths
@@ -123,6 +147,37 @@ class Map extends Phaser.Scene {
         let curLocX = this.locations[this.currentPlayerLoc].x;
         let curLocY = this.locations[this.currentPlayerLoc].y;
         this.playerIcon = this.add.image(curLocX + iconXSpacer, curLocY + iconYSpacer, 'PlayerIcon').setOrigin(0.5);
+
+        //Determine if there is already a honey demand
+        if(typeof this.honeyDemand == 'undefined'){
+            this.honeyDemand = this.createHoneyDemand(); //create a new demand if it is needed
+        }
+        
+        //If the current location has demand and you have sufficient supply, make the exchange
+        if(this.honeyDemand[0][this.currentPlayerLoc] <= this.honey){
+            //Exchange honey
+            this.honey -= this.honeyDemand[0][this.currentPlayerLoc];
+            this.honeyDemand[0][this.currentPlayerLoc] = 0;
+            //Exchange money
+            this.money += this.honeyDemand[1][this.currentPlayerLoc];
+            this.honeyDemand[1][this.currentPlayerLoc] = 0;
+        }
+
+        //Update the player's stats on the screen
+        this.playerStats.text = "Honey: "+this.honey+"\nMoney: "+this.money;
+
+        //Show the demand via text
+        let supplyDemandText = [this.locations.length];
+        for(let m = 0; m < this.locations.length; ++m){
+            if(m == 0 || m == 1){
+                //If either the hive or the hub
+                continue;
+            }
+            else{
+                //console.log(this.honeyDemand[0][m]);
+                supplyDemandText[m] = this.add.text(this.locations[m].x, this.locations[m].y + 50, "Honey Demand: "+this.honeyDemand[0][m]+"\nMoney Supply: "+this.honeyDemand[1][m], this.scoreConfig).setOrigin(.5,.5);
+            }
+        }
     }
 
     update() {
@@ -148,10 +203,10 @@ class Map extends Phaser.Scene {
     //Checks whether the player can depart to the selected location from their current location
     isValidPlay(selectedLoc){
         if(this.isValidPath(selectedLoc)){
-            if(selectedLoc == 0) { this.scene.start('playScene', { song:songLibrary[3], destination:0 }); }
-            else if(selectedLoc == 2) { this.scene.start('playScene', { song:songLibrary[1], destination:2}); }
-            else if(selectedLoc == 3) { this.scene.start('playScene', {song:songLibrary[2], destination:3 }); }
-            else { this.scene.start('playScene', { song:songLibrary[0], destination:selectedLoc}); }
+            if(selectedLoc == 0) { this.scene.start('playScene', { song:songLibrary[3], destination:0, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand }); }
+            else if(selectedLoc == 2) { this.scene.start('playScene', { song:songLibrary[1], destination:2, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand}); }
+            else if(selectedLoc == 3) { this.scene.start('playScene', {song:songLibrary[2], destination:3, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand }); }
+            else { this.scene.start('playScene', { song:songLibrary[0], destination:selectedLoc, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand}); }
             
         }
     }
@@ -177,5 +232,34 @@ class Map extends Phaser.Scene {
     //Highlights the path at the given index
     highlightPath(index){
         this.roads[index].setFrame(1);
+    }
+
+    //Creates an array. The first element is an array of how much honey each location desires
+    //The second element is an array of how much money each is willing to pay
+    createHoneyDemand(){
+        let honeyDemand = [];
+        let moneyReward = [];
+        //For each location, create a demand
+        for(let i = 0; i < this.locations.length; ++i){
+            if(i == 0 || i == 1){ //If the location is the hive or the hub
+                honeyDemand.push(0);
+                moneyReward.push(0);
+            }
+            else{ //If the location is anywhere else
+                let honeyAmt = Phaser.Math.Between(0, 5);
+                honeyDemand.push(honeyAmt);
+                if(honeyAmt != 0){ //If there is a demand, determine how much they will spend
+                    let moneyAmt = Phaser.Math.Between(1, 7);
+                    moneyReward.push(moneyAmt);
+                }
+                else{ //If there is no demand, they will not pay
+                    moneyReward.push(0);
+                }
+            }
+        };
+        //Combine the two arrays in demandByLocation
+        let demandByLocation = [honeyDemand, moneyReward];
+        //Return the completed array
+        return demandByLocation;
     }
 }

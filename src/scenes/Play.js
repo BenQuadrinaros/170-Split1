@@ -10,6 +10,9 @@ class Play extends Phaser.Scene {
         this.tempo = data.song[3];
         this.allSongNotes = data.song[4];
         this.destination = data.destination;
+        this.honey = data.currentHoney;
+        this.money = data.currentMoney;
+        this.honeyDemand = data.honeyDemand;
     }
 
     preload() {
@@ -130,7 +133,7 @@ class Play extends Phaser.Scene {
 
             if (this.songNotes.loop == false && this.allNotes.length == 0) {
                 this.cache.audio.remove("music");
-                this.scene.start('mapScene', { arrivingAt:this.destination });
+                this.scene.start('mapScene', { arrivingAt:this.destination, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand });
             }
         }
 
