@@ -12,3 +12,5 @@ let game = new Phaser.Game(config);
 //reserve some keyboard variables
 let keyP, keyESCAPE, keyLEFT, keyRIGHT, keyDOWN, keyUP, keySPACE;
 
+let upgrades = {"bike": 0, "bee": 0, "tools": 0}
+
