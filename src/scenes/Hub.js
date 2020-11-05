@@ -34,6 +34,7 @@ class Hub extends Phaser.Scene {
         this.load.image('toolShed','./assets/shed.jpg');
         this.load.image('tools','./assets/tools.jpg');
 
+        this.load.audio("hubMusic", "./assets/bear_full.mp3");
     }
 
     create() {
@@ -84,6 +85,12 @@ class Hub extends Phaser.Scene {
         keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESCAPE);
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+        //background music for the hub
+        this.music = this.sound.add("hubMusic");
+        this.music.volume = .7;
+        this.music.loop = true;
+        this.music.play();
     }
 
     update() {
@@ -98,6 +105,7 @@ class Hub extends Phaser.Scene {
             this.interactText.setVisible(true)
             if (Phaser.Input.Keyboard.JustDown(keySPACE)){
                 //-1 to indicate that it just left the hub
+                this.music.stop();
                 this.scene.start('mapScene', { arrivingAt:-1, currentHoney:this.honey, currentMoney:this.money })
             }
         } else {

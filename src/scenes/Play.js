@@ -17,9 +17,9 @@ class Play extends Phaser.Scene {
 
     preload() {
         //load images
-        this.load.image("rhythm meter", "./assets/RhythmMeter.png");
-        this.load.image("LeftArrow", "./assets/LeftArrow.png");
-        this.load.image("RightArrow", "./assets/RightArrow.png");
+        this.load.image("rhythm meter", "./assets/RhythmMeterORG.png");
+        this.load.image("LeftArrow", "./assets/LeftArrowGREEN.png");
+        this.load.image("RightArrow", "./assets/RightArrowBLUE.png");
 
         //load audio files
         this.load.audio("music", "./assets/"+this.songName);
@@ -65,7 +65,7 @@ class Play extends Phaser.Scene {
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
 
-        //start up looping background music
+        //start up music for rhythm game
         this.music = this.sound.add("music");
         this.music.volume = .7;
         this.music.play();

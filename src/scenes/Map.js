@@ -18,6 +18,7 @@ class Map extends Phaser.Scene {
 
     preload() {
         //load audio files
+        this.load.audio("mapMusic", "./assets/honeybear.wav");
 
         //load images
         this.load.image('TownMap', './assets/WhiteBackground.png');
@@ -178,6 +179,12 @@ class Map extends Phaser.Scene {
                 supplyDemandText[m] = this.add.text(this.locations[m].x, this.locations[m].y + 50, "Honey Demand: "+this.honeyDemand[0][m]+"\nMoney Supply: "+this.honeyDemand[1][m], this.scoreConfig).setOrigin(.5,.5);
             }
         }
+
+        //background music for the map
+        this.music = this.sound.add("mapMusic");
+        this.music.volume = .7;
+        this.music.loop = true;
+        this.music.play();
     }
 
     update() {
@@ -202,6 +209,7 @@ class Map extends Phaser.Scene {
 
     //Checks whether the player can depart to the selected location from their current location
     isValidPlay(selectedLoc){
+        this.music.stop();
         if(this.isValidPath(selectedLoc)){
             if(selectedLoc == 0) { this.scene.start('playScene', { song:songLibrary[3], destination:0, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand }); }
             else if(selectedLoc == 2) { this.scene.start('playScene', { song:songLibrary[1], destination:2, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand}); }
