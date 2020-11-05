@@ -11,6 +11,11 @@ class Hub extends Phaser.Scene {
         if(typeof this.honey == 'undefined'){
             console.log("Honey was undefined");
             this.honey = 10;
+        } else {
+            //if you are returning to the hub, get made honey based off of bee upgrades
+            console.log("Welcome back. Honey was " + this.honey);
+            this.honey += 2 + upgrades['bee'];
+            console.log("Honey increases to " + this.honey);
         }
         if(typeof this.money == 'undefined'){
             console.log("Money was undefined");
@@ -70,8 +75,6 @@ class Hub extends Phaser.Scene {
         this.beeUpgrades = this.add.text(this.bee.x,this.bee.y - 20, "Your bees are at level:" + upgrades.bee,this.scoreConfig).setOrigin(.5,.5).setVisible(false);
         this.bikeUpgrades = this.add.text(this.bike.x,this.bike.y + 20, "Your bike is at level:" + upgrades.bike, this.scoreConfig).setOrigin(.5,.5).setVisible(false);
         this.toolUpgrades = this.add.text(this.tools.x,this.tools.y + 20, "Your tools are at level:" + upgrades.tools, this.scoreConfig).setOrigin(.5,.5).setVisible(false);
-
-
 
         //establish controls for gameplay
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
