@@ -23,11 +23,16 @@ class Hub extends Phaser.Scene {
         this.bounceFactor = .1;
         this.counter = 0;
 
+        //add timing aspect for hub actions
+        this.turnsRemaining = 2;
+        this.fadeMessage;
+        this.fadeTimer = null;
+
         this.scoreConfig = {
             fontFamily: "Courier",
             fontSize: "14px",
             color: "#ffffff",
-            align: "right",
+            align: "center",
             padding: {
                 top: 5,
                 bottom: 5
@@ -36,6 +41,10 @@ class Hub extends Phaser.Scene {
         this.interactText = this.add.text(this.player.x,this.player.y, "'SPACE' to interact", this.scoreConfig).setOrigin(.5,.5);
         this.interactText.setVisible(false);
         this.moveText = this.add.text(this.player.x, this.player.y+config.height/3, "Use the arrowkeys to move", this.scoreConfig).setOrigin(.5,.5);
+        this.turnText = this.add.text(game.config.width / 2, game.config.height / 8, "Turn Remaining: ", this.scoreConfig).setOrigin(.5);
+        this.fadeMessage = this.add.text(0,0, "", this.scoreConfig).setOrigin(.5,.5);
+        this.fadeMessage.depth = 5;
+        this.fadeMessage.setVisible(false);
 
 
         //establish controls for gameplay
@@ -65,9 +74,42 @@ class Hub extends Phaser.Scene {
         }
         if (Math.abs(Phaser.Math.Distance.Between(this.bee.x,this.bee.y, this.player.x,this.player.y)) < 100){
             this.bee.y += this.bounceFactor;
+            this.interactText.x = this.bee.x;
+            this.interactText.y = this.bee.y;
+            this.interactText.setVisible(true)
+            if (Phaser.Input.Keyboard.JustDown(keySPACE)){
+                if(this.turnsRemaining > 0) {
+                    this.turnsRemaining -= 1;
+                    this.fadeText("Your bees are happier. :)");
+                } else {
+                    this.fadeText("You are out of time today.\nMake your deliveries.");
+                }
+            }
         }
 
         this.player.update();
         this.counter++;
+        this.turnText.text = "Turns Remaining: " + this.turnsRemaining;
+    }
+
+    fadeText(message) {
+        if(this.fadeTimer != null) {
+            this.fadeTimer.callback = () => {};
+            this.fadeTimer.delay = 0;
+            this.fadeTimer = null;
+        }
+        this.fadeMessage.x = this.player.x;
+        this.fadeMessage.y = this.player.y;
+        this.fadeMessage.text = message;
+        this.fadeMessage.setVisible(true);
+        this.fadeTimer = this.time.addEvent({
+            delay: 2500,
+            callback: () => {
+                this.fadeMessage.setVisible(false);
+                this.fadeTimer = null;
+            },
+            loop: false,
+            callbackScope: this
+        });
     }
 }
