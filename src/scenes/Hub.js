@@ -25,14 +25,15 @@ class Hub extends Phaser.Scene {
 
     // Load all needed assets for main hub scene. Player/walls/npcs
     preload() {
-        this.load.image("player", './assets/HubPlayer.png')
-        this.load.image('background', './assets/hubBackground.jpg')
+        //this.load.image("player", './assets/bearFrontBack.png');
+        this.load.image('background', './assets/hubBackground.jpg');
         this.load.image('map','./assets/hubMap.jpg');
         this.load.image('bee','./assets/hubBee.jpg');
         this.load.image('bike','./assets/bike.png');
         this.load.image('bikeShed', './assets/bikeShed.jpg');
         this.load.image('toolShed','./assets/shed.jpg');
         this.load.image('tools','./assets/tools.jpg');
+        this.load.spritesheet('player', './assets/bearFrontBack.png', {frameWidth:40, frameHeight:72, startFrame:0, endFrame:1});
 
         this.load.audio("hubMusic", "./assets/bear_full.mp3");
     }
@@ -47,7 +48,7 @@ class Hub extends Phaser.Scene {
         this.map = this.add.image(config.width/5, config.height/4,'map').setOrigin(.5,.5).setScale(.2,.2);
         this.bike = this.add.image(config.width/5, 3*config.height/4,'bike').setOrigin(.5,.5).setScale(.2,.2);
         this.tools = this.add.image(4*config.width/5, 3*config.height/4,'tools').setOrigin(.5,.5).setScale(.09,.09);
-        this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 2).setScale(.2,.2);
+        this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 2);
         this.bounceFactor = .1;
         this.counter = 0;
 

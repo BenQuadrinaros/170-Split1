@@ -20,6 +20,7 @@ class Play extends Phaser.Scene {
         this.load.image("rhythm meter", "./assets/RhythmMeterORG.png");
         this.load.image("LeftArrow", "./assets/LeftArrowGREEN.png");
         this.load.image("RightArrow", "./assets/RightArrowBLUE.png");
+        this.load.image("Player", "./assets/bearOnBike.png")
 
         //load audio files
         this.load.audio("music", "./assets/"+this.songName);
@@ -27,6 +28,13 @@ class Play extends Phaser.Scene {
 
     create() {
         this.cameras.main.setBackgroundColor("#999");
+
+        //Scrolling Background
+        //TBD
+
+        //Player Icon
+        this.player = this.add.image(game.config.width/2, game.config.height/2, "Player");
+
 
         //meter and tilting factors
         this.meter = this.add.image(game.config.width / 2, 7 * game.config.height / 8, "rhythm meter").setOrigin(.5);
