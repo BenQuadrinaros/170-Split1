@@ -144,10 +144,10 @@ class Map extends Phaser.Scene {
 
         //Creating a player icon and putting it at the correct location
         let iconXSpacer = 40;
-        let iconYSpacer = 40;
+        let iconYSpacer = 15;
         let curLocX = this.locations[this.currentPlayerLoc].x;
         let curLocY = this.locations[this.currentPlayerLoc].y;
-        this.playerIcon = this.add.image(curLocX + iconXSpacer, curLocY + iconYSpacer, 'PlayerIcon').setOrigin(0.5);
+        this.playerIcon = this.add.image(curLocX + iconXSpacer, curLocY + iconYSpacer, 'PlayerIcon').setOrigin(0.5).setScale(.55, .55);
 
         //Determine if there is already a honey demand
         if(typeof this.honeyDemand == 'undefined'){
