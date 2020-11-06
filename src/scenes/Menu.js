@@ -5,6 +5,7 @@ class Menu extends Phaser.Scene {
 
     preload() {
         //load audio files
+        this.load.audio("menuMusic", "./assets/honeybear_2.wav");
 
         //load images
         this.load.image('TitleScreen', './assets/TempTitle.png');
@@ -33,10 +34,22 @@ class Menu extends Phaser.Scene {
         //Setting interactive behaviors
         play.on('pointerover', () => play.setFrame(1));
         play.on("pointerout", () => play.setFrame(0));
-        play.on('pointerup', () => {this.scene.start('hubScene');});
+        play.on('pointerup', () => {
+            this.music.stop();
+            this.scene.start('hubScene');
+        });
         settings.on('pointerover', () => settings.setFrame(1));
         settings.on("pointerout", () => settings.setFrame(0));
-        settings.on('pointerup', () => {this.scene.start('settingsScene');});
+        settings.on('pointerup', () => {
+            this.music.stop();
+            this.scene.start('settingsScene');
+        });
+
+        //background music for the menu
+        this.music = this.sound.add("menuMusic");
+        this.music.volume = .7;
+        this.music.loop = true;
+        this.music.play();
     }
 
     update() {
