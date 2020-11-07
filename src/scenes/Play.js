@@ -20,7 +20,8 @@ class Play extends Phaser.Scene {
         this.load.image("rhythm meter", "./assets/RhythmMeterORG.png");
         this.load.image("LeftArrow", "./assets/LeftArrowGREEN.png");
         this.load.image("RightArrow", "./assets/RightArrowBLUE.png");
-        this.load.image("Player", "./assets/bearOnBike.png")
+        this.load.image("Player", "./assets/bearOnBike.png");
+        this.load.image("Road", "./assets/roadFullEX-02.png");
 
         //load audio files
         this.load.audio("music", "./assets/"+this.songName);
@@ -30,10 +31,10 @@ class Play extends Phaser.Scene {
         this.cameras.main.setBackgroundColor("#999");
 
         //Scrolling Background
-        //TBD
+        this.townRoad = this.add.tileSprite(0,0,1920,1080,'Road').setOrigin(0,0).setScale(.35, .35);
 
         //Player Icon
-        this.player = this.add.image(game.config.width/2, game.config.height/2, "Player");
+        this.player = this.add.image(game.config.width/2, game.config.height/2 + 50, "Player");
 
 
         //meter and tilting factors
@@ -100,6 +101,10 @@ class Play extends Phaser.Scene {
     }
 
     update() {
+
+        //Move Background
+        this.townRoad.tilePositionX += 6; 
+
         if (this.gameOver) {
 
         } else if (this.paused) {
