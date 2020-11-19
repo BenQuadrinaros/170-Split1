@@ -26,29 +26,28 @@ class Hub extends Phaser.Scene {
     // Load all needed assets for main hub scene. Player/walls/npcs
     preload() {
         //this.load.image("player", './assets/bearFrontBack.png');
-        this.load.image('background', './assets/hubBackground.jpg');
-        this.load.image('map','./assets/hubMap.jpg');
+        this.load.image('background', './assets/garden_base.png');
         this.load.image('bee','./assets/hubBee.jpg');
         this.load.image('bike','./assets/bike.png');
-        this.load.image('bikeShed', './assets/bikeShed.jpg');
-        this.load.image('toolShed','./assets/shed.jpg');
-        this.load.image('tools','./assets/tools.jpg');
+        this.load.image('bikeShed', './assets/tempBikeUpgrade.png');
+        this.load.image('gardeningShed','./assets/tempGardeningSupplies.png');
         this.load.spritesheet('player', './assets/bearFrontBack.png', {frameWidth:40, frameHeight:72, startFrame:0, endFrame:1});
 
         this.load.audio("hubMusic", "./assets/bear_full.mp3");
     }
 
     create() {
-        this.cameras.main.setBackgroundColor(0x000000)
-        this.background1 = this.add.image(10, 10, 'background').setOrigin(0,0);
-        this.background2 = this.add.image(config.width/2, 10, 'background').setOrigin(0,0);
-        this.bikeShed = this.add.image(config.width/5, 3*config.height/4,'bikeShed').setScale(.3,.3);
-        this.toolShed = this.add.image(4*config.width/5, 3*config.height/4,'toolShed').setScale(.3,.3);
-        this.bee = this.add.image(2*config.width/3, config.height/4, 'bee').setOrigin(.5,.5).setScale(.01,.01);
-        this.map = this.add.image(config.width/5, config.height/4,'map').setOrigin(.5,.5).setScale(.2,.2);
-        this.bike = this.add.image(config.width/5, 3*config.height/4,'bike').setOrigin(.5,.5).setScale(.2,.2);
-        this.tools = this.add.image(4*config.width/5, 3*config.height/4,'tools').setOrigin(.5,.5).setScale(.09,.09);
+        //Initialize images
+        this.cameras.main.setBackgroundColor(0x000000);
+        this.background = this.add.image(config.width/2, config.height/2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5);
+        this.bike = this.add.image(config.width/6, config.height/4,'bike').setOrigin(0.5, 0.5).setScale(0.35, 0.35);
+        this.bike.flipX = true;
+        this.bee = this.add.image(config.width/2, config.height/4, 'bee').setOrigin(0.5, 0.5).setScale(.01,.01);
+        this.bikeShed = this.add.image(config.width/5, 3*config.height/4,'bikeShed').setScale(0.9, 0.9);
+        this.gardeningShed = this.add.image(4*config.width/5, 3*config.height/4,'gardeningShed').setScale(1.2, 1.2);
         this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 2);
+
+        //Initialize image animation variables
         this.bounceFactor = .1;
         this.counter = 0;
 
@@ -57,26 +56,32 @@ class Hub extends Phaser.Scene {
         this.fadeMessage;
         this.fadeTimer = null;
 
-        this.scoreConfig = {
+        //Text config without a background, which blends better with the background
+        this.textConfig = {
             fontFamily: "Courier",
             fontSize: "14px",
             color: "#ffffff",
             align: "center",
+            stroke: "#000000",
+            strokeThickness: 4,
             padding: {
                 top: 5,
                 bottom: 5
             },
         };
-        this.interactText = this.add.text(this.player.x,this.player.y, "'SPACE' to interact", this.scoreConfig).setOrigin(.5,.5);
-        this.interactText.setVisible(false);
-        this.moveText = this.add.text(this.player.x, this.player.y+config.height/3, "Use the arrowkeys to move", this.scoreConfig).setOrigin(.5,.5);
-        this.turnText = this.add.text(game.config.width / 2, game.config.height / 8, "Turn Remaining: ", this.scoreConfig).setOrigin(.5);
-        this.fadeMessage = this.add.text(0,0, "", this.scoreConfig).setOrigin(.5,.5);
+
+        //Text that starts visible
+        this.moveText = this.add.text(this.player.x, this.player.y-config.height/9, "Use the arrowkeys to move", this.textConfig).setOrigin(.5,.5);
+        this.turnText = this.add.text(6*game.config.width / 7, game.config.height / 4, "Turn Remaining: ", this.textConfig).setOrigin(.5);
+ 
+        //Text that starts invisible
+        this.interactText = this.add.text(this.player.x,this.player.y, "'SPACE' to interact", this.textConfig).setOrigin(.5,.5).setVisible(false);
+        this.fadeMessage = this.add.text(0,0, "", this.textConfig).setOrigin(.5,.5);
         this.fadeMessage.depth = 5;
         this.fadeMessage.setVisible(false);
-        this.beeUpgrades = this.add.text(this.bee.x,this.bee.y - 20, "Your bees are at level:" + upgrades.bee,this.scoreConfig).setOrigin(.5,.5).setVisible(false);
-        this.bikeUpgrades = this.add.text(this.bike.x,this.bike.y + 20, "Your bike is at level:" + upgrades.bike, this.scoreConfig).setOrigin(.5,.5).setVisible(false);
-        this.toolUpgrades = this.add.text(this.tools.x,this.tools.y + 20, "Your tools are at level:" + upgrades.tools, this.scoreConfig).setOrigin(.5,.5).setVisible(false);
+        this.beeUpgrades = this.add.text(this.bee.x,this.bee.y - 35, "Your bees are at level:" + upgrades.bee,this.textConfig).setOrigin(.5,.5).setVisible(false);
+        this.bikeUpgrades = this.add.text(this.bikeShed.x,this.bikeShed.y - 35, "Your bike is at level:" + upgrades.bike, this.textConfig).setOrigin(.5,.5).setVisible(false);
+        this.toolUpgrades = this.add.text(this.gardeningShed.x,this.gardeningShed.y -35, "Your tools are at level:" + upgrades.tools, this.textConfig).setOrigin(.5,.5).setVisible(false);
 
         //establish controls for gameplay
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -98,11 +103,11 @@ class Hub extends Phaser.Scene {
         if (this.counter % 60 === 0){
             this.bounceFactor = -this.bounceFactor;
         }
-        //Check if the player is close enough to the map
-        if (Math.abs(Phaser.Math.Distance.Between(this.map.x,this.map.y, this.player.x,this.player.y)) < 100){
-            this.map.y += this.bounceFactor;
-            this.interactText.x = this.map.x;
-            this.interactText.y = this.map.y;
+        //Check if the player is close enough to the bike to head to the world map
+        if (Math.abs(Phaser.Math.Distance.Between(this.bike.x,this.bike.y, this.player.x,this.player.y)) < 100){
+            this.bike.y += this.bounceFactor;
+            this.interactText.x = this.bike.x;
+            this.interactText.y = this.bike.y;
             this.interactText.setVisible(true)
             if (Phaser.Input.Keyboard.JustDown(keySPACE)){
                 //-1 to indicate that it just left the hub
@@ -110,6 +115,7 @@ class Hub extends Phaser.Scene {
                 this.scene.start('mapScene', { arrivingAt:-1, currentHoney:this.honey, currentMoney:this.money })
             }
         } else {
+
             this.interactText.setVisible(false);
         }
 
@@ -133,11 +139,12 @@ class Hub extends Phaser.Scene {
         } else {
             this.beeUpgrades.setVisible(false);
         }
+
         // Check if player is near the bikeshed
-        if (Math.abs(Phaser.Math.Distance.Between(this.bike.x,this.bike.y, this.player.x,this.player.y)) < 100){
-            this.bike.y += this.bounceFactor;
-            this.interactText.x = this.bike.x;
-            this.interactText.y = this.bike.y;
+        if (Math.abs(Phaser.Math.Distance.Between(this.bikeShed.x,this.bikeShed.y, this.player.x,this.player.y)) < 100){
+            this.bikeShed.y += this.bounceFactor;
+            this.interactText.x = this.bikeShed.x;
+            this.interactText.y = this.bikeShed.y;
             this.interactText.setVisible(true)
             this.bikeUpgrades.setVisible(true)
             if (Phaser.Input.Keyboard.JustDown(keySPACE)){
@@ -156,12 +163,12 @@ class Hub extends Phaser.Scene {
 
 
         // Check if player is near the tools
-        if (Math.abs(Phaser.Math.Distance.Between(this.tools.x,this.tools.y, this.player.x,this.player.y)) < 100) {
-            this.tools.y += this.bounceFactor;
-            this.interactText.x = this.tools.x;
-            this.interactText.y = this.tools.y;
-            this.interactText.setVisible(true)
-            this.toolUpgrades.setVisible(true)
+        if (Math.abs(Phaser.Math.Distance.Between(this.gardeningShed.x,this.gardeningShed.y, this.player.x,this.player.y)) < 100) {
+            this.gardeningShed.y += this.bounceFactor;
+            this.interactText.x = this.gardeningShed.x;
+            this.interactText.y = this.gardeningShed.y;
+            this.interactText.setVisible(true);
+            this.toolUpgrades.setVisible(true);
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 if (this.turnsRemaining > 0) {
                     this.turnsRemaining -= 1;
@@ -171,14 +178,14 @@ class Hub extends Phaser.Scene {
                 } else {
                     this.fadeText("You are out of time today.\nMake your deliveries.");
                 }
-            } else {
+            } 
+        } else {
                 this.toolUpgrades.setVisible(false);
-            }
         }
 
         this.player.update();
         this.counter++;
-        this.turnText.text = "Turns Remaining: " + this.turnsRemaining;
+        this.turnText.text = "Turns Remaining: " + this.turnsRemaining + "\nHoney: " + this.honey + "\nMoney: " + this.money;
     }
 
     fadeText(message) {
