@@ -182,7 +182,7 @@ class Map extends Phaser.Scene {
 
         //background music for the map
         this.music = this.sound.add("mapMusic");
-        this.music.volume = .7;
+        this.music.volume = config.volume;
         this.music.loop = true;
         this.music.play();
     }
