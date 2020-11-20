@@ -76,7 +76,7 @@ class Play extends Phaser.Scene {
 
         //start up music for rhythm game
         this.music = this.sound.add("music");
-        this.music.volume = .7;
+        this.music.volume = config.volume;
         this.music.play();
 
         //song for level
