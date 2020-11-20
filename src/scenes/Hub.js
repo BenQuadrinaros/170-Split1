@@ -183,6 +183,15 @@ class Hub extends Phaser.Scene {
                 this.toolUpgrades.setVisible(false);
         }
 
+        //When the player starts to move, get rid of the instructions
+        if(this.moveText != null){
+            if(keyLEFT.isDown || keyRIGHT.isDown || keyUP.isDown || keyDOWN.isDown){
+                this.moveText.text = "";
+                this.moveText = null;
+            }
+
+        }
+
         this.player.update();
         this.counter++;
         this.turnText.text = "Turns Remaining: " + this.turnsRemaining + "\nHoney: " + this.honey + "\nMoney: " + this.money;

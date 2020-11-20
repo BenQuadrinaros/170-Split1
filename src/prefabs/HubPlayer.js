@@ -2,8 +2,9 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
 
     constructor(scene, texture, frame, initX, initY) {
         super(scene, initX, initY, texture, frame);
-        scene.add.existing(this)
-        this.setPosition(initX, initY)
+        scene.add.existing(this);
+        this.setPosition(initX, initY);
+        this.setScale(2.0, 2.0);
     }
 
 
