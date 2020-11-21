@@ -47,7 +47,7 @@ class Menu extends Phaser.Scene {
 
         //background music for the menu
         this.music = this.sound.add("menuMusic");
-        this.music.volume = .7;
+        this.music.volume = config.volume;
         this.music.loop = true;
         this.music.play();
     }

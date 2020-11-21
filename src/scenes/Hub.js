@@ -94,7 +94,7 @@ class Hub extends Phaser.Scene {
 
         //background music for the hub
         this.music = this.sound.add("hubMusic");
-        this.music.volume = .7;
+        this.music.volume = config.volume;
         this.music.loop = true;
         this.music.play();
     }
