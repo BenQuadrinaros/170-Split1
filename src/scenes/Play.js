@@ -36,7 +36,6 @@ class Play extends Phaser.Scene {
         //Player Icon
         this.player = this.add.image(game.config.width/2, game.config.height/2 + 50, "Player");
 
-
         //meter and tilting factors
         this.meter = this.add.image(game.config.width / 2, 7 * game.config.height / 8, "rhythm meter").setOrigin(.5);
         this.tiltFactor = 0;
@@ -145,6 +144,7 @@ class Play extends Phaser.Scene {
             }
 
             if (this.songNotes.loop == false && this.allNotes.length == 0) {
+                this.music.stop();
                 this.cache.audio.remove("music");
                 this.scene.start('mapScene', { arrivingAt:this.destination, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand });
             }
