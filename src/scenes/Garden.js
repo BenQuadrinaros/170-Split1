@@ -24,6 +24,7 @@ class Garden extends Phaser.Scene {
         this.load.image("dirt", "./assets/intialDirt.png");
         this.load.image("hive", "./assets/hubHive.png");
         this.load.spritesheet('flower', './assets/tempFlower1.png', { frameWidth: 128, frameHeight: 128, startFrame: 0, endFrame: 4 });
+        this.load.image("bee", "./assets/beeTEMP.png");
 
     }
 
@@ -45,16 +46,15 @@ class Garden extends Phaser.Scene {
         this.hive = this.add.image(config.width - 75, config.height - 75, "hive").setOrigin(.5).setScale(.15,.15);
 
         //Load in Flowers
-        let flowerPadding = 200; //distance between flowers
-
-        this.dirt0 = this.add.image(flowerPadding, flowerPadding, "dirt").setOrigin(0.5);
-        let flower0 = this.add.image(flowerPadding, flowerPadding, "flower").setOrigin(0.5);
-        this.dirt1 = this.add.image(2 * flowerPadding, flowerPadding, "dirt").setOrigin(0.5);
-        let flower1 = this.add.image(2 * flowerPadding, flowerPadding, "flower").setOrigin(0.5);
-        this.dirt2 = this.add.image(flowerPadding, 2 * flowerPadding, "dirt").setOrigin(0.5);
-        let flower2 = this.add.image(flowerPadding, 2 * flowerPadding, "flower").setOrigin(0.5);
-        this.dirt3 = this.add.image(2 * flowerPadding, 2 * flowerPadding, "dirt").setOrigin(0.5);
-        let flower3 = this.add.image(2 * flowerPadding, 2 * flowerPadding, "flower").setOrigin(0.5);
+        //More randomized flower placement
+        this.dirt0 = this.add.image(150, 210, "dirt").setOrigin(0.5);
+        let flower0 = this.add.image(150, 210, "flower").setOrigin(0.5);
+        this.dirt1 = this.add.image(455, 125, "dirt").setOrigin(0.5);
+        let flower1 = this.add.image(455, 125, "flower").setOrigin(0.5);
+        this.dirt2 = this.add.image(170, 400, "dirt").setOrigin(0.5);
+        let flower2 = this.add.image(170, 400, "flower").setOrigin(0.5);
+        this.dirt3 = this.add.image(400, 365, "dirt").setOrigin(0.5);
+        let flower3 = this.add.image(400, 365, "flower").setOrigin(0.5);
         this.flowerBox = [
             flower0, flower1, flower2, flower3
         ];
@@ -62,6 +62,30 @@ class Garden extends Phaser.Scene {
 
         //Create player
         this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 3);
+
+        //Create bees
+        this.swarm = [];
+        let numBees = 3;
+        for(let i = 0; i < numBees; ++i) {
+            let temp = new Bee(this, 'bee', 0, Phaser.Math.Between(this.hive.x - 10, this.hive.x + 10),
+                Phaser.Math.Between(this.hive.y - 10, this.hive.y + 10)).setOrigin(.5).setScale(.25,.25);
+            this.swarm.push(temp);
+        }
+
+        //Create path for bees to follow
+        this.path = [];
+        if(plants[0] > 0) {
+            this.path.push([flower0.x, flower0.y - 15]);
+        }
+        if(plants[1] > 0) {
+            this.path.push([flower1.x, flower1.y - 15]);
+        }
+        if(plants[2] > 0) {
+            this.path.push([flower2.x, flower2.y - 15]);
+        }
+        if(plants[3] > 0) {
+            this.path.push([flower3.x, flower3.y - 15]);
+        }
 
         //Text config without a background, which blends better with the background
         this.textConfig = {
@@ -97,6 +121,12 @@ class Garden extends Phaser.Scene {
         this.checkNearbyFlower(this.dirt1, 1);
         this.checkNearbyFlower(this.dirt2, 2);
         this.checkNearbyFlower(this.dirt3, 3);
+
+        //Update all bees in the swarm
+        for(let i = 0; i < this.swarm.length; ++i) {
+            this.swarm[i].flock(this.swarm, this.path);
+            this.swarm[i].update();
+        }
 
         //Check if player is close to the exit
         if (Math.abs(Phaser.Math.Distance.Between(this.exit.x, this.exit.y, this.player.x, this.player.y)) < 50) {
