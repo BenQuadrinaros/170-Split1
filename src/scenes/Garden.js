@@ -67,8 +67,9 @@ class Garden extends Phaser.Scene {
         this.swarm = [];
         let numBees = 3;
         for(let i = 0; i < numBees; ++i) {
-            let temp = new Bee(this, 'bee', 0, Phaser.Math.Between(this.hive.x - 10, this.hive.x + 10),
-                Phaser.Math.Between(this.hive.y - 10, this.hive.y + 10)).setOrigin(.5).setScale(.25,.25);
+            let temp = new Bee(this, 'player', 0, Phaser.Math.Between(this.hive.x - 10, this.hive.x + 10),
+                Phaser.Math.Between(this.hive.y - 10, this.hive.y + 10)).setOrigin(.5).setScale(.25,.25).setVisible(true);
+            temp.depth = 10
             this.swarm.push(temp);
         }
 

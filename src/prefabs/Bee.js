@@ -4,11 +4,10 @@ class Bee extends Phaser.GameObjects.Sprite{
         super(scene, initX, initY, texture, frame);
         //vectors rooted @ (0, 0)
 
-        this.velocity = Phaser.Math.Vector2(Math.random(), Math.random());
+        this.velocity = new Phaser.Math.Vector2(Math.random(), Math.random());
         //speed at which boids move
-        this.maxVelocity = Phaser.Math.Between(2, 4);
-        this.acceleration = Phaser.Math.Vector2(0,0);
-        this.position = Phaser.Math.Vector2(initX, initY)
+        this.acceleration = new Phaser.Math.Vector2();
+        this.position = new Phaser.Math.Vector2(initX, initY)
         //limit boid vector alignment / magnitude
         this.maxForce = 1;
         //set speed limit
@@ -24,12 +23,13 @@ class Bee extends Phaser.GameObjects.Sprite{
         this.velocity.add(this.acceleration);
         this.velocity.limit(this.maxSpeed);
         this.acceleration.reset();
+        console.log("Bee is at : " + this.x + " " + this.y)
     }
 
     avg(fellowBoids, vectorType){
         var inRange = 0;			//Flag to check if any boids were in the range at all
         //grab average velocity
-        var avgVel = Phaser.Math.Vector2();
+        var avgVel = new Phaser.Math.Vector2();
         for(let i = 0; i < fellowBoids.length; i++){
             let distance = this.position.distance(fellowBoids[i].position)
             //if in radius of 100 from boid
@@ -74,8 +74,8 @@ class Bee extends Phaser.GameObjects.Sprite{
 
             //follow points (start w/ first in list of pointPath)
             let pointLocation = pointPath
-            let tmpPoint = Phaser.Math.Vector2(pointLocation[cnt][0], pointLocation[cnt][1])
-            let distance = this.position.distance(Phaser.Math.Vector2(pointLocation[cnt][0], pointLocation[cnt][1]))
+            let tmpPoint = new Phaser.Math.Vector2(pointLocation[cnt][0], pointLocation[cnt][1])
+            let distance = this.position.distance(new Phaser.Math.Vector2(pointLocation[cnt][0], pointLocation[cnt][1]))
 
             //if it's close enough to the flower
             if(distance <= 10){
@@ -87,7 +87,8 @@ class Bee extends Phaser.GameObjects.Sprite{
 
             let direction = tmpPoint.subtract(this.position);
             direction.normalize();
-            direction.multiply(0.5);
+            direction.x *= .5;
+            direction.y *= .5;
             this.acceleration = direction;
 
             let alignment = this.avg(fellowBoids, 'alignment');
