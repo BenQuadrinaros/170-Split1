@@ -13,10 +13,16 @@ class Garden extends Phaser.Scene {
 
     preload() {
         //Load images and spritesheets
+
+        //Used for AI testing
+        this.load.spritesheet('player', './assets/bearFrontBack.png', {frameWidth:40, frameHeight:72, startFrame:0, endFrame:1});
+        this.money = 25;
+        this.honey = 15;
+
         this.load.image("grass", "./assets/baseGrass-01.png");
         this.load.image("exit", "./assets/LeftArrowGREEN.png");
         this.load.image("dirt", "./assets/intialDirt.png");
-        //this.load.spritesheet('flower','./assets/flowerStages.png',{frameWidth: 407, frameHeight: 456, startFrame:0 , endFrame: 4});
+        this.load.image("hive", "./assets/hubHive.png");
         this.load.spritesheet('flower', './assets/tempFlower1.png', { frameWidth: 128, frameHeight: 128, startFrame: 0, endFrame: 4 });
 
     }
@@ -34,6 +40,9 @@ class Garden extends Phaser.Scene {
         //Create Images
         this.background = this.add.image(config.width / 2, config.height / 4, "grass").setOrigin(0.5, 0.5);
         this.exit = this.add.image(config.width / 7, config.height / 8, "exit").setOrigin(0.5, 0.5);
+
+        //Create hive for bees
+        this.hive = this.add.image(config.width - 75, config.height - 75, "hive").setOrigin(.5).setScale(.15,.15);
 
         //Load in Flowers
         let flowerPadding = 200; //distance between flowers
