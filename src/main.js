@@ -14,5 +14,5 @@ let game = new Phaser.Game(config);
 let keyP, keyO, keyESCAPE, keyLEFT, keyRIGHT, keyDOWN, keyUP, keySPACE;
 
 let upgrades = {"bike": 0, "bee": 0, "tools": 0};
-let plants = [3, -1, -1, -1]; //-1 is unbought, 0 is dead, 0.5 and 1 are poor, 1.5 and 2 are good, 2.5 and 3 are great
+let plants = [3, -1, 3, -1]; //-1 is unbought, 0 is dead, 0.5 and 1 are poor, 1.5 and 2 are good, 2.5 and 3 are great
 

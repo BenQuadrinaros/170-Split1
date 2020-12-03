@@ -69,23 +69,25 @@ class Garden extends Phaser.Scene {
         for(let i = 0; i < numBees; ++i) {
             let temp = new Bee(this, 'player', 0, Phaser.Math.Between(this.hive.x - 10, this.hive.x + 10),
                 Phaser.Math.Between(this.hive.y - 10, this.hive.y + 10)).setOrigin(.5).setScale(.25,.25).setVisible(true);
-            temp.depth = 10
+            temp.depth = 10;
             this.swarm.push(temp);
         }
 
         //Create path for bees to follow
         this.path = [];
+        this.path.push([this.hive.x - 15, this.hive.y - 5]);
+        
+        if(plants[3] > 0) {
+            this.path.push([flower3.x, flower3.y - 15]);
+        }
+        if(plants[2] > 0) {
+            this.path.push([flower2.x, flower2.y - 15]);
+        }
         if(plants[0] > 0) {
             this.path.push([flower0.x, flower0.y - 15]);
         }
         if(plants[1] > 0) {
             this.path.push([flower1.x, flower1.y - 15]);
-        }
-        if(plants[2] > 0) {
-            this.path.push([flower2.x, flower2.y - 15]);
-        }
-        if(plants[3] > 0) {
-            this.path.push([flower3.x, flower3.y - 15]);
         }
 
         //Text config without a background, which blends better with the background
@@ -125,9 +127,9 @@ class Garden extends Phaser.Scene {
 
         //Update all bees in the swarm
         for(let i = 0; i < this.swarm.length; i++) {
-            this.swarm[i].flock(this.swarm, this.path);
+            this.swarm[i].flock(this.swarm, this.path, this.player);
             this.swarm[i].update();
-            this.swarm[i].ifAtEdge();
+            //this.swarm[i].ifAtEdge();
         }
 
         //Check if player is close to the exit
