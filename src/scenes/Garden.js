@@ -65,7 +65,7 @@ class Garden extends Phaser.Scene {
 
         //Create bees
         this.swarm = [];
-        let numBees = 5;
+        let numBees = 5;                    //5 seems to be max for flower following to look decent
         for(let i = 0; i < numBees; ++i) {
             let temp = new Bee(this, 'player', 0, Phaser.Math.Between(this.hive.x - 10, this.hive.x + 10),
                 Phaser.Math.Between(this.hive.y - 10, this.hive.y + 10)).setOrigin(.5).setScale(.25,.25).setVisible(true);

@@ -6,11 +6,15 @@ class Bee extends Phaser.GameObjects.Sprite{
         //vectors rooted @ (0, 0)
         scene.add.existing(this);
 
+        //Math.random()* (1 - -1) + -1: picks random w/ min -1 & max 1
         this.velocity = new Phaser.Math.Vector2(Math.random()* (1 - -1) + -1, Math.random()* (1 - -1) + -1);
+        //NOTE: setLength is the same as setMat() (because length = magnitude)
         this.velocity.setLength(Math.random() * (1 - 0) + 0);
+
         //speed at which boids move
         this.acceleration = new Phaser.Math.Vector2();
         this.position = new Phaser.Math.Vector2(initX, initY)
+
         //limit boid vector alignment / magnitude
         this.maxForce = 1;
         //set speed limit
@@ -19,6 +23,10 @@ class Bee extends Phaser.GameObjects.Sprite{
         this.randOrFollow = 'random';
     }
 
+    //Sets up so bees can't fly off screen
+    //Can be deleted or changed however.
+    //Positions are static because I didn't know how to access
+    //	width & height here. Fix if you can pls.
     ifAtEdge(){
 	    if (this.position.x > 640) {
 	      this.position.x = 0;
@@ -33,7 +41,6 @@ class Bee extends Phaser.GameObjects.Sprite{
 	}
 
     update() {
-
         this.position.add(this.velocity);
         this.x = this.position.x;
         this.y = this.position.y;
@@ -62,9 +69,8 @@ class Bee extends Phaser.GameObjects.Sprite{
                     diff.x = this.position.x - fellowBoids[i].position.x
                     diff.y = this.position.y - fellowBoids[i].position.y
 
-                    //diff = this.position.subtract(fellowBoids[i].position);
-                    //NOTE: this.position.subtract is attaching position to diff so 
-                    //		whatever is done to diff is then done to position
+                    //NOTE: this.position.subtract(fellowBoids[i].position); is attaching position to diff so 
+                    //		whatever is done to diff is then done to position. So it was removed
 
 			        diff.divide(new Phaser.Math.Vector2(distance * distance, distance * distance));
 			        avgVel.add(diff);
@@ -78,8 +84,6 @@ class Bee extends Phaser.GameObjects.Sprite{
         }
 
         if(inRange > 0){
-            //avgVel.x /= inRange;
-            //avgVel.y /= inRange
             avgVel.divide(new Phaser.Math.Vector2(inRange, inRange))
 
             if(vectorType === 'cohesion'){
@@ -95,8 +99,6 @@ class Bee extends Phaser.GameObjects.Sprite{
     }
 
     flock(fellowBoids, pointPath){
-            //TODO: If within ~15 of the flower then move onto the next
-
             //follow points (start w/ first in list of pointPath)
             
             let pointLocation = pointPath
@@ -118,6 +120,7 @@ class Bee extends Phaser.GameObjects.Sprite{
             this.acceleration = direction;
 
 
+            //Cohesion not necessary during path following because bees focused on flower.
             let alignment = this.avg(fellowBoids, 'alignment');
             //let cohesion = this.avg(fellowBoids, 'cohesion');
             let separation = this.avg(fellowBoids, 'separation');
