@@ -65,7 +65,7 @@ class Garden extends Phaser.Scene {
 
         //Create bees
         this.swarm = [];
-        let numBees = 3;
+        let numBees = 5;
         for(let i = 0; i < numBees; ++i) {
             let temp = new Bee(this, 'player', 0, Phaser.Math.Between(this.hive.x - 10, this.hive.x + 10),
                 Phaser.Math.Between(this.hive.y - 10, this.hive.y + 10)).setOrigin(.5).setScale(.25,.25).setVisible(true);
@@ -124,9 +124,10 @@ class Garden extends Phaser.Scene {
         this.checkNearbyFlower(this.dirt3, 3);
 
         //Update all bees in the swarm
-        for(let i = 0; i < this.swarm.length; ++i) {
+        for(let i = 0; i < this.swarm.length; i++) {
             this.swarm[i].flock(this.swarm, this.path);
             this.swarm[i].update();
+            this.swarm[i].ifAtEdge();
         }
 
         //Check if player is close to the exit
