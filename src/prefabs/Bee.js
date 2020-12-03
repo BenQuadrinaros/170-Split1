@@ -19,24 +19,11 @@ class Bee extends Phaser.GameObjects.Sprite{
         this.maxForce = 1;
         //set speed limit
         this.maxSpeed = 2;
-    }
 
-    //Sets up so bees can't fly off screen
-    //Can be deleted or changed however.
-    //Positions are static because I didn't know how to access
-    //	width & height here. Fix if you can pls.
-    /*ifAtEdge(){
-	    if (this.position.x > 640) {
-	      this.position.x = 0;
-	    } else if (this.position.x < 0) {
-	      this.position.x = 640;
-	    }
-	    if (this.position.y > 480) {
-	      this.position.y = 0;
-	    } else if (this.position.y < 0) {
-	      this.position.y = 480;
-	    }
-	}*/
+        //pollen count and carrying
+        this.pollenMax = 150;
+        this.pollen = 0;
+    }
 
     update() {
         this.position.add(this.velocity);
@@ -120,9 +107,16 @@ class Bee extends Phaser.GameObjects.Sprite{
             this.acceleration.add(avoidance);
         } //if it's close enough to the flower
         else if(distance <= 10) {
-            cnt++;
-            if(cnt > pointLocation.length - 1)
-                cnt = 0;
+            if(this.pollen < this.pollenMax) {
+                this.velocity.reset();
+                this.acceleration.reset();
+                this.pollen++;
+            } else {
+                this.pollen = 0;
+                cnt++;
+                if(cnt > pointLocation.length - 1)
+                    cnt = 0;
+            }
         } //otherwise just flock together
         else {
             let direction = tmpPoint.subtract(this.position);
