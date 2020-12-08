@@ -18,6 +18,7 @@ class Garden extends Phaser.Scene {
         this.load.spritesheet('player', './assets/bearFrontBack.png', {frameWidth:40, frameHeight:72, startFrame:0, endFrame:1});
         this.money = 25;
         this.honey = 15;
+        this.turnsRemaining = 3;
 
         this.load.image("grass", "./assets/baseGrass-01.png");
         this.load.image("exit", "./assets/LeftArrowGREEN.png");
@@ -75,7 +76,7 @@ class Garden extends Phaser.Scene {
 
         //Create path for bees to follow
         this.path = [];
-        
+        this.path.push([this.hive.x - 25, this.hive.y + 15]);
         if(plants[3] > 0) {
             this.path.push([flower3.x, flower3.y - 25]);
         }
@@ -88,7 +89,6 @@ class Garden extends Phaser.Scene {
         if(plants[1] > 0) {
             this.path.push([flower1.x, flower1.y - 25]);
         }
-        this.path.push([this.hive.x - 25, this.hive.y + 15]);
 
         //Text config without a background, which blends better with the background
         this.textConfig = {
@@ -168,6 +168,7 @@ class Garden extends Phaser.Scene {
                         this.money -= 6;
                         plants[i] = 3;
                         this.turnsRemaining -= 1;
+                        this.path.push([currDirt.x, currDirt.y - 25]);
                         this.fadeText("Congratulations! You have a\nnew flower for your garden")
                     }
                     //else if not enough actions

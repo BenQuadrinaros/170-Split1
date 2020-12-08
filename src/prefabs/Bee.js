@@ -23,6 +23,9 @@ class Bee extends Phaser.GameObjects.Sprite{
         //pollen count and carrying
         this.pollenMax = 150;
         this.pollen = 0;
+
+        //tracking target to go to
+        this.target = 1;
     }
 
     update() {
@@ -86,7 +89,7 @@ class Bee extends Phaser.GameObjects.Sprite{
 
     avoid(player, radius) {
         let direction = new Phaser.Math.Vector2();
-        if(this.position.distance(new Phaser.Math.Vector2(player.x, player.y)) <= radius) {
+        if(this.position.distance(player) < radius) {
             direction.x = this.position.x - player.x;
             direction.y = this.position.y - player.y;
             direction.normalize();
@@ -94,32 +97,51 @@ class Bee extends Phaser.GameObjects.Sprite{
         return direction;
     }
 
-    flock(fellowBoids, pointPath, player){
-        //follow points (start w/ first in list of pointPath)
-        
-        let pointLocation = pointPath
-        let tmpPoint = new Phaser.Math.Vector2(pointLocation[cnt][0], pointLocation[cnt][1])
-        let distance = this.position.distance(new Phaser.Math.Vector2(pointLocation[cnt][0], pointLocation[cnt][1]))
+    flock(fellowBoids, path, player){
+        // Get the target to go to & distance to
+        let targetLocation = new Phaser.Math.Vector2(path[this.target][0], path[this.target][1]);
+        let playerLocation = new Phaser.Math.Vector2(player.x, player.y);
+        let distance = this.position.distance(targetLocation);
 
         // Avoid the Bear if in range
-        let avoidance = this.avoid(player, 100);
+        let avoidance = this.avoid(playerLocation, 100);
         if(avoidance.x != 0 || avoidance.y != 0) {
             this.acceleration.add(avoidance);
         } //if it's close enough to the flower
-        else if(distance <= 10) {
+        else if(distance < 15) {
             if(this.pollen < this.pollenMax) {
                 this.velocity.reset();
                 this.acceleration.reset();
                 this.pollen++;
             } else {
                 this.pollen = 0;
-                cnt++;
-                if(cnt > pointLocation.length - 1)
-                    cnt = 0;
+                this.target = (this.target + 1) % path.length;
             }
-        } //otherwise just flock together
+        } 
         else {
-            let direction = tmpPoint.subtract(this.position);
+            // If you are close enough to your target
+            if(distance < 100) {
+                // If player is next to a flower you are close to
+                if(targetLocation.distance(new Phaser.Math.Vector2(player.x, player.y)) < 75) {
+                    // Skip it and go to the next target
+                    this.pollen = 0;
+                    this.target = (this.target + 1) % path.length;
+                } else if(this.target > 0) {
+                    // Find how many bees are already at your target
+                    let atTarget = 0;
+                    for(let i = 0; i < fellowBoids.length; ++i) {
+                        if(fellowBoids[i].position.distance(targetLocation) < 20) {
+                            ++atTarget;
+                        }
+                    }
+                    if(atTarget > 2) {
+                        // Skip it and go to the next target
+                        this.pollen = 0;
+                        this.target = (this.target + 1) % path.length;
+                    }
+                }
+            } //otherwise just flock together
+            let direction = targetLocation.subtract(this.position);
             direction.normalize();
             direction.x *= .5;
             direction.y *= .5;
@@ -128,12 +150,16 @@ class Bee extends Phaser.GameObjects.Sprite{
             //Cohesion not necessary during path following because bees focused on flower.
             let alignment = this.avg(fellowBoids, 'alignment', Phaser.Math.Between(15, 60));
             //let cohesion = this.avg(fellowBoids, 'cohesion');
-            let separation = this.avg(fellowBoids, 'separation', Phaser.Math.Between(10, 45));
+            let separation = this.avg(fellowBoids, 'separation', Phaser.Math.Between(10, 30));
 
             //Since mass =1 then A = F/1
             this.acceleration.add(separation);
             this.acceleration.add(alignment);
             //this.acceleration.add(cohesion);
+
+            //Add some ranomization of bumbling
+            this.acceleration.add(new Phaser.Math.Vector2(Phaser.Math.FloatBetween(-.25,.25),
+                Phaser.Math.FloatBetween(-.25,.25)));
         }
     }
 }
