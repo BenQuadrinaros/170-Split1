@@ -110,8 +110,9 @@ class Bee extends Phaser.GameObjects.Sprite{
         } //if it's close enough to the flower
         else if(distance < 15) {
             if(this.pollen < this.pollenMax) {
-                this.velocity.reset();
                 this.acceleration.reset();
+                this.velocity = new Phaser.Math.Vector2(Phaser.Math.FloatBetween(-.15,.15),
+                Phaser.Math.FloatBetween(-.15,.15));
                 this.pollen++;
             } else {
                 this.pollen = 0;
@@ -122,7 +123,7 @@ class Bee extends Phaser.GameObjects.Sprite{
             // If you are close enough to your target
             if(distance < 100) {
                 // If player is next to a flower you are close to
-                if(targetLocation.distance(new Phaser.Math.Vector2(player.x, player.y)) < 75) {
+                if(this.target > 0 && targetLocation.distance(new Phaser.Math.Vector2(player.x, player.y)) < 75) {
                     // Skip it and go to the next target
                     this.pollen = 0;
                     this.target = (this.target + 1) % path.length;
@@ -134,7 +135,7 @@ class Bee extends Phaser.GameObjects.Sprite{
                             ++atTarget;
                         }
                     }
-                    if(atTarget > 2) {
+                    if(atTarget > 3) {
                         // Skip it and go to the next target
                         this.pollen = 0;
                         this.target = (this.target + 1) % path.length;
