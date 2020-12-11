@@ -142,14 +142,14 @@ class Bee extends Phaser.GameObjects.Sprite {
                 }
             }
 
-            if (this.position.distance(playerLocation) < 120) {
+            if (this.position.distance(playerLocation) < 110) {
             // Find out how many bees are nearby
             let swarmAvg = new Phaser.Math.Vector2();
             let nearbySwarm = []
 
             for (let i = 0; i < fellowBoids.length; i++) {
                 // If another bee is nearby, add it to a local swarm
-                if (this.position.distance(fellowBoids[i].position) < 100) {
+                if (this.position.distance(fellowBoids[i].position) < 50) {
                     nearbySwarm.push(fellowBoids[i]);
                     swarmAvg.add(fellowBoids[i].position);
                 }
@@ -163,8 +163,8 @@ class Bee extends Phaser.GameObjects.Sprite {
                 let pushDirection = playerLocation.subtract(swarmAvg);
                 pushDirection.normalize();
                 console.log(pushDirection);
-                player.x += pushDirection.x/2;
-                player.y += pushDirection.y/2;
+                player.x += pushDirection.x/10;
+                player.y += pushDirection.y/10;
             }
         }
 
