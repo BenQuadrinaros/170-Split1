@@ -240,6 +240,7 @@ class Garden extends Phaser.Scene {
 
     clearBee(){        
         //Reset Boids
+        this.swarm[0].destroy();
         this.swarm = [];
         let numBees = 5;                    //5 seems to be max for flower following to look decent
         for(let i = 0; i < numBees; ++i) {
