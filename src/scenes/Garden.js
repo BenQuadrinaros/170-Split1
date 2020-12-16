@@ -64,9 +64,19 @@ class Garden extends Phaser.Scene {
         //Create player
         this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 3);
 
+        //Create default movement behavior of bees
+        this.whatFollow = 'scout';
+
+        //Create bool to know when scout has reached the hive
+        this.beeReceived = false;
+
+        this.scoutFinished = false;
+
+        this.flowPath = [];
+
         //Create bees
         this.swarm = [];
-        let numBees = 5;                    //5 seems to be max for flower following to look decent
+        let numBees = 1;                    //5 seems to be max for flower following to look decent
         for(let i = 0; i < numBees; ++i) {
             let temp = new Bee(this, 'bee', 0, Phaser.Math.Between(this.hive.x - 10, this.hive.x + 10),
                 Phaser.Math.Between(this.hive.y - 10, this.hive.y + 10)).setOrigin(.5).setScale(.25,.25).setVisible(true);
@@ -127,8 +137,26 @@ class Garden extends Phaser.Scene {
 
         //Update all bees in the swarm
         for(let i = 0; i < this.swarm.length; i++) {
+
+            this.swarm[i].scoutOrGather = this.whatFollow;
             this.swarm[i].flock(this.swarm, this.path, this.player);
             this.swarm[i].update();
+
+            if(this.swarm[i].hiveNeighbors.length == this.path.length - 1 && !(this.beeReceived)){
+                this.whatFollow = 'BackToHive';
+                //Once it's back at the hive stop showing
+                let distBackToHive = Math.abs(this.swarm[i].position.x - 540) + Math.abs(this.swarm[i].position.y - 420);
+
+                if(distBackToHive < 10){
+                    this.flowPath = this.swarm[i].hiveNeighbors;
+                    this.flowPath.push([540, 420]);
+                    //here is where we make the bee disappear once it reaches the hive
+                    this.clearBee();
+                    this.scoutFinished = true; 
+                    this.path = this.flowPath;
+                }
+            }
+
         }
 
         //Check if player is close to the exit
@@ -208,6 +236,22 @@ class Garden extends Phaser.Scene {
         for (let i = 0; i < plants.length; ++i) {
             this.flowerBox[i].setFrame(Math.ceil(plants[i]) + 1);
         }
+    }
+
+    clearBee(){        
+        //Reset Boids
+        this.swarm = [];
+        let numBees = 5;                    //5 seems to be max for flower following to look decent
+        for(let i = 0; i < numBees; ++i) {
+            let temp = new Bee(this, 'bee', 0, Phaser.Math.Between(this.hive.x - 10, this.hive.x + 10),
+                Phaser.Math.Between(this.hive.y - 10, this.hive.y + 10)).setOrigin(.5).setScale(.25,.25).setVisible(true);
+            temp.depth = 10;
+            this.swarm.push(temp);
+        }
+
+        this.beeReceived = true;
+        //console.log("Path: ", path.pointPath, "\n Neighbors: ", path.neighbors, "\n Hive Neighbors: ", path.hiveNeighbors);
+        this.whatFollow = 'gather';
     }
 
     fadeText(message) {
