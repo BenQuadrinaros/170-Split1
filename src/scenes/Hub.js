@@ -95,9 +95,9 @@ class Hub extends Phaser.Scene {
         this.fadeMessage = this.add.text(0,0, "", this.textConfig).setOrigin(.5,.5);
         this.fadeMessage.depth = 5;
         this.fadeMessage.setVisible(false);
-        this.beeUpgrades = this.add.text(this.bee.x,this.bee.y - 35, "Your bees are at level:" + upgrades.bee + "\nThe next upgrade will cost $" + (5*upgrades.bee +10),this.textConfig).setOrigin(.5,.5).setVisible(false);
-        this.bikeUpgrades = this.add.text(this.bikeShed.x,this.bikeShed.y - 35, "Your bike is at level:" + upgrades.bike, this.textConfig).setOrigin(.5,.5).setVisible(false);
-        this.toolUpgrades = this.add.text(this.gardeningShed.x,this.gardeningShed.y -35, "Your tools are at level:" + upgrades.tools, this.textConfig).setOrigin(.5,.5).setVisible(false);
+        this.beeUpgrades = this.add.text(this.bee.x,this.bee.y - 35, "Your bees are at level: " + upgrades.bee + "\nThe next upgrade will cost $" + (5*upgrades.bee +10),this.textConfig).setOrigin(.5,.5).setVisible(false);
+        this.bikeUpgrades = this.add.text(this.bikeShed.x,this.bikeShed.y - 35, "Your bike is at level: " + upgrades.bike, this.textConfig).setOrigin(.5,.5).setVisible(false);
+        this.toolUpgrades = this.add.text(this.gardeningShed.x,this.gardeningShed.y -35, "Grab your tools?", this.textConfig).setOrigin(.5,.5).setVisible(false);
 
         //establish controls for gameplay
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -105,6 +105,7 @@ class Hub extends Phaser.Scene {
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
+        keyO = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.O);
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESCAPE);
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
@@ -116,6 +117,15 @@ class Hub extends Phaser.Scene {
     }
 
     update() {
+        // Quick day advancement for testing purposes
+        if (Phaser.Input.Keyboard.JustDown(keyP)) {
+            this.music.stop();
+            this.scene.start("hubScene", { currentHoney:this.honey, currentMoney:this.money });
+        }
+        if(Phaser.Input.Keyboard.JustDown(keyO)) {
+            this.money += 10;
+        }
+
         if (this.counter % 60 === 0){
             this.bounceFactor = -this.bounceFactor;
         }
@@ -196,10 +206,6 @@ class Hub extends Phaser.Scene {
             this.toolUpgrades.setVisible(true);
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 if (this.turnsRemaining > 0) {
-                    //this.turnsRemaining -= 1;
-                    //this.fadeText("Your tools are tool-ier. :)");
-                    //upgrades.tools += 1;
-                    //this.toolUpgrades.text = "Your tools are at level:" + upgrades.tools;
                     this.music.stop();
                     this.scene.start('gardenScene', { turnsRemaining:this.turnsRemaining, currentHoney:this.honey, currentMoney:this.money });
 
@@ -232,7 +238,7 @@ class Hub extends Phaser.Scene {
             this.fadeTimer = null;
         }
         this.fadeMessage.x = this.player.x;
-        this.fadeMessage.y = this.player.y;
+        this.fadeMessage.y = this.player.y + this.player.height / 4;
         this.fadeMessage.text = message;
         this.fadeMessage.setVisible(true);
         this.fadeTimer = this.time.addEvent({

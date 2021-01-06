@@ -3,7 +3,7 @@ class Garden extends Phaser.Scene {
         super("gardenScene");
     }
 
-    init(data){
+    init(data) {
         this.honey = data.currentHoney;
         this.money = data.currentMoney;
         this.turnsRemaining = data.turnsRemaining;
@@ -11,17 +11,25 @@ class Garden extends Phaser.Scene {
 
     }
 
-    preload(){
+    preload() {
         //Load images and spritesheets
+
+        //Used for AI testing
+        this.load.spritesheet('player', './assets/bearFrontBack.png', {frameWidth:40, frameHeight:72, startFrame:0, endFrame:1});
+        this.money = 25;
+        this.honey = 15;
+        this.turnsRemaining = 3;
+
         this.load.image("grass", "./assets/baseGrass-01.png");
         this.load.image("exit", "./assets/LeftArrowGREEN.png");
         this.load.image("dirt", "./assets/intialDirt.png");
-        //this.load.spritesheet('flower','./assets/flowerStages.png',{frameWidth: 407, frameHeight: 456, startFrame:0 , endFrame: 4});
-        this.load.spritesheet('flower','./assets/tempFlower1.png',{frameWidth: 128, frameHeight: 128, startFrame:0 , endFrame: 4});
+        this.load.image("hive", "./assets/hubHive.png");
+        this.load.spritesheet('flower', './assets/tempFlower1.png', { frameWidth: 128, frameHeight: 128, startFrame: 0, endFrame: 4 });
+        this.load.image("bee", "./assets/bearBee.png");
 
     }
 
-    create(){
+    create() {
         //Setting controls
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
@@ -32,20 +40,22 @@ class Garden extends Phaser.Scene {
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         //Create Images
-        this.background = this.add.image(config.width/2, config.height/4, "grass").setOrigin(0.5, 0.5);
-        this.exit = this.add.image(config.width/7, config.height/8, "exit").setOrigin(0.5, 0.5);
+        this.background = this.add.image(config.width / 2, config.height / 4, "grass").setOrigin(0.5, 0.5);
+        this.exit = this.add.image(config.width / 7, config.height / 8, "exit").setOrigin(0.5, 0.5);
+
+        //Create hive for bees
+        this.hive = this.add.image(config.width - 75, config.height - 75, "hive").setOrigin(.5).setScale(.15,.15);
 
         //Load in Flowers
-        let flowerPadding = 200; //distance between flowers
-
-        this.dirt0 = this.add.image(flowerPadding, flowerPadding, "dirt").setOrigin(0.5);
-        let flower0 = this.add.image(flowerPadding, flowerPadding, "flower").setOrigin(0.5);
-        this.dirt1 = this.add.image(2*flowerPadding, flowerPadding, "dirt").setOrigin(0.5);
-        let flower1 = this.add.image(2*flowerPadding, flowerPadding, "flower").setOrigin(0.5);
-        this.dirt2 = this.add.image(flowerPadding, 2*flowerPadding, "dirt").setOrigin(0.5);
-        let flower2 = this.add.image(flowerPadding, 2*flowerPadding, "flower").setOrigin(0.5);
-        this.dirt3 = this.add.image(2*flowerPadding, 2*flowerPadding, "dirt").setOrigin(0.5);
-        let flower3 = this.add.image(2*flowerPadding, 2*flowerPadding, "flower").setOrigin(0.5);
+        //More randomized flower placement
+        this.dirt0 = this.add.image(150, 210, "dirt").setOrigin(0.5);
+        let flower0 = this.add.image(150, 210, "flower").setOrigin(0.5);
+        this.dirt1 = this.add.image(455, 125, "dirt").setOrigin(0.5);
+        let flower1 = this.add.image(455, 125, "flower").setOrigin(0.5);
+        this.dirt2 = this.add.image(170, 400, "dirt").setOrigin(0.5);
+        let flower2 = this.add.image(170, 400, "flower").setOrigin(0.5);
+        this.dirt3 = this.add.image(400, 365, "dirt").setOrigin(0.5);
+        let flower3 = this.add.image(400, 365, "flower").setOrigin(0.5);
         this.flowerBox = [
             flower0, flower1, flower2, flower3
         ];
@@ -53,6 +63,42 @@ class Garden extends Phaser.Scene {
 
         //Create player
         this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 3);
+
+        //Create default movement behavior of bees
+        this.whatFollow = 'scout';
+
+        //Create bool to know when scout has reached the hive
+        this.beeReceived = false;
+
+        this.scoutFinished = false;
+
+        this.flowPath = [];
+
+        //Create bees
+        this.swarm = [];
+        let numBees = 1;                    //5 seems to be max for flower following to look decent
+        for(let i = 0; i < numBees; ++i) {
+            let temp = new Bee(this, 'bee', 0, Phaser.Math.Between(this.hive.x - 10, this.hive.x + 10),
+                Phaser.Math.Between(this.hive.y - 10, this.hive.y + 10)).setOrigin(.5).setScale(.25,.25).setVisible(true);
+            temp.depth = 10;
+            this.swarm.push(temp);
+        }
+
+        //Create path for bees to follow
+        this.path = [];
+        this.path.push([this.hive.x - 25, this.hive.y + 15]);
+        if(plants[3] > 0) {
+            this.path.push([flower3.x, flower3.y - 25]);
+        }
+        if(plants[2] > 0) {
+            this.path.push([flower2.x, flower2.y - 25]);
+        }
+        if(plants[0] > 0) {
+            this.path.push([flower0.x, flower0.y - 25]);
+        }
+        if(plants[1] > 0) {
+            this.path.push([flower1.x, flower1.y - 25]);
+        }
 
         //Text config without a background, which blends better with the background
         this.textConfig = {
@@ -69,7 +115,7 @@ class Garden extends Phaser.Scene {
         };
 
         //Create Text
-        this.turnText = this.add.text(game.config.width/2, game.config.height/12, "Turns Remaining: ", this.textConfig).setOrigin(.5);
+        this.turnText = this.add.text(game.config.width / 2, game.config.height / 12, "Turns Remaining: ", this.textConfig).setOrigin(.5);
         this.fadeMessage = this.add.text(this.player.x, this.player.y, "Nada", this.textConfig).setOrigin(0.5).setVisible(false);
         this.exitText = this.add.text(this.exit.x, this.exit.y, "Press SPACE to return to the cave", this.textConfig).setOrigin(0.5).setVisible(false);
         let flow0Text = this.add.text(this.dirt0.x, this.dirt0.y, "Press SPACE to interact", this.textConfig).setOrigin(0.5).setVisible(false);
@@ -89,66 +135,95 @@ class Garden extends Phaser.Scene {
         this.checkNearbyFlower(this.dirt2, 2);
         this.checkNearbyFlower(this.dirt3, 3);
 
+        //Update all bees in the swarm
+        for(let i = 0; i < this.swarm.length; i++) {
+
+            this.swarm[i].scoutOrGather = this.whatFollow;
+            this.swarm[i].flock(this.swarm, this.path, this.player);
+            this.swarm[i].update();
+
+            if(this.swarm[i].hiveNeighbors.length == this.path.length - 1 && !(this.beeReceived)){
+                this.whatFollow = 'BackToHive';
+                //Once it's back at the hive stop showing
+                let distBackToHive = Math.abs(this.swarm[i].position.x - 540) + Math.abs(this.swarm[i].position.y - 420);
+
+                if(distBackToHive < 10){
+                    this.flowPath = this.swarm[i].hiveNeighbors;
+                    this.flowPath.push([540, 420]);
+                    //here is where we make the bee disappear once it reaches the hive
+                    this.clearBee();
+                    this.scoutFinished = true; 
+                    this.path = this.flowPath;
+                }
+            }
+
+        }
+
         //Check if player is close to the exit
-        if (Math.abs(Phaser.Math.Distance.Between(this.exit.x,this.exit.y, this.player.x,this.player.y)) < 50){
+        if (Math.abs(Phaser.Math.Distance.Between(this.exit.x, this.exit.y, this.player.x, this.player.y)) < 50) {
             this.exitText.setVisible(true);
-            if (Phaser.Input.Keyboard.JustDown(keySPACE)){
+            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 //-1 to indicate that it just left the hub
                 //this.music.stop();
-                this.scene.start('hubScene', { wasVisiting:"garden", turnsRemaining:this.turnsRemaining, currentHoney:this.honey, currentMoney:this.money });
+                this.scene.start('hubScene', { wasVisiting: "garden", turnsRemaining: this.turnsRemaining, currentHoney: this.honey, currentMoney: this.money });
             }
         } else {
 
             this.exitText.setVisible(false);
         }
-        
+
         this.player.update();
         this.updateFlowerImages();
         this.turnText.text = "Turns Remaining: " + this.turnsRemaining + "\nHoney: " + this.honey + "\nMoney: " + this.money;
     }
 
-    checkNearbyFlower(currDirt, i){
-        if (Math.abs(Phaser.Math.Distance.Between(currDirt.x,currDirt.y, this.player.x,this.player.y)) < 100){
+    checkNearbyFlower(currDirt, i) {
+        if (Math.abs(Phaser.Math.Distance.Between(currDirt.x, currDirt.y, this.player.x, this.player.y)) < 100) {
             //If the flower isnt purchased or is dead
-            if(plants[i] == -1 || plants[i] == 0){
-                this.flowerText[i].text = "'SPACE' to buy a new flower";
-            } else{
+            if (plants[i] == -1 || plants[i] == 0) {
+                this.flowerText[i].text = "'SPACE' to buy a new flower\nCost: $6";
+            } else {
                 this.flowerText[i].text = "'SPACE' to water flower";
             }
             this.flowerText[i].x = currDirt.x;
             this.flowerText[i].y = currDirt.y;
             this.flowerText[i].setVisible(true);
-            if (Phaser.Input.Keyboard.JustDown(keySPACE)){
+            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 //If the plant is not purchased
-                if(plants[i] == -1){
+                if (plants[i] == -1 || plants[i] == 0) {
                     //if the player has sufficient funds
-                    if(this.money >= 6 && this.turnsRemaining >= 1){
+                    if (this.money >= 6 && this.turnsRemaining >= 1) {
                         this.money -= 6;
                         plants[i] = 3;
                         this.turnsRemaining -= 1;
+                        this.path.push([currDirt.x, currDirt.y - 25]);
+                        this.fadeText("Congratulations! You have a\nnew flower for your garden")
                     }
                     //else if not enough actions
-                    else if(this.turnsRemaining < 1){
-                        this.fadeText("You have insufficient actions");
+                    else if (this.turnsRemaining < 1) {
+                        this.fadeText("You have insufficient actions.");
                     }
-                    else{
-                        this.fadeText("Buying a new flower costs $6");
+                    else {
+                        this.fadeText("You cannot afford another flower");
                     }
-                }
-                //else if it is dead
-                else if(plants[i] == 0){
-                    this.fadeText("The plant has died, there is no effect");
-                }
-                else{
-                    if(this.turnsRemaining >= 1){
+                } 
+                else {
+                    if (this.turnsRemaining >= 1) {
                         plants[i] = Math.min(3, plants[i] + 1);
                         this.turnsRemaining -= 1;
+                        if (plants[i] == 3) {
+                            this.fadeText("Your flower looks perfectly healthy");
+                        } else if (plants[i] > 1) {
+                            this.fadeText("Your flower could use more attention");
+                        } else {
+                            this.fadeText("This flower will die soon");
+                        }
                     }
-                    else{
+                    else {
                         this.fadeText("You have insufficient actions");
                     }
                 }
-                
+
             }
         } else {
 
@@ -156,16 +231,33 @@ class Garden extends Phaser.Scene {
         }
     }
 
-    updateFlowerImages(){
+    updateFlowerImages() {
         //Determine current state of flowers
-        for(let i = 0; i < plants.length; ++i){
+        for (let i = 0; i < plants.length; ++i) {
             this.flowerBox[i].setFrame(Math.ceil(plants[i]) + 1);
         }
     }
 
+    clearBee(){        
+        //Reset Boids
+        this.swarm[0].destroy();
+        this.swarm = [];
+        let numBees = 5;                    //5 seems to be max for flower following to look decent
+        for(let i = 0; i < numBees; ++i) {
+            let temp = new Bee(this, 'bee', 0, Phaser.Math.Between(this.hive.x - 10, this.hive.x + 10),
+                Phaser.Math.Between(this.hive.y - 10, this.hive.y + 10)).setOrigin(.5).setScale(.25,.25).setVisible(true);
+            temp.depth = 10;
+            this.swarm.push(temp);
+        }
+
+        this.beeReceived = true;
+        //console.log("Path: ", path.pointPath, "\n Neighbors: ", path.neighbors, "\n Hive Neighbors: ", path.hiveNeighbors);
+        this.whatFollow = 'gather';
+    }
+
     fadeText(message) {
-        if(this.fadeTimer != null) {
-            this.fadeTimer.callback = () => {};
+        if (this.fadeTimer != null) {
+            this.fadeTimer.callback = () => { };
             this.fadeTimer.delay = 0;
             this.fadeTimer = null;
         }

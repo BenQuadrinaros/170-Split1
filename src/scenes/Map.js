@@ -5,15 +5,15 @@ class Map extends Phaser.Scene {
 
     init(data){
 
-        //if it is returning to the hub, do that instead
-        if(data.arrivingAt == 1){
-            this.scene.start("hubScene", { currentHoney:data.currentHoney, currentMoney:data.currentMoney });
-        }
+        console.log("Getting level info")
+        
         //As a -1 indicates that it just came from the hub, this cleanses that
+        this.toHub = data.arrivingAt - 1;
         this.justArrivedAt = Math.abs(data.arrivingAt);
         this.honey = data.currentHoney;
         this.money = data.currentMoney;
         this.honeyDemand = data.honeyDemand;
+        console.log("Level info acquired")
     }
 
     preload() {
@@ -185,6 +185,13 @@ class Map extends Phaser.Scene {
         this.music.volume = config.volume;
         this.music.loop = true;
         this.music.play();
+
+        //if it is returning to the hub, do that instead
+        if(this.toHub == 0){
+            console.log("At hub")
+            this.music.stop();
+            this.scene.start("hubScene", { currentHoney:this.honey, currentMoney:this.money });
+        }
     }
 
     update() {
@@ -209,8 +216,8 @@ class Map extends Phaser.Scene {
 
     //Checks whether the player can depart to the selected location from their current location
     isValidPlay(selectedLoc){
-        this.music.stop();
         if(this.isValidPath(selectedLoc)){
+            this.music.stop();
             if(selectedLoc == 0) { this.scene.start('playScene', { song:songLibrary[3], destination:0, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand }); }
             else if(selectedLoc == 2) { this.scene.start('playScene', { song:songLibrary[1], destination:2, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand}); }
             else if(selectedLoc == 3) { this.scene.start('playScene', {song:songLibrary[2], destination:3, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand }); }
