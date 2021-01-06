@@ -20,11 +20,11 @@ class Garden extends Phaser.Scene {
         this.honey = 15;
         this.turnsRemaining = 3;
 
-        this.load.image("grass", "./assets/baseGrass-01.png");
+        this.load.image("gardenBackground", "./assets/sampleGarden-01.png");
         this.load.image("exit", "./assets/LeftArrowGREEN.png");
-        this.load.image("dirt", "./assets/intialDirt.png");
+        this.load.image("dirt", "./assets/dirt-04.png");
         this.load.image("hive", "./assets/hubHive.png");
-        this.load.spritesheet('flower', './assets/tempFlower1.png', { frameWidth: 128, frameHeight: 128, startFrame: 0, endFrame: 4 });
+        this.load.spritesheet('flower', './assets/flowerStages.png', { frameWidth: 407, frameHeight: 456, startFrame: 0, endFrame: 4 });
         this.load.image("bee", "./assets/bearBee.png");
 
     }
@@ -40,22 +40,22 @@ class Garden extends Phaser.Scene {
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         //Create Images
-        this.background = this.add.image(config.width / 2, config.height / 4, "grass").setOrigin(0.5, 0.5);
+        this.background = this.add.image(config.width / 2, config.height / 2, "gardenBackground").setOrigin(0.5, 0.5).setScale(.5, .5);
         this.exit = this.add.image(config.width / 7, config.height / 8, "exit").setOrigin(0.5, 0.5);
 
         //Create hive for bees
-        this.hive = this.add.image(config.width - 75, config.height - 75, "hive").setOrigin(.5).setScale(.15,.15);
+        this.hive = this.add.image(config.width -75, config.height/3, "hive").setOrigin(.5).setScale(.15,.15).setAlpha(0);
 
         //Load in Flowers
         //More randomized flower placement
-        this.dirt0 = this.add.image(150, 210, "dirt").setOrigin(0.5);
-        let flower0 = this.add.image(150, 210, "flower").setOrigin(0.5);
-        this.dirt1 = this.add.image(455, 125, "dirt").setOrigin(0.5);
-        let flower1 = this.add.image(455, 125, "flower").setOrigin(0.5);
-        this.dirt2 = this.add.image(170, 400, "dirt").setOrigin(0.5);
-        let flower2 = this.add.image(170, 400, "flower").setOrigin(0.5);
-        this.dirt3 = this.add.image(400, 365, "dirt").setOrigin(0.5);
-        let flower3 = this.add.image(400, 365, "flower").setOrigin(0.5);
+        this.dirt0 = this.add.image(.125*config.width, .35*config.height, "dirt").setOrigin(0.5).setScale(.66);
+        let flower0 = this.add.image(.125*config.width, .35*config.height, "flower").setOrigin(0.5).setScale(.25);
+        this.dirt1 = this.add.image(.435*config.width, .595*config.height, "dirt").setOrigin(0.5).setScale(.66);
+        let flower1 = this.add.image(.435*config.width, .595*config.height, "flower").setOrigin(0.5).setScale(.25);
+        this.dirt2 = this.add.image(.2*config.width, .84*config.height, "dirt").setOrigin(0.5).setScale(.66);
+        let flower2 = this.add.image(.2*config.width, .84*config.height, "flower").setOrigin(0.5).setScale(.25);
+        this.dirt3 = this.add.image(.795*config.width, .84*config.height, "dirt").setOrigin(0.5).setScale(.66);
+        let flower3 = this.add.image(.795*config.width, .84*config.height, "flower").setOrigin(0.5).setScale(.25);
         this.flowerBox = [
             flower0, flower1, flower2, flower3
         ];
