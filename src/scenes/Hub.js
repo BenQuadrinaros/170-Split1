@@ -58,11 +58,16 @@ class Hub extends Phaser.Scene {
         this.cameras.main.setBackgroundColor(0x000000);
         this.background = this.add.image(config.width/2, config.height/2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5);
         this.bike = this.add.image(config.width/6, config.height/4,'bike').setOrigin(0.5, 0.5).setScale(0.35, 0.35);
+        this.bike.depth = this.bike.y / 10;
         this.bike.flipX = true;
         this.bee = this.add.image(config.width/2, config.height/4, 'bee').setOrigin(0.5, 0.5).setScale(.01,.01);
+        this.bee.depth = this.bee.y / 10;
         this.bikeShed = this.add.image(config.width/5, 3*config.height/4,'bikeShed').setScale(0.9, 0.9);
+        this.bikeShed.depth = this.bikeShed.y / 10;
         this.gardeningShed = this.add.image(4*config.width/5, 3*config.height/4,'gardeningShed').setScale(1.2, 1.2);
+        this.gardeningShed.depth = this.gardeningShed.y / 10;
         this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 2);
+        this.player.depth = this.player.y / 10;
 
         //Initialize image animation variables
         this.bounceFactor = .1;
@@ -88,16 +93,22 @@ class Hub extends Phaser.Scene {
 
         //Text that starts visible
         this.moveText = this.add.text(this.player.x, this.player.y-config.height/9, "Use the arrowkeys to move", this.textConfig).setOrigin(.5,.5);
+        this.moveText.depth = 100;
         this.turnText = this.add.text(6*game.config.width / 7, game.config.height / 4, "Turns Remaining: ", this.textConfig).setOrigin(.5);
+        this.turnText.depth = 100;
  
         //Text that starts invisible
         this.interactText = this.add.text(this.player.x,this.player.y, "'SPACE' to interact", this.textConfig).setOrigin(.5,.5).setVisible(false);
+        this.interactText.depth = 100;
         this.fadeMessage = this.add.text(0,0, "", this.textConfig).setOrigin(.5,.5);
-        this.fadeMessage.depth = 5;
+        this.fadeMessage.depth = 100;
         this.fadeMessage.setVisible(false);
         this.beeUpgrades = this.add.text(this.bee.x,this.bee.y - 35, "Your bees are at level: " + upgrades.bee + "\nThe next upgrade will cost $" + (5*upgrades.bee +10),this.textConfig).setOrigin(.5,.5).setVisible(false);
+        this.beeUpgrades.depth = 100;
         this.bikeUpgrades = this.add.text(this.bikeShed.x,this.bikeShed.y - 35, "Your bike is at level: " + upgrades.bike, this.textConfig).setOrigin(.5,.5).setVisible(false);
+        this.bikeUpgrades.depth = 100;
         this.toolUpgrades = this.add.text(this.gardeningShed.x,this.gardeningShed.y -35, "Grab your tools?", this.textConfig).setOrigin(.5,.5).setVisible(false);
+        this.toolUpgrades.depth = 100;
 
         //establish controls for gameplay
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -227,6 +238,7 @@ class Hub extends Phaser.Scene {
         }
 
         this.player.update();
+        this.player.depth = this.player.y / 10;
         this.counter++;
         this.turnText.text = "Turns Remaining: " + this.turnsRemaining + "\nHoney: " + this.honey + "\nMoney: " + this.money;
     }

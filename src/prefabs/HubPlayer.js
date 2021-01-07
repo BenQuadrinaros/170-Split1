@@ -12,21 +12,21 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         if (keyLEFT.isDown){
             this.flipX = true;
             if (this.x > 0){
-                this.x -= 1;
+                this.x -= game.config.width / 800;
             }
         }
 
         if (keyRIGHT.isDown){
             this.flipX = false;
             if (this.x < config.width){
-                this.x += 1;
+                this.x += game.config.width / 800;
             }
         }
 
         if (keyUP.isDown){
             this.setFrame(1);
             if (this.y > 0){
-                this.y -= 1;
+                this.y -= game.config.height / 450;
             }
         }
         else { //Remove this once we have multiple frames
@@ -37,7 +37,7 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         if (keyDOWN.isDown){
             this.setFrame(0);
             if (this.y < config.height){
-                this.y += 1;
+                this.y += game.config.height / 450;
             }
         }
 

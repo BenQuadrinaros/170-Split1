@@ -4,7 +4,7 @@ let config = {
     type: Phaser.CANVAS,
     width: 960,
     height: 540,
-    scene: [Boot, Garden, Hub, Map, Menu, Play, Settings],
+    scene: [Boot, Hub, Garden, Map, Menu, Play, Settings],
     volume: .7
 };
 
