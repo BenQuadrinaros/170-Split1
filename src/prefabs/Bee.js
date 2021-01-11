@@ -294,8 +294,7 @@ class Bee extends Phaser.GameObjects.Sprite {
 			//*************************************************************************************
 	    }
 	    else if(this.scoutOrGather == 'BackToHive'){
-	    		let hiveVector = new Phaser.Math.Vector2(540, 420);
-				let distanceToHive = Math.abs(this.position.x - hiveVector.x) + Math.abs(this.position.y - hiveVector.y);
+	    		let hiveVector = new Phaser.Math.Vector2(8 * config.width / 10, config.height/3);
 
 				let directionToHive = new Phaser.Math.Vector2();
 				

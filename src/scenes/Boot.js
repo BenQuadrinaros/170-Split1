@@ -12,6 +12,6 @@ class Boot extends Phaser.Scene {
         }
 
         // go to Title scene
-        this.scene.start('gardenScene');
+        this.scene.start('hubScene');
     }
 }
