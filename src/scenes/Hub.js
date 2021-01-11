@@ -48,9 +48,14 @@ class Hub extends Phaser.Scene {
         this.load.image('bike','./assets/bike.png');
         this.load.image('bikeShed', './assets/tempBikeUpgrade.png');
         this.load.image('gardeningShed','./assets/tempGardeningSupplies.png');
+        this.load.image('dialogbox', './assets/img/dialogbox.png')
         this.load.spritesheet('player', './assets/bearFrontBack.png', {frameWidth:40, frameHeight:72, startFrame:0, endFrame:1});
 
         this.load.audio("hubMusic", "./assets/bear_full.mp3");
+        // load bitmap font
+        this.load.bitmapFont('gem_font', './assets/font/gem.png', './assets/font/gem.xml');
+        //load dialog
+        this.load.json('dialog', './assets/json/dialog.json');
     }
 
     create() {
@@ -174,6 +179,8 @@ class Hub extends Phaser.Scene {
                     this.fadeText("Your bees are happier. :)");
                     upgrades.bee += 1;
                     this.beeUpgrades.text = "Your bees are at level:" + upgrades.bee + "\nThe next upgrade will cost $" + upgradeCost;
+                    dialogueSection = 1;
+                    this.scene.launch('talkingScene')
                 } else if(this.money < upgradeCost){
                     this.fadeText("You do not have enough money");
                 } else {
@@ -198,6 +205,10 @@ class Hub extends Phaser.Scene {
                     this.fadeText("Your bike is sturdier. :)");
                     upgrades.bike += 1;
                     this.bikeUpgrades.text = "Your bike is at level:" + upgrades.bike;
+                    //launch dialog
+                    dialogueSection = 0;
+                    this.scene.launch('talkingScene')
+
                 } else {
                     this.fadeText("You are out of time today.\nMake your deliveries.");
                 }

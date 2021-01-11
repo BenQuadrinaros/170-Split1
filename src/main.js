@@ -4,7 +4,7 @@ let config = {
     type: Phaser.CANVAS,
     width: 960,
     height: 540,
-    scene: [Boot, Hub, Garden, Map, Menu, Play, Settings],
+    scene: [Boot, Hub, Garden, Map, Menu, Play, Settings, Talking],
     volume: .7
 };
 
@@ -15,4 +15,5 @@ let keyP, keyO, keyESCAPE, keyLEFT, keyRIGHT, keyDOWN, keyUP, keySPACE;
 
 let upgrades = {"bike": 0, "bee": 0, "tools": 0};
 let plants = [3, -1, 3, -1]; //-1 is unbought, 0 is dead, 0.5 and 1 are poor, 1.5 and 2 are good, 2.5 and 3 are great
-
+let cursors = null;
+let dialogueSection = 0;
