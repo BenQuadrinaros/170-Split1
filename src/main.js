@@ -5,7 +5,17 @@ let config = {
     width: 960,
     height: 540,
     scene: [Boot, Hub, Garden, Map, Menu, Play, Settings, Talking],
-    volume: .7
+    volume: .7,
+    physics: {
+        default: 'arcade',
+        arcade: {
+            debug: false,
+            gravity: {
+                x: 0,
+                y: 0
+            }
+        }
+    }
 };
 
 let game = new Phaser.Game(config);
