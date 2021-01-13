@@ -108,9 +108,9 @@ class Hub extends Phaser.Scene {
         this.fadeMessage = this.add.text(0,0, "", this.textConfig).setOrigin(.5,.5);
         this.fadeMessage.depth = 100;
         this.fadeMessage.setVisible(false);
-        this.beeUpgrades = this.add.text(this.bee.x,this.bee.y - 35, "Your bees are at level: " + upgrades.bee + "\nThe next upgrade will cost $" + (5*upgrades.bee +10),this.textConfig).setOrigin(.5,.5).setVisible(false);
+        this.beeUpgrades = this.add.text(this.bee.x,this.bee.y - 35, "You have " + upgrades.bee+1 + " beehive.\nThe next beehive will cost $" + (5*upgrades.bee +10),this.textConfig).setOrigin(.5,.5).setVisible(false);
         this.beeUpgrades.depth = 100;
-        this.bikeUpgrades = this.add.text(this.bikeShed.x,this.bikeShed.y - 35, "Your bike is at level: " + upgrades.bike, this.textConfig).setOrigin(.5,.5).setVisible(false);
+        this.bikeUpgrades = this.add.text(this.bikeShed.x,this.bikeShed.y - 35, "Your bike's durability: " + upgrades.bike, this.textConfig).setOrigin(.5,.5).setVisible(false);
         this.bikeUpgrades.depth = 100;
         this.toolUpgrades = this.add.text(this.gardeningShed.x,this.gardeningShed.y -35, "Grab your tools?", this.textConfig).setOrigin(.5,.5).setVisible(false);
         this.toolUpgrades.depth = 100;
@@ -178,7 +178,7 @@ class Hub extends Phaser.Scene {
                     this.money -= upgradeCost;
                     this.fadeText("Your bees are happier. :)");
                     upgrades.bee += 1;
-                    this.beeUpgrades.text = "Your bees are at level:" + upgrades.bee + "\nThe next upgrade will cost $" + upgradeCost;
+                    this.beeUpgrades.text = "You have " + upgrades.bee+1 + " beehive.\nThe next beehive will cost $" + upgradeCost;
                     dialogueSection = 1;
                     this.scene.launch('talkingScene')
                 } else if(this.money < upgradeCost){
@@ -204,7 +204,7 @@ class Hub extends Phaser.Scene {
                     this.turnsRemaining -= 1;
                     this.fadeText("Your bike is sturdier. :)");
                     upgrades.bike += 1;
-                    this.bikeUpgrades.text = "Your bike is at level:" + upgrades.bike;
+                    this.bikeUpgrades.text = "Your bike's durability: " + upgrades.bike;
                     //launch dialog
                     dialogueSection = 0;
                     this.scene.launch('talkingScene')
