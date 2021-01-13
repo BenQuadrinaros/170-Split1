@@ -16,6 +16,7 @@ class Play extends Phaser.Scene {
         //load images
         this.load.image("Player", "./assets/bearOnBike.png");
         this.load.image("Road", "./assets/roadFullEX-02.png");
+        this.load.image("Obstacle_1", './assets/playerMapIcon.png');
 
         //load audio
         let audioRoulette = ["BackgroundMusic.wav", "castle_theme_loop.mp3", "happy_thing_that_i_got_bored_with.mp3", "thing.mp3"];
@@ -78,6 +79,14 @@ class Play extends Phaser.Scene {
         this.music.volume = config.volume;
         this.music.loop = true;
         this.music.play();
+        
+        //create obstacles
+        this.obstacles = this.add.group({
+            runChildUpdate: true
+        });
+        this.createObstacles();
+
+
     }
 
     update() {
@@ -113,6 +122,9 @@ class Play extends Phaser.Scene {
             this.distanceTraveled += 1;
             this.distanceText.text = "Remaining distance: " + (this.distanceToTravel - this.distanceTraveled);
 
+            //check for collusion
+            this.physics.world.collide(this.player, this.obstacles, this.collideWithObstacle, null, this);
+
             this.player.update();
             this.player.depth = this.player.y / 10;
 
@@ -131,5 +143,22 @@ class Play extends Phaser.Scene {
             }
         }
         
+    }
+
+
+    //Function to create all obstacles in one place, will need to likely create some way
+    //to define a map of sorts as this only creates one static set of obstacles.
+    //I dont know wtf the y postions of the lanes are.... help
+    createObstacles(){
+        this.obstacles.add(new Obstacle(this, 1300, (2*config.width/5)+(config.width/20), // lane2?
+            "Obstacle_1", 0 , 2.5).setOrigin(.5,.5));
+
+        this.obstacles.add(new Obstacle(this, 1100, (1*config.width/5)+(config.width/20), // lane2?
+            "Obstacle_1", 0 , 1).setOrigin(.5,.5))
+
+    }
+    //function that is called when the player collides with an obstacle.
+    collideWithObstacle(player, obstacle){
+        console.log("Ouch i hit an obstacle.")
     }
 }
