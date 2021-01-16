@@ -16,26 +16,6 @@ class Map extends Phaser.Scene {
         console.log("Level info acquired")
     }
 
-    preload() {
-        //load audio files
-        this.load.audio("mapMusic", "./assets/honeybear.wav");
-
-        //load images
-        this.load.image('TownMap', './assets/WhiteBackground.png');
-        this.load.spritesheet('Beehive','./assets/HoneyBearSampleHive.png',{frameWidth: 88, frameHeight: 108, startFrame:0 , endFrame: 1});
-        this.load.spritesheet('Work','./assets/HoneyBearSampleWork.png',{frameWidth: 69, frameHeight: 87, startFrame:0 , endFrame: 1});
-        this.load.spritesheet('House','./assets/HoneyBearHouseSample1.png',{frameWidth: 80, frameHeight: 80, startFrame:0 , endFrame: 1});
-        this.load.spritesheet('Path1_2','./assets/Road1_2.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
-        this.load.spritesheet('Path2_5','./assets/Road2_5.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
-        this.load.spritesheet('Path3_4','./assets/Road3_4.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
-        this.load.spritesheet('Path4_5','./assets/Road4_5.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
-        this.load.spritesheet('PathBees_Work','./assets/RoadBees_Work.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
-        this.load.spritesheet('PathWork_1','./assets/RoadWork_1.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
-        this.load.spritesheet('PathWork_2','./assets/RoadWork_2.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
-        this.load.spritesheet('PathWork_3','./assets/RoadWork_3.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
-        this.load.spritesheet('PathWork_4','./assets/RoadWork_4.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
-        this.load.image('PlayerIcon', './assets/playerMapIcon.png');
-    }
     
     create() {
 

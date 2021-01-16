@@ -7,21 +7,7 @@ class Settings extends Phaser.Scene {
     }
 
     preload() {
-        //load images/tile sprite
-        this.load.spritesheet('Settings', './assets/SettingsInitial.png', {
-            frameWidth: 158,
-            frameHeight: 50,
-            startFrame: 0,
-            endFrame: 1
-        });
-        this.load.spritesheet('Back', './assets/BackInitial.png', {
-            frameWidth: 114,
-            frameHeight: 36,
-            startFrame: 0,
-            endFrame: 1
-        });
         this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
-        //load audio files
     }
 
     create() {

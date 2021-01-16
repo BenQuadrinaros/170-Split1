@@ -40,23 +40,7 @@ class Hub extends Phaser.Scene {
         }
     }
 
-    // Load all needed assets for main hub scene. Player/walls/npcs
-    preload() {
-        //this.load.image("player", './assets/bearFrontBack.png');
-        this.load.image('background', './assets/garden_base.png');
-        this.load.image('bee','./assets/hubBee.jpg');
-        this.load.image('bike','./assets/bike.png');
-        this.load.image('bikeShed', './assets/tempBikeUpgrade.png');
-        this.load.image('gardeningShed','./assets/tempGardeningSupplies.png');
-        this.load.image('dialogbox', './assets/img/dialogbox.png')
-        this.load.spritesheet('player', './assets/bearFrontBack.png', {frameWidth:40, frameHeight:72, startFrame:0, endFrame:1});
 
-        this.load.audio("hubMusic", "./assets/bear_full.mp3");
-        // load bitmap font
-        this.load.bitmapFont('gem_font', './assets/font/gem.png', './assets/font/gem.xml');
-        //load dialog
-        this.load.json('dialog', './assets/json/dialog.json');
-    }
 
     create() {
         //Initialize images

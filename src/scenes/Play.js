@@ -13,15 +13,10 @@ class Play extends Phaser.Scene {
     }
 
     preload() {
-        //load images
-        this.load.image("Player", "./assets/bearOnBike.png");
-        this.load.image("Road", "./assets/roadFullEX-02.png");
-        this.load.image("Obstacle_1", './assets/playerMapIcon.png');
-
         //load audio
         let audioRoulette = ["BackgroundMusic.wav", "castle_theme_loop.mp3", "happy_thing_that_i_got_bored_with.mp3", "thing.mp3"];
         let chance = Phaser.Math.Between(0, audioRoulette.length-1);
-        this.load.audio("music", "./assets/"+audioRoulette[chance]);
+        this.load.audio("music", "./assets/audio/music/"+audioRoulette[chance]);
     }
 
     create() {

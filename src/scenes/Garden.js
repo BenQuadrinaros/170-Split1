@@ -11,16 +11,6 @@ class Garden extends Phaser.Scene {
 
     }
 
-    preload() {
-        //Load images and spritesheets
-        this.load.image("gardenBackground", "./assets/sampleGarden-01.png");
-        this.load.image("exit", "./assets/LeftArrowGREEN.png");
-        this.load.image("dirt", "./assets/dirt-04.png");
-        this.load.image("hive", "./assets/hubHive.png");
-        this.load.spritesheet('flower', './assets/flowerStages.png', { frameWidth: 407, frameHeight: 456, startFrame: 0, endFrame: 4 });
-        this.load.image("bearBee", "./assets/bearBee.png");
-
-    }
 
     create() {
         //Setting controls
