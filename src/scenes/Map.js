@@ -218,10 +218,10 @@ class Map extends Phaser.Scene {
     isValidPlay(selectedLoc){
         if(this.isValidPath(selectedLoc)){
             this.music.stop();
-            if(selectedLoc == 0) { this.scene.start('playScene', { song:songLibrary[3], destination:0, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand }); }
-            else if(selectedLoc == 2) { this.scene.start('playScene', { song:songLibrary[1], destination:2, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand}); }
-            else if(selectedLoc == 3) { this.scene.start('playScene', {song:songLibrary[2], destination:3, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand }); }
-            else { this.scene.start('playScene', { song:songLibrary[0], destination:selectedLoc, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand}); }
+            if(selectedLoc == 0) { this.scene.start('playScene', { destination:0, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand }); }
+            else if(selectedLoc == 2) { this.scene.start('playScene', { destination:2, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand}); }
+            else if(selectedLoc == 3) { this.scene.start('playScene', { destination:3, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand }); }
+            else { this.scene.start('playScene', { destination:selectedLoc, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand}); }
             
         }
     }
