@@ -3,15 +3,7 @@ class Menu extends Phaser.Scene {
         super("menuScene");
     }
 
-    preload() {
-        //load audio files
-        this.load.audio("menuMusic", "./assets/honeybear_2.wav");
 
-        //load images
-        this.load.image('TitleScreen', './assets/TempTitle.png');
-        this.load.spritesheet('Play','./assets/PlayInitial.png',{frameWidth: 130, frameHeight: 66, startFrame:0 , endFrame: 1});
-        this.load.spritesheet('Settings','./assets/SettingsInitial.png',{frameWidth: 158, frameHeight: 50, startFrame:0 , endFrame: 1});
-    }
     
     create() {
 

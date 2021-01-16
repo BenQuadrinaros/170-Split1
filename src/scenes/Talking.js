@@ -39,7 +39,15 @@ class Talking extends Phaser.Scene {
         this.OFFSCREEN_Y = 1000;
     }
 
+    init(data){
+        console.log("Previous Scene: " + data.previousScene);
+        this.prevScene = data.previousScene;
+    }
+
     create() {
+        //Create escape key for pausing
+        keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+
         // parse json from JSON file
         this.dialog = this.cache.json.get('dialog');
         //console.log(this.dialog);
@@ -66,6 +74,14 @@ class Talking extends Phaser.Scene {
     }
 
     update() {
+        //Pause Game
+        if(Phaser.Input.Keyboard.JustDown(keyESCAPE)){
+            console.log("Pausing Game");
+            //isPaused = true;
+            this.scene.pause();
+            this.scene.launch("pauseScene", {previousScene:"talkingScene"});
+        }
+        
         // check for spacebar press
         if(Phaser.Input.Keyboard.JustDown(cursors.space) && !this.dialogTyping) {
             // trigger json
@@ -112,8 +128,10 @@ class Talking extends Phaser.Scene {
                 });
             }
             // make text box invisible
-            this.dialogbox.visible = false;
-            this.dialogConvo = 0;
+            //this.dialogbox.visible = false;
+            //this.dialogConvo = 0;
+            this.scene.resume(this.prevScene);
+            this.scene.stop();
 
         } else {
             // if not, set current speaker

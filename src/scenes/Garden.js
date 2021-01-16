@@ -11,16 +11,6 @@ class Garden extends Phaser.Scene {
 
     }
 
-    preload() {
-        //Load images and spritesheets
-        this.load.image("gardenBackground", "./assets/sampleGarden-01.png");
-        this.load.image("exit", "./assets/LeftArrowGREEN.png");
-        this.load.image("dirt", "./assets/dirt-04.png");
-        this.load.image("hive", "./assets/hubHive.png");
-        this.load.spritesheet('flower', './assets/flowerStages.png', { frameWidth: 407, frameHeight: 456, startFrame: 0, endFrame: 4 });
-        this.load.image("bearBee", "./assets/bearBee.png");
-
-    }
 
     create() {
         //Setting controls
@@ -29,7 +19,7 @@ class Garden extends Phaser.Scene {
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
-        keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESCAPE);
+        keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         //Create Images
@@ -137,6 +127,14 @@ class Garden extends Phaser.Scene {
     }
 
     update() {
+        //Pause Game
+        if(Phaser.Input.Keyboard.JustDown(keyESCAPE)){
+            console.log("Pausing Game");
+            //isPaused = true;
+            this.scene.pause();
+            this.scene.launch("pauseScene", {previousScene:"gardenScene"});
+        }
+
         //Check if the player is close to any of the flowers
         this.checkNearbyFlower(this.dirt0, 0);
         this.checkNearbyFlower(this.dirt1, 1);

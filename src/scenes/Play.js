@@ -13,15 +13,10 @@ class Play extends Phaser.Scene {
     }
 
     preload() {
-        //load images
-        this.load.image("Player", "./assets/bearOnBike.png");
-        this.load.image("Road", "./assets/roadFullEX-02.png");
-        this.load.image("Obstacle_1", './assets/playerMapIcon.png');
-
         //load audio
         let audioRoulette = ["BackgroundMusic.wav", "castle_theme_loop.mp3", "happy_thing_that_i_got_bored_with.mp3", "thing.mp3"];
         let chance = Phaser.Math.Between(0, audioRoulette.length-1);
-        this.load.audio("music", "./assets/"+audioRoulette[chance]);
+        this.load.audio("music", "./assets/audio/music/"+audioRoulette[chance]);
     }
 
     create() {
@@ -73,6 +68,7 @@ class Play extends Phaser.Scene {
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
+        keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
         //Start Up Music
         this.music = this.sound.add("music");
@@ -90,6 +86,14 @@ class Play extends Phaser.Scene {
     }
 
     update() {
+        //Pause Game
+        if(Phaser.Input.Keyboard.JustDown(keyESCAPE)){
+            console.log("Pausing Game");
+            //isPaused = true;
+            this.scene.pause();
+            this.scene.launch("pauseScene", {previousScene:"playScene"});
+        }
+
         //Possible Game States
         if (this.gameOver) { //Game is over
 
