@@ -68,6 +68,7 @@ class Play extends Phaser.Scene {
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
+        keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
         //Start Up Music
         this.music = this.sound.add("music");
@@ -85,6 +86,14 @@ class Play extends Phaser.Scene {
     }
 
     update() {
+        //Pause Game
+        if(Phaser.Input.Keyboard.JustDown(keyESCAPE)){
+            console.log("Pausing Game");
+            //isPaused = true;
+            this.scene.pause();
+            this.scene.launch("pauseScene", {previousScene:"playScene"});
+        }
+
         //Possible Game States
         if (this.gameOver) { //Game is over
 

@@ -25,6 +25,7 @@ class Map extends Phaser.Scene {
         //Setting controls
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
         //Setting Background
         this.menu = this.add.image(centerX, centerY, 'TownMap').setOrigin(0.5);
@@ -175,6 +176,13 @@ class Map extends Phaser.Scene {
     }
 
     update() {
+        //Pause Game
+        if(Phaser.Input.Keyboard.JustDown(keyESCAPE)){
+            console.log("Pausing Game");
+            //isPaused = true;
+            this.scene.pause();
+            this.scene.launch("pauseScene", {previousScene:"mapScene"});
+        }
     }
 
     //Checks whether there is a path connecting the selected location and the player's current location

@@ -106,7 +106,7 @@ class Hub extends Phaser.Scene {
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
         keyO = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.O);
-        keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESCAPE);
+        keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         //background music for the hub
@@ -114,9 +114,25 @@ class Hub extends Phaser.Scene {
         this.music.volume = config.volume;
         this.music.loop = true;
         this.music.play();
+
+        this.events.on("resume", () => {
+            console.log("ReenableEsc called");
+            keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        });
     }
 
     update() {
+        //Pause Game
+        if(Phaser.Input.Keyboard.JustDown(keyESCAPE)){
+            console.log("Pausing Game");
+            //isPaused = true;
+            this.scene.pause();
+            this.scene.launch("pauseScene", {previousScene:"hubScene"});
+        }
+        else{
+            keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        }
+
         // Quick day advancement for testing purposes
         if (Phaser.Input.Keyboard.JustDown(keyP)) {
             this.music.stop();
@@ -164,7 +180,8 @@ class Hub extends Phaser.Scene {
                     upgrades.bee += 1;
                     this.beeUpgrades.text = "You have " + upgrades.bee+1 + " beehive.\nThe next beehive will cost $" + upgradeCost;
                     dialogueSection = 1;
-                    this.scene.launch('talkingScene')
+                    this.scene.pause();
+                    this.scene.launch('talkingScene', {previousScene:"hubScene"});
                 } else if(this.money < upgradeCost){
                     this.fadeText("You do not have enough money");
                 } else {
@@ -186,13 +203,10 @@ class Hub extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(keySPACE)){
                 if (this.turnsRemaining > 0) {
                     this.turnsRemaining -= 1;
-                    this.fadeText("Your bike is sturdier. :)");
-                    upgrades.bike += 1;
                     this.bikeUpgrades.text = "Your bike's durability: " + upgrades.bike;
                     //launch dialog
                     dialogueSection = 0;
-                    this.scene.launch('talkingScene')
-
+                    this.scene.launch('talkingScene');
                 } else {
                     this.fadeText("You are out of time today.\nMake your deliveries.");
                 }
@@ -257,5 +271,10 @@ class Hub extends Phaser.Scene {
             loop: false,
             callbackScope: this
         });
+    }
+
+    reenableEsc(){
+        console.log("ReenableEsc called");
+        keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     }
 }
