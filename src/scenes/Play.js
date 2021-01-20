@@ -113,6 +113,14 @@ class Play extends Phaser.Scene {
             }
             //REMOVE IN FINAL VERSION
 
+            //End Scene
+            this.music.stop();
+            this.cache.audio.remove("music");
+            //ADD HERE
+            //COMPENSATE FOR MISSING HONEY
+            this.scene.start('mapScene', { arrivingAt:this.destination, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemandData });
+
+
         } else if (this.paused) { //Game is paused
             if (Phaser.Input.Keyboard.JustDown(keyP)) {
                 this.pauseText.alpha = 0;
@@ -139,12 +147,19 @@ class Play extends Phaser.Scene {
             }
             
             if (this.distanceTraveled >= this.distanceToTravel) {
-                this.music.stop();
-                this.cache.audio.remove("music");
-                //ADD HERE
-                //COMPENSATE FOR MISSING HONEY
-                this.scene.start('mapScene', { arrivingAt:this.destination, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemandData });
+                //if not heading home, have delivery dialog
+                if(this.destination != 1){
+                    //Start Dialogue
+                    dialogueSection = 2;
+                    this.scene.pause();
+                    this.scene.launch('talkingScene', {previousScene:"playScene"});
+                }
+
+                //Let scene end
+                this.gameOver = true;
             }
+
+
         }
         
     }

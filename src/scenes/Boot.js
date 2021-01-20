@@ -37,7 +37,7 @@ class Boot extends Phaser.Scene {
             this.load.image("Road", "./assets/sprites/background/roadFullEX-02.png");
             this.load.image("Obstacle_1", './assets/sprites/character/playerMapIcon.png');
             //For pauseScene
-            this.load.image("WhiteBox", "./assets/sprites/background/white.png");
+            this.load.image("TempPause", "./assets/sprites/background/tempPause.png");
 
 
         //Load Spritesheets

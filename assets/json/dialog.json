@@ -4,11 +4,6 @@
 			"speaker" : "bear",
 			"dialog" : "Now I hopefully won't fall off in the middle of a delivery...",
 			"newSpeaker" : "true"
-		},
-		{
-			"speaker" : "bee",
-			"dialog" : "bzz.....",
-			"newSpeaker" : "true"
 		}
 
 	],
@@ -30,6 +25,29 @@
 			"newSpeaker" : "false"
 		}
 
+	],
+
+	[
+		{
+			"speaker" : "bear",
+			"dialog" : "I bear-lieve that you ordered some honey?",
+			"newSpeaker" : "true"
+		},
+		{
+			"speaker" : "bee",
+			"dialog" : "Of course, good bear",
+			"newSpeaker" : "true"
+		},
+		{
+			"speaker" : "bee",
+			"dialog" : "Thank you for this good food!",
+			"newSpeaker" : "false"
+		},
+		{
+			"speaker" : "bear",
+			"dialog" : "Happy to help!",
+			"newSpeaker" : "true"
+		}
 	]
 
 ]

@@ -60,8 +60,8 @@ class Talking extends Phaser.Scene {
         this.nextText = this.add.bitmapText(this.NEXT_X, this.NEXT_Y, this.DBOX_FONT, '', this.TEXT_SIZE);
 
         // // ready the character json images offscreen
-        this.bear = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'player').setOrigin(0, 1);
-        this.bee = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'bee').setOrigin(0, 1).setScale(.01,.01);
+        this.bear = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'player').setOrigin(0, 1).setScale(2);
+        this.bee = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'bee').setOrigin(0, 1).setScale(.02,.02);
         // this.neptune = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'neptune').setOrigin(0, 1);
         // this.jove = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'jove').setOrigin(0, 1);
 

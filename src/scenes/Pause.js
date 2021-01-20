@@ -13,7 +13,7 @@ class Pause extends Phaser.Scene {
         this.keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
         //Create a pause menu image
-        this.pauseMenu = this.add.image(config.width/2, config.height/2, "WhiteBox").setOrigin(0.5).setScale(4);
+        this.pauseMenu = this.add.image(config.width/2, config.height/2, "TempPause").setOrigin(0.5).setScale(0.75);
     }
 
     update(){

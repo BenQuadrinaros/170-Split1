@@ -206,8 +206,7 @@ class Hub extends Phaser.Scene {
                     this.bikeUpgrades.text = "Your bike's durability: " + upgrades.bike;
                     //launch dialog
                     dialogueSection = 0;
-                    this.scene.launch('talkingScene');
-                } else {
+                    this.scene.launch('talkingScene', {previousScene:"hubScene"});                } else {
                     this.fadeText("You are out of time today.\nMake your deliveries.");
                 }
             }
