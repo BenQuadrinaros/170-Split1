@@ -10,8 +10,6 @@ class Map extends Phaser.Scene {
         //As a -1 indicates that it just came from the hub, this cleanses that
         this.toHub = data.arrivingAt - 1;
         this.justArrivedAt = Math.abs(data.arrivingAt);
-        this.honey = data.currentHoney;
-        this.money = data.currentMoney;
         this.honeyDemand = data.honeyDemand;
         console.log("Level info acquired")
     }
@@ -43,7 +41,7 @@ class Map extends Phaser.Scene {
         };
 
         //Show current player stats
-        this.playerStats = this.add.text(centerX, 60, "Honey: "+this.honey+"\nMoney: "+this.money, this.scoreConfig).setOrigin(.5,.5);
+        this.playerStats = this.add.text(centerX, 60, "Honey: "+playerVariables.honey+"\nMoney: "+playerVariables.money, this.scoreConfig).setOrigin(.5,.5);
 
 
         //Creating images for paths
@@ -138,15 +136,15 @@ class Map extends Phaser.Scene {
         //If the current location has demand and you have sufficient supply, make the exchange
         if(this.honeyDemand[0][this.currentPlayerLoc] <= this.honey){
             //Exchange honey
-            this.honey -= this.honeyDemand[0][this.currentPlayerLoc];
+            playerVariables.honey -= this.honeyDemand[0][this.currentPlayerLoc];
             this.honeyDemand[0][this.currentPlayerLoc] = 0;
             //Exchange money
-            this.money += this.honeyDemand[1][this.currentPlayerLoc];
+            playerVariables.money += this.honeyDemand[1][this.currentPlayerLoc];
             this.honeyDemand[1][this.currentPlayerLoc] = 0;
         }
 
         //Update the player's stats on the screen
-        this.playerStats.text = "Honey: "+this.honey+"\nMoney: "+this.money;
+        this.playerStats.text = "Honey: "+playerVariables.honey+"\nMoney: "+playerVariables.money;
 
         //Show the demand via text
         let supplyDemandText = [this.locations.length];
@@ -171,7 +169,7 @@ class Map extends Phaser.Scene {
         if(this.toHub == 0){
             console.log("At hub")
             this.music.stop();
-            this.scene.start("hubScene", { currentHoney:this.honey, currentMoney:this.money });
+            this.scene.start("hubScene");
         }
     }
 
@@ -206,10 +204,10 @@ class Map extends Phaser.Scene {
     isValidPlay(selectedLoc){
         if(this.isValidPath(selectedLoc)){
             this.music.stop();
-            if(selectedLoc == 0) { this.scene.start('playScene', { destination:0, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand }); }
-            else if(selectedLoc == 2) { this.scene.start('playScene', { destination:2, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand}); }
-            else if(selectedLoc == 3) { this.scene.start('playScene', { destination:3, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand }); }
-            else { this.scene.start('playScene', { destination:selectedLoc, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemand}); }
+            if(selectedLoc == 0) { this.scene.start('playScene', { destination:0, honeyDemand:this.honeyDemand }); }
+            else if(selectedLoc == 2) { this.scene.start('playScene', { destination:2, honeyDemand:this.honeyDemand}); }
+            else if(selectedLoc == 3) { this.scene.start('playScene', { destination:3, honeyDemand:this.honeyDemand }); }
+            else { this.scene.start('playScene', { destination:selectedLoc, honeyDemand:this.honeyDemand}); }
             
         }
     }

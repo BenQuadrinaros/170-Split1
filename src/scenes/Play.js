@@ -5,8 +5,6 @@ class Play extends Phaser.Scene {
 
     init(data) {
         this.destination = data.destination;
-        this.honey = data.currentHoney;
-        this.money = data.currentMoney;
         this.honeyDemandData = data.honeyDemand;
         this.honeyDemand = data.honeyDemand[0][this.destination];
         this.remainHoney = this.honeyDemand;
@@ -113,7 +111,7 @@ class Play extends Phaser.Scene {
                 this.cache.audio.remove("music");
                 //ADD HERE
                 //COMPENSATE FOR MISSING HONEY
-                this.scene.start('mapScene', { arrivingAt:this.destination, currentHoney:this.honey, currentMoney:this.money, honeyDemand:this.honeyDemandData });
+                this.scene.start('mapScene', { arrivingAt:this.destination, honeyDemand:this.honeyDemandData });
             }
             //ALTER FOR FINAL VERSION
 
@@ -166,6 +164,7 @@ class Play extends Phaser.Scene {
         if(this.player.alpha == 1) {
             console.log("Ouch i hit an obstacle.");
             this.remainHoney -= 1;
+            playerVariables.honey -= 1;
             this.remainHoneyText.text = "Remaining jars: " + this.remainHoney;
             if(this.remainHoney <= 0) {
                 //play animation or something
