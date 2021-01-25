@@ -1,10 +1,11 @@
+
 //Ben Rowland
 
 let config = {
     type: Phaser.CANVAS,
     width: 960,
     height: 540,
-    scene: [Boot, Hub, Garden, Map, Market, Play, Menu, Settings, Talking, Pause, OldRhythm],
+    scene: [Boot, Hub, Garden, Map, Market, Play, Menu, Settings, Talking, Pause, OldRhythm, Shop],
     volume: .7,
     physics: {
         default: 'arcade',
