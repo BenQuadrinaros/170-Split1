@@ -109,6 +109,16 @@ class Hub extends Phaser.Scene {
             console.log("ReenableEsc called");
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         });
+        
+        //Have player move towards the mouse on pointer down
+        this.input.on('pointerdown', function (pointer) {
+
+            if (pointer.isDown)
+            {
+                this.player.moveTo(pointer.x, pointer.y);
+            }
+    
+        }, this);
     }
 
     update() {
