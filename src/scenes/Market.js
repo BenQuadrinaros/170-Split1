@@ -8,7 +8,7 @@ class Market extends Phaser.Scene {
     create() {
         this.cameras.main.setBackgroundColor(0x000000);
         //REPLACE with actual background
-        //this.background = this.add.image(config.width / 2, config.height / 2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5);
+        this.background = this.add.image(config.width / 2, config.height / 2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5);
 
         //bike propped up on stand
         this.bike = this.add.image(game.config.width / 6, 5 * game.config.height / 10, 'bike');
@@ -89,7 +89,8 @@ class Market extends Phaser.Scene {
 
     update() {
         //update text UIs
-        this.moneyText.text = "Money: " + playerVariables.money;
+        this.moneyText.text = "Money: $" + Math.floor(playerVariables.money) + "." + Math.floor(playerVariables.money * 10) % 10 + 
+            Math.floor(playerVariables.money * 100) % 10;
         this.honeyText.text = "Honey: " + playerVariables.honey;
         let currTime = Math.floor((this.timer.delay - this.timer.getElapsed()) / 1000);
         this.timeText.text = "Time Remaining: " + Math.floor(currTime / 60) + ":" + Math.floor((currTime % 60) / 10) + currTime % 10;
