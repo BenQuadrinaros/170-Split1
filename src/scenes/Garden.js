@@ -118,6 +118,16 @@ class Garden extends Phaser.Scene {
             flow0Text, flow1Text, flow2Text, flow3Text
         ];
 
+        //Have player move towards the mouse on pointer down
+        this.input.on('pointerdown', function (pointer) {
+
+            if (pointer.isDown)
+            {
+                this.player.moveTo(pointer.x, pointer.y);
+            }
+    
+        }, this);
+
     }
 
     update() {
