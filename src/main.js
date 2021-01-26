@@ -1,10 +1,11 @@
+
 //Ben Rowland
 
 let config = {
     type: Phaser.CANVAS,
     width: 960,
     height: 540,
-    scene: [Boot, Hub, Garden, Map, Play, Menu, Settings, Talking, Pause, OldRhythm],
+    scene: [Boot, Hub, Garden, Map, Market, Play, Menu, Settings, Talking, Pause, OldRhythm, Shop],
     volume: .7,
     physics: {
         default: 'arcade',
@@ -28,3 +29,11 @@ let plants = [3, -1, 3, -1]; //-1 is unbought, 0 is dead, 0.5 and 1 are poor, 1.
 let cursors = null;
 let dialogueSection = 0;
 //let isPaused = false;
+
+//Player variables so we dont have to pass them around forever
+let playerVariables = {
+    money: 10.00,
+    honey: 10,
+    actions: 3,
+    inventory: []
+}

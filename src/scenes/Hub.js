@@ -5,34 +5,24 @@ class Hub extends Phaser.Scene {
 
     init(data){
         //track the current amounts of honey and money that the player has
-        this.honey = data.currentHoney;
-        this.money = data.currentMoney;
         this.turnsRemaining = data.turnsRemaining;
         this.wasVisiting = data.wasVisiting;
-        //if any are undefined, give it the default value
-        if(typeof this.honey == 'undefined'){
-            console.log("Honey was undefined");
-            this.honey = 10;
-        } else if(typeof this.turnsRemaining != 'undefined'){
+        if(typeof this.turnsRemaining != 'undefined'){
             //Dont make honey if the player was just visiting another part of the hub
             console.log("Player was visiting " + this.wasVisiting);
         } else {
             //if you are returning to the hub, get made honey based off of bee upgrades
-            console.log("Welcome back. Honey was " + this.honey);
-            this.honey += 2 + upgrades['bee'];
+            console.log("Welcome back. Honey was " + playerVariables.honey);
+            playerVariables.honey += 2 + upgrades['bee'];
             for(let i = 0; i < plants.length; ++i){
                 if(plants[i] > 1){
-                    this.honey += 1;
+                    playerVariables.honey += 1;
                 }
                 if(plants[i] > 0)
                 plants[i] -= 0.5;
             }
             console.log(plants);
-            console.log("Honey increases to " + this.honey);
-        }
-        if(typeof this.money == 'undefined'){
-            console.log("Money was undefined");
-            this.money = 10;
+            console.log("Honey increases to " + playerVariables.honey);
         }
         if(typeof this.turnsRemaining == 'undefined'){
             console.log("Turns remaining was undefined");
@@ -96,7 +86,7 @@ class Hub extends Phaser.Scene {
         this.beeUpgrades.depth = 100;
         this.bikeUpgrades = this.add.text(this.bikeShed.x,this.bikeShed.y - 35, "Your bike's durability: " + upgrades.bike, this.textConfig).setOrigin(.5,.5).setVisible(false);
         this.bikeUpgrades.depth = 100;
-        this.toolUpgrades = this.add.text(this.gardeningShed.x,this.gardeningShed.y -35, "Grab your tools?", this.textConfig).setOrigin(.5,.5).setVisible(false);
+        this.toolUpgrades = this.add.text(this.gardeningShed.x,this.gardeningShed.y -35, "Grab your tools and\nhead out to the garden?", this.textConfig).setOrigin(.5,.5).setVisible(false);
         this.toolUpgrades.depth = 100;
 
         //establish controls for gameplay
@@ -136,10 +126,10 @@ class Hub extends Phaser.Scene {
         // Quick day advancement for testing purposes
         if (Phaser.Input.Keyboard.JustDown(keyP)) {
             this.music.stop();
-            this.scene.start("hubScene", { currentHoney:this.honey, currentMoney:this.money });
+            this.scene.start("hubScene");
         }
         if(Phaser.Input.Keyboard.JustDown(keyO)) {
-            this.money += 10;
+            playerVariables.money += 10;
         }
 
         if (this.counter % 60 === 0){
@@ -155,7 +145,7 @@ class Hub extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(keySPACE)){
                 //-1 to indicate that it just left the hub
                 this.music.stop();
-                this.scene.start('mapScene', { arrivingAt:-1, currentHoney:this.honey, currentMoney:this.money })
+                this.scene.start('mapScene', { arrivingAt:-1 })
             }
         } else {
 
@@ -175,14 +165,14 @@ class Hub extends Phaser.Scene {
                 let upgradeCost = 5*upgrades.bee + 10;
                 if(this.turnsRemaining > 0 && this.money >= upgradeCost) {
                     this.turnsRemaining -= 1;
-                    this.money -= upgradeCost;
+                    playerVariables.money -= upgradeCost;
                     this.fadeText("Your bees are happier. :)");
                     upgrades.bee += 1;
                     this.beeUpgrades.text = "You have " + upgrades.bee+1 + " beehive.\nThe next beehive will cost $" + upgradeCost;
                     dialogueSection = 1;
                     this.scene.pause();
                     this.scene.launch('talkingScene', {previousScene:"hubScene"});
-                } else if(this.money < upgradeCost){
+                } else if(playerVariables.money < upgradeCost){
                     this.fadeText("You do not have enough money");
                 } else {
                     this.fadeText("You are out of time today.\nMake your deliveries.");
@@ -226,7 +216,7 @@ class Hub extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 if (this.turnsRemaining > 0) {
                     this.music.stop();
-                    this.scene.start('gardenScene', { turnsRemaining:this.turnsRemaining, currentHoney:this.honey, currentMoney:this.money });
+                    this.scene.start('gardenScene', { turnsRemaining:this.turnsRemaining });
 
                 } else {
                     this.fadeText("You are out of time today.\nMake your deliveries.");
@@ -248,7 +238,8 @@ class Hub extends Phaser.Scene {
         this.player.update();
         this.player.depth = this.player.y / 10;
         this.counter++;
-        this.turnText.text = "Turns Remaining: " + this.turnsRemaining + "\nHoney: " + this.honey + "\nMoney: " + this.money;
+        this.turnText.text = "Turns Remaining: " + this.turnsRemaining + "\nHoney: " + playerVariables.honey + 
+            "\nMoney: " + playerVariables.money;
     }
 
     fadeText(message) {

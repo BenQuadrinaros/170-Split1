@@ -3,15 +3,6 @@ class Garden extends Phaser.Scene {
         super("gardenScene");
     }
 
-    init(data) {
-        this.honey = data.currentHoney;
-        this.money = data.currentMoney;
-        this.turnsRemaining = data.turnsRemaining;
-        //if any are undefined, give a default value
-
-    }
-
-
     create() {
         //Setting controls
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -106,13 +97,16 @@ class Garden extends Phaser.Scene {
         };
 
         //Create Text
-        this.turnText = this.add.text(game.config.width / 2, game.config.height / 12, "Turns Remaining: ", this.textConfig).setOrigin(.5);
+        this.turnText = this.add.text(game.config.width / 2, game.config.height / 12, "Turns Remaining: ",
+            this.textConfig).setOrigin(.5);
         this.turnText.depth = 100;
         this.fadeMessage = this.add.text(this.player.x, this.player.y, "Nada", this.textConfig).setOrigin(0.5).setVisible(false);
         this.fadeMessage.depth = 100;
-        this.exitText = this.add.text(this.exit.x, this.exit.y, "Press SPACE to return to the cave", this.textConfig).setOrigin(0.5).setVisible(false);
+        this.exitText = this.add.text(this.exit.x, this.exit.y, "Press SPACE to return to the cave", 
+            this.textConfig).setOrigin(0.5).setVisible(false);
         this.exitText.depth = 101;
-        let flow0Text = this.add.text(this.dirt0.x, this.dirt0.y, "Press SPACE to interact", this.textConfig).setOrigin(0.5).setVisible(false);
+        let flow0Text = this.add.text(this.dirt0.x, this.dirt0.y, "Press SPACE to interact",
+            this.textConfig).setOrigin(0.5).setVisible(false);
         flow0Text.depth = 100;
         let flow1Text = this.add.text(this.dirt1.x, this.dirt1.y, "Press SPACE to interact", this.textConfig).setOrigin(0.5).setVisible(false);
         flow1Text.depth = 100;
@@ -170,7 +164,7 @@ class Garden extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 //-1 to indicate that it just left the hub
                 //this.music.stop();
-                this.scene.start('hubScene', { wasVisiting: "garden", turnsRemaining: this.turnsRemaining, currentHoney: this.honey, currentMoney: this.money });
+                this.scene.start('hubScene', { wasVisiting: "garden" });
             }
         } else {
 
@@ -180,7 +174,8 @@ class Garden extends Phaser.Scene {
         this.player.update();
         this.player.depth = this.player.y / 10;
         this.updateFlowerImages();
-        this.turnText.text = "Turns Remaining: " + this.turnsRemaining + "\nHoney: " + this.honey + "\nMoney: " + this.money;
+        this.turnText.text = "Turns Remaining: " + playerVariables.turnsRemaining + "\nHoney: " + 
+            playerVariables.honey + "\nMoney: " + playerVariables.money;
     }
 
     checkNearbyFlower(currDirt, i) {
@@ -198,15 +193,15 @@ class Garden extends Phaser.Scene {
                 //If the plant is not purchased
                 if (plants[i] == -1 || plants[i] == 0) {
                     //if the player has sufficient funds
-                    if (this.money >= 6 && this.turnsRemaining >= 1) {
-                        this.money -= 6;
+                    if (playerVariables.money >= 6 && this.turnsRemaining >= 1) {
+                        playerVariables.money -= 6;
                         plants[i] = 3;
-                        this.turnsRemaining -= 1;
+                        playerVariables.turnsRemaining -= 1;
                         this.path.push([currDirt.x, currDirt.y - 25]);
                         this.fadeText("Congratulations! You have a\nnew flower for your garden")
                     }
                     //else if not enough actions
-                    else if (this.turnsRemaining < 1) {
+                    else if (playerVariables.turnsRemaining < 1) {
                         this.fadeText("You have insufficient actions.");
                     }
                     else {
@@ -214,9 +209,9 @@ class Garden extends Phaser.Scene {
                     }
                 } 
                 else {
-                    if (this.turnsRemaining >= 1) {
+                    if (playerVariables.turnsRemaining >= 1) {
                         plants[i] = Math.min(3, plants[i] + 1);
-                        this.turnsRemaining -= 1;
+                        playerVariables.turnsRemaining -= 1;
                         if (plants[i] == 3) {
                             this.fadeText("Your flower looks perfectly healthy");
                         } else if (plants[i] > 1) {
