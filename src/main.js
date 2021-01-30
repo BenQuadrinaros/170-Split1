@@ -41,5 +41,12 @@ let playerVariables = {
     money: 10.00,
     honey: 10,
     actions: 3,
-    inventory: []
+    inventory: {
+
+            "Green":0,
+            "Red":0,
+            "Blue":0,
+            "Yellow":0
+
+    }
 }

@@ -1,10 +1,27 @@
 let shopS;
+let menu = undefined;
+let pointer ;
+let shopInventory = {
+    "Seeds": {
+        "Green": {"amount": 2, "img": "bearBee", "cost":5},
+        "Red":{"amount": 3, "img": "PlayerIcon", "cost": 20}
+    },
+    "Hives":{
+        "Blue":{"amount": 3, "img": "bearBee","cost":55},
+        "Yellow":{"amount": 0, "img": "player","cost":15}
+    }
+}
+let shopCosts = {
+};
 class ShopUI extends Phaser.Scene {
     constructor() {
         super({
             key: "shopUIScene"
         });
         shopS = this;
+        this.selectedItem = undefined;
+
+
     }
 
     preload(){
@@ -19,9 +36,21 @@ class ShopUI extends Phaser.Scene {
     create() {
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
-        this.print = this.add.text(0, 0, '');
+        this.print = this.add.text(0, 0, "Money: " + playerVariables.money);
+        this.print2 = this.add.text(0,20, "Green Flowers: " + playerVariables.inventory["Green"])
 
-        var db = createDataBase(400);
+
+        var db = createDataBase(5);
+
+
+        var confirmBuy = [
+            {
+                name: 'Buy for ',
+            },
+            {
+                name: 'Cancel',
+            },
+        ];
 
         var tabs = this.rexUI.add.tabs({
             x: 400,
@@ -60,8 +89,8 @@ class ShopUI extends Phaser.Scene {
                         height: height,
 
                         background: scene.rexUI.add.roundRectangle(0, 0, 20, 20, 0).setStrokeStyle(2, COLOR_DARK),
-                        icon: scene.rexUI.add.roundRectangle(0, 0, 20, 20, 10, item.color),
-                        text: scene.add.text(0, 0, item.id),
+                        icon: scene.add.image(0,0, item.img).setScale(.45,.45),
+                        text: scene.add.text(0, 0, item.id + ":" + item.amt),
 
                         space: {
                             icon: 10,
@@ -72,10 +101,8 @@ class ShopUI extends Phaser.Scene {
             }),
 
             leftButtons: [
-                createButton(this, 2, 'AA'),
-                createButton(this, 2, 'BB'),
-                createButton(this, 2, 'CC'),
-                createButton(this, 2, 'DD'),
+                createButton(this, 2, 'Seeds'),
+                createButton(this, 2, 'Hives'),
             ],
 
             rightButtons: [
@@ -137,7 +164,36 @@ class ShopUI extends Phaser.Scene {
         // Grid table
         tabs.getElement('panel')
             .on('cell.click', function (cellContainer, cellIndex) {
-                this.print.text += cellIndex + ': ' + cellContainer.text + '\n';
+                //create popup menu for confirmation
+                let item = cellContainer.text.split(/[ :]+/);
+                let name = item[0];
+                let stock = item[1];
+                let cost = shopCosts[name];
+                let costText = "Buy for " + cost + " ?"
+                confirmBuy[0] = {name: costText}
+                if (menu === undefined) {
+                    menu = createMenu(this, 550, 350, confirmBuy, function (button) {
+                        if (button.text === costText){
+
+                            if (cost > playerVariables.money){
+
+                            } else {
+                                console.log("Added cell " + cellIndex + " which contains " + cellContainer.text +
+                                    " to player inventory");
+                                playerVariables.inventory[name]+=1;
+                                console.log(playerVariables.inventory[name])
+                                playerVariables.money-=cost;
+                                let newStock = parseInt(stock)-1
+                                cellContainer.text = name +":"+ newStock;
+                            }
+                        }
+                        menu.collapse();
+                        menu = undefined;
+                    });
+                } else if (!menu.isInTouching(pointer)) {
+                    menu.collapse();
+                    menu = undefined;
+                }
             }, this)
             .on('cell.over', function (cellContainer, cellIndex) {
                 cellContainer.getElement('background')
@@ -159,22 +215,32 @@ class ShopUI extends Phaser.Scene {
             console.log("escape")
             this.scene.start("shopScene");
         }
+        this.print.text = "Money: " + playerVariables.money;
+        this.print2.text =  "Green Flowers: " + playerVariables.inventory["Green"];
     }
 }
 
 var createDataBase = function (count) {
-    var TYPE = ['AA', 'BB', 'CC', 'DD'];
+    var TYPE = ['Seeds', 'Hives'];
     // Create the database
     var db = new loki();
     // Create a collection
     var items = db.addCollection('items');
     // Insert documents
-    for (var i = 0; i < count; i++) {
-        items.insert({
-            type: TYPE[i % 4],
-            id: i,
-            color: Random(0, 0xffffff)
-        });
+    for (const [tab, inv] of Object.entries(shopInventory)) {
+        for (const [item, info] of Object.entries(inv)) {
+            console.log(`${item}: ${info}`);
+            items.insert({
+                type:tab,
+                id:item,
+                color: Random(0, 0xffffff),
+                img: info.img,
+                amt: info.amount,
+                cost: info.cost
+            });
+            shopCosts[item] = info.cost;
+        }
+
     }
     return items;
 };
@@ -206,4 +272,67 @@ var createButton = function (scene, direction, text) {
             left: 10
         }
     });
+}
+
+var createMenu = function (scene, x, y, items, onClick) {
+    var exapndOrientation = 'y';
+    var easeOrientation = 'y';
+
+    var menu = scene.rexUI.add.menu({
+        x: x,
+        y: y,
+        orientation: exapndOrientation,
+        // subMenuSide: 'right',
+
+        items: items,
+        createButtonCallback: function (item, i) {
+            return scene.rexUI.add.label({
+                background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 0, COLOR_PRIMARY),
+                text: scene.add.text(0, 0, item.name, {
+                    fontSize: '20px'
+                }),
+                icon: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_DARK),
+                space: {
+                    left: 10,
+                    right: 10,
+                    top: 10,
+                    bottom: 10,
+                    icon: 10
+                }
+            })
+        },
+
+        // easeIn: 500,
+        easeIn: {
+            duration: 500,
+            orientation: easeOrientation
+        },
+
+        // easeOut: 100,
+        easeOut: {
+            duration: 100,
+            orientation: easeOrientation
+        }
+
+        // expandEvent: 'button.over'
+    });
+
+    menu
+        .on('button.over', function (button) {
+            button.getElement('background').setStrokeStyle(1, 0xffffff);
+        })
+        .on('button.out', function (button) {
+            button.getElement('background').setStrokeStyle();
+        })
+        .on('button.click', function (button) {
+            onClick(button);
+        })
+        .on('popup.complete', function (subMenu) {
+            console.log('popup.complete')
+        })
+        .on('scaledown.complete', function () {
+            console.log('scaledown.complete')
+        })
+
+    return menu;
 }
