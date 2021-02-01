@@ -25,7 +25,16 @@ let game = new Phaser.Game(config);
 let keyP, keyO, keyESCAPE, keyLEFT, keyRIGHT, keyDOWN, keyUP, keySPACE, keyY, keyN;
 
 let upgrades = {"bike": 0, "bee": 0, "tools": 0};
-let plants = [3, -1, 3, -1]; //-1 is unbought, 0 is dead, 0.5 and 1 are poor, 1.5 and 2 are good, 2.5 and 3 are great
+let gardenGrid = [
+    [null,         null,        null, ["flower", "yellow", 2], null,        null,         null,         null,         null,     ["hive"]],
+    [null,         null,         null,         null,          null,         null,         null,         null,         null,         null],
+    [null,         null,     ["hive"],         null,          null,         null,         null,         null,         null,         null],
+    [null,         null,         null,         null,          null,         null,        null, ["flower", "yellow", 4], null,       null],
+    [null,       null, ["flower", "yellow", 1], null,         null,         null,         null,         null,         null,         null],
+    [null,         null,         null,         null,          null,         null,         null,         null,     ["hive"],         null],
+    [null,         null,         null,         null,          null,         null,         null,         null,         null,         null],
+    [["hive"],     null,         null,         null,         null,          null,         null,         null,         null,         null]
+];
 let cursors = null;
 let dialogueSection = 0;
 //let isPaused = false;

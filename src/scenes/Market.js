@@ -8,7 +8,7 @@ class Market extends Phaser.Scene {
     create() {
         this.cameras.main.setBackgroundColor(0x000000);
         //REPLACE with actual background
-        this.background = this.add.image(config.width / 2, config.height / 2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5);
+        //this.background = this.add.image(config.width / 2, config.height / 2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5);
 
         //bike propped up on stand
         this.bike = this.add.image(game.config.width / 6, 5 * game.config.height / 10, 'bike');
@@ -132,9 +132,10 @@ class Market extends Phaser.Scene {
                             //Could be a call to NPC characteristics
                             this.npcAmount = Math.min(Phaser.Math.Between(1, 4) + Phaser.Math.Between(1, 3), playerVariables.honey);
                             this.npcPrice = (1 + Phaser.Math.FloatBetween(.1, 1) + Phaser.Math.FloatBetween(.1, .5)) * this.npcAmount;
-                            this.transactionText.text = this.npc.voiceLines[0][Phaser.Math.Between(0, this.npc.voiceLines[0].length-1)] + 
-                                "\nI would like to buy " + this.npcAmount + " jars\nof honey for $" + Math.floor(this.npcPrice) + "." + 
-                                Math.floor((this.npcPrice * 10)%10)+ Math.floor((this.npcPrice * 100)%10) + "\n[Y]es  /   [N]o";
+                            this.transactionText.text = this.npc.name + ": " + this.npc.voiceLines[0][Phaser.Math.Between(0, 
+                                this.npc.voiceLines[0].length-1)] + "\nI would like to buy " + this.npcAmount + " jars\nof honey for $" + 
+                                Math.floor(this.npcPrice) + "." + Math.floor((this.npcPrice * 10)%10)+ Math.floor((this.npcPrice * 100)%10) +
+                                "\n[Y]es  /   [N]o";
                             this.transactionText.alpha = 1;
                         },
                         loop: false,
