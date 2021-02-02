@@ -25,6 +25,10 @@ class Hub extends Phaser.Scene {
 
 
     create() {
+        //Initialize world details
+        this.worldWidth = 5000;
+        this.worldHeight = 5000;
+
         //Initialize images
         this.cameras.main.setBackgroundColor(0x000000);
         this.background = this.add.image(config.width/2, config.height/2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5);
@@ -37,12 +41,18 @@ class Hub extends Phaser.Scene {
         this.bikeShed.depth = this.bikeShed.y / 10;
         this.gardeningShed = this.add.image(4*config.width/5, 3*config.height/4,'gardeningShed').setScale(1.2, 1.2);
         this.gardeningShed.depth = this.gardeningShed.y / 10;
-        this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 2);
+        this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 2, this.worldWidth, this.worldHeight);
         this.player.depth = this.player.y / 10;
 
         //Initialize image animation variables
         this.bounceFactor = .1;
         this.counter = 0;
+
+        //Camera Stuff
+        this.cameras.main.setBounds(0, 0, this.worldWidth, this.worldHeight);
+        this.cameras.main.setZoom(1.15);
+        // startFollow(target [, roundPixels] [, lerpX] [, lerpY] [, offsetX] [, offsetY])
+        this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 
         //add timing aspect for hub actions
         this.fadeMessage;
