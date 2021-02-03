@@ -78,11 +78,14 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
 
     moveTo(clickedX, clickedY){
         console.log(Math.abs(this.x - clickedX) + "/" + Math.abs(this.y - clickedY));
-        var XoverYRatio = Math.abs(this.x - clickedX)/Math.abs(this.y - clickedY);
+        var deltaX = Math.abs(this.x - clickedX);
+        var deltaY = Math.abs(this.y - clickedY);
+        var XoverYRatio = deltaX/deltaY;
+        var YoverXRatio = deltaY/deltaX;
         this.clickedX = clickedX;
         this.xMoveRate = XoverYRatio*game.config.width/800;
         this.clickedY = clickedY;
-        this.yMoveRate = game.config.height/450;
+        this.yMoveRate = YoverXRatio*game.config.height/450;
         console.log("Ratio: " + XoverYRatio);
         console.log("clickedX: " + this.clickedX);
         console.log("xMoveRate: " + this.xMoveRate);

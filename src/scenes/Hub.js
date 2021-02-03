@@ -117,7 +117,7 @@ class Hub extends Phaser.Scene {
 
             if (pointer.isDown)
             {
-                this.player.moveTo(pointer.x, pointer.y);
+                this.player.moveTo(pointer.worldX, pointer.worldY);
             }
     
         }, this);
