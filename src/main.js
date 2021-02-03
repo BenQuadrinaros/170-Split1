@@ -31,15 +31,17 @@ const COLOR_DARK = 0x260e04;
 const Random = Phaser.Math.Between;
 
 let upgrades = {"bike": 0, "bee": 0, "tools": 0};
-let gardenGrid = [
-    [null,         null,        null, ["flower", "yellow", 2], null,        null,         null,         null,         null,     ["hive"]],
-    [null,         null,         null,         null,          null,         null,         null,         null,         null,         null],
-    [null,         null,     ["hive"],         null,          null,         null,         null,         null,         null,         null],
-    [null,         null,         null,         null,          null,         null,        null, ["flower", "yellow", 4], null,       null],
-    [null,       null, ["flower", "yellow", 1], null,         null,         null,         null,         null,         null,         null],
-    [null,         null,         null,         null,          null,         null,         null,         null,     ["hive"],         null],
-    [null,         null,         null,         null,          null,         null,         null,         null,         null,         null],
-    [["hive"],     null,         null,         null,         null,          null,         null,         null,         null,         null]
+//Starting garden state
+let flow0 = new Flower("yellow", 2, 1);
+let flow1 = new Flower("yellow", 4, .5);
+let flow2 = new Flower("yellow", 1, 1);
+let gardenGrid = [ // 8 x 6 grid for garden generating
+    [null,       null,       null,      flow0,        null,       null,       null,     "hive"],
+    [null,       null,       null,       null,        null,       null,       null,       null],
+    [null,       null,     "hive",       null,        null,       null,       null,       null],
+    [null,       null,       null,       null,        null,      flow1,       null,       null],
+    [null,       null,      flow2,       null,        null,       null,       null,       null],
+    ["hive",     null,       null,       null,        null,       null,     "hive",       null]
 ];
 let cursors = null;
 let dialogueSection = 0;

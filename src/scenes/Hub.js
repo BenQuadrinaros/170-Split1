@@ -13,7 +13,14 @@ class Hub extends Phaser.Scene {
         } else {
             //if you are returning to the hub, get made honey based off of bee upgrades
             console.log("Welcome back. Honey was " + playerVariables.honey);
-            playerVariables.honey += 6 + upgrades['bee'];
+            playerVariables.honey += 2 + upgrades['bee'];
+            for (let row = 0; row < gardenGrid.length; row++) {
+                for (let col = 0; col < gardenGrid[0].length; col++) {
+                    try {
+                        playerVariables.honey += Math.round(gardenGrid[row][col].advance());
+                    } catch(error) { null; }
+                }
+            }
             console.log("Honey increases to " + playerVariables.honey);
         }
         if(typeof this.turnsRemaining == 'undefined'){
