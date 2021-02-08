@@ -1,11 +1,10 @@
-
 //Ben Rowland
 
 let config = {
     type: Phaser.CANVAS,
     width: 960,
     height: 540,
-    scene: [Boot, Hub, Garden, Map, Market, Play, Menu, Settings, Talking, Pause, OldRhythm, ShopUI , Shop],
+    scene: [Boot, Hub, Garden, Map, Market, Play, Menu, Settings, Talking, Pause, OldRhythm, ShopUI, Shop],
     volume: .7,
     physics: {
         default: 'arcade',
@@ -30,19 +29,23 @@ const COLOR_LIGHT = 0x7b5e57;
 const COLOR_DARK = 0x260e04;
 const Random = Phaser.Math.Between;
 
-let upgrades = {"bike": 0, "bee": 0, "tools": 0};
+let upgrades = { "bike": 0, "bee": 0, "tools": 0 };
 //Starting garden state
-let flow0 = new Flower("yellow", 2, 1);
-let flow1 = new Flower("yellow", 4, .5);
-let flow2 = new Flower("yellow", 1, 1);
-let gardenGrid = [ // 8 x 6 grid for garden generating
-    [null,       null,       null,      flow0,        null,       null,       null,     "hive"],
-    [null,       null,       null,       null,        null,       null,       null,       null],
-    [null,       null,     "hive",       null,        null,       null,       null,       null],
-    [null,       null,       null,       null,        null,      flow1,       null,       null],
-    [null,       null,      flow2,       null,        null,       null,       null,       null],
-    ["hive",     null,       null,       null,        null,       null,     "hive",       null]
+let flow0 = new Flower("yellow", 1, 3, "Cosmo");
+let flow1 = new Flower("yellow", 2, 2, "Cosmo");
+let flow2 = new Flower("yellow", 0, 3, "Cosmo");
+let gardenGrid = [ // 10 x 8 grid for garden generating
+    //Starting placements for intial garden
+    [null,   flow0,   null,   null,   null,   null,   null,   null,   null,   null],
+    [flow1, "hive",  flow2,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null]
 ];
+
 let cursors = null;
 let dialogueSection = 0;
 //let isPaused = false;
@@ -50,14 +53,33 @@ let dialogueSection = 0;
 //Player variables so we dont have to pass them around forever
 let playerVariables = {
     money: 10.00,
-    honey: 10,
-    actions: 3,
+    actions: 4,
     inventory: {
-
-            "Green":0,
-            "Red":0,
-            "Blue":0,
-            "Yellow":0
-
+        honey: {
+            "total": 10,
+            "yellow": 10,
+            "blue": 0,
+            "purple": 0,
+            "pink": 0
+        },
+        items: {
+            "Beehive": 0,
+            "Sprinkler": 0,
+            "Mulch": 0
+        },
+        flowers: {
+            "Cosmo": 0,
+            "Blue Bonnet": 0,
+            "Lavender": 0,
+            "Tulip": 0,
+            "Orchid": 0
+        },
+        seeds: {
+            "Cosmo": 2,
+            "Blue Bonnet": 1,
+            "Lavender": 1,
+            "Tulip": 1,
+            "Orchid": 0
+        }
     }
 }

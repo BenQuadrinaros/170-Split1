@@ -1,8 +1,10 @@
 class Flower{
-    constructor(color, age, water) {
+    constructor(color, age, water, type) {
         this.color = color;   //What color honey is produced (img is not tied to this)
-        this.age = age;       //Int between 1 and 4, amount of honey produced and durability
+        this.age = age;       //Int between 0 and 4, amount of honey produced and durability
         this.water = water;   //Float between 0.0 and 1.0 for how well watered it is
+        this.ref = flowerTypes[type];
+        this.collected = false;
     }
 
     addToScene(scene, initx, inity, texture, frame) {
@@ -11,15 +13,46 @@ class Flower{
         this.image.setPosition(initx, inity);
     }
 
-    water() { this.water += .5; }
+    water() { 
+        this.water += 1;
+        if(this.water > this.ref["water"]) {
+            this.water = this.ref["water"];
+        }
+    }
 
     advance() {
-        this.water -= (5 - this.age) / 10;
-        if(this.water > 0) { return this.age * this.water; }
-        else { return 0; }
+        this.water -=  1;
+        if(this.water > 0 && this.age < this.ref["grow"]) {
+            this.age += 1;
+        }
+        this.collected = false;
+    }
+
+    getPollen() {
+        
+        if(!this.collected && this.water > 0 && !(this.age < this.ref["grow"])) {
+            this.collected = true;
+            return this.ref["pollen"];
+        } else {
+            return "none";
+        }
     }
 
     destroy() {
         this.image.destroy();
+    }
+
+    updateImg() {
+        //used to change the frame depending on the water level of the Flower
+        let waterLvl = this.water / this.ref["water"];
+        if( waterLvl > .65) {
+            this.image.frame = 0;
+        } else if (waterLvl > .3) {
+            this.image.frame = 0;
+        } else if (waterLvl > 0) {
+            this.image.frame = 0;
+        } else {
+            this.image.frame = 0;
+        }
     }
 }

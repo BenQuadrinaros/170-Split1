@@ -120,9 +120,6 @@ class Boot extends Phaser.Scene {
           console.log('complete');
           progressBar.destroy();
           progressBox.destroy();
-
-
-
         });
     }
 

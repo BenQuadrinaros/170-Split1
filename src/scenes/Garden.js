@@ -21,7 +21,7 @@ class Garden extends Phaser.Scene {
         //Load in the garden scene images and grid
         this.path = [];    //Path for the bees to follow
         this.inScene = [   //This array will let us track local changes and update images
-            [null*8], [null*8], [null*8], [null*8], [null*8], [null*8]
+            [null*10], [null*10], [null*10], [null*10], [null*10], [null*10], [null*10], [null*10]
         ];
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
