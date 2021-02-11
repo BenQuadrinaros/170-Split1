@@ -20,6 +20,7 @@ class ShopUI extends Phaser.Scene {
         });
         shopS = this;
         this.selectedItem = undefined;
+        this.selectedTab = "Seeds";
 
 
     }
@@ -37,7 +38,8 @@ class ShopUI extends Phaser.Scene {
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
         this.print = this.add.text(0, 0, "Money: " + playerVariables.money);
-        this.print2 = this.add.text(0,20, "Green Flowers: " + playerVariables.inventory["Green"])
+        this.print2 = this.add.text(0,20, "Green Flowers: " + playerVariables.inventory["Green"]);
+        this.print3 = this.add.text(0,40, "Green Flowers Stock : " + shopInventory["Seeds"]["Green"].amount);
 
 
         var db = createDataBase(5);
@@ -63,8 +65,8 @@ class ShopUI extends Phaser.Scene {
                     width: 250,
                     height: 400,
 
-                    cellWidth: 120,
-                    cellHeight: 60,
+                    cellWidth: 130,
+                    cellHeight: 90,
                     columns: 2,
                     mask: {
                         padding: 2,
@@ -90,7 +92,7 @@ class ShopUI extends Phaser.Scene {
 
                         background: scene.rexUI.add.roundRectangle(0, 0, 20, 20, 0).setStrokeStyle(2, COLOR_DARK),
                         icon: scene.add.image(0,0, item.img).setScale(.45,.45),
-                        text: scene.add.text(0, 0, item.id + ":" + item.amt),
+                        text: scene.add.text(0, 0, item.id),
 
                         space: {
                             icon: 10,
@@ -122,6 +124,7 @@ class ShopUI extends Phaser.Scene {
 
         tabs
             .on('button.click', function (button, groupName, index) {
+
                 switch (groupName) {
                     case 'left':
                         // Highlight button
@@ -133,6 +136,8 @@ class ShopUI extends Phaser.Scene {
                         if (this._prevSortButton === undefined) {
                             return;
                         }
+                        console.log("selected tab " + button.text);
+                        shopS.selectedTab = button.text;
                         break;
 
                     case 'right':
@@ -165,26 +170,31 @@ class ShopUI extends Phaser.Scene {
         tabs.getElement('panel')
             .on('cell.click', function (cellContainer, cellIndex) {
                 //create popup menu for confirmation
-                let item = cellContainer.text.split(/[ :]+/);
-                let name = item[0];
-                let stock = item[1];
-                let cost = shopCosts[name];
+                let item = shopS.selectedItem;
+                let stock = shopInventory[shopS.selectedTab][shopS.selectedItem].amount;
+                let cost = shopInventory[shopS.selectedTab][shopS.selectedItem].cost;
                 let costText = "Buy for " + cost + " ?"
+
                 confirmBuy[0] = {name: costText}
+                console.log("Before buying item text is " + cellContainer.text)
                 if (menu === undefined) {
+                    console.log("Selected item is " + shopS.selectedItem + " in group "+ shopS.selectedTab +
+                        " which has stock " + shopInventory[shopS.selectedTab][shopS.selectedItem].amount);
                     menu = createMenu(this, 550, 350, confirmBuy, function (button) {
                         if (button.text === costText){
-
                             if (cost > playerVariables.money){
-
+                                console.log("Not enough money...")
                             } else {
-                                console.log("Added cell " + cellIndex + " which contains " + cellContainer.text +
+                                if (shopInventory[shopS.selectedTab][item] === undefined){
+                                    return;
+                                }
+                                console.log("Added cell " + cellIndex + " which contains " + item +
                                     " to player inventory");
-                                playerVariables.inventory[name]+=1;
-                                console.log(playerVariables.inventory[name])
+                                playerVariables.inventory[item]+=1;
                                 playerVariables.money-=cost;
-                                let newStock = parseInt(stock)-1
-                                cellContainer.text = name +":"+ newStock;
+                                let newStock = parseInt(stock)-1;
+                                shopInventory[shopS.selectedTab][item].amount = newStock;
+
                             }
                         }
                         menu.collapse();
@@ -199,11 +209,20 @@ class ShopUI extends Phaser.Scene {
                 cellContainer.getElement('background')
                     .setStrokeStyle(2, COLOR_LIGHT)
                     .setDepth(1);
+                let item = cellContainer.text;
+                shopS.selectedItem = cellContainer.text;
+                let available = shopInventory[shopS.selectedTab][shopS.selectedItem].amount;
+                if (available <= 0){
+                    cellContainer.text = "OUT OF \nSTOCK";
+                } else {
+                    cellContainer.text = "Stock:" + available;
+                }
             }, this)
             .on('cell.out', function (cellContainer, cellIndex) {
                 cellContainer.getElement('background')
                     .setStrokeStyle(2, COLOR_DARK)
                     .setDepth(0);
+                cellContainer.text = shopS.selectedItem;
             }, this);
 
         tabs.emitButtonClick('left', 0).emitButtonClick('right', 0);
@@ -217,6 +236,7 @@ class ShopUI extends Phaser.Scene {
         }
         this.print.text = "Money: " + playerVariables.money;
         this.print2.text =  "Green Flowers: " + playerVariables.inventory["Green"];
+        this.print3.text = "Green Flowers Stock : " + shopInventory["Seeds"]["Green"].amount;
     }
 }
 
@@ -328,10 +348,10 @@ var createMenu = function (scene, x, y, items, onClick) {
             onClick(button);
         })
         .on('popup.complete', function (subMenu) {
-            console.log('popup.complete')
+            //console.log('popup.complete')
         })
         .on('scaledown.complete', function () {
-            console.log('scaledown.complete')
+            //console.log('scaledown.complete')
         })
 
     return menu;
