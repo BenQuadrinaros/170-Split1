@@ -4,7 +4,7 @@ let config = {
     type: Phaser.CANVAS,
     width: 960,
     height: 540,
-    scene: [Boot, Hub, Garden, Map, Market, Play, Menu, Settings, Talking, Pause, OldRhythm, ShopUI, Shop],
+    scene: [Boot, Hub, Garden, Map, Market, Play, Menu, Settings, Talking, Pause, OldRhythm,  Shop, ShopUI, BackPackUI],
     volume: .7,
     physics: {
         default: 'arcade',
@@ -49,6 +49,8 @@ let gardenGrid = [ // 10 x 8 grid for garden generating
 let cursors = null;
 let dialogueSection = 0;
 //let isPaused = false;
+let heldItem = undefined;
+let vars = {}
 
 //Player variables so we dont have to pass them around forever
 let playerVariables = {
