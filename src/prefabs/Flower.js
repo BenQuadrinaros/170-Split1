@@ -1,6 +1,5 @@
-class Flower{
-    constructor(color, age, water, type) {
-        this.color = color;   //What color honey is produced (img is not tied to this)
+class Flower {
+    constructor(age, water, type) {
         this.age = age;       //Int between 0 and 4, amount of honey produced and durability
         this.water = water;   //Float between 0.0 and 1.0 for how well watered it is
         this.ref = flowerTypes[type];
@@ -41,6 +40,8 @@ class Flower{
     destroy() {
         this.image.destroy();
     }
+
+    isFlower() { return true; }
 
     updateImg() {
         //used to change the frame depending on the water level of the Flower

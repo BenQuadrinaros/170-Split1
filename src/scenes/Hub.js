@@ -17,29 +17,35 @@ class Hub extends Phaser.Scene {
         console.log("Welcome back. Honey was " + playerVariables.inventory.honey["total"]);
 
         //Gain a flat amount of yellow Honey
-        playerVariables.inventory.honey["total"] += 2 + upgrades['bee'];
-        playerVariables.inventory.honey["yellow"] += 2 + upgrades['bee'];
+        //playerVariables.inventory.honey["total"] += 2 + upgrades['bee'];
+        //playerVariables.inventory.honey["yellow"] += 2 + upgrades['bee'];
 
         //Update all Flowers for the day
         //Retrieve list of Hives for random collection
         let beehives = []
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
+                //console.log("["+col+","+row+"]");
                 try {
                     if (gardenGrid[row][col].isHive()) {
                         beehives.push([row, col]);
+                        //console.log("found beehive at "+col+', '+row);
                     }
                 } catch (error) { null; }
                 try {
                     gardenGrid[row][col].advance();
+                    //console.log("found flower at "+col+', '+row);
                 } catch (error) { null; }
             }
         }
+        //console.log("found beehives: " + beehives);
 
         //Assess Beehives in a random order
         while (beehives.length > 0) {
             let rand = Phaser.Math.Between(0, beehives.length - 1);
-            gardenGrid[beehives[rand][0]][beehives[rand][0]].collect();
+            //console.log("selecting beehive #"+rand);
+            //console.log("accessing "+beehives[rand][0]+", "+beehives[rand][1]);
+            gardenGrid[beehives[rand][0]][beehives[rand][1]].collect();
             beehives.splice(rand, 1);
         }
 
@@ -139,6 +145,78 @@ class Hub extends Phaser.Scene {
             }
 
         }, this);
+
+        // Build out Garden below main Hub area
+        this.path = [];    //Path for the bees to follow
+        this.inScene = [   //This array will let us track local changes and update images
+            [null*10], [null*10], [null*10], [null*10], [null*10], [null*10], [null*10], [null*10]
+        ];
+        this.mulchInScene = [   //This array will let us track local changes and update images
+            [null*10], [null*10], [null*10], [null*10], [null*10], [null*10], [null*10], [null*10]
+        ];
+        for (let row = 0; row < gardenGrid.length; row++) {
+            for (let col = 0; col < gardenGrid[0].length; col++) {
+                if (gardenGrid[row][col] == null) {
+                    // blank plots to be interacted with
+                    let temp = this.add.image((1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
+                        (9 + row) * (game.config.height - 50) / 8 + 50 /*+ Phaser.Math.Between(-7,7)*/, "dirt");
+                    temp.setOrigin(.5,.5).setScale(.5, .75);
+                    temp.depth = temp.y / 10;
+                    this.inScene[row][col] = temp;
+
+                    //mulch to be added
+                    /*
+                    if(mulch[[row,col]] > 0) {
+                        let temp = this.add.image((1 + col) * game.config.width / 9 + Phaser.Math.Between(-7,7),
+                        (9 + row) * (game.config.height - 50) / 8 + 50 + Phaser.Math.Between(-7,7), "mulch");
+                        temp.setOrigin(.5,.5).setScale(.5, .75);
+                        temp.depth = temp.y / 10;
+                        this.inScene[row][col] = temp
+                    }
+                    */
+                } else { //its not blank
+                    try{ //check if hive
+                        if(gardenGrid[row][col].isHive()) {
+                            let temp = gardenGrid[row][col];
+                            temp.addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
+                                (9 + row) * (game.config.height - 50) / 8 + 100 /*+ Phaser.Math.Between(-7,7)*/, "hive", 0);
+                            temp.image.setOrigin(.5,.5).setScale(.1, .1);
+                            this.path.push([temp.image.x, temp.image.y]);
+                            temp.image.depth = temp.image.y / 10;
+                            this.inScene[row][col] = temp;
+                        }
+                    } catch(error) { null; }
+                    try{ // check if flower
+                        if(gardenGrid[row][col].isFlower()) {
+                            let temp = gardenGrid[row][col];
+                            temp.addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
+                                (9 + row) * (game.config.height - 50) / 8 + 90 /*+ Phaser.Math.Between(-7,7)*/, "flower", 0);
+                            temp.image.setOrigin(.5,.5).setScale(.15, .15);
+                            this.path.push([temp.image.x, temp.image.y]);
+                            temp.image.depth = temp.image.y / 10;
+                            this.inScene[row][col] = temp;
+                        } 
+                    } catch(error) { null; }
+                }
+            }
+        }
+        
+        //Create bee swarm for simulated pollination
+        this.swarm = [];
+        let numBees = 5;                    //5 seems to be max for flower following to look decent
+        for (let i = 0; i < numBees; ++i) {
+            let temp = new Bee(this, 'bearBee', 0, game.config.width/2,game.config.height/2);
+            temp.setOrigin(.5).setScale(.25, .25).setVisible(true);
+            temp.depth = 200;
+            this.swarm.push(temp);
+        }
+
+        //UI Text elements
+        this.fadeMessage = this.add.text(this.player.x, this.player.y, "Nada", this.textConfig);
+        this.fadeMessage.setOrigin(0.5).setVisible(false);
+        this.fadeMessage.depth = 200;
+        this.flowerText = this.add.text(0, 0, "Press SPACE\nto interact", this.textConfig).setOrigin(0.5);
+        this.flowerText.depth = 200;
     }
 
     update() {
@@ -239,6 +317,8 @@ class Hub extends Phaser.Scene {
 
 
         // Check if player is near the tools
+        // Now extraneous cause everything in same scene
+        /*
         if (Math.abs(Phaser.Math.Distance.Between(this.gardeningShed.x, this.gardeningShed.y, this.player.x, this.player.y)) < 100) {
             this.gardeningShed.y += this.bounceFactor;
             this.interactText.text = "'SPACE' to garden";
@@ -258,6 +338,7 @@ class Hub extends Phaser.Scene {
         } else {
             this.toolUpgrades.setVisible(false);
         }
+        */
 
         //When the player starts to move, get rid of the instructions
         if (this.moveText != null) {
@@ -265,11 +346,13 @@ class Hub extends Phaser.Scene {
                 this.moveText.text = "";
                 this.moveText = null;
             }
-
         }
 
+        //Place flower text over nearest spot for interaction
+        this.textHover();
+
         this.player.update();
-        this.player.depth = this.player.y / 10;
+        this.player.depth = this.player.y / 10 + 3;
         this.counter++;
         this.turnText.text = "Actions Remaining: " + playerVariables.actions + "\nHoney: " +
             playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
@@ -299,5 +382,42 @@ class Hub extends Phaser.Scene {
     reenableEsc() {
         console.log("ReenableEsc called");
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+    }
+
+    textHover() {
+        //find the closest interactable point
+        let plot = this.closestPlot();
+        if(plot == null) {
+            //If closestplot is far away, clear text
+            this.flowerText.alpha = 0;
+        } else {
+            //Else, move text to that location
+            this.flowerText.alpha = 1;
+            this.flowerText.x = (1 + plot[1]) * game.config.width / 9;
+            this.flowerText.y = (9 + plot[0]) * (game.config.height - 50) / 8 + 80;
+        }
+    }
+
+    closestPlot() {
+        // Helper function to find closest plot, if any within 100 units
+        let closestXY = [];
+        let closestDist = 100;
+        for (let row = 0; row < gardenGrid.length; row++) {
+            for (let col = 0; col < gardenGrid[0].length; col++) {
+                if(Math.sqrt(Math.pow((1 + col) * game.config.width / 9 - this.player.x,2) + 
+                    Math.pow((9 + row) * (game.config.height - 50) / 8 + 50 - this.player.y,2)) < closestDist) {
+                        closestDist = Math.sqrt(Math.pow((1 + col) * game.config.width / 9 - this.player.x,2) + 
+                            Math.pow((9 + row) * (game.config.height - 50) / 8 + 50 - this.player.y,2));
+                        closestXY = [row, col];
+                    }
+            }
+        }
+        if(closestDist >= 100) {
+            //If closest plot is far away, return null
+            return null;
+        } else {
+            //else, return plot coords
+            return closestXY;
+        }
     }
 }

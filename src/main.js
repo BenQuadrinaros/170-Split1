@@ -31,20 +31,31 @@ const Random = Phaser.Math.Between;
 
 let upgrades = { "bike": 0, "bee": 0, "tools": 0 };
 //Starting garden state
-let flow0 = new Flower("yellow", 1, 3, "Cosmo");
-let flow1 = new Flower("yellow", 2, 2, "Cosmo");
-let flow2 = new Flower("yellow", 0, 3, "Cosmo");
+let flow0 = new Flower(2, 3, "Cosmo");
+let flow1 = new Flower(2, 3, "Cosmo");
+let hive = new Hive(5, 2);
+//more flowers for testing purposes
+let flow2 = new Flower(0, 3, "Cosmo");
+let flow3 = new Flower(1, 3, "Cosmo");
+let flow4 = new Flower(2, 2, "Cosmo");
+let flow5 = new Flower(2, 1, "Cosmo");
 let gardenGrid = [ // 10 x 8 grid for garden generating
     //Starting placements for intial garden
-    [null,   flow0,   null,   null,   null,   null,   null,   null,   null,   null],
-    [flow1, "hive",  flow2,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,  flow2,   flow3,  flow4,  flow5,  null,   null,   null,   null],
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   flow1,  null,   null,   null,   null,   null,   null],
+    [null,    null,   hive,   null,   null,   null,   null,   null,   null,   null],
+    [null,    flow0,  null,   null,   null,   null,   null,   null,   null,   null],
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null]
 ];
+let mulch = {};
+for(row = 0; row < gardenGrid.length; row++) {
+    for(col = 0; col < gardenGrid[0].length; col++) {
+        mulch[[row, col]] = 0;
+    }
+}
 
 let cursors = null;
 let dialogueSection = 0;
