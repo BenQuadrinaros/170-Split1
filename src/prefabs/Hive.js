@@ -1,14 +1,11 @@
-class Hive extends Phaser.GameObjects.Sprite {
-    constructor(scene, initx, inity, texture, frame, gridx, gridy) {
-        super(scene, initx, inity, texture, frame);
-        scene.add.existing(this);
-        this.setPosition(initx, inity);
-
+class Hive {
+    constructor(gridx, gridy) {
         this.gridx = gridx;
         this.gridy = gridy;
     }
 
     collect() {
+        console.log("collecting");
         let collectedPollen = {
             "colorless": 0,
             "blue": 0,
@@ -22,13 +19,12 @@ class Hive extends Phaser.GameObjects.Sprite {
                     if (col > -1 && col < gardenGrid[0].length) {
                         try {
                             let type = gardenGrid[row][col].getPollen();
+                            //console.log("collecting from flower at :" + col+', '+row+"\nwater: "+gardenGrid[row][col].water);
                             if(type != "none") {
                                 collectedPollen[type] += 1;
                                 totalPollen += 1;
                             }
-                        } catch(error) {
-                            null;
-                        }
+                        } catch(error) { null; }
                     }
                 }
             }
@@ -45,6 +41,12 @@ class Hive extends Phaser.GameObjects.Sprite {
         } else {
             playerVariables.inventory.honey["yellow"] += totalPollen;
         }
+    }
+
+    addToScene(scene, initx, inity, texture, frame) {
+        this.image = new Phaser.GameObjects.Sprite(scene, initx, inity, texture, frame);
+        scene.add.existing(this.image);
+        this.image.setPosition(initx, inity);
     }
 
     isHive() {
