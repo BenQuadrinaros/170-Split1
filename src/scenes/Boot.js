@@ -28,6 +28,11 @@ class Boot extends Phaser.Scene {
             this.load.image('bikeShed', './assets/sprites/background/tempBikeUpgrade.png');
             this.load.image('gardeningShed','./assets/sprites/background/tempGardeningSupplies.png');
             this.load.image('dialogbox', './assets/img/dialogbox.png');
+            this.load.image('playerWealthTracker', './assets/sprites/UI/moneyhoney.png');
+            //For shop
+            this.load.image('toadLeckman', './assets/sprites/character/mrleckman_510x300.png');
+            //For Market
+            this.load.image('basicDogNPC', './assets/sprites/character/dognpc_275x458.png');
             //For mapScene
             this.load.image('TownMap', './assets/sprites/background/WhiteBackground.png');
             this.load.image('PlayerIcon', './assets/sprites/character/playerMapIcon.png');
@@ -45,7 +50,8 @@ class Boot extends Phaser.Scene {
             //For gardenScene
             this.load.spritesheet('flowerSheet', './assets/spritesheets/flowerStages.png', { frameWidth: 407, frameHeight: 456, startFrame: 0, endFrame: 4 });
             //For hubScene
-            this.load.spritesheet('player', './assets/spritesheets/bearFrontBack.png', {frameWidth:40, frameHeight:72, startFrame:0, endFrame:1});
+            //this.load.spritesheet('player', './assets/spritesheets/bearFrontBack.png', {frameWidth:40, frameHeight:72, startFrame:0, endFrame:1});
+            this.load.spritesheet('player', './assets/spritesheets/bearIdle.png', {frameWidth: 140, frameHeight:249, startFrame:0, endFrame:3});
             //For mapScene
             this.load.spritesheet('Beehive','./assets/spritesheets/HoneyBearSampleHive.png',{frameWidth: 88, frameHeight: 108, startFrame:0 , endFrame: 1});
             this.load.spritesheet('Work','./assets/spritesheets/HoneyBearSampleWork.png',{frameWidth: 69, frameHeight: 87, startFrame:0 , endFrame: 1});

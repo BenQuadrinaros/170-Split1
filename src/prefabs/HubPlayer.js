@@ -5,7 +5,7 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.setPosition(initX, initY);
-        this.setScale(2.0, 2.0);
+        this.setScale(0.85, 0.85);
         this.currScene = scene;
         this.maxWidth = sceneWidth;
         this.maxHeight = sceneHeight;
@@ -34,19 +34,22 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         }
 
         if (keyUP.isDown){
-            this.setFrame(1);
+            //this.setFrame(0);
+            this.anims.play("playerBackIdle", true);
             if (this.y > 0){
                 this.y -= game.config.height / 450;
                 this.clickedY = this.y;
             }
         }
         else { //Remove this once we have multiple frames
-            this.setFrame(0);
+            //this.setFrame(2);
+            this.anims.play("playerFrontIdle", true);
         }
         
 
         if (keyDOWN.isDown){
-            this.setFrame(0);
+            //this.setFrame(2);
+            this.anims.play("playerFrontIdle", true);
             if (this.y < this.maxHeight){
                 this.y += game.config.height / 450;
                 this.clickedY = this.y;
