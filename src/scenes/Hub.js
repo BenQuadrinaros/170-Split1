@@ -12,6 +12,7 @@ class Hub extends Phaser.Scene {
         //Initialize world details
         this.worldWidth = 5000;
         this.worldHeight = 5000;
+        this.heldImg = 0;
 
         //If you are returning to the hub
         console.log("Welcome back. Honey was " + playerVariables.inventory.honey["total"]);
@@ -39,6 +40,8 @@ class Hub extends Phaser.Scene {
             }
         }
         //console.log("found beehives: " + beehives);
+
+
 
         //Assess Beehives in a random order
         while (beehives.length > 0) {
@@ -146,6 +149,20 @@ class Hub extends Phaser.Scene {
 
         }, this);
 
+        //create interactible backpack image
+        this.backpack = this.add.image(config.width- config.width/6, config.height/6, 'PlayerIcon')
+            .setInteractive().setAlpha(.5)
+            .on('pointerover', () => {
+                this.backpack.setAlpha(1)
+            })
+            .on('pointerout', () => {
+                this.backpack.setAlpha(.5)
+            })
+            .on('pointerdown', () =>{
+                console.log("clicked backpack");
+                this.scene.pause('hubScene');
+                this.scene.launch("backpackUI");
+            });
         // Build out Garden below main Hub area
         this.path = [];    //Path for the bees to follow
         this.inScene = [   //This array will let us track local changes and update images
@@ -229,6 +246,24 @@ class Hub extends Phaser.Scene {
         }
         else {
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        }
+
+        //move backpack icon alongside player and camera
+        this.backpack.x = this.player.x+config.width/3;
+        this.backpack.y = this.player.y-config.width/5;
+
+        //if the player is holding an object, render it and move it alongside the player
+        if (heldItem !== undefined){
+            if (this.heldImg < 1) {
+                heldItem.addToScene(this, this.player.x /*+ Phaser.Math.Between(-7,7)*/,
+                    this.player.y /*+ Phaser.Math.Between(-7,7)*/, "flower", 0);
+                this.heldImg = 1;
+                heldItem.image.setScale(.15,.15)
+                heldItem.image.depth = 100;
+            }
+            heldItem.image.x = this.player.x;
+            heldItem.image.y = this.player.y;
+
         }
 
         // -------------------------------------------
@@ -395,6 +430,25 @@ class Hub extends Phaser.Scene {
             this.flowerText.alpha = 1;
             this.flowerText.x = (1 + plot[1]) * game.config.width / 9;
             this.flowerText.y = (9 + plot[0]) * (game.config.height - 50) / 8 + 80;
+            //Logic for if player presses space near a plot
+            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+                let row = plot[0];
+                let col = plot[1];
+                //console.log(this.inScene[row][col].texture.key)
+                //If the player is holding an item, modify garden plots and add image to scene.
+                if (heldItem !== undefined){
+                    //console.log(heldItem);
+                    this.inScene[row][col] = heldItem;
+                    gardenGrid[row][col] = heldItem;
+                    heldItem.image.destroy()
+                    heldItem = undefined;
+                    this.inScene[row][col].addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
+                         (9 + row) * (game.config.height - 50) / 8 + 90 /*+ Phaser.Math.Between(-7,7)*/, "flower", 0);
+                    this.inScene[row][col].image.setScale(.15,.15).setOrigin(.5,.5);
+
+                    this.heldImg = 0;
+                }
+            }
         }
     }
 

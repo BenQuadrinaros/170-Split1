@@ -1,23 +1,16 @@
+let selectedTab = "seeds"
+let lineWidth = 2;
 
-let menu = undefined;
-let pointer ;
-
-let shopCosts = {
-};
-class ShopUI extends Phaser.Scene {
+class BackPackUI extends Phaser.Scene {
     constructor() {
         super({
-            key: "shopUIScene"
+            key: "backpackUI"
         });
-
-        this.selectedItem = undefined;
-        this.selectedTab = "Seeds";
-
 
     }
 
-    preload(){
-        console.log("in ShopUI Scene")
+    preload() {
+        console.log("in backpackui")
         this.load.scenePlugin({
             key: 'rexuiplugin',
             url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
@@ -26,21 +19,49 @@ class ShopUI extends Phaser.Scene {
     }
 
     create() {
+
         uiScene = this;
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
-        this.selectedTab = "Seeds";
-
-        var db = createDataBase(5);
-
-
-        var confirmBuy = [
+        //Text config without a background, which blends better with the background
+        this.textConfig = {
+            fontFamily: "Courier",
+            fontSize: "14px",
+            color: "#ffffff",
+            align: "center",
+            stroke: "#000000",
+            strokeThickness: 4,
+            padding: {
+                top: 5,
+                bottom: 5
+            },
+        };
+        //different things the player can do with objekt
+        itemOptions = [
             {
-                name: 'Buy for ',
+                name: 'Hold',
             },
             {
                 name: 'Cancel',
             },
         ];
+        this.selectedItem = undefined;
+        this.selectedTab = "seeds";
+        //create backpack icon
+        this.backpack = this.add.image(config.width - config.width / 6, config.height / 6, 'PlayerIcon')
+            .setInteractive().setAlpha(.5)
+            .on('pointerover', () => {
+                this.backpack.setAlpha(1)
+            })
+            .on('pointerout', () => {
+                this.backpack.setAlpha(.5)
+            })
+            .on('pointerdown', () => {
+                this.scene.stop('backpackUI')
+                this.scene.resume('hubScene')
+            });
+        this.add.text(this.backpack.x, this.backpack.y, "EXIT").setOrigin(.5, .5)
+        var db = createDataBaseInventory(5);
+
 
         var tabs = this.rexUI.add.tabs({
             x: 400,
@@ -50,11 +71,11 @@ class ShopUI extends Phaser.Scene {
                 background: this.rexUI.add.roundRectangle(0, 0, 20, 10, 10, COLOR_PRIMARY),
 
                 table: {
-                    width: 250,
-                    height: 400,
+                    width: 475,
+                    height: 300,
 
-                    cellWidth: 130,
-                    cellHeight: 90,
+                    cellWidth: 230,
+                    cellHeight: 150,
                     columns: 2,
                     mask: {
                         padding: 2,
@@ -63,7 +84,7 @@ class ShopUI extends Phaser.Scene {
 
                 slider: {
                     track: this.rexUI.add.roundRectangle(0, 0, 20, 10, 10, COLOR_DARK),
-                    thumb: uiScene.add.image(0,0,"PlayerIcon").setScale(.5,.5),
+                    thumb: uiScene.add.image(0, 0, "PlayerIcon").setScale(.5, .5),
                 },
 
                 // scroller: true,
@@ -77,9 +98,8 @@ class ShopUI extends Phaser.Scene {
                     return scene.rexUI.add.label({
                         width: width,
                         height: height,
-
-                        background: scene.rexUI.add.roundRectangle(0, 0, 20, 20, 0).setStrokeStyle(2, COLOR_DARK),
-                        icon: scene.add.image(0,0, item.img).setScale(.45,.45),
+                        background: scene.rexUI.add.roundRectangle(0, 0, 20, 20, 0).setStrokeStyle(lineWidth, COLOR_DARK),
+                        icon: scene.add.image(0, 0, 'PlayerIcon').setScale(.45, .45),
                         text: scene.add.text(0, 0, item.id),
 
                         space: {
@@ -91,8 +111,10 @@ class ShopUI extends Phaser.Scene {
             }),
 
             leftButtons: [
-                createButton(this, 2, 'Seeds'),
-                createButton(this, 2, 'Hives'),
+                createButton(this, 2, 'seeds'),
+                createButton(this, 2, 'items'),
+                createButton(this, 2, 'honey'),
+                createButton(this, 2, 'flowers'),
             ],
 
             rightButtons: [
@@ -124,7 +146,7 @@ class ShopUI extends Phaser.Scene {
                         if (this._prevSortButton === undefined) {
                             return;
                         }
-                        console.log("selected tab " + button.text);
+                        //console.log("selected tab " + button.text);
                         uiScene.selectedTab = button.text;
                         break;
 
@@ -157,97 +179,92 @@ class ShopUI extends Phaser.Scene {
         // Grid table
         tabs.getElement('panel')
             .on('cell.click', function (cellContainer, cellIndex) {
-                //create popup menu for confirmation
                 let item = uiScene.selectedItem;
-                let stock = shopInventory[uiScene.selectedTab][uiScene.selectedItem].amount;
-                let cost = shopInventory[uiScene.selectedTab][uiScene.selectedItem].cost;
-                let costText = "Buy for " + cost + " ?"
+                console.log(`item ${item} in tab ${uiScene.selectedTab}`)
+                let amount = playerVariables.inventory[uiScene.selectedTab][item];
+                if (amount > 0) {
+                    if (menu === undefined) {
+                        menu = createMenu(this, 675, 350, itemOptions, function (button) {
 
-                confirmBuy[0] = {name: costText}
-                console.log("Before buying item text is " + cellContainer.text)
-                if (menu === undefined) {
-                    console.log("Selected item is " + uiScene.selectedItem + " in group "+ uiScene.selectedTab +
-                        " which has stock " + shopInventory[uiScene.selectedTab][uiScene.selectedItem].amount);
-                    menu = createMenu(this, 550, 350, confirmBuy, function (button) {
-                        if (button.text === costText){
-                            if (cost > playerVariables.money){
-                                console.log("Not enough money...")
-                            } else {
-                                if (shopInventory[uiScene.selectedTab][item] === undefined){
-                                    return;
-                                }
-                                console.log("Added cell " + cellIndex + " which contains " + item +
-                                    " to player inventory");
-                                playerVariables.inventory[item]+=1;
-                                playerVariables.money-=cost;
-                                let newStock = parseInt(stock)-1;
-                                shopInventory[uiScene.selectedTab][item].amount = newStock;
+                            if (button.text === "Hold") {
+                                console.log(cellContainer.text)
+                                heldItem = new Flower(2, 2, cellContainer.text);
+                                playerVariables.inventory[uiScene.selectedTab][item] -= 1;
 
                             }
-                        }
+                            menu.collapse();
+                            menu = undefined;
+                            itemOptions = [
+                                {
+                                    name: 'Plant',
+                                },
+                                {
+                                    name: 'Cancel',
+                                },
+                            ];
+                            uiScene.scene.resume("hubScene");
+                            uiScene.scene.stop("backpackUI")
+
+                        });
+                    } else if (!menu.isInTouching(pointer)) {
                         menu.collapse();
                         menu = undefined;
-                    });
-                } else if (!menu.isInTouching(pointer)) {
-                    menu.collapse();
-                    menu = undefined;
+                    }
                 }
             }, this)
             .on('cell.over', function (cellContainer, cellIndex) {
                 cellContainer.getElement('background')
-                    .setStrokeStyle(2, COLOR_LIGHT)
+                    .setStrokeStyle(lineWidth, COLOR_LIGHT)
                     .setDepth(1);
-                let item = cellContainer.text;
+
                 uiScene.selectedItem = cellContainer.text;
-                let available = shopInventory[uiScene.selectedTab][uiScene.selectedItem].amount;
-                if (available <= 0){
-                    cellContainer.text = "OUT OF \nSTOCK";
-                } else {
-                    cellContainer.text = "Stock:" + available;
-                }
+                console.log(cellContainer.text);
+                let amt = playerVariables.inventory[uiScene.selectedTab][uiScene.selectedItem];
+                cellContainer.text = uiScene.selectedItem + ":" + amt;
+
             }, this)
             .on('cell.out', function (cellContainer, cellIndex) {
                 cellContainer.getElement('background')
-                    .setStrokeStyle(2, COLOR_DARK)
+                    .setStrokeStyle(lineWidth, COLOR_DARK)
                     .setDepth(0);
                 cellContainer.text = uiScene.selectedItem;
             }, this);
 
         tabs.emitButtonClick('left', 0).emitButtonClick('right', 0);
 
+
     }
 
     update() {
-        if(Phaser.Input.Keyboard.JustDown(keyESCAPE)){
+        if (Phaser.Input.Keyboard.JustDown(keyESCAPE)) {
             console.log("escape")
-            this.scene.resume("shopScene");
-            this.scene.stop("shopUIScene")
+            this.scene.resume("hubScene");
+            this.scene.stop("backpackUI")
         }
+
     }
 }
 
-var createDataBase = function (count) {
-    var TYPE = ['Seeds', 'Hives'];
+var createDataBaseInventory = function (count) {
+    var TYPE = ['Seeds', 'Items', 'Honey', 'Flowers'];
     // Create the database
     var db = new loki();
     // Create a collection
     var items = db.addCollection('items');
     // Insert documents
-    for (const [tab, inv] of Object.entries(shopInventory)) {
+
+    for (const [tab, inv] of Object.entries(playerVariables.inventory)) {
         for (const [item, info] of Object.entries(inv)) {
-            console.log(`${item}: ${info}`);
+            //console.log(`item ${item}: info ${info} tab ${tab} inv ${inv}`);
             items.insert({
-                type:tab,
-                id:item,
-                color: Random(0, 0xffffff),
-                img: info.img,
-                amt: info.amount,
-                cost: info.cost
+                id: item,
+                type: tab
             });
             shopCosts[item] = info.cost;
         }
 
     }
+    console.log(items)
     return items;
 };
 
@@ -269,7 +286,7 @@ var createButton = function (scene, direction, text) {
     }
     return scene.rexUI.add.label({
         width: 50,
-        height:40,
+        height: 40,
         background: scene.rexUI.add.roundRectangle(0, 0, 50, 50, radius, COLOR_DARK),
         text: scene.add.text(0, 0, text, {
             fontSize: '18pt'

@@ -4,7 +4,7 @@ let config = {
     type: Phaser.CANVAS,
     width: 960,
     height: 540,
-    scene: [Boot, Hub, Garden, Map, Market, Play, Menu, Settings, Talking, Pause, OldRhythm, ShopUI, Shop],
+    scene: [Boot, Hub, Garden, Map, Market, Play, Menu, Settings, Talking, Pause, OldRhythm,  Shop, ShopUI, BackPackUI],
     volume: .7,
     physics: {
         default: 'arcade',
@@ -24,9 +24,10 @@ let game = new Phaser.Game(config);
 let keyP, keyO, keyESCAPE, keyLEFT, keyRIGHT, keyDOWN, keyUP, keySPACE, keyY, keyN;
 
 //colors for ui elements
-const COLOR_PRIMARY = 0x4e342e;
-const COLOR_LIGHT = 0x7b5e57;
-const COLOR_DARK = 0x260e04;
+let uiScene; // global variable for current active ui scene
+const COLOR_PRIMARY = 0x808ADE;
+const COLOR_LIGHT = 0x684ADE;
+const COLOR_DARK = 0x80DECB;
 const Random = Phaser.Math.Between;
 
 let upgrades = { "bike": 0, "bee": 0, "tools": 0 };
@@ -60,6 +61,8 @@ for(row = 0; row < gardenGrid.length; row++) {
 let cursors = null;
 let dialogueSection = 0;
 //let isPaused = false;
+let heldItem = undefined;
+let vars = {}
 
 //Player variables so we dont have to pass them around forever
 let playerVariables = {
@@ -94,3 +97,22 @@ let playerVariables = {
         }
     }
 }
+let shopInventory = {
+    "Seeds": {
+        "Green": {"amount": 2, "img": "bearBee", "cost":5},
+        "Red":{"amount": 3, "img": "PlayerIcon", "cost": 20}
+    },
+    "Hives":{
+        "Blue":{"amount": 3, "img": "bearBee","cost":55},
+        "Yellow":{"amount": 0, "img": "player","cost":15}
+    }
+}
+
+let itemOptions = [
+    {
+        name: 'Plant',
+    },
+    {
+        name: 'Cancel',
+    },
+];
