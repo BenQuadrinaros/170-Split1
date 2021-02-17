@@ -401,6 +401,24 @@ class Hub extends Phaser.Scene {
         }
         */
 
+        //Check if the player is close enough to the bike to Toad Leckman to shop
+        if (Math.abs(Phaser.Math.Distance.Between(this.toadLeckman.x, this.toadLeckman.y, this.player.x, this.player.y)) < 100) {
+            //this.bike.y += this.bounceFactor;
+            this.interactText.text = "'SPACE' to go shopping";
+            this.interactText.x = this.toadLeckman.x;
+            this.interactText.y = this.toadLeckman.y;
+            this.interactText.setVisible(true);
+            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+                //-1 to indicate that it just left the hub
+                this.music.stop();
+                //this.scene.start('mapScene', { arrivingAt: -1 }) //for going to biking map
+                this.scene.start('shopScene');
+            }
+        } else {
+
+            this.interactText.setVisible(false);
+        }
+
         //When the player starts to move, get rid of the instructions
         if (this.moveText != null) {
             if (keyLEFT.isDown || keyRIGHT.isDown || keyUP.isDown || keyDOWN.isDown) {
