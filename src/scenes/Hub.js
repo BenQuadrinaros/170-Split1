@@ -74,8 +74,25 @@ class Hub extends Phaser.Scene {
         this.bikeShed.depth = this.bikeShed.y / 10;
         this.gardeningShed = this.add.image(4 * config.width / 5, 3 * config.height / 4, 'gardeningShed').setScale(1.2, 1.2);
         this.gardeningShed.depth = this.gardeningShed.y / 10;
+        this.toadLeckman = this.add.image(6*config.width/5, 2*config.height/5, 'toadLeckman').setOrigin(0.5,0.5).setScale(0.5,0.5);
+        this.toadLeckman.depth = this.toadLeckman.y/10;
         this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 2, this.worldWidth, this.worldHeight);
         this.player.depth = this.player.y / 10;
+
+
+        //Create player animations
+        this.anims.create({
+            key: 'playerBackIdle',
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('player', {start: 0, end: 1}),
+            frameRate: 2
+        });
+        this.anims.create({
+            key: 'playerFrontIdle',
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('player', {start: 2, end: 3}),
+            frameRate: 2
+        });
                 
         //Restore all actions
         playerVariables.actions = 4;
@@ -298,7 +315,8 @@ class Hub extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 //-1 to indicate that it just left the hub
                 this.music.stop();
-                this.scene.start('mapScene', { arrivingAt: -1 })
+                //this.scene.start('mapScene', { arrivingAt: -1 }) //for going to biking map
+                this.scene.start('marketScene');
             }
         } else {
 

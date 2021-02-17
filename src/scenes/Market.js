@@ -16,9 +16,18 @@ class Market extends Phaser.Scene {
         this.bike.depth = 35;
 
         //bear in costume selling honey
-        this.bear = this.add.image(game.config.width / 2.5, 7 * game.config.height / 10, 'bearBee');
-        this.bear.setOrigin(.5, .5).setScale(9, 9);
+        this.bear = this.add.sprite(game.config.width / 2.5, 7 * game.config.height / 10, 'player', 0);
+        this.bear.setOrigin(.5, .5).setScale(2.5, 2.5);
         this.bear.depth = 50;
+
+        //Create player idle animation
+        this.anims.create({
+            key: 'playerBackIdle',
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('player', {start: 0, end: 1}),
+            frameRate: 24
+        });
+        this.bear.anims.play('playerBackIdle', true);
 
         //Text config without a background, which blends better with the background
         this.textConfig = {
@@ -91,7 +100,7 @@ class Market extends Phaser.Scene {
         //update text UIs
         this.moneyText.text = "Money: $" + Math.floor(playerVariables.money) + "." + Math.floor(playerVariables.money * 10) % 10 + 
             Math.floor(playerVariables.money * 100) % 10;
-        this.honeyText.text = "Honey: " + playerVariables.honey;
+        this.honeyText.text = "Honey: " + playerVariables.inventory.honey.total;
         let currTime = Math.floor((this.timer.delay - this.timer.getElapsed()) / 1000);
         this.timeText.text = "Time Remaining: " + Math.floor(currTime / 60) + ":" + Math.floor((currTime % 60) / 10) + currTime % 10;
 
@@ -109,6 +118,8 @@ class Market extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
                 //go to map
                 //ADD HERE
+                this.music.stop();
+                this.scene.start('hubScene', {wasVisiting: "market"});
             }
         } else {
             if (this.state == "waiting") { //Patrons come and go
@@ -117,9 +128,9 @@ class Market extends Phaser.Scene {
                 this.bear.x += .25 * Math.sin(currTime / 2);
                 this.bear.y += .1 * Math.sin(currTime / 4 + 1);
 
-                if (playerVariables.honey > 0 && Phaser.Math.Between(0, 1000) > 985) {
+                if (playerVariables.inventory.honey.total > 0 && Phaser.Math.Between(0, 1000) > 985) {
                     this.state = "approaching";
-                    this.npc = new NPC(this, 2 * game.config.width / 3, game.config.height / 2, 'PlayerIcon', 0, "Bearington", "easy",
+                    this.npc = new NPC(this, 2 * game.config.width / 3, game.config.height / 2, 'basicDogNPC', 0, "Bearington", "easy",
                         [["Hullo"], ["Thanks", "Bye"]]);
                     this.closeness = .1;
                     this.npc.depth = 0;
@@ -130,7 +141,7 @@ class Market extends Phaser.Scene {
                         callback: () => {
                             this.state = "bargaining";
                             //Could be a call to NPC characteristics
-                            this.npcAmount = Math.min(Phaser.Math.Between(1, 4) + Phaser.Math.Between(1, 3), playerVariables.honey);
+                            this.npcAmount = Math.min(Phaser.Math.Between(1, 4) + Phaser.Math.Between(1, 3), playerVariables.inventory.honey.total);
                             this.npcPrice = (1 + Phaser.Math.FloatBetween(.1, 1) + Phaser.Math.FloatBetween(.1, .5)) * this.npcAmount;
                             this.transactionText.text = this.npc.name + ": " + this.npc.voiceLines[0][Phaser.Math.Between(0, 
                                 this.npc.voiceLines[0].length-1)] + "\nI would like to buy " + this.npcAmount + " jars\nof honey for $" + 
@@ -155,7 +166,7 @@ class Market extends Phaser.Scene {
                 if (Phaser.Input.Keyboard.JustDown(keyY)) {
                     this.state = "leaving";
                     this.transactionText.alpha = 0;
-                    playerVariables.honey -= this.npcAmount;
+                    playerVariables.inventory.honey.total -= this.npcAmount;
                     playerVariables.money += Math.floor(this.npcPrice * 100) / 100;
                     this.time.addEvent({
                         delay: 1500,
