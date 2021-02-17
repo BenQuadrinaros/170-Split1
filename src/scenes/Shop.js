@@ -74,8 +74,19 @@ class Shop extends Phaser.Scene {
     }
     update(){
         this.player.update();
+        if (Math.abs(Phaser.Math.Distance.Between(this.shopText.x,this.shopText.y, this.player.x,this.player.y)) < 100){
+            this.shopTextInteract.setVisible(true);
+            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+                console.log("launching shop ui")
+                this.scene.pause('shopScene');
+                this.scene.launch("shopUIScene");
+            }
+        } else {
+            this.shopTextInteract.setVisible(false);
+        }
         if(Phaser.Input.Keyboard.JustDown(keySPACE)){
             heldItem = undefined;
+
         }
 
         if (heldItem !== undefined){
@@ -85,15 +96,7 @@ class Shop extends Phaser.Scene {
         if (this.counter % 60 === 0){
             this.bounceFactor = -this.bounceFactor;
         }
-        if (Math.abs(Phaser.Math.Distance.Between(this.shopText.x,this.shopText.y, this.player.x,this.player.y)) < 100){
-        this.shopTextInteract.setVisible(true);
-            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
-                this.scene.pause('shopScene');
-                this.scene.launch("shopUIScene");
-            }
-        } else {
-            this.shopTextInteract.setVisible(false);
-        }
+
 
 
     }

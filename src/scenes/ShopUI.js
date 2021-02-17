@@ -1,16 +1,7 @@
-let shopS;
+
 let menu = undefined;
 let pointer ;
-let shopInventory = {
-    "Seeds": {
-        "Green": {"amount": 2, "img": "bearBee", "cost":5},
-        "Red":{"amount": 3, "img": "PlayerIcon", "cost": 20}
-    },
-    "Hives":{
-        "Blue":{"amount": 3, "img": "bearBee","cost":55},
-        "Yellow":{"amount": 0, "img": "player","cost":15}
-    }
-}
+
 let shopCosts = {
 };
 class ShopUI extends Phaser.Scene {
@@ -18,7 +9,7 @@ class ShopUI extends Phaser.Scene {
         super({
             key: "shopUIScene"
         });
-        shopS = this;
+
         this.selectedItem = undefined;
         this.selectedTab = "Seeds";
 
@@ -35,11 +26,8 @@ class ShopUI extends Phaser.Scene {
     }
 
     create() {
+        uiScene = this;
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
-
-        this.print = this.add.text(0, 0, "Money: " + playerVariables.money);
-        this.print2 = this.add.text(0,20, "Green Flowers: " + playerVariables.inventory["Green"]);
-        this.print3 = this.add.text(0,40, "Green Flowers Stock : " + shopInventory["Seeds"]["Green"].amount);
         this.selectedTab = "Seeds";
 
         var db = createDataBase(5);
@@ -75,7 +63,7 @@ class ShopUI extends Phaser.Scene {
 
                 slider: {
                     track: this.rexUI.add.roundRectangle(0, 0, 20, 10, 10, COLOR_DARK),
-                    thumb: this.rexUI.add.roundRectangle(0, 0, 0, 0, 13, COLOR_LIGHT),
+                    thumb: uiScene.add.image(0,0,"PlayerIcon").setScale(.5,.5),
                 },
 
                 // scroller: true,
@@ -137,7 +125,7 @@ class ShopUI extends Phaser.Scene {
                             return;
                         }
                         console.log("selected tab " + button.text);
-                        shopS.selectedTab = button.text;
+                        uiScene.selectedTab = button.text;
                         break;
 
                     case 'right':
@@ -170,22 +158,22 @@ class ShopUI extends Phaser.Scene {
         tabs.getElement('panel')
             .on('cell.click', function (cellContainer, cellIndex) {
                 //create popup menu for confirmation
-                let item = shopS.selectedItem;
-                let stock = shopInventory[shopS.selectedTab][shopS.selectedItem].amount;
-                let cost = shopInventory[shopS.selectedTab][shopS.selectedItem].cost;
+                let item = uiScene.selectedItem;
+                let stock = shopInventory[uiScene.selectedTab][uiScene.selectedItem].amount;
+                let cost = shopInventory[uiScene.selectedTab][uiScene.selectedItem].cost;
                 let costText = "Buy for " + cost + " ?"
 
                 confirmBuy[0] = {name: costText}
                 console.log("Before buying item text is " + cellContainer.text)
                 if (menu === undefined) {
-                    console.log("Selected item is " + shopS.selectedItem + " in group "+ shopS.selectedTab +
-                        " which has stock " + shopInventory[shopS.selectedTab][shopS.selectedItem].amount);
+                    console.log("Selected item is " + uiScene.selectedItem + " in group "+ uiScene.selectedTab +
+                        " which has stock " + shopInventory[uiScene.selectedTab][uiScene.selectedItem].amount);
                     menu = createMenu(this, 550, 350, confirmBuy, function (button) {
                         if (button.text === costText){
                             if (cost > playerVariables.money){
                                 console.log("Not enough money...")
                             } else {
-                                if (shopInventory[shopS.selectedTab][item] === undefined){
+                                if (shopInventory[uiScene.selectedTab][item] === undefined){
                                     return;
                                 }
                                 console.log("Added cell " + cellIndex + " which contains " + item +
@@ -193,7 +181,7 @@ class ShopUI extends Phaser.Scene {
                                 playerVariables.inventory[item]+=1;
                                 playerVariables.money-=cost;
                                 let newStock = parseInt(stock)-1;
-                                shopInventory[shopS.selectedTab][item].amount = newStock;
+                                shopInventory[uiScene.selectedTab][item].amount = newStock;
 
                             }
                         }
@@ -210,8 +198,8 @@ class ShopUI extends Phaser.Scene {
                     .setStrokeStyle(2, COLOR_LIGHT)
                     .setDepth(1);
                 let item = cellContainer.text;
-                shopS.selectedItem = cellContainer.text;
-                let available = shopInventory[shopS.selectedTab][shopS.selectedItem].amount;
+                uiScene.selectedItem = cellContainer.text;
+                let available = shopInventory[uiScene.selectedTab][uiScene.selectedItem].amount;
                 if (available <= 0){
                     cellContainer.text = "OUT OF \nSTOCK";
                 } else {
@@ -222,7 +210,7 @@ class ShopUI extends Phaser.Scene {
                 cellContainer.getElement('background')
                     .setStrokeStyle(2, COLOR_DARK)
                     .setDepth(0);
-                cellContainer.text = shopS.selectedItem;
+                cellContainer.text = uiScene.selectedItem;
             }, this);
 
         tabs.emitButtonClick('left', 0).emitButtonClick('right', 0);

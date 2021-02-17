@@ -1,11 +1,15 @@
+let selectedTab = "seeds"
+let lineWidth = 2;
+
 class BackPackUI extends Phaser.Scene {
     constructor() {
         super({
             key: "backpackUI"
         });
+
     }
 
-    preload(){
+    preload() {
         console.log("in backpackui")
         this.load.scenePlugin({
             key: 'rexuiplugin',
@@ -14,11 +18,10 @@ class BackPackUI extends Phaser.Scene {
         });
     }
 
-    create(){
+    create() {
 
-        //create items offscreen for player to hold
-
-
+        uiScene = this;
+        keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         //Text config without a background, which blends better with the background
         this.textConfig = {
             fontFamily: "Courier",
@@ -33,7 +36,7 @@ class BackPackUI extends Phaser.Scene {
             },
         };
         //different things the player can do with objekt
-        var itemOptions = [
+        itemOptions = [
             {
                 name: 'Hold',
             },
@@ -41,10 +44,10 @@ class BackPackUI extends Phaser.Scene {
                 name: 'Cancel',
             },
         ];
-        this.selectedObject = undefined;
-        this.selectedType = undefined;
+        this.selectedItem = undefined;
+        this.selectedTab = "seeds";
         //create backpack icon
-        this.backpack = this.add.image(config.width- config.width/6, config.height/6, 'PlayerIcon')
+        this.backpack = this.add.image(config.width - config.width / 6, config.height / 6, 'PlayerIcon')
             .setInteractive().setAlpha(.5)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1)
@@ -52,11 +55,11 @@ class BackPackUI extends Phaser.Scene {
             .on('pointerout', () => {
                 this.backpack.setAlpha(.5)
             })
-            .on('pointerdown', () =>{
+            .on('pointerdown', () => {
                 this.scene.stop('backpackUI')
-                this.scene.resume('shopScene')
+                this.scene.resume('hubScene')
             });
-        this.add.text(this.backpack.x,this.backpack.y,"EXIT").setOrigin(.5,.5)
+        this.add.text(this.backpack.x, this.backpack.y, "EXIT").setOrigin(.5, .5)
         var db = createDataBaseInventory(5);
 
 
@@ -72,16 +75,16 @@ class BackPackUI extends Phaser.Scene {
                     height: 300,
 
                     cellWidth: 230,
-                    cellHeight: 90,
+                    cellHeight: 150,
                     columns: 2,
                     mask: {
-                        padding: 6,
+                        padding: 2,
                     },
                 },
 
                 slider: {
                     track: this.rexUI.add.roundRectangle(0, 0, 20, 10, 10, COLOR_DARK),
-                    thumb: this.rexUI.add.roundRectangle(0, 0, 0, 0, 13, COLOR_LIGHT),
+                    thumb: uiScene.add.image(0, 0, "PlayerIcon").setScale(.5, .5),
                 },
 
                 // scroller: true,
@@ -95,8 +98,8 @@ class BackPackUI extends Phaser.Scene {
                     return scene.rexUI.add.label({
                         width: width,
                         height: height,
-                        background: scene.rexUI.add.roundRectangle(0, 0, 20, 20, 0).setStrokeStyle(2, COLOR_DARK),
-                        icon: scene.add.image(0,0, 'PlayerIcon').setScale(.45,.45),
+                        background: scene.rexUI.add.roundRectangle(0, 0, 20, 20, 0).setStrokeStyle(lineWidth, COLOR_DARK),
+                        icon: scene.add.image(0, 0, 'PlayerIcon').setScale(.45, .45),
                         text: scene.add.text(0, 0, item.id),
 
                         space: {
@@ -143,8 +146,8 @@ class BackPackUI extends Phaser.Scene {
                         if (this._prevSortButton === undefined) {
                             return;
                         }
-                        console.log("selected tab " + button.text);
-                        shopS.selectedTab = button.text;
+                        //console.log("selected tab " + button.text);
+                        uiScene.selectedTab = button.text;
                         break;
 
                     case 'right':
@@ -176,40 +179,68 @@ class BackPackUI extends Phaser.Scene {
         // Grid table
         tabs.getElement('panel')
             .on('cell.click', function (cellContainer, cellIndex) {
+                let item = uiScene.selectedItem;
+                console.log(`item ${item} in tab ${uiScene.selectedTab}`)
+                let amount = playerVariables.inventory[uiScene.selectedTab][item];
+                if (amount > 0) {
+                    if (menu === undefined) {
+                        menu = createMenu(this, 675, 350, itemOptions, function (button) {
 
+                            if (button.text === "Hold") {
+                                console.log(cellContainer.text)
+                                heldItem = new Flower(2, 2, cellContainer.text);
+                                playerVariables.inventory[uiScene.selectedTab][item] -= 1;
 
-                if (menu === undefined) {
-                    menu = createMenu(this, 675, 350, itemOptions, function (button) {
+                            }
+                            menu.collapse();
+                            menu = undefined;
+                            itemOptions = [
+                                {
+                                    name: 'Plant',
+                                },
+                                {
+                                    name: 'Cancel',
+                                },
+                            ];
+                            uiScene.scene.resume("hubScene");
+                            uiScene.scene.stop("backpackUI")
 
-                        if (button.text==="Hold"){
-                            heldItem = cellContainer.text;
-                        }
+                        });
+                    } else if (!menu.isInTouching(pointer)) {
                         menu.collapse();
                         menu = undefined;
-                    });
-                } else if (!menu.isInTouching(pointer)) {
-                    menu.collapse();
-                    menu = undefined;
+                    }
                 }
             }, this)
             .on('cell.over', function (cellContainer, cellIndex) {
                 cellContainer.getElement('background')
-                    .setStrokeStyle(2, COLOR_LIGHT)
+                    .setStrokeStyle(lineWidth, COLOR_LIGHT)
                     .setDepth(1);
+
+                uiScene.selectedItem = cellContainer.text;
+                console.log(cellContainer.text);
+                let amt = playerVariables.inventory[uiScene.selectedTab][uiScene.selectedItem];
+                cellContainer.text = uiScene.selectedItem + ":" + amt;
 
             }, this)
             .on('cell.out', function (cellContainer, cellIndex) {
                 cellContainer.getElement('background')
-                    .setStrokeStyle(2, COLOR_DARK)
+                    .setStrokeStyle(lineWidth, COLOR_DARK)
                     .setDepth(0);
+                cellContainer.text = uiScene.selectedItem;
             }, this);
 
         tabs.emitButtonClick('left', 0).emitButtonClick('right', 0);
 
 
     }
-    update(){
 
+    update() {
+        if (Phaser.Input.Keyboard.JustDown(keyESCAPE)) {
+            console.log("escape")
+            this.scene.resume("hubScene");
+            this.scene.stop("backpackUI")
+        }
 
     }
 }
@@ -226,8 +257,8 @@ var createDataBaseInventory = function (count) {
         for (const [item, info] of Object.entries(inv)) {
             //console.log(`item ${item}: info ${info} tab ${tab} inv ${inv}`);
             items.insert({
-                id:item,
-                type:tab
+                id: item,
+                type: tab
             });
             shopCosts[item] = info.cost;
         }
@@ -255,7 +286,7 @@ var createButton = function (scene, direction, text) {
     }
     return scene.rexUI.add.label({
         width: 50,
-        height:40,
+        height: 40,
         background: scene.rexUI.add.roundRectangle(0, 0, 50, 50, radius, COLOR_DARK),
         text: scene.add.text(0, 0, text, {
             fontSize: '18pt'
