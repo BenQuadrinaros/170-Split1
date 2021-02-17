@@ -34,7 +34,7 @@ let upgrades = { "bike": 0, "bee": 0, "tools": 0 };
 //Starting garden state
 let flow0 = new Flower(2, 3, "Cosmo");
 let flow1 = new Flower(2, 3, "Cosmo");
-let hive = new Hive(5, 2);
+let hive = new Hive(2, 5);
 //more flowers for testing purposes
 let flow2 = new Flower(0, 3, "Cosmo");
 let flow3 = new Flower(1, 3, "Cosmo");
