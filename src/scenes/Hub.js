@@ -8,6 +8,14 @@ class Hub extends Phaser.Scene {
         this.wasVisiting = data.wasVisiting;
     }
 
+    preload(){
+        this.load.scenePlugin({
+            key: 'rexuiplugin',
+            url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+            sceneKey: 'rexUI'
+        });
+    }
+
     create() {
         //Initialize world details
         this.worldWidth = 5000;
@@ -434,7 +442,7 @@ class Hub extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 let row = plot[0];
                 let col = plot[1];
-                //console.log(this.inScene[row][col].texture.key)
+                //console.log(this.inScene[row][col])
                 //If the player is holding an item, modify garden plots and add image to scene.
                 if (heldItem !== undefined){
                     //console.log(heldItem);
@@ -447,6 +455,40 @@ class Hub extends Phaser.Scene {
                     this.inScene[row][col].image.setScale(.15,.15).setOrigin(.5,.5);
 
                     this.heldImg = 0;
+                }else {
+                    //if the player is attempting to interact with a flower, pick it up for now.
+                    if (this.inScene[row][col] instanceof Flower){
+                        heldItem = this.inScene[row][col];
+                        let texture = this.inScene[row][col].image.texture;
+                        this.inScene[row][col].destroy();
+                        this.inScene[row][col] = null;
+                        gardenGrid[row][col] = null;
+
+
+                    }
+                    // if (this.inScene[row][col] instanceof Flower) {
+                    //     console.log("Flower in plot");
+                    //     let flower = this.inScene[row][col].image;
+                    //     let options = [
+                    //         {
+                    //             name: 'Pick Up',
+                    //         },
+                    //         {
+                    //             name: 'Cancel',
+                    //         },
+                    //     ];
+                    //     if (menu === undefined){
+                    //         console.log(flower.x + " " + flower.y)
+                    //         menu = createMenu(this,flower.x,flower.y, options,function (button){
+                    //
+                    //         });
+                    //     } else if (!menu.isInTouching(pointer)) {
+                    //         menu.collapse();
+                    //         menu = undefined;
+                    //     }
+                    //
+                    //
+                    // }
                 }
             }
         }
