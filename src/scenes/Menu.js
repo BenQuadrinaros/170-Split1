@@ -133,7 +133,7 @@ class Menu extends Phaser.Scene {
         }
         //Settings is being pressed
         else if(newScene === 2){
-            this.scene.start('shopScene');
+            this.scene.start('settingsScene');
         }
         //Other result
         else{
