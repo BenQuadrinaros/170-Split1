@@ -20,6 +20,7 @@ class Boot extends Phaser.Scene {
             this.load.image("dirt", "./assets/sprites/background/dirt-04.png");
             this.load.image("hive", "./assets/sprites/background/hubHive.png");
             this.load.image("bearBee", "./assets/sprites/character/bearBee.png");
+            this.load.image("flower", "./assets/sprites/spritesheetFrames/05healthyflower-03.png");
             //For hubScene
             this.load.image('background', './assets/sprites/background/garden_base.png');
             this.load.image('bee','./assets/sprites/character/hubBee.jpg');
@@ -42,7 +43,7 @@ class Boot extends Phaser.Scene {
 
         //Load Spritesheets
             //For gardenScene
-            this.load.spritesheet('flower', './assets/spritesheets/flowerStages.png', { frameWidth: 407, frameHeight: 456, startFrame: 0, endFrame: 4 });
+            this.load.spritesheet('flowerSheet', './assets/spritesheets/flowerStages.png', { frameWidth: 407, frameHeight: 456, startFrame: 0, endFrame: 4 });
             //For hubScene
             this.load.spritesheet('player', './assets/spritesheets/bearFrontBack.png', {frameWidth:40, frameHeight:72, startFrame:0, endFrame:1});
             //For mapScene
@@ -119,9 +120,6 @@ class Boot extends Phaser.Scene {
           console.log('complete');
           progressBar.destroy();
           progressBox.destroy();
-
-
-
         });
     }
 

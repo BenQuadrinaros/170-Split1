@@ -18,45 +18,42 @@ class Garden extends Phaser.Scene {
         this.exit = this.add.image(config.width / 7, config.height / 8, "exit").setOrigin(0.5, 0.5);
         this.exit.depth = 100;
 
-        //Load in Flowers
-        //More randomized flower placement
-        /*
-        this.dirt0 = this.add.image(.125*config.width, .35*config.height, "dirt").setOrigin(0.5).setScale(.66);
-        this.dirt0.depth = this.dirt0.y / 10 - 1;
-        let flower0 = this.add.image(.125*config.width, .35*config.height, "flower").setOrigin(0.5).setScale(.25);
-        flower0.depth = flower0.y / 10;
-        this.updateFlowerImages();
-        */
-        this.inScene = [
-            [null, null, null, null, null, null, null, null, null, null],
-            [null, null, null, null, null, null, null, null, null, null],
-            [null, null, null, null, null, null, null, null, null, null],
-            [null, null, null, null, null, null, null, null, null, null],
-            [null, null, null, null, null, null, null, null, null, null],
-            [null, null, null, null, null, null, null, null, null, null],
-            [null, null, null, null, null, null, null, null, null, null],
-            [null, null, null, null, null, null, null, null, null, null]
+        //Load in the garden scene images and grid
+        this.path = [];    //Path for the bees to follow
+        this.inScene = [   //This array will let us track local changes and update images
+            [null*10], [null*10], [null*10], [null*10], [null*10], [null*10], [null*10], [null*10]
         ];
-        this.path = [];
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
                 if (gardenGrid[row][col] == null) {
-                    this.inScene[row][col] = new Hive(this, (1 + col) * game.config.width / 11, (1 + row) * (game.config.height - 50) /
-                        10, "dirt", 0, row, col);
-                } else if (gardenGrid[row][col][0] == "hive") {
-                    this.inScene[row][col] = new Hive(this, (1 + col) * game.config.width / 11, (1 + row) * (game.config.height - 50) /
-                        10 + 50, "hive", 0, row, col);
-                    this.inScene[row][col].setScale(.1, .1);
-                } else if (gardenGrid[row][col][0] == "flower") {
-                    this.inScene[row][col] = new Flower(this, (1 + col) * game.config.width / 11, (1 + row) * (game.config.height - 50) /
-                        10 + 50, "flower", 0, row, col, gardenGrid[row][col][1], gardenGrid[row][col][2]);
-                    this.path.push([(1 + col) * game.config.width / 11, (1 + row) * (game.config.height - 50) / 10 + 50]);
-                    this.inScene[row][col].setScale(.25, .25);
+                    // blank plots to be interacted with
+                    let temp = this.add.image((1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
+                        (1 + row) * (game.config.height - 50) / 8 + 50 /*+ Phaser.Math.Between(-7,7)*/, "dirt");
+                    temp.setOrigin(.5,.5).setScale(.5, .75);
+                    temp.depth = temp.y / 10;
+                    this.inScene[row][col] = temp;
+                } else if (gardenGrid[row][col] == "hive") {
+                    // hives
+                    let temp = new Hive(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
+                        (1 + row) * (game.config.height - 50) / 8 + 100 /*+ Phaser.Math.Between(-7,7)*/, "hive", 0, row, col);
+                    temp.setOrigin(.5,.5).setScale(.1, .1);
+                    this.path.push([temp.x, temp.y]);
+                    temp.depth = temp.y / 10;
+                    this.inScene[row][col] = temp;
+                } else {
+                    // flowers
+                    let temp = gardenGrid[row][col];
+                    temp.addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
+                        (1 + row) * (game.config.height - 50) / 8 + 90 /*+ Phaser.Math.Between(-7,7)*/, "flower", 0);
+                    temp.image.setOrigin(.5,.5).setScale(.15, .15);
+                    this.path.push([temp.image.x, temp.image.y]);
+                    temp.image.depth = temp.image.y / 10;
+                    this.inScene[row][col] = temp;
                 }
             }
         }
 
-        //creat bee swarm for simulated pollination
+        //Create bee swarm for simulated pollination
         this.swarm = [];
         let numBees = 5;                    //5 seems to be max for flower following to look decent
         for (let i = 0; i < numBees; ++i) {
@@ -93,9 +90,8 @@ class Garden extends Phaser.Scene {
         this.exitText = this.add.text(this.exit.x, this.exit.y, "Press SPACE to return to the cave",
             this.textConfig).setOrigin(0.5).setVisible(false);
         this.exitText.depth = 101;
-        let flowerText = this.add.text(0, 0, "Press SPACE to interact",
-            this.textConfig).setOrigin(0.5).setVisible(false);
-        flowerText.depth = 100;
+        this.flowerText = this.add.text(0, 0, "Press SPACE\nto interact", this.textConfig).setOrigin(0.5);
+        this.flowerText.depth = 100;
 
         //Have player move towards the mouse on pointer down
         this.input.on('pointerdown', function (pointer) {
@@ -136,13 +132,36 @@ class Garden extends Phaser.Scene {
         }
         
         //Place flower text over nearest spot for interaction
+        this.textHover();
 
+        //Update player and UI
         this.player.update();
-        this.player.depth = this.player.y / 10;
+        this.player.depth = this.player.y / 10 + 3;
         this.turnText.text = "Turns Remaining: " + playerVariables.turnsRemaining + "\nHoney: " +
             playerVariables.honey + "\nMoney: " + playerVariables.money;
     }
 
+    textHover() {
+        //find the closest interactable point
+        let closestXY = [];
+        let closestDist = 1000;
+        for (let row = 0; row < gardenGrid.length; row++) {
+            for (let col = 0; col < gardenGrid[0].length; col++) {
+                if(Math.sqrt(Math.pow((1 + col) * game.config.width / 9 - this.player.x,2) + 
+                    Math.pow((1 + row) * (game.config.height - 50) / 8 + 50 - this.player.y,2)) < closestDist) {
+                        closestDist = Math.sqrt(Math.pow((1 + col) * game.config.width / 9 - this.player.x,2) + 
+                            Math.pow((1 + row) * (game.config.height - 50) / 8 + 50 - this.player.y,2));
+                            closestXY = [(1 + col) * game.config.width / 9, (1 + row) * (game.config.height - 50) / 8 + 50];
+                    }
+            }
+        }
+        //move text to that location
+        this.flowerText.x = closestXY[0];
+        this.flowerText.y = closestXY[1] + 35;
+    }
+
+    //Currently not used
+    //Saved for UI and logic
     checkNearbyFlower(currDirt, i) {
         if (Math.abs(Phaser.Math.Distance.Between(currDirt.x, currDirt.y, this.player.x, this.player.y)) < 45) {
             //If the flower isnt purchased or is dead
