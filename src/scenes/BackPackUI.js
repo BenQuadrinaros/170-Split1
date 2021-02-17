@@ -10,7 +10,6 @@ class BackPackUI extends Phaser.Scene {
     }
 
     preload() {
-        console.log("in backpackui")
         this.load.scenePlugin({
             key: 'rexuiplugin',
             url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
@@ -187,7 +186,7 @@ class BackPackUI extends Phaser.Scene {
                         menu = createMenu(this, 675, 350, itemOptions, function (button) {
 
                             if (button.text === "Hold") {
-                                console.log(cellContainer.text)
+                                console.log(`holding a flower ${cellContainer.text}`)
                                 heldItem = new Flower(2, 2, cellContainer.text);
                                 playerVariables.inventory[uiScene.selectedTab][item] -= 1;
 
