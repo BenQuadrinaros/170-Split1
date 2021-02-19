@@ -73,6 +73,11 @@ class Shop extends Phaser.Scene {
         keyO = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.O);
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+        //create the background music manager
+        this.musicManager = new BGMManager(this);
+        this.musicManager.playSong("shopMusicFull", false);
+        this.musicManager.queueSong("shopMusicShort", true);
     }
     update(){
         this.player.update();
@@ -88,6 +93,7 @@ class Shop extends Phaser.Scene {
         }
         if (Math.abs(Phaser.Math.Distance.Between(this.toadLeckman.x,this.toadLeckman.y, this.player.x,this.player.y)) < 100){
             this.toadTextInteract.setVisible(true);
+            this.musicManager.transitionSong("hubMusic", true);
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 console.log("returning to hub");
                 this.scene.start("hubScene");

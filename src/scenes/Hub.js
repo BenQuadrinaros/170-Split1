@@ -155,10 +155,13 @@ class Hub extends Phaser.Scene {
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         //background music for the hub
-        this.music = this.sound.add("hubMusic");
-        this.music.volume = config.volume;
-        this.music.loop = true;
-        this.music.play();
+        this.music = new BGMManager(this);
+        this.music.playSong("hubMusic", true);
+        this.music.setVolume(config.volume);
+        //this.music = this.sound.add("hubMusic");
+        //this.music.volume = config.volume;
+        //this.music.loop = true;
+        //this.music.play();
 
         this.events.on("resume", () => {
             console.log("ReenableEsc called");
