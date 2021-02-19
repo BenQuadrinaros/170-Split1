@@ -80,7 +80,9 @@ class Boot extends Phaser.Scene {
             this.load.audio("mapMusic", "./assets/audio/music/honeybear.wav");
             //For menuScene
             this.load.audio("menuMusic", "./assets/audio/music/honeybear_2.wav");
-
+            //For shopScene
+            this.load.audio("shopMusicFull", "./assets/audio/music/toad_shop_theme_full_intro.mp3");
+            this.load.audio("shopMusicShort", "./assets/audio/music/toad_shop_theme_short_intro.mp3");
 
 
         //Load SFX
