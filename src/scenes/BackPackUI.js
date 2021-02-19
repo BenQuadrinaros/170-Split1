@@ -179,14 +179,15 @@ class BackPackUI extends Phaser.Scene {
         tabs.getElement('panel')
             .on('cell.click', function (cellContainer, cellIndex) {
                 let item = uiScene.selectedItem;
-                console.log(`item ${item} in tab ${uiScene.selectedTab}`)
+                //console.log(`item ${item} in tab ${uiScene.selectedTab}`)
                 let amount = playerVariables.inventory[uiScene.selectedTab][item];
+                //console.log(`amount of item ${item} is ${amount}`)
                 if (amount > 0) {
                     if (menu === undefined) {
                         menu = createMenu(this, 675, 350, itemOptions, function (button) {
 
                             if (button.text === "Hold") {
-                                console.log(`holding a flower ${cellContainer.text}`)
+                                //console.log(`holding a flower ${cellContainer.text}`)
                                 heldItem = new Flower(2, 2, cellContainer.text);
                                 playerVariables.inventory[uiScene.selectedTab][item] -= 1;
 
@@ -217,7 +218,7 @@ class BackPackUI extends Phaser.Scene {
                     .setDepth(1);
 
                 uiScene.selectedItem = cellContainer.text;
-                console.log(cellContainer.text);
+                //console.log(cellContainer.text);
                 let amt = playerVariables.inventory[uiScene.selectedTab][uiScene.selectedItem];
                 cellContainer.text = uiScene.selectedItem + ":" + amt;
 
@@ -236,7 +237,7 @@ class BackPackUI extends Phaser.Scene {
 
     update() {
         if (Phaser.Input.Keyboard.JustDown(keyESCAPE)) {
-            console.log("escape")
+            //console.log("escape")
             this.scene.resume("hubScene");
             this.scene.stop("backpackUI")
         }
@@ -263,7 +264,7 @@ var createDataBaseInventory = function (count) {
         }
 
     }
-    console.log(items)
+    //console.log(items)
     return items;
 };
 

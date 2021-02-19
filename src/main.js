@@ -21,7 +21,7 @@ let config = {
 let game = new Phaser.Game(config);
 
 //reserve some keyboard variables
-let keyP, keyO, keyESCAPE, keyLEFT, keyRIGHT, keyDOWN, keyUP, keySPACE, keyY, keyN;
+let keyP, keyO, keyESCAPE, keyLEFT, keyRIGHT, keyDOWN, keyUP, keySPACE, keyY, keyN,keyT;
 
 //colors for ui elements
 let uiScene; // global variable for current active ui scene
@@ -99,12 +99,16 @@ let playerVariables = {
 }
 let shopInventory = {
     "Seeds": {
-        "Green": {"amount": 2, "img": "bearBee", "cost":5},
-        "Red":{"amount": 3, "img": "PlayerIcon", "cost": 20}
+        "Cosmo": {"amount": 2, "img": "bearBee", "cost":2},
+        "Lavender":{"amount": 3, "img": "PlayerIcon", "cost": 3},
+        "Orchid":{"amount": 3, "img": "PlayerIcon", "cost": 3},
+        "Blue Bonnet":{"amount": 3, "img": "PlayerIcon", "cost": 4},
+        "Tulip":{"amount": 3, "img": "PlayerIcon", "cost": 4}
     },
-    "Hives":{
-        "Blue":{"amount": 3, "img": "bearBee","cost":55},
-        "Yellow":{"amount": 0, "img": "player","cost":15}
+    "Items":{
+        "Sprinkler":{"amount": 2, "img": "bearBee","cost":15},
+        "Beehive":{"amount": 2, "img": "PlayerIcon","cost":12},
+        "Fertilizer":{"amount": 5, "img": "PlayerIcon", "cost": 4}
     }
 }
 
