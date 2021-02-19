@@ -17,6 +17,7 @@ class Menu extends Phaser.Scene {
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         this.keyENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+        keyT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.T);
 
         //Setting Background
         this.menu = this.add.image(centerX, centerY, 'TitleScreen').setOrigin(0.5);
@@ -67,6 +68,11 @@ class Menu extends Phaser.Scene {
     }
 
     update() {
+        //Using T for test and debug scene
+        if (Phaser.Input.Keyboard.JustDown(keyT)) {
+            this.scene.start("shopScene")
+        }
+
         if (Phaser.Input.Keyboard.JustDown(keyUP)) {
             if(this.currSelected === -1){
                 this.currSelected = 1;
