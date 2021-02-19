@@ -17,9 +17,10 @@ class Hive {
             if (row > -1 && row < gardenGrid.length) {
                 for (let col = this.gridx - 2; col < this.gridx + 2; col++) {
                     if (col > -1 && col < gardenGrid[0].length) {
+                        //console.log("location: "+col+', '+row);
                         try {
                             let type = gardenGrid[row][col].getPollen();
-                            //console.log("collecting from flower at :" + col+', '+row+"\nwater: "+gardenGrid[row][col].water);
+                            //console.log("collecting from flower at: " + col+', '+row+"\nwater: "+gardenGrid[row][col].water);
                             if(type != "none") {
                                 collectedPollen[type] += 1;
                                 totalPollen += 1;

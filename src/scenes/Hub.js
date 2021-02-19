@@ -376,31 +376,6 @@ class Hub extends Phaser.Scene {
             this.bikeUpgrades.setVisible(false);
         }
 
-
-        // Check if player is near the tools
-        // Now extraneous cause everything in same scene
-        /*
-        if (Math.abs(Phaser.Math.Distance.Between(this.gardeningShed.x, this.gardeningShed.y, this.player.x, this.player.y)) < 100) {
-            this.gardeningShed.y += this.bounceFactor;
-            this.interactText.text = "'SPACE' to garden";
-            this.interactText.x = this.gardeningShed.x;
-            this.interactText.y = this.gardeningShed.y;
-            this.interactText.setVisible(true);
-            this.toolUpgrades.setVisible(true);
-            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
-                if (playerVariables.actions > 0) {
-                    this.music.stop();
-                    this.scene.start('gardenScene');
-
-                } else {
-                    this.fadeText("You are out of time today.\nMake your deliveries.");
-                }
-            }
-        } else {
-            this.toolUpgrades.setVisible(false);
-        }
-        */
-
         //Check if the player is close enough to the bike to Toad Leckman to shop
         if (Math.abs(Phaser.Math.Distance.Between(this.toadLeckman.x, this.toadLeckman.y, this.player.x, this.player.y)) < 100) {
             //this.bike.y += this.bounceFactor;
@@ -482,25 +457,34 @@ class Hub extends Phaser.Scene {
                 //If the player is holding an item, modify garden plots and add image to scene.
                 if (heldItem !== undefined){
                     //console.log(heldItem);
+                    //destroy whatever is in the spot
+                    this.inScene[row][col].destroy();
+                    //place held object in the spot
                     this.inScene[row][col] = heldItem;
                     gardenGrid[row][col] = heldItem;
-                    heldItem.image.destroy()
+                    //clear item held
+                    heldItem.image.destroy();
                     heldItem = undefined;
                     this.inScene[row][col].addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
                          (9 + row) * (game.config.height - 50) / 8 + 90 /*+ Phaser.Math.Between(-7,7)*/, "flower", 0);
                     this.inScene[row][col].image.setScale(.15,.15).setOrigin(.5,.5);
-
+                    this.inScene[row][col].image.depth = this.inScene[row][col].image.y / 10;
+                    //set the held image to nothing
                     this.heldImg = 0;
-                }else {
+                } else {
                     //if the player is attempting to interact with a flower, pick it up for now.
                     if (this.inScene[row][col] instanceof Flower){
                         heldItem = this.inScene[row][col];
                         let texture = this.inScene[row][col].image.texture;
+                        //remove the flower from the scene
                         this.inScene[row][col].destroy();
-                        this.inScene[row][col] = null;
+                        //create a dirt image and place it in the spot
+                        let temp = this.add.image((1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
+                            (9 + row) * (game.config.height - 50) / 8 + 50 /*+ Phaser.Math.Between(-7,7)*/, "dirt");
+                        temp.setOrigin(.5,.5).setScale(.5, .75);
+                        temp.depth = temp.y / 10;
+                        this.inScene[row][col] = temp;
                         gardenGrid[row][col] = null;
-
-
                     }
                     // if (this.inScene[row][col] instanceof Flower) {
                     //     console.log("Flower in plot");
@@ -548,7 +532,7 @@ class Hub extends Phaser.Scene {
             //If closest plot is far away, return null
             return null;
         } else {
-            //else, return plot coords
+            //else, return plot coords [row, col]
             return closestXY;
         }
     }
