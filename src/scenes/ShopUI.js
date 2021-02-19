@@ -50,10 +50,10 @@ class ShopUI extends Phaser.Scene {
                 background: this.rexUI.add.roundRectangle(0, 0, 20, 10, 10, COLOR_PRIMARY),
 
                 table: {
-                    width: 250,
+                    width: 350,
                     height: 400,
 
-                    cellWidth: 130,
+                    cellWidth: 175,
                     cellHeight: 90,
                     columns: 2,
                     mask: {
@@ -92,7 +92,7 @@ class ShopUI extends Phaser.Scene {
 
             leftButtons: [
                 createButton(this, 2, 'Seeds'),
-                createButton(this, 2, 'Hives'),
+                createButton(this, 2, 'Items'),
             ],
 
             rightButtons: [
@@ -124,8 +124,9 @@ class ShopUI extends Phaser.Scene {
                         if (this._prevSortButton === undefined) {
                             return;
                         }
-                        console.log("selected tab " + button.text);
+
                         uiScene.selectedTab = button.text;
+                        console.log("selected tab " + uiScene.selectedTab);
                         break;
 
                     case 'right':
@@ -159,16 +160,17 @@ class ShopUI extends Phaser.Scene {
             .on('cell.click', function (cellContainer, cellIndex) {
                 //create popup menu for confirmation
                 let item = uiScene.selectedItem;
+                let tab = uiScene.selectedTab.toLowerCase();
                 let stock = shopInventory[uiScene.selectedTab][uiScene.selectedItem].amount;
                 let cost = shopInventory[uiScene.selectedTab][uiScene.selectedItem].cost;
-                let costText = "Buy for " + cost + " ?"
+                let costText = "Buy for " + cost + "$ ?"
 
                 confirmBuy[0] = {name: costText}
                 console.log("Before buying item text is " + cellContainer.text)
                 if (menu === undefined) {
-                    console.log("Selected item is " + uiScene.selectedItem + " in group "+ uiScene.selectedTab +
+                    console.log("Selected item is " + uiScene.selectedItem + " in group "+ tab +
                         " which has stock " + shopInventory[uiScene.selectedTab][uiScene.selectedItem].amount);
-                    menu = createMenu(this, 550, 350, confirmBuy, function (button) {
+                    menu = createMenu(this, 600, 350, confirmBuy, function (button) {
                         if (button.text === costText){
                             if (cost > playerVariables.money){
                                 console.log("Not enough money...")
@@ -178,7 +180,9 @@ class ShopUI extends Phaser.Scene {
                                 }
                                 console.log("Added cell " + cellIndex + " which contains " + item +
                                     " to player inventory");
-                                playerVariables.inventory[item]+=1;
+                                console.log(`before changing inv, ${playerVariables.inventory[tab][item]}`)
+                                playerVariables.inventory[tab][item]+=1;
+                                console.log(`after changing inv, ${playerVariables.inventory[tab][item]}`)
                                 playerVariables.money-=cost;
                                 let newStock = parseInt(stock)-1;
                                 shopInventory[uiScene.selectedTab][item].amount = newStock;
@@ -220,6 +224,7 @@ class ShopUI extends Phaser.Scene {
     update() {
         if(Phaser.Input.Keyboard.JustDown(keyESCAPE)){
             console.log("escape")
+            menu = undefined;
             this.scene.resume("shopScene");
             this.scene.stop("shopUIScene")
         }
