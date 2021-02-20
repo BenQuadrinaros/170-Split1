@@ -158,10 +158,6 @@ class Hub extends Phaser.Scene {
         this.music = new BGMManager(this);
         this.music.playSong("hubMusic", true);
         this.music.setVolume(config.volume);
-        //this.music = this.sound.add("hubMusic");
-        //this.music.volume = config.volume;
-        //this.music.loop = true;
-        //this.music.play();
 
         this.events.on("resume", () => {
             console.log("ReenableEsc called");
