@@ -21,6 +21,7 @@ class Boot extends Phaser.Scene {
             this.load.image("hive", "./assets/sprites/background/hubHive.png");
             this.load.image("bearBee", "./assets/sprites/character/bearBee.png");
             this.load.image("flower", "./assets/sprites/spritesheetFrames/05healthyflower-03.png");
+            this.load.image("tempLavender", "./assets/sprites/background/lavTest.png");
             //For hubScene
             this.load.image('background', './assets/sprites/background/garden_base.png');
             this.load.image('bee','./assets/sprites/character/hubBee.jpg');
