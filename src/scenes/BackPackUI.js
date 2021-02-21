@@ -56,7 +56,7 @@ class BackPackUI extends Phaser.Scene {
             })
             .on('pointerdown', () => {
                 this.scene.stop('backpackUI')
-                this.scene.resume('hubScene')
+                this.scene.resume(previousScene.scene.key)
             });
         this.add.text(this.backpack.x, this.backpack.y, "EXIT").setOrigin(.5, .5)
         var db = createDataBaseInventory(5);
@@ -238,7 +238,7 @@ class BackPackUI extends Phaser.Scene {
     update() {
         if (Phaser.Input.Keyboard.JustDown(keyESCAPE)) {
             //console.log("escape")
-            this.scene.resume("hubScene");
+            this.scene.resume(previousScene.scene.key);
             this.scene.stop("backpackUI")
         }
 

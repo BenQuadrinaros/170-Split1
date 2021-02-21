@@ -17,6 +17,7 @@ class Hub extends Phaser.Scene {
     }
 
     create() {
+        previousScene = this;
         //Initialize world details
         this.worldWidth = 5000;
         this.worldHeight = 5000;
