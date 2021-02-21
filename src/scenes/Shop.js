@@ -15,7 +15,7 @@ class Shop extends Phaser.Scene {
     }
 
     create(){
-
+        previousScene = this;
         vars["Cosmo"] = this.add.image(10000,100000,"PlayerIcon").setOrigin(.5,.5);
         //Initialize images
         this.background = this.add.image(config.width/2, config.height/2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-10);

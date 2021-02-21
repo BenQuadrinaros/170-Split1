@@ -225,7 +225,7 @@ class ShopUI extends Phaser.Scene {
         if(Phaser.Input.Keyboard.JustDown(keyESCAPE)){
             console.log("escape")
             menu = undefined;
-            this.scene.resume("shopScene");
+            this.scene.resume(previousScene.scene.key);
             this.scene.stop("shopUIScene")
         }
     }
