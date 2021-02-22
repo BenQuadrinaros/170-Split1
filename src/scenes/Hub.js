@@ -154,6 +154,7 @@ class Hub extends Phaser.Scene {
         keyO = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.O);
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
 
         //background music for the hub
         this.music = new BGMManager(this);
@@ -288,7 +289,24 @@ class Hub extends Phaser.Scene {
             }
             heldItem.image.x = this.player.x;
             heldItem.image.y = this.player.y;
+            if (Phaser.Input.Keyboard.JustDown(keyB)){
+                //console.log(heldItem)
+                if (heldItem instanceof Flower){
+                    console.log(`Storing held flower ${heldItem.type} in inventory.`)
+                    console.log(`before storage ${playerVariables.inventory.flowers[heldItem.type]}`)
+                    playerVariables.inventory.flowers[heldItem.type] +=1;
+                    console.log(`after storage ${playerVariables.inventory.flowers[heldItem.type]}`)
+                    heldItem.destroy();
+                    heldItem = undefined
+                    this.heldImg = 0;
+                }
 
+            }
+        }
+        //If the player press B open the backpack
+        if (Phaser.Input.Keyboard.JustDown(keyB)){
+            this.scene.pause('hubScene');
+            this.scene.launch("backpackUI");
         }
 
         // -------------------------------------------
@@ -486,29 +504,6 @@ class Hub extends Phaser.Scene {
                         this.inScene[row][col] = temp;
                         gardenGrid[row][col] = null;
                     }
-                    // if (this.inScene[row][col] instanceof Flower) {
-                    //     console.log("Flower in plot");
-                    //     let flower = this.inScene[row][col].image;
-                    //     let options = [
-                    //         {
-                    //             name: 'Pick Up',
-                    //         },
-                    //         {
-                    //             name: 'Cancel',
-                    //         },
-                    //     ];
-                    //     if (menu === undefined){
-                    //         console.log(flower.x + " " + flower.y)
-                    //         menu = createMenu(this,flower.x,flower.y, options,function (button){
-                    //
-                    //         });
-                    //     } else if (!menu.isInTouching(pointer)) {
-                    //         menu.collapse();
-                    //         menu = undefined;
-                    //     }
-                    //
-                    //
-                    // }
                 }
             }
         }

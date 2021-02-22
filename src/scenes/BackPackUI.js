@@ -168,7 +168,7 @@ class BackPackUI extends Phaser.Scene {
                     .find({
                         type: this._prevTypeButton.text
                     })
-                    .simplesort('id', {
+                    .simplesort('amt', {
                         desc: (this._prevSortButton.text === '-') // sort descending
                     })
                     .data();
@@ -255,12 +255,16 @@ var createDataBaseInventory = function (count) {
 
     for (const [tab, inv] of Object.entries(playerVariables.inventory)) {
         for (const [item, info] of Object.entries(inv)) {
-            //console.log(`item ${item}: info ${info} tab ${tab} inv ${inv}`);
-            items.insert({
-                id: item,
-                type: tab
-            });
-            shopCosts[item] = info.cost;
+            //console.log(`${info}`);
+            if (info > 0) {
+                if (item !== "total") {
+                    items.insert({
+                        id: item,
+                        type: tab,
+                        amt:info
+                    });
+                }
+            }
         }
 
     }
