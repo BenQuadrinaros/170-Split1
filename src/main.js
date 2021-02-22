@@ -71,8 +71,8 @@ let playerVariables = {
     actions: 4,
     inventory: {
         honey: {
-            "total": 10,
-            "yellow": 10,
+            "total": 8,
+            "yellow": 8,
             "blue": 0,
             "purple": 0,
             "pink": 0
