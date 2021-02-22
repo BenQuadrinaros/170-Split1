@@ -22,7 +22,7 @@ let game = new Phaser.Game(config);
 let previousScene = null;
 
 //reserve some keyboard variables
-let keyP, keyO, keyESCAPE, keyLEFT, keyRIGHT, keyDOWN, keyUP, keySPACE, keyY, keyN,keyT;
+let keyP, keyO, keyESCAPE, keyLEFT, keyRIGHT, keyDOWN, keyUP, keySPACE, keyY, keyN,keyT, keyB;
 
 //colors for ui elements
 let uiScene; // global variable for current active ui scene
