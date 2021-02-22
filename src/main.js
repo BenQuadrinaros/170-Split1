@@ -71,11 +71,11 @@ let playerVariables = {
     actions: 4,
     inventory: {
         honey: {
-            "total": 8,
+            "total": 14,
             "yellow": 8,
-            "blue": 0,
-            "purple": 0,
-            "pink": 0
+            "blue": 2,
+            "purple": 2,
+            "pink": 2
         },
         items: {
             "Beehive": 0,
