@@ -67,7 +67,7 @@ class Market extends Phaser.Scene {
             key: 'playerBackIdle',
             repeat: -1,
             frames: this.anims.generateFrameNumbers('player', {start: 0, end: 1}),
-            frameRate: 24
+            frameRate: 2
         });
         this.bear.anims.play('playerBackIdle', true);
 
