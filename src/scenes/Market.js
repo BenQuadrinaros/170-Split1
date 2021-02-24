@@ -24,13 +24,13 @@ class Market extends Phaser.Scene {
         this.cloth.depth = 98;
 
         //populate in jars of honey
-        this.plainStock = [];
+        this.yellowStock = [];
         for(let i = 0; i < Math.min(20, playerVariables.inventory.honey["yellow"]); i++) {
             let temp = this.add.image(game.config.width - ((i+2) * game.config.width / 27),
                 64 * game.config.height / 100, "honeyPlain");
             temp.setOrigin(.5, .5).setScale(.5, .5);
             temp.depth = 97;
-            this.plainStock.push(temp);
+            this.yellowStock.push(temp);
         }
         this.blueStock = [];
         for(let i = 0; i < Math.min(20, playerVariables.inventory.honey["blue"]); i++) {
@@ -198,17 +198,19 @@ class Market extends Phaser.Scene {
                                     this.typeToBuy = "blue";
                                 }
                             } else {
-                                this.typeToBuy = "plain";
+                                this.typeToBuy = "yellow";
                             }
                             //Could be a call to NPC characteristics
-                            this.npcAmount = Math.min(Phaser.Math.Between(1, 4) + Phaser.Math.Between(1, 3), playerVariables.inventory.honey.total);
+                            this.npcAmount = Math.min(Phaser.Math.Between(1, 4) + Phaser.Math.Between(1, 3), 
+                                playerVariables.inventory.honey[this.typeToBuy]);
+                            console.log(this.npcAmount + " out of " + playerVariables.inventory.honey[this.typeToBuy]);
                             this.npcPrice = 0;
-                            if(this.typeToBuy == "plain") {
-                                //plain price range $2 - $4, average $3
+                            if(this.typeToBuy == "yellow") {
+                                //yellow price range $2 - $4, average $3
                                 this.npcPrice = (1.5 + Phaser.Math.FloatBetween(.25, 1.5) + Phaser.Math.FloatBetween(.25, 1)) 
                                     * this.npcAmount;
                             } else {
-                                //non-plain price range $3 - $7, average $5
+                                //non-yellow price range $3 - $7, average $5
                                 this.npcPrice = (2 + Phaser.Math.FloatBetween(.5, 3) + Phaser.Math.FloatBetween(.5, 2)) 
                                     * this.npcAmount;
                             }
@@ -278,10 +280,10 @@ class Market extends Phaser.Scene {
 
     reduceStock(type, amount) {
         playerVariables.inventory.honey.total -= amount;
-        if(type == "plain") {
+        if(type == "yellow") {
             playerVariables.inventory.honey["yellow"] -= amount;
-            while(this.plainStock.length > playerVariables.inventory.honey["yellow"]) {
-                this.plainStock.pop().destroy();
+            while(this.yellowStock.length > playerVariables.inventory.honey["yellow"]) {
+                this.yellowStock.pop().destroy();
             }
         } else if(type == "blue") {
             playerVariables.inventory.honey["blue"] -= amount;
