@@ -10,8 +10,8 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         this.currScene = scene;
         this.maxWidth = sceneWidth;
         this.maxHeight = sceneHeight;
-        this.xMoveRate = game.config.width / 800;
-        this.yMoveRate = game.config.height / 450;
+        this.xMoveRate = game.config.width / 400;
+        this.yMoveRate = game.config.height / 225;
     }
 
     update(){

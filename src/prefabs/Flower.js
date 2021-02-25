@@ -4,7 +4,7 @@ class Flower {
         this.water = water;   //Float between 0.0 and 1.0 for how well watered it is
         this.ref = flowerTypes[type];
         this.collected = false;
-        this.type = type;
+        this.type = type;     //Cosmo, Lavender, Blue Bonnet, Tulip, Orchid
     }
 
     addToScene(scene, initx, inity, texture, frame) {

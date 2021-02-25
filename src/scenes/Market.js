@@ -203,7 +203,6 @@ class Market extends Phaser.Scene {
                             //Could be a call to NPC characteristics
                             this.npcAmount = Math.min(Phaser.Math.Between(1, 4) + Phaser.Math.Between(1, 3), 
                                 playerVariables.inventory.honey[this.typeToBuy]);
-                            console.log(this.npcAmount + " out of " + playerVariables.inventory.honey[this.typeToBuy]);
                             this.npcPrice = 0;
                             if(this.typeToBuy == "yellow") {
                                 //yellow price range $2 - $4, average $3

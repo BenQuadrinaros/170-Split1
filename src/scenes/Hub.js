@@ -138,12 +138,14 @@ class Hub extends Phaser.Scene {
         this.fadeMessage = this.add.text(0, 0, "", this.textConfig).setOrigin(.5, .5);
         this.fadeMessage.depth = 100;
         this.fadeMessage.setVisible(false);
+        /*
         this.beeUpgrades = this.add.text(this.bee.x, this.bee.y - 35, "You have " + upgrades.bee + 1 + " beehive.\nThe next beehive will cost $" + (5 * upgrades.bee + 10), this.textConfig).setOrigin(.5, .5).setVisible(false);
         this.beeUpgrades.depth = 100;
         this.bikeUpgrades = this.add.text(this.bikeShed.x, this.bikeShed.y - 35, "Your bike's durability: " + upgrades.bike, this.textConfig).setOrigin(.5, .5).setVisible(false);
         this.bikeUpgrades.depth = 100;
         this.toolUpgrades = this.add.text(this.gardeningShed.x, this.gardeningShed.y - 35, "Grab your tools and\nhead out to the garden?", this.textConfig).setOrigin(.5, .5).setVisible(false);
         this.toolUpgrades.depth = 100;
+        */
 
         //establish controls for gameplay
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -202,8 +204,8 @@ class Hub extends Phaser.Scene {
                 if (gardenGrid[row][col] == null) {
                     // blank plots to be interacted with
                     let temp = this.add.image((1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
-                        (9 + row) * (game.config.height - 50) / 8 + 50 /*+ Phaser.Math.Between(-7,7)*/, "dirt");
-                    temp.setOrigin(.5,.5).setScale(.5, .75);
+                        (9 + row) * (game.config.height - 50) / 8 + 50 /*+ Phaser.Math.Between(-7,7)*/, "dirtDry");
+                    temp.setOrigin(.5,.5).setScale(.35, .35);
                     temp.depth = temp.y / 10;
                     this.inScene[row][col] = temp;
 
@@ -232,9 +234,15 @@ class Hub extends Phaser.Scene {
                     try{ // check if flower
                         if(gardenGrid[row][col].isFlower()) {
                             let temp = gardenGrid[row][col];
+                            let img = "flower";
+                            if(gardenGrid[row][col].type == "Cosmo") { img += "White"; }
+                            else if(gardenGrid[row][col].type == "Lavender") { img += "Purple"; }
+                            else if(gardenGrid[row][col].type == "Blue Bonnet") { img += "Blue"; }
+                            else if(gardenGrid[row][col].type == "Tulip") { img += "Red"; }
+                            else { img = "tempLavender"; } //This is for Orchids
                             temp.addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
-                                (9 + row) * (game.config.height - 50) / 8 + 90 /*+ Phaser.Math.Between(-7,7)*/, "flower", 0);
-                            temp.image.setOrigin(.5,.5).setScale(.15, .15);
+                                (9 + row) * (game.config.height - 50) / 8 + 90 /*+ Phaser.Math.Between(-7,7)*/, img, 0);
+                            temp.image.setOrigin(.5,.5).setScale(.2, .2);
                             this.path.push([temp.image.x, temp.image.y]);
                             temp.image.depth = temp.image.y / 10;
                             this.inScene[row][col] = temp;
@@ -281,8 +289,15 @@ class Hub extends Phaser.Scene {
         //if the player is holding an object, render it and move it alongside the player
         if (heldItem !== undefined){
             if (this.heldImg < 1) {
+                //Get the correct Flower image
+                let img = "flower";
+                if(heldItem.type == "Cosmo") { img += "White"; }
+                else if(heldItem.type == "Lavender") { img += "Purple"; }
+                else if(heldItem.type == "Blue Bonnet") { img += "Blue"; }
+                else if(heldItem.type == "Tulip") { img += "Red"; }
+                else { img = "tempLavender"; } //This is for Orchids
                 heldItem.addToScene(this, this.player.x /*+ Phaser.Math.Between(-7,7)*/,
-                    this.player.y /*+ Phaser.Math.Between(-7,7)*/, "flower", 0);
+                    this.player.y /*+ Phaser.Math.Between(-7,7)*/, img, 0);
                 this.heldImg = 1;
                 heldItem.image.setScale(.15,.15)
                 heldItem.image.depth = 100;
@@ -341,6 +356,7 @@ class Hub extends Phaser.Scene {
             this.interactText.setVisible(false);
         }
 
+        /*
         // Checking if the player is close enough to the bee upgrade
         if (Math.abs(Phaser.Math.Distance.Between(this.bee.x, this.bee.y, this.player.x, this.player.y)) < 100) {
             this.bee.y += this.bounceFactor;
@@ -393,6 +409,7 @@ class Hub extends Phaser.Scene {
         } else {
             this.bikeUpgrades.setVisible(false);
         }
+        */
 
         //Check if the player is close enough to the bike to Toad Leckman to shop
         if (Math.abs(Phaser.Math.Distance.Between(this.toadLeckman.x, this.toadLeckman.y, this.player.x, this.player.y)) < 100) {
@@ -474,21 +491,33 @@ class Hub extends Phaser.Scene {
                 //console.log(this.inScene[row][col])
                 //If the player is holding an item, modify garden plots and add image to scene.
                 if (heldItem !== undefined){
-                    //console.log(heldItem);
-                    //destroy whatever is in the spot
-                    this.inScene[row][col].destroy();
-                    //place held object in the spot
-                    this.inScene[row][col] = heldItem;
-                    gardenGrid[row][col] = heldItem;
-                    //clear item held
-                    heldItem.image.destroy();
-                    heldItem = undefined;
-                    this.inScene[row][col].addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
-                         (9 + row) * (game.config.height - 50) / 8 + 90 /*+ Phaser.Math.Between(-7,7)*/, "flower", 0);
-                    this.inScene[row][col].image.setScale(.15,.15).setOrigin(.5,.5);
-                    this.inScene[row][col].image.depth = this.inScene[row][col].image.y / 10;
-                    //set the held image to nothing
-                    this.heldImg = 0;
+                    //If that spot is empty, place item there
+                    if(gardenGrid[row][col] == null) {
+                        //console.log(heldItem);
+                        //destroy whatever is in the spot
+                        this.inScene[row][col].destroy();
+                        //place held object in the spot
+                        this.inScene[row][col] = heldItem;
+                        gardenGrid[row][col] = heldItem;
+                        //clear item held
+                        heldItem.image.destroy();
+                        heldItem = undefined;
+                        //Get the right image
+                        let img = "flower";
+                        if(gardenGrid[row][col].type == "Cosmo") { img += "White"; }
+                        else if(gardenGrid[row][col].type == "Lavender") { img += "Purple"; }
+                        else if(gardenGrid[row][col].type == "Blue Bonnet") { img += "Blue"; }
+                        else if(gardenGrid[row][col].type == "Tulip") { img += "Red"; }
+                        else { img = "tempLavender"; } //This is for Orchids
+                        this.inScene[row][col].addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
+                            (9 + row) * (game.config.height - 50) / 8 + 90 /*+ Phaser.Math.Between(-7,7)*/, img, 0);
+                        this.inScene[row][col].image.setScale(.2,.2).setOrigin(.5,.5);
+                        this.inScene[row][col].image.depth = this.inScene[row][col].image.y / 10;
+                        //set the held image to nothing
+                        this.heldImg = 0;
+                    } else {
+                        //Display something like "You cannot do this"
+                    }
                 } else {
                     //if the player is attempting to interact with a flower, pick it up for now.
                     if (this.inScene[row][col] instanceof Flower){
@@ -498,8 +527,8 @@ class Hub extends Phaser.Scene {
                         this.inScene[row][col].destroy();
                         //create a dirt image and place it in the spot
                         let temp = this.add.image((1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
-                            (9 + row) * (game.config.height - 50) / 8 + 50 /*+ Phaser.Math.Between(-7,7)*/, "dirt");
-                        temp.setOrigin(.5,.5).setScale(.5, .75);
+                            (9 + row) * (game.config.height - 50) / 8 + 50 /*+ Phaser.Math.Between(-7,7)*/, "dirtDry");
+                        temp.setOrigin(.5,.5).setScale(.35, .35);
                         temp.depth = temp.y / 10;
                         this.inScene[row][col] = temp;
                         gardenGrid[row][col] = null;

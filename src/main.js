@@ -37,19 +37,23 @@ let flow0 = new Flower(2, 3, "Cosmo");
 let flow1 = new Flower(2, 3, "Cosmo");
 let hive = new Hive(2, 5);
 //more flowers for testing purposes
-let flow2 = new Flower(0, 3, "Cosmo");
-let flow3 = new Flower(1, 3, "Cosmo");
-let flow4 = new Flower(2, 2, "Cosmo");
-let flow5 = new Flower(2, 1, "Cosmo");
+let flow2 = new Flower(0, 3, "Lavender");
+let flow3 = new Flower(1, 3, "Blue Bonnet");
+let flow4 = new Flower(2, 2, "Tulip");
+let flow5 = new Flower(2, 1, "Orchid");
+//test honey
+let flow10 = new Flower(3, 3, "Lavender");
+let flow11 = new Flower(3, 3, "Lavender");
+let hive1 = new Hive(7, 5);
 let gardenGrid = [ // 10 x 8 grid for garden generating
     //Starting placements for intial garden
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,  flow2,   flow3,  flow4,  flow5,  null,   null,   null,   null],
+    [null,    null,   null,   flow2,  flow3,  flow4,  flow5,  null,   null,   null],
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   null,   flow1,  null,   null,   null,   null,   null,   null],
-    [null,    null,   hive,   null,   null,   null,   null,   null,   null,   null],
-    [null,    flow0,  null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   flow1,  null,   null,  flow10,  null,   null,   null],
+    [null,    null,   hive,   null,   null,   null,   null,   hive1,  null,   null],
+    [null,    flow0,  null,   null,   null,   null,   null,   null,  flow11,  null],
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null]
 ];
 let mulch = {};
