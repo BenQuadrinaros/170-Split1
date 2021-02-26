@@ -9,6 +9,10 @@ class BackPackUI extends Phaser.Scene {
 
     }
 
+    init(data){
+        this.previousScene = data.previousScene;
+    }
+
     preload() {
         this.load.scenePlugin({
             key: 'rexuiplugin',
@@ -49,14 +53,15 @@ class BackPackUI extends Phaser.Scene {
         this.backpack = this.add.image(config.width - config.width / 6, config.height / 6, 'PlayerIcon')
             .setInteractive().setAlpha(.5)
             .on('pointerover', () => {
-                this.backpack.setAlpha(1)
+                this.backpack.setAlpha(1);
             })
             .on('pointerout', () => {
-                this.backpack.setAlpha(.5)
+                this.backpack.setAlpha(.5);
             })
             .on('pointerdown', () => {
-                this.scene.stop('backpackUI')
-                this.scene.resume(previousScene.scene.key)
+                console.log("Previous scene key: " + this.previousScene);
+                this.scene.resume(this.previousScene);
+                this.scene.stop();
             });
         this.add.text(this.backpack.x, this.backpack.y, "EXIT").setOrigin(.5, .5)
         var db = createDataBaseInventory(5);
@@ -238,8 +243,8 @@ class BackPackUI extends Phaser.Scene {
     update() {
         if (Phaser.Input.Keyboard.JustDown(keyESCAPE)) {
             //console.log("escape")
-            this.scene.resume(previousScene.scene.key);
-            this.scene.stop("backpackUI")
+            this.scene.resume(this.previousScene);
+            this.scene.stop();
         }
 
     }

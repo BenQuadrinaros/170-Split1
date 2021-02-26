@@ -1,3 +1,4 @@
+
 class Hub extends Phaser.Scene {
     constructor() {
         super("hubScene");
@@ -158,39 +159,50 @@ class Hub extends Phaser.Scene {
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
 
+        //Misc setup variables
+        this.pointerCurrentlyOver = "";
+
         //background music for the hub
         this.music = new BGMManager(this);
         this.music.playSong("hubMusic", true);
         this.music.setVolume(config.volume);
 
+        //Make sure the escape keybinding isn't consumed by the backpack UI
         this.events.on("resume", () => {
             console.log("ReenableEsc called");
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         });
 
-        //Have player move towards the mouse on pointer down
-        this.input.on('pointerdown', function (pointer) {
+       //Have player move towards the mouse on pointer down
+       this.input.on('pointerdown', function (pointer) {
+        console.log("Pointer is currently over: " + this.pointerCurrentlyOver);
+        if(this.pointerCurrentlyOver === "backpack"){
+            console.log("Pointer currently over backpack");
+        }
+        else{
+            console.log("Pointer currently not over anything interactable");
+            this.player.moveTo(pointer.worldX, pointer.worldY, this.pointerCurrentlyOver);
+        }
+    }, this);
 
-            //if (pointer.isDown) {
-                this.player.moveTo(pointer.worldX, pointer.worldY);
-            //}
-
-        }, this);
-
-        //create interactible backpack image
-        this.backpack = this.add.image(config.width- config.width/6, config.height/6, 'PlayerIcon')
-            .setInteractive().setAlpha(.5)
-            .on('pointerover', () => {
-                this.backpack.setAlpha(1)
-            })
-            .on('pointerout', () => {
-                this.backpack.setAlpha(.5)
-            })
-            .on('pointerdown', () =>{
-                console.log("clicked backpack");
-                this.scene.pause('hubScene');
-                this.scene.launch("backpackUI");
-            });
+    //create interactible backpack image
+    this.backpack = this.add.image(config.width- config.width/6, config.height/6, 'PlayerIcon')
+        .setInteractive().setAlpha(.5)
+        .on('pointerover', () => {
+            this.backpack.setAlpha(1);
+            this.pointerCurrentlyOver = "backpack";
+            console.log("Just set pointer as over backpack");
+        })
+        .on('pointerout', () => {
+            this.backpack.setAlpha(.5);
+            this.pointerCurrentlyOver = "";
+            console.log("Just set pointer as over ''");
+        })
+        .on('pointerdown', () =>{
+            console.log("clicked backpack");
+            this.scene.pause('hubScene');
+            this.scene.launch("backpackUI", {previousScene:"hubScene"});
+        });
         // Build out Garden below main Hub area
         this.path = [];    //Path for the bees to follow
         this.inScene = [   //This array will let us track local changes and update images
@@ -277,9 +289,6 @@ class Hub extends Phaser.Scene {
             //isPaused = true;
             this.scene.pause();
             this.scene.launch("pauseScene", { previousScene: "hubScene" });
-        }
-        else {
-            keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         }
 
         //move backpack icon alongside player and camera
@@ -386,7 +395,6 @@ class Hub extends Phaser.Scene {
         } else {
             this.beeUpgrades.setVisible(false);
         }
-
         // Check if player is near the bikeshed
         if (Math.abs(Phaser.Math.Distance.Between(this.bikeShed.x, this.bikeShed.y, this.player.x, this.player.y)) < 100) {
             this.bikeShed.y += this.bounceFactor;

@@ -150,7 +150,7 @@ class Market extends Phaser.Scene {
             console.log("Pausing Game");
             //isPaused = true;
             this.scene.pause();
-            this.scene.launch("pauseScene", { previousScene: "hubScene" });
+            this.scene.launch("pauseScene", { previousScene: "marketScene" });
         }
         else {
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);

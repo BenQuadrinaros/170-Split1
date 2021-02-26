@@ -45,20 +45,6 @@ class Shop extends Phaser.Scene {
             },
         };
 
-        this.backpack = this.add.image(config.width- config.width/6, config.height/6, 'PlayerIcon')
-            .setInteractive().setAlpha(.5)
-            .on('pointerover', () => {
-               this.backpack.setAlpha(1)
-            })
-            .on('pointerout', () => {
-            this.backpack.setAlpha(.5)
-        })
-            .on('pointerdown', () =>{
-                console.log("clicked backpack");
-                this.scene.pause('shopScene');
-                this.scene.launch("backpackUI");
-        });
-
         //create shop text
         this.shopText = this.add.text(config.width/4,config.height/2, "SHOP", this.textConfig).setOrigin(.5,.5).setVisible(true);
         this.shopTextInteract = this.add.text(config.width/4,(config.height/2)-20, "Space to interact with shop", this.textConfig).setOrigin(.5,.5).setVisible(false);
@@ -74,12 +60,60 @@ class Shop extends Phaser.Scene {
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
+        //Misc setup variables
+        this.pointerCurrentlyOver = ""; 
+
         //create the background music manager
         this.musicManager = new BGMManager(this);
         this.musicManager.playSong("shopMusicFull", false);
         this.musicManager.queueSong("shopMusicShort", true);
+
+        //Make sure the escape keybinding isn't consumed by the backpack UI
+        this.events.on("resume", () => {
+            console.log("ReenableEsc called");
+            keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        });
+
+        //Have player move towards the mouse on pointer down
+        this.input.on('pointerdown', function (pointer) {
+            console.log("Pointer is currently over: " + this.pointerCurrentlyOver);
+            if(this.pointerCurrentlyOver === "backpack"){
+                console.log("Pointer currently over backpack");
+            }
+            else{
+                console.log("Pointer currently not over anything interactable");
+                this.player.moveTo(pointer.worldX, pointer.worldY, this.pointerCurrentlyOver);
+            }
+        }, this);
+
+        //create interactible backpack image
+        this.backpack = this.add.image(config.width- config.width/6, config.height/6, 'PlayerIcon')
+            .setInteractive().setAlpha(.5)
+            .on('pointerover', () => {
+                this.backpack.setAlpha(1);
+                this.pointerCurrentlyOver = "backpack";
+                console.log("Just set pointer as over backpack");
+            })
+            .on('pointerout', () => {
+                this.backpack.setAlpha(.5);
+                this.pointerCurrentlyOver = "";
+                console.log("Just set pointer as over ''");
+            })
+            .on('pointerdown', () =>{
+                console.log("clicked backpack");
+                this.scene.pause('hubScene');
+                this.scene.launch("backpackUI", {previousScene:"shopScene"});
+            });
     }
     update(){
+        //Pause Game
+        if (Phaser.Input.Keyboard.JustDown(keyESCAPE)) {
+            console.log("Pausing Game");
+            //isPaused = true;
+            this.scene.pause();
+            this.scene.launch("pauseScene", { previousScene: "shopScene" });
+        }
+
         this.player.update();
         if (Math.abs(Phaser.Math.Distance.Between(this.shopText.x,this.shopText.y, this.player.x,this.player.y)) < 100){
             this.shopTextInteract.setVisible(true);
