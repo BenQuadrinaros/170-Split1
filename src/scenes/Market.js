@@ -113,7 +113,7 @@ class Market extends Phaser.Scene {
         //background music for the hub
         //CHNAGE SONG FOR MARKET
         this.music = new BGMManager(this);
-        this.music.playSong("hubMusic", true);
+        this.music.playSong("marketMusic", true);
         this.music.setVolume(config.volume);
 
         this.events.on("resume", () => {
