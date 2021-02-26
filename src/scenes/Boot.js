@@ -17,10 +17,14 @@ class Boot extends Phaser.Scene {
             //For gardenScene
             this.load.image("gardenBackground", "./assets/sprites/background/sampleGarden-01.png");
             this.load.image("exit", "./assets/sprites/background/LeftArrowGREEN.png");
-            this.load.image("dirt", "./assets/sprites/background/dirt-04.png");
+            this.load.image("dirtDry", "./assets/sprites/spritesheetFrames/plotDry.png");
+            this.load.image("dirtWet", "./assets/sprites/spritesheetFrames/plotWet.png");
             this.load.image("hive", "./assets/sprites/background/hubHive.png");
             this.load.image("bearBee", "./assets/sprites/character/bearBee.png");
-            this.load.image("flower", "./assets/sprites/spritesheetFrames/05healthyflower-03.png");
+            this.load.image("flowerWhite", "./assets/sprites/spritesheetFrames/white3.png");
+            this.load.image("flowerBlue", "./assets/sprites/spritesheetFrames/blue3.png");
+            this.load.image("flowerRed", "./assets/sprites/spritesheetFrames/red3.png");
+            this.load.image("flowerPurple", "./assets/sprites/spritesheetFrames/purple3.png");
             this.load.image("tempLavender", "./assets/sprites/background/lavTest.png");
             //For hubScene
             this.load.image('background', './assets/sprites/background/garden_base.png');
@@ -34,6 +38,12 @@ class Boot extends Phaser.Scene {
             this.load.image('toadLeckman', './assets/sprites/character/mrleckman_510x300.png');
             //For Market
             this.load.image('basicDogNPC', './assets/sprites/character/dognpc_275x458.png');
+            this.load.image('booth', './assets/sprites/background/boothFull.png');
+            this.load.image('cloth', './assets/sprites/background/clothFull.png');
+            this.load.image('honeyPlain', './assets/sprites/background/honeyPlain.png');
+            this.load.image('honeyPink', './assets/sprites/background/honeyPink.png');
+            this.load.image('honeyBlue', './assets/sprites/background/honeyBlue.png');
+            this.load.image('honeyPurple', './assets/sprites/background/honeyPurple.png');
             //For mapScene
             this.load.image('TownMap', './assets/sprites/background/WhiteBackground.png');
             this.load.image('PlayerIcon', './assets/sprites/character/playerMapIcon.png');
