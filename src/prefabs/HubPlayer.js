@@ -57,12 +57,13 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         var deltaY = Math.abs(this.y - clickedY);
         var greaterDistance = Math.max(deltaX, deltaY);
         //make the tweens
+        this.scene.tweens.killTweensOf(this); //kills other ongoing tweens so no accidental teleportation happens
         this.xAxisMovementTween = this.scene.tweens.add({
             targets: this,
             x: clickedX,
             y: clickedY,
-            ease: 'Sine.easeInOut',
-            duration: greaterDistance*10,
+            ease: 'Sine.easeOut',
+            duration: greaterDistance*6,
             delay: 0,
             repeat: 0
         });
