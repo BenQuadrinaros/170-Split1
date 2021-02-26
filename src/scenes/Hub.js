@@ -21,7 +21,7 @@ class Hub extends Phaser.Scene {
         previousScene = this;
         //Initialize world details
         this.worldWidth = 5000;
-        this.worldHeight = 5000;
+        this.worldHeight = 2000;
         this.heldImg = 0;
 
         //If you are returning to the hub
@@ -107,7 +107,7 @@ class Hub extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, this.worldWidth, this.worldHeight);
         this.cameras.main.setZoom(1.15);
         // startFollow(target [, roundPixels] [, lerpX] [, lerpY] [, offsetX] [, offsetY])
-        this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+        this.cameras.main.startFollow(this.player, true, 0.4, 0.4);
 
         //add timing aspect for hub actions
         this.fadeMessage;
@@ -203,6 +203,7 @@ class Hub extends Phaser.Scene {
             this.scene.pause('hubScene');
             this.scene.launch("backpackUI", {previousScene:"hubScene"});
         });
+        this.backpack.depth = 200;
         // Build out Garden below main Hub area
         this.path = [];    //Path for the bees to follow
         this.inScene = [   //This array will let us track local changes and update images
@@ -292,8 +293,14 @@ class Hub extends Phaser.Scene {
         }
 
         //move backpack icon alongside player and camera
-        this.backpack.x = this.player.x+config.width/3;
-        this.backpack.y = this.player.y-config.width/5;
+        var backpackUIMinX = 4*config.width/5;
+        var backpackUIMaxX = this.worldWidth - config.width/8;
+        var backpackPlayerRelativeX = this.player.x+15*config.width/40;
+        this.backpack.x = Math.min(backpackUIMaxX, Math.max(backpackUIMinX, backpackPlayerRelativeX));
+        var backpackUIMinY = config.height/9;
+        var backpackUIMaxY = this.worldHeight - config.height + 2*config.height/9;
+        var backpackPlayerRelativeY = this.player.y-9*config.height/27;
+        this.backpack.y = Math.min(backpackUIMaxY, Math.max(backpackUIMinY, backpackPlayerRelativeY));
 
         //if the player is holding an object, render it and move it alongside the player
         if (heldItem !== undefined){

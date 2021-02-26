@@ -113,6 +113,9 @@ class Shop extends Phaser.Scene {
             this.scene.pause();
             this.scene.launch("pauseScene", { previousScene: "shopScene" });
         }
+        else{
+            keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        }
 
         this.player.update();
         if (Math.abs(Phaser.Math.Distance.Between(this.shopText.x,this.shopText.y, this.player.x,this.player.y)) < 100){
