@@ -135,7 +135,7 @@ class Menu extends Phaser.Scene {
         this.music.stop();
         //Play is being pressed
         if(newScene === 1){
-            this.scene.start('hubScene');
+            this.scene.start('hubScene', {previousScene: "menuScene"});
         }
         //Settings is being pressed
         else if(newScene === 2){

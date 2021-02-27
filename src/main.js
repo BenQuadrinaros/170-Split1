@@ -4,7 +4,7 @@ let config = {
     type: Phaser.CANVAS,
     width: 960,
     height: 540,
-    scene: [Boot, Hub, Garden, Map, Market, Play, Menu, Settings, Talking, OldRhythm,  Shop, ShopUI, BackPackUI, Pause],
+    scene: [Boot, Hub, Garden, Map, Market, Play, Menu, Settings, Talking, OldRhythm,  Shop, ShopUI, BackPackUI, HubPopup, Pause],
     volume: .7,
     physics: {
         default: 'arcade',
@@ -30,6 +30,8 @@ const COLOR_PRIMARY = 0x808ADE;
 const COLOR_LIGHT = 0x684ADE;
 const COLOR_DARK = 0x80DECB;
 const Random = Phaser.Math.Between;
+
+let currentDay = 0;
 
 let upgrades = { "bike": 0, "bee": 0, "tools": 0 };
 //Starting garden state
