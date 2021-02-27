@@ -101,7 +101,7 @@ class Shop extends Phaser.Scene {
             })
             .on('pointerdown', () =>{
                 console.log("clicked backpack");
-                this.scene.pause('hubScene');
+                this.scene.pause('shopScene');
                 this.scene.launch("backpackUI", {previousScene:"shopScene"});
             });
     }
@@ -133,7 +133,7 @@ class Shop extends Phaser.Scene {
             this.musicManager.transitionSong("hubMusic", true);
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 console.log("returning to hub");
-                this.scene.start("hubScene");
+                this.scene.start("hubScene", {previousScene: "shopScene"});
             }
         } else {
             this.toadTextInteract.setVisible(false);

@@ -6,7 +6,7 @@ class Hub extends Phaser.Scene {
 
     init(data) {
         //See where you are returning from
-        this.wasVisiting = data.wasVisiting;
+        this.previousScene = data.previousScene;
     }
 
     preload(){
@@ -18,51 +18,61 @@ class Hub extends Phaser.Scene {
     }
 
     create() {
-        previousScene = this;
         //Initialize world details
         this.worldWidth = 5000;
         this.worldHeight = 2000;
         this.heldImg = 0;
 
-        //If you are returning to the hub
-        console.log("Welcome back. Honey was " + playerVariables.inventory.honey["total"]);
+        //If coming from the menu or the market, advance to the next day
+        if(this.previousScene === "menuScene" || this.previousScene === "marketScene"){
+            //Advance to the next day
+            currentDay += 1;
+            console.log("Advancing to day " + currentDay);
+            //If you are returning to the hub
+            console.log("Welcome back. Honey was " + playerVariables.inventory.honey["total"]);
+            this.startingHoneyForPopup = {
+                "yellow": playerVariables.inventory.honey["yellow"],
+                "blue": playerVariables.inventory.honey["blue"],
+                "purple": playerVariables.inventory.honey["purple"],
+                "pink": playerVariables.inventory.honey["pink"]
+            };
+            //Gain a flat amount of yellow Honey
+            //playerVariables.inventory.honey["total"] += 2 + upgrades['bee'];
+            //playerVariables.inventory.honey["yellow"] += 2 + upgrades['bee'];
 
-        //Gain a flat amount of yellow Honey
-        //playerVariables.inventory.honey["total"] += 2 + upgrades['bee'];
-        //playerVariables.inventory.honey["yellow"] += 2 + upgrades['bee'];
-
-        //Update all Flowers for the day
-        //Retrieve list of Hives for random collection
-        let beehives = []
-        for (let row = 0; row < gardenGrid.length; row++) {
-            for (let col = 0; col < gardenGrid[0].length; col++) {
-                //console.log("["+col+","+row+"]");
-                try {
-                    if (gardenGrid[row][col].isHive()) {
-                        beehives.push([row, col]);
-                        //console.log("found beehive at "+col+', '+row);
-                    }
-                } catch (error) { null; }
-                try {
-                    gardenGrid[row][col].advance();
-                    //console.log("found flower at "+col+', '+row);
-                } catch (error) { null; }
+            //Update all Flowers for the day
+            //Retrieve list of Hives for random collection
+            let beehives = []
+            for (let row = 0; row < gardenGrid.length; row++) {
+                for (let col = 0; col < gardenGrid[0].length; col++) {
+                    //console.log("["+col+","+row+"]");
+                    try {
+                        if (gardenGrid[row][col].isHive()) {
+                            beehives.push([row, col]);
+                            //console.log("found beehive at "+col+', '+row);
+                        }
+                    } catch (error) { null; }
+                    try {
+                        gardenGrid[row][col].advance();
+                        //console.log("found flower at "+col+', '+row);
+                    } catch (error) { null; }
+                }
             }
+            //console.log("found beehives: " + beehives);
+
+
+
+            //Assess Beehives in a random order
+            while (beehives.length > 0) {
+                let rand = Phaser.Math.Between(0, beehives.length - 1);
+                //console.log("selecting beehive #"+rand);
+                //console.log("accessing "+beehives[rand][0]+", "+beehives[rand][1]);
+                gardenGrid[beehives[rand][0]][beehives[rand][1]].collect();
+                beehives.splice(rand, 1);
+            }
+
+            console.log("Honey increases to " + playerVariables.inventory.honey["total"]);
         }
-        //console.log("found beehives: " + beehives);
-
-
-
-        //Assess Beehives in a random order
-        while (beehives.length > 0) {
-            let rand = Phaser.Math.Between(0, beehives.length - 1);
-            //console.log("selecting beehive #"+rand);
-            //console.log("accessing "+beehives[rand][0]+", "+beehives[rand][1]);
-            gardenGrid[beehives[rand][0]][beehives[rand][1]].collect();
-            beehives.splice(rand, 1);
-        }
-
-        console.log("Honey increases to " + playerVariables.inventory.honey["total"]);
 
         //Initialize images
         this.cameras.main.setBackgroundColor(0x000000);
@@ -161,6 +171,7 @@ class Hub extends Phaser.Scene {
 
         //Misc setup variables
         this.pointerCurrentlyOver = "";
+        this.popupVisited = false;
 
         //background music for the hub
         this.music = new BGMManager(this);
@@ -284,6 +295,14 @@ class Hub extends Phaser.Scene {
     }
 
     update() {
+        if(this.previousScene === "marketScene" && !this.popupVisited){
+            console.log("Sending to popup");
+            //isPaused = true;
+            this.popupVisited = true;
+            this.scene.pause();
+            this.scene.launch("hubPopupScene", { previousScene: "hubScene", initialHoney: this.startingHoneyForPopup});
+        }
+
         //Pause Game
         if (Phaser.Input.Keyboard.JustDown(keyESCAPE)) {
             console.log("Pausing Game");

@@ -160,7 +160,7 @@ class Market extends Phaser.Scene {
                 //go to map
                 //ADD HERE
                 this.music.stop();
-                this.scene.start('hubScene', {wasVisiting: "market"});
+                this.scene.start('hubScene', {previousScene: "marketScene"});
             }
         } else {
             if (this.state == "waiting") { //Patrons come and go
