@@ -74,7 +74,7 @@ class Market extends Phaser.Scene {
         //Text config without a background, which blends better with the background
         this.textConfig = {
             fontFamily: "Courier",
-            fontSize: "14px",
+            fontSize: "18px",
             color: "#ffffff",
             align: "center",
             stroke: "#000000",
@@ -86,20 +86,20 @@ class Market extends Phaser.Scene {
         };
 
         //UI texts for resources
-        this.honeyText = this.add.text(game.config.width / 10, game.config.height / 10 - 25, "Honey: ", this.textConfig).setOrigin(.5, .5);
+        this.honeyText = this.add.text(game.config.width / 8, game.config.height / 8 - 25, "Honey: ", this.textConfig).setOrigin(.5, .5);
         this.honeyText.depth = 100;
-        this.moneyText = this.add.text(game.config.width / 10, game.config.height / 10, "Money: ", this.textConfig).setOrigin(.5, .5);
+        this.moneyText = this.add.text(game.config.width / 8, game.config.height / 8, "Money: ", this.textConfig).setOrigin(.5, .5);
         this.moneyText.depth = 100;
-        this.timeText = this.add.text(game.config.width / 10, game.config.height / 10 + 25, "Time Remaining: ", this.textConfig).setOrigin(.5, .5);
+        this.timeText = this.add.text(game.config.width / 8, game.config.height / 8 + 25, "Time Remaining: ", this.textConfig).setOrigin(.5, .5);
         this.timeText.depth = 100;
-        this.timeUpText = this.add.text(game.config.width / 10, game.config.height / 10 - 25,
+        this.timeUpText = this.add.text(game.config.width / 8, game.config.height / 8 - 25,
             "TIME'S UP\nPress Down to go to the Map", this.textConfig).setOrigin(.5, .5);
         this.timeUpText.depth = 100;
         this.timeUpText.alpha = 0;
         this.timeUp = false;
 
         //UI text for transactions
-        this.transactionText = this.add.text(7 * game.config.width / 8, game.config.height / 2, "Hi! I want honey.",
+        this.transactionText = this.add.text(6 * game.config.width / 8, game.config.height / 2, "Hi! I want honey.",
             this.textConfig).setOrigin(.5, .5);
         this.transactionText.depth = 100;
         this.transactionText.alpha = 0;
@@ -165,14 +165,14 @@ class Market extends Phaser.Scene {
         } else {
             if (this.state == "waiting") { //Patrons come and go
 
-                //Constant bear wiggle
+                //Constant bear hustle
                 this.bear.x += .25 * Math.sin(currTime / 2);
                 this.bear.y += .1 * Math.sin(currTime / 4 + 1);
 
                 if (playerVariables.inventory.honey.total > 0 && Phaser.Math.Between(0, 1000) > 985) {
                     this.state = "approaching";
-                    this.npc = new NPC(this, 2 * game.config.width / 3, 4 * game.config.height / 7, 'basicDogNPC', 0, "Bearington", "easy",
-                        [["Hullo"], ["Thanks", "Bye"]]);
+                    this.npc = new NPC(this, 2 * game.config.width / 3, 4 * game.config.height / 7, 'basicDogNPC', 
+                        0, "Bagel", "easy", [["Hullo", "Good day"], ["Thanks", "Bye"]]);
                     this.closeness = .1;
                     this.npc.depth = 0;
                     this.npc.setScale(this.closeness, this.closeness);
@@ -223,7 +223,7 @@ class Market extends Phaser.Scene {
                         loop: false,
                         callbackScope: this
                     });
-                } else if (playerVariables.inventory.honey.total == 0) {
+                } else if (playerVariables.inventory.honey.total <= 0) {
                     this.timer.delay = 0;
                 }
             } else if (this.state == "approaching") { //NPC approaches the stand
