@@ -40,10 +40,10 @@ class Hub extends Phaser.Scene {
             //All sprinklers water surroundings
             for (let row = 0; row < gardenGrid.length; row++) {
                 for (let col = 0; col < gardenGrid[0].length; col++) {
-                    try {
+                    if(gardenGrid[row][col] instanceof Sprinkler) {
                         gardenGrid[row][col].watering();
                         //console.log("found sprinkler at "+col+', '+row);
-                    } catch (error) { null; }
+                    }
                 }
             }
 
@@ -53,19 +53,15 @@ class Hub extends Phaser.Scene {
             for (let row = 0; row < gardenGrid.length; row++) {
                 for (let col = 0; col < gardenGrid[0].length; col++) {
                     //console.log("["+col+","+row+"]");
-                    try {
-                        if (gardenGrid[row][col].isHive()) {
-                            beehives.push([row, col]);
-                            //console.log("found beehive at "+col+', '+row);
-                        }
-                    } catch (error) { null; }
-                    try {
+                    if (gardenGrid[row][col] instanceof Hive) {
+                        beehives.push([row, col]);
+                        //console.log("found beehive at "+col+', '+row);
+                    } else if(gardenGrid[row][col] instanceof Flower) {
                         gardenGrid[row][col].advance();
                         //console.log("found flower at "+col+', '+row);
-                    } catch (error) { null; }
+                    } 
                 }
             }
-            //console.log("found beehives: " + beehives);
 
             //Assess Beehives in a random order
             while (beehives.length > 0) {
@@ -96,6 +92,20 @@ class Hub extends Phaser.Scene {
         this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 2, this.worldWidth, this.worldHeight);
         this.player.depth = this.player.y / 10;
 
+        //Create some overlays for displaying ranges
+        this.highlightOpacity = .4;
+        this.sprinklerHighlight = this.add.image(0, 0, 'sprinklerHighlight');
+        this.sprinklerHighlight.setOrigin(0.5, 0.5).setScale(16.32, 9.18);
+        this.sprinklerHighlight.alpha = 0;
+        this.hiveHighlight = this.add.image(0, 0, 'hiveHighlight');
+        this.hiveHighlight.setOrigin(0.5, 0.5).setScale(16.32, 9.18);
+        this.hiveHighlight.alpha = 0;
+        this.sprinklerHighlightHold = this.add.image(0, 0, 'sprinklerHighlight');
+        this.sprinklerHighlightHold.setOrigin(0.5, 0.5).setScale(16.32, 9.18);
+        this.sprinklerHighlightHold.alpha = 0;
+        this.hiveHighlightHold = this.add.image(0, 0, 'hiveHighlight');
+        this.hiveHighlightHold.setOrigin(0.5, 0.5).setScale(16.32, 9.18);
+        this.hiveHighlightHold.alpha = 0;
 
         //Create player animations
         this.anims.create({
@@ -249,45 +259,37 @@ class Hub extends Phaser.Scene {
                     }
                     */
                 } else { //its not blank
-                    try{ //check if hive
-                        if(gardenGrid[row][col].isHive()) {
-                            let temp = gardenGrid[row][col];
-                            temp.addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
-                                (9 + row) * (game.config.height - 50) / 8 + 100 /*+ Phaser.Math.Between(-7,7)*/, "hive", 0);
-                            temp.image.setOrigin(.5,.5).setScale(.1, .1);
-                            this.path.push([temp.image.x, temp.image.y]);
-                            temp.image.depth = temp.image.y / 10;
-                            this.inScene[row][col] = temp;
-                        }
-                    } catch(error) { null; }
-                    try{ //check if sprinkler
-                        if(gardenGrid[row][col].isSprinkler()) {
-                            let temp = gardenGrid[row][col];
-                            temp.addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
-                                (9 + row) * (game.config.height - 50) / 8 + 100 /*+ Phaser.Math.Between(-7,7)*/, 
-                                "sprinkler", 0);
-                            temp.image.setOrigin(.5,.5).setScale(.1, .1);
-                            temp.image.depth = temp.image.y / 10;
-                            this.inScene[row][col] = temp;
-                        }
-                    } catch(error) { null; }
-                    try{ // check if flower
-                        if(gardenGrid[row][col].isFlower()) {
-                            let temp = gardenGrid[row][col];
-                            let img = "flower";
-                            if(gardenGrid[row][col].type == "Cosmo") { img += "White"; }
-                            else if(gardenGrid[row][col].type == "Lavender") { img += "Purple"; }
-                            else if(gardenGrid[row][col].type == "Blue Bonnet") { img += "Blue"; }
-                            else if(gardenGrid[row][col].type == "Tulip") { img += "Red"; }
-                            else { img = "tempLavender"; } //This is for Orchids
-                            temp.addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
-                                (9 + row) * (game.config.height - 50) / 8 + 90 /*+ Phaser.Math.Between(-7,7)*/, img, 0);
-                            temp.image.setOrigin(.5,.5).setScale(.2, .2);
-                            this.path.push([temp.image.x, temp.image.y]);
-                            temp.image.depth = temp.image.y / 10;
-                            this.inScene[row][col] = temp;
-                        } 
-                    } catch(error) { null; }
+                    if(gardenGrid[row][col] instanceof Hive) {
+                        let temp = gardenGrid[row][col];
+                        temp.addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
+                            (9 + row) * (game.config.height - 50) / 8 + 100 /*+ Phaser.Math.Between(-7,7)*/, "hive", 0);
+                        temp.image.setOrigin(.5,.5).setScale(.1, .1);
+                        this.path.push([temp.image.x, temp.image.y]);
+                        temp.image.depth = temp.image.y / 10;
+                        this.inScene[row][col] = temp;
+                    } else if(gardenGrid[row][col] instanceof Sprinkler) {
+                        let temp = gardenGrid[row][col];
+                        temp.addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
+                            (9 + row) * (game.config.height - 50) / 8 + 100 /*+ Phaser.Math.Between(-7,7)*/, 
+                            "sprinkler", 0);
+                        temp.image.setOrigin(.5,.5).setScale(.1, .1);
+                        temp.image.depth = temp.image.y / 10;
+                        this.inScene[row][col] = temp;
+                    } else if(gardenGrid[row][col] instanceof Flower) {
+                        let temp = gardenGrid[row][col];
+                        let img = "flower";
+                        if(gardenGrid[row][col].type == "Cosmo") { img += "White"; }
+                        else if(gardenGrid[row][col].type == "Lavender") { img += "Purple"; }
+                        else if(gardenGrid[row][col].type == "Blue Bonnet") { img += "Blue"; }
+                        else if(gardenGrid[row][col].type == "Tulip") { img += "Red"; }
+                        else { img = "tempLavender"; } //This is for Orchids
+                        temp.addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
+                            (9 + row) * (game.config.height - 50) / 8 + 90 /*+ Phaser.Math.Between(-7,7)*/, img, 0);
+                        temp.image.setOrigin(.5,.5).setScale(.2, .2);
+                        this.path.push([temp.image.x, temp.image.y]);
+                        temp.image.depth = temp.image.y / 10;
+                        this.inScene[row][col] = temp;
+                    }
                 }
             }
         }
@@ -338,30 +340,62 @@ class Hub extends Phaser.Scene {
         this.backpack.y = Math.min(backpackUIMaxY, Math.max(backpackUIMinY, backpackPlayerRelativeY));
 
         //if the player is holding an object, render it and move it alongside the player
-        if (heldItem !== undefined){
+        if (heldItem !== undefined) {
             if (this.heldImg < 1) {
-                //Get the correct Flower image
-                let img = "flower";
-                if(heldItem.type == "Cosmo") { img += "White"; }
-                else if(heldItem.type == "Lavender") { img += "Purple"; }
-                else if(heldItem.type == "Blue Bonnet") { img += "Blue"; }
-                else if(heldItem.type == "Tulip") { img += "Red"; }
-                else { img = "tempLavender"; } //This is for Orchids
+                let img = "";
+                if(heldItem instanceof Flower) {
+                    //Get the correct Flower image
+                    img = "flower";
+                    if(heldItem.type == "Cosmo") { img += "White"; }
+                    else if(heldItem.type == "Lavender") { img += "Purple"; }
+                    else if(heldItem.type == "Blue Bonnet") { img += "Blue"; }
+                    else if(heldItem.type == "Tulip") { img += "Red"; }
+                    else { img = "tempLavender"; } //This is for Orchids
+                } else if(heldItem instanceof Sprinkler) { img = "sprinkler"; }
+                else if(heldItem instanceof Hive) { img = "hive"; }
+                
+                
                 heldItem.addToScene(this, this.player.x /*+ Phaser.Math.Between(-7,7)*/,
                     this.player.y /*+ Phaser.Math.Between(-7,7)*/, img, 0);
                 this.heldImg = 1;
                 heldItem.image.setScale(.15,.15)
                 heldItem.image.depth = 100;
             }
+            //Always update location
             heldItem.image.x = this.player.x;
             heldItem.image.y = this.player.y;
-            if (Phaser.Input.Keyboard.JustDown(keyB)){
+
+            //Also update highlight
+            if(heldItem instanceof Sprinkler) {
+                this.sprinklerHighlightHold.alpha = this.highlightOpacity;
+                this.sprinklerHighlightHold.x = this.player.x;
+                this.sprinklerHighlightHold.y = this.player.y + 25;
+                this.sprinklerHighlightHold.depth = this.sprinklerHighlightHold.y / 10 - 5;
+                this.hiveHighlightHold.alpha = 0;
+            } else if(heldItem instanceof Hive) {
+                this.hiveHighlightHold.alpha = this.highlightOpacity;
+                this.hiveHighlightHold.x = this.player.x;
+                this.hiveHighlightHold.y = this.player.y + 25;
+                this.hiveHighlightHold.depth = this.hiveHighlightHold.y / 10 - 5;
+                this.sprinklerHighlightHold.alpha = 0;
+            } else {
+                this.sprinklerHighlightHold.alpha = 0;
+                this.hiveHighlightHold.alpha = 0;
+            }
+
+            //Input to place item in backpack
+            if (Phaser.Input.Keyboard.JustDown(keyB)) {
                 //console.log(heldItem)
-                if (heldItem instanceof Flower){
+                if (heldItem instanceof Flower || heldItem instanceof Sprinkler || heldItem instanceof Hive) {
                     console.log(`Storing held flower ${heldItem.type} in inventory.`)
                     console.log(`before storage ${playerVariables.inventory.flowers[heldItem.type]}`)
                     playerVariables.inventory.flowers[heldItem.type] +=1;
                     console.log(`after storage ${playerVariables.inventory.flowers[heldItem.type]}`)
+
+                    //If item has highlight, hide that as well
+                    if(heldItem instanceof Sprinkler) { this.sprinklerHighlightHold.alpha = 0; }
+                    else if(heldItem instanceof Hive) { this.hiveHighlightHold.alpha = 0; }
+
                     heldItem.destroy();
                     heldItem = undefined
                     this.heldImg = 0;
@@ -475,7 +509,6 @@ class Hub extends Phaser.Scene {
                 this.scene.start('shopScene');
             }
         } else {
-
             this.interactText.setVisible(false);
         }
 
@@ -490,6 +523,31 @@ class Hub extends Phaser.Scene {
         //Place flower text over nearest spot for interaction
         this.textHover();
 
+        //Put highlight over objects if standing near them
+        let loc = this.closestPlot();
+        if(loc != null) {
+            if(gardenGrid[loc[0]][loc[1]] instanceof Hive) {
+                this.hiveHighlight.alpha = this.highlightOpacity;
+                this.hiveHighlight.x = (1 + loc[1]) * game.config.width / 9;
+                this.hiveHighlight.y = (9 + loc[0]) * (game.config.height - 50) / 8 + 105;
+                this.hiveHighlight.depth = this.hiveHighlight.y / 10 - 5;
+                this.sprinklerHighlight.alpha = 0;
+            } else if (gardenGrid[loc[0]][loc[1]] instanceof Sprinkler) {
+                this.sprinklerHighlight.alpha = this.highlightOpacity;
+                this.sprinklerHighlight.x = (1 + loc[1]) * game.config.width / 9;
+                this.sprinklerHighlight.y = (9 + loc[0]) * (game.config.height - 50) / 8 + 105;
+                this.sprinklerHighlight.depth = this.sprinklerHighlight.y / 10 - 5;
+                this.hiveHighlight.alpha = 0;
+            } else {
+                this.hiveHighlight.alpha = 0;
+                this.sprinklerHighlight.alpha = 0;
+            }
+        } else {
+            this.hiveHighlight.alpha = 0;
+            this.sprinklerHighlight.alpha = 0;
+        }
+
+        //Misc updates for player and UI
         this.player.update();
         this.player.depth = this.player.y / 10 + 3;
         this.counter++;
@@ -553,12 +611,26 @@ class Hub extends Phaser.Scene {
                         heldItem.image.destroy();
                         heldItem = undefined;
                         //Get the right image
-                        let img = "flower";
-                        if(gardenGrid[row][col].type == "Cosmo") { img += "White"; }
-                        else if(gardenGrid[row][col].type == "Lavender") { img += "Purple"; }
-                        else if(gardenGrid[row][col].type == "Blue Bonnet") { img += "Blue"; }
-                        else if(gardenGrid[row][col].type == "Tulip") { img += "Red"; }
-                        else { img = "tempLavender"; } //This is for Orchids
+                        let spot = gardenGrid[row][col];
+                        let img = "";
+                        if(spot instanceof Flower) {
+                            //Get the correct Flower image
+                            img = "flower";
+                            if(spot.type == "Cosmo") { img += "White"; }
+                            else if(spot.type == "Lavender") { img += "Purple"; }
+                            else if(spot.type == "Blue Bonnet") { img += "Blue"; }
+                            else if(spot.type == "Tulip") { img += "Red"; }
+                            else { img = "tempLavender"; } //This is for Orchids
+                        } else if(spot instanceof Sprinkler) { 
+                            img = "sprinkler";
+                            this.sprinklerHighlightHold.alpha = 0;
+                            gardenGrid[row][col].setPos(row, col);
+                        } else if(spot instanceof Hive) {
+                            img = "hive";
+                            this.hiveHighlightHold.alpha = 0;
+                            gardenGrid[row][col].setPos(row, col);
+                            console.log("hive placed at: " + row + ", " + col);
+                        }
                         this.inScene[row][col].addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
                             (9 + row) * (game.config.height - 50) / 8 + 90 /*+ Phaser.Math.Between(-7,7)*/, img, 0);
                         this.inScene[row][col].image.setScale(.2,.2).setOrigin(.5,.5);
@@ -570,16 +642,17 @@ class Hub extends Phaser.Scene {
                     }
                 } else {
                     //if the player is attempting to interact with a flower, pick it up for now.
-                    if (this.inScene[row][col] instanceof Flower){
+                    if (this.inScene[row][col] instanceof Flower || this.inScene[row][col] instanceof Hive ||
+                        this.inScene[row][col] instanceof Sprinkler){
                         heldItem = this.inScene[row][col];
-                        let texture = this.inScene[row][col].image.texture;
+                        //let texture = this.inScene[row][col].image.texture;
                         //remove the flower from the scene
                         this.inScene[row][col].destroy();
                         //create a dirt image and place it in the spot
                         let temp = this.add.image((1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
                             (9 + row) * (game.config.height - 50) / 8 + 50 /*+ Phaser.Math.Between(-7,7)*/, "dirtDry");
                         temp.setOrigin(.5,.5).setScale(.35, .35);
-                        temp.depth = temp.y / 10;
+                        temp.depth = temp.y / 10 - 20;
                         this.inScene[row][col] = temp;
                         gardenGrid[row][col] = null;
                     }

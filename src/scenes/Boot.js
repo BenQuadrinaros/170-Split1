@@ -26,6 +26,9 @@ class Boot extends Phaser.Scene {
             this.load.image("flowerRed", "./assets/sprites/spritesheetFrames/red3.png");
             this.load.image("flowerPurple", "./assets/sprites/spritesheetFrames/purple3.png");
             this.load.image("tempLavender", "./assets/sprites/background/lavTest.png");
+            this.load.image('sprinkler', './assets/sprites/old/sprinklerTemp.jpg');
+            this.load.image('sprinklerHighlight', './assets/sprites/old/blue.png');
+            this.load.image('hiveHighlight', './assets/sprites/old/orange.png');
             //For hubScene
             this.load.image('background', './assets/sprites/background/garden_base.png');
             this.load.image('bee','./assets/sprites/character/hubBee.jpg');
@@ -44,7 +47,6 @@ class Boot extends Phaser.Scene {
             this.load.image('honeyPink', './assets/sprites/background/honeyPink.png');
             this.load.image('honeyBlue', './assets/sprites/background/honeyBlue.png');
             this.load.image('honeyPurple', './assets/sprites/background/honeyPurple.png');
-            this.load.image('sprinkler', './assets/sprites/old/sprinklerTemp.jpg');
             //For mapScene
             this.load.image('TownMap', './assets/sprites/background/WhiteBackground.png');
             this.load.image('PlayerIcon', './assets/sprites/character/playerMapIcon.png');

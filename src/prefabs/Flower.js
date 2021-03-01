@@ -41,8 +41,6 @@ class Flower {
         this.image.destroy();
     }
 
-    isFlower() { return true; }
-
     isFullyGrown() { return !(this.age < this.ref["grow"]); }
 
     updateImg() {
