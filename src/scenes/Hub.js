@@ -36,9 +36,16 @@ class Hub extends Phaser.Scene {
                 "purple": playerVariables.inventory.honey["purple"],
                 "pink": playerVariables.inventory.honey["pink"]
             };
-            //Gain a flat amount of yellow Honey
-            //playerVariables.inventory.honey["total"] += 2 + upgrades['bee'];
-            //playerVariables.inventory.honey["yellow"] += 2 + upgrades['bee'];
+
+            //All sprinklers water surroundings
+            for (let row = 0; row < gardenGrid.length; row++) {
+                for (let col = 0; col < gardenGrid[0].length; col++) {
+                    try {
+                        gardenGrid[row][col].watering();
+                        //console.log("found sprinkler at "+col+', '+row);
+                    } catch (error) { null; }
+                }
+            }
 
             //Update all Flowers for the day
             //Retrieve list of Hives for random collection
@@ -59,8 +66,6 @@ class Hub extends Phaser.Scene {
                 }
             }
             //console.log("found beehives: " + beehives);
-
-
 
             //Assess Beehives in a random order
             while (beehives.length > 0) {
@@ -230,7 +235,7 @@ class Hub extends Phaser.Scene {
                     let temp = this.add.image((1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
                         (9 + row) * (game.config.height - 50) / 8 + 50 /*+ Phaser.Math.Between(-7,7)*/, "dirtDry");
                     temp.setOrigin(.5,.5).setScale(.35, .35);
-                    temp.depth = temp.y / 10;
+                    temp.depth = temp.y / 10 - 20;
                     this.inScene[row][col] = temp;
 
                     //mulch to be added
@@ -251,6 +256,17 @@ class Hub extends Phaser.Scene {
                                 (9 + row) * (game.config.height - 50) / 8 + 100 /*+ Phaser.Math.Between(-7,7)*/, "hive", 0);
                             temp.image.setOrigin(.5,.5).setScale(.1, .1);
                             this.path.push([temp.image.x, temp.image.y]);
+                            temp.image.depth = temp.image.y / 10;
+                            this.inScene[row][col] = temp;
+                        }
+                    } catch(error) { null; }
+                    try{ //check if sprinkler
+                        if(gardenGrid[row][col].isSprinkler()) {
+                            let temp = gardenGrid[row][col];
+                            temp.addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
+                                (9 + row) * (game.config.height - 50) / 8 + 100 /*+ Phaser.Math.Between(-7,7)*/, 
+                                "sprinkler", 0);
+                            temp.image.setOrigin(.5,.5).setScale(.1, .1);
                             temp.image.depth = temp.image.y / 10;
                             this.inScene[row][col] = temp;
                         }

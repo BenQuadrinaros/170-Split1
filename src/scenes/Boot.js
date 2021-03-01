@@ -44,6 +44,7 @@ class Boot extends Phaser.Scene {
             this.load.image('honeyPink', './assets/sprites/background/honeyPink.png');
             this.load.image('honeyBlue', './assets/sprites/background/honeyBlue.png');
             this.load.image('honeyPurple', './assets/sprites/background/honeyPurple.png');
+            this.load.image('sprinkler', './assets/sprites/old/sprinklerTemp.jpg');
             //For mapScene
             this.load.image('TownMap', './assets/sprites/background/WhiteBackground.png');
             this.load.image('PlayerIcon', './assets/sprites/character/playerMapIcon.png');
