@@ -50,7 +50,12 @@ class Hive {
         this.image.setPosition(initx, inity);
     }
 
-    isHive() {
-        return true;
+    setPos(gridx, gridy) {
+        this.gridx = gridx;
+        this.gridy = gridy;
+    }
+
+    destroy() {
+        this.image.destroy();
     }
 }

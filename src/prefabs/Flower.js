@@ -1,7 +1,7 @@
 class Flower {
     constructor(age, water, type) {
         this.age = age;       //Int between 0 and its max, only produces Honey when fully grown
-        this.water = water;   //Float between 0.0 and 1.0 for how well watered it is
+        this.water = water;   //Int between 0 and its max, only produces Honey above 0
         this.ref = flowerTypes[type];
         this.collected = false;
         this.type = type;     //Cosmo, Lavender, Blue Bonnet, Tulip, Orchid
@@ -13,11 +13,11 @@ class Flower {
         this.image.setPosition(initx, inity);
     }
 
-    water() {
-        this.water += 1;
-        if (this.water > this.ref["water"]) {
-            this.water = this.ref["water"];
+    addWater() {
+        if (this.water < this.ref["water"]) {
+            this.water += 1;
         }
+        //console.log("This flower got watered!");
     }
 
     advance() {
@@ -40,8 +40,6 @@ class Flower {
     destroy() {
         this.image.destroy();
     }
-
-    isFlower() { return true; }
 
     isFullyGrown() { return !(this.age < this.ref["grow"]); }
 

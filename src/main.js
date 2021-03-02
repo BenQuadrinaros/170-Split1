@@ -47,13 +47,15 @@ let flow5 = new Flower(2, 1, "Orchid");
 let flow10 = new Flower(3, 3, "Lavender");
 let flow11 = new Flower(3, 3, "Lavender");
 let hive1 = new Hive(7, 5);
+//test sprinkler
+let sprink = new Sprinkler(4, 4);
 let gardenGrid = [ // 10 x 8 grid for garden generating
     //Starting placements for intial garden
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
     [null,    null,   null,   flow2,  flow3,  flow4,  flow5,  null,   null,   null],
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   null,   flow1,  null,   null,  flow10,  null,   null,   null],
+    [null,    null,   null,   flow1, sprink,  null,  flow10,  null,   null,   null],
     [null,    null,   hive,   null,   null,   null,   null,   hive1,  null,   null],
     [null,    flow0,  null,   null,   null,   null,   null,   null,  flow11,  null],
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null]
@@ -77,11 +79,11 @@ let playerVariables = {
     actions: 4,
     inventory: {
         honey: {
-            "total": 14,
-            "yellow": 8,
-            "blue": 2,
-            "purple": 2,
-            "pink": 2
+            "total": 36,
+            "yellow": 12,
+            "blue": 8,
+            "purple": 8,
+            "pink": 8
         },
         items: {
             "Beehive": 0,

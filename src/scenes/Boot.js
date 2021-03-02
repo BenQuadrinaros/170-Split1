@@ -26,6 +26,9 @@ class Boot extends Phaser.Scene {
             this.load.image("flowerRed", "./assets/sprites/spritesheetFrames/red3.png");
             this.load.image("flowerPurple", "./assets/sprites/spritesheetFrames/purple3.png");
             this.load.image("tempLavender", "./assets/sprites/background/lavTest.png");
+            this.load.image('sprinkler', './assets/sprites/old/sprinklerTemp.jpg');
+            this.load.image('sprinklerHighlight', './assets/sprites/old/blue.png');
+            this.load.image('hiveHighlight', './assets/sprites/old/orange.png');
             //For hubScene
             this.load.image('background', './assets/sprites/background/garden_base.png');
             this.load.image('bee','./assets/sprites/character/hubBee.jpg');
@@ -38,7 +41,8 @@ class Boot extends Phaser.Scene {
             this.load.image('toadLeckman', './assets/sprites/character/mrleckman_510x300.png');
             //For Market
             this.load.image('basicDogNPC', './assets/sprites/character/dognpc_275x458.png');
-            this.load.image('booth', './assets/sprites/background/boothFull.png');
+            this.load.image('boothFull', './assets/sprites/background/boothFull.png');
+            this.load.image('booth', './assets/sprites/background/boothZoom.png');
             this.load.image('cloth', './assets/sprites/background/clothFull.png');
             this.load.image('honeyPlain', './assets/sprites/background/honeyPlain.png');
             this.load.image('honeyPink', './assets/sprites/background/honeyPink.png');
