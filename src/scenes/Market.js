@@ -16,43 +16,45 @@ class Market extends Phaser.Scene {
         this.bike.depth = 75;
 
         //stand for visual space
-        this.stand = this.add.image(4 * game.config.width / 7, game.config.height / 2, 'booth');
-        this.stand.setOrigin(.5, .5).setScale(.5, .5);
+        this.stand = this.add.image(game.config.width / 2, game.config.height / 2, 'booth');
+        this.stand.setOrigin(.5, .5).setScale(.675, .675);
         this.stand.depth = 95;
-        this.cloth = this.add.image(4 * game.config.width / 7, game.config.height / 2, 'cloth');
-        this.cloth.setOrigin(.5, .5).setScale(.5, .5);
+        this.cloth = this.add.image(game.config.width / 2, 6 * game.config.height / 10, 'cloth');
+        this.cloth.setOrigin(.5, .5).setScale(.675, .675);
         this.cloth.depth = 98;
 
         //populate in jars of honey
         this.yellowStock = [];
         for(let i = 0; i < Math.min(20, playerVariables.inventory.honey["yellow"]); i++) {
-            let temp = this.add.image(game.config.width - ((i+2) * game.config.width / 27),
-                64 * game.config.height / 100, "honeyPlain");
-            temp.setOrigin(.5, .5).setScale(.5, .5);
+            let temp = this.add.image(game.config.width - ((i%10+1) * game.config.width / 22) +
+                15 * Math.floor(i / 10), 62 * game.config.height / 100 + 15 * Math.floor(i / 10), 
+                "honeyPlain");
+            temp.setOrigin(.5, .5).setScale(.675, .675);
             temp.depth = 97;
             this.yellowStock.push(temp);
         }
         this.blueStock = [];
-        for(let i = 0; i < Math.min(20, playerVariables.inventory.honey["blue"]); i++) {
-            let temp = this.add.image(game.config.width - ((i+2) * game.config.width / 27),
-                74 * game.config.height / 100, "honeyBlue");
-            temp.setOrigin(.5, .5).setScale(.5, .5);
+        for(let i = 0; i < Math.min(10, playerVariables.inventory.honey["blue"]); i++) {
+            let temp = this.add.image( ((i%5+1) * game.config.width / 22) -
+                15 * Math.floor(i / 5), 62 * game.config.height / 100 + 15 * Math.floor(i / 5),
+                "honeyBlue");
+            temp.setOrigin(.5, .5).setScale(.675, .675);
             temp.depth = 97;
             this.blueStock.push(temp);
         }
         this.purpleStock = [];
         for(let i = 0; i < Math.min(20, playerVariables.inventory.honey["purple"]); i++) {
-            let temp = this.add.image(game.config.width - ((i+2) * game.config.width / 27),
-                84 * game.config.height / 100, "honeyPurple");
-            temp.setOrigin(.5, .5).setScale(.5, .5);
+            let temp = this.add.image(game.config.width - ((i+1) * game.config.width / 22),
+                79 * game.config.height / 100, "honeyPurple");
+            temp.setOrigin(.5, .5).setScale(.675, .675);
             temp.depth = 97;
             this.purpleStock.push(temp);
         }
         this.pinkStock = [];
         for(let i = 0; i < Math.min(20, playerVariables.inventory.honey["pink"]); i++) {
-            let temp = this.add.image(game.config.width - ((i+2) * game.config.width / 27),
-                94 * game.config.height / 100, "honeyPink");
-            temp.setOrigin(.5, .5).setScale(.5, .5);
+            let temp = this.add.image(game.config.width - ((i+1) * game.config.width / 22),
+                93 * game.config.height / 100, "honeyPink");
+            temp.setOrigin(.5, .5).setScale(.675, .675);
             temp.depth = 97;
             this.pinkStock.push(temp);
         }
