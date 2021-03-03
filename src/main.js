@@ -129,3 +129,14 @@ let itemOptions = [
         name: 'Cancel',
     },
 ];
+let rangeDialogue = {
+    low: [0,1],
+    mid: [2,3],
+    high: [4,5],
+    goodbyes: [6, 7]
+
+}
+let dialogGlobal = undefined;
+let dialogSlice = undefined;
+
+let sellChoice = undefined;
