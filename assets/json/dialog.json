@@ -1,53 +1,76 @@
 [
-	[
-		{
-			"speaker" : "bear",
-			"dialog" : "Now I hopefully won't fall off in the middle of a delivery...",
-			"newSpeaker" : "true"
-		}
-
-	],
-
-	[
-		{
-			"speaker" : "bear",
-			"dialog" : "Anything for you my friends!",
-			"newSpeaker" : "true"
-		},
-		{
-			"speaker" : "bee",
-			"dialog" : "bzz.....",
-			"newSpeaker" : "true"
-		},
-		{
-			"speaker" : "bee",
-			"dialog" : "bzz.....!",
-			"newSpeaker" : "false"
-		}
-
-	],
-
-	[
-		{
-			"speaker" : "bear",
-			"dialog" : "I bear-lieve that you ordered some honey?",
-			"newSpeaker" : "true"
-		},
-		{
-			"speaker" : "bee",
-			"dialog" : "Of course, good bear",
-			"newSpeaker" : "true"
-		},
-		{
-			"speaker" : "bee",
-			"dialog" : "Thank you for this good food!",
-			"newSpeaker" : "false"
-		},
-		{
-			"speaker" : "bear",
-			"dialog" : "Happy to help!",
-			"newSpeaker" : "true"
-		}
-	]
-
+  [
+    {
+      "_0": 0,
+      "speaker": "DogNPC",
+      "dialog": "Wow! Thats a great price! Sure!",
+      "newSpeaker": "true"
+    }
+  ],
+  [
+    {
+      "_1": 1,
+      "speaker": "DogNPC",
+      "dialog": "Fantastic Price! Sure!",
+      "newSpeaker": "true"
+    }
+  ],
+  [
+    {
+      "_2": 2,
+      "speaker": "DogNPC",
+      "dialog": "Hmmph. That's a fine price.",
+      "newSpeaker": "true"
+    }
+  ],
+  [
+    {
+      "_3": 3,
+      "speaker": "DogNPC",
+      "dialog": "Hmmph. That's a fine price.",
+      "newSpeaker": "true"
+    }
+  ],
+  [
+    {
+      "_4": 4,
+      "speaker": "DogNPC",
+      "dialog": "That price is too high...",
+      "newSpeaker": "true"
+    },
+    {
+    "speaker": "DogNPC",
+    "dialog": "Could you maybe go lower?\n [Y]es or [N]o.",
+    "newSpeaker": "true"
+  }
+  ],
+  [
+    {
+      "_5": 5,
+      "speaker": "DogNPC",
+      "dialog": "That's a high price...",
+      "newSpeaker": "true"
+    },
+    {
+      "speaker": "DogNPC",
+      "dialog": "Could you perhaps lower it?\n [Y]es or [N]o.",
+      "newSpeaker": "true"
+    }
+  ],
+  [
+    {
+      "_6": 6,
+      "speaker": "bear",
+      "dialog": "Goodbye friend!",
+      "newSpeaker": "true"
+    }
+  ],
+  [
+    {
+      "_7": 7,
+      "speaker": "bear",
+      "dialog": "Good day sir.",
+      "newSpeaker": "true"
+    }
+  ]
 ]
