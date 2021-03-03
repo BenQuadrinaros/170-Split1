@@ -48,9 +48,12 @@ class Talking extends Phaser.Scene {
         //Create escape key for pausing
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
+        console.log(dialogGlobal);
+        console.log(dialogSlice)
         // parse json from JSON file
-        this.dialog = this.cache.json.get('dialog');
+        this.dialog = dialogGlobal;
         //console.log(this.dialog);
+        this.dialogOver = false;
 
         // add json box sprite
         this.dialogbox = this.add.sprite(this.DBOX_X, this.DBOX_Y, 'dialogbox').setOrigin(0).setAlpha(.3);
@@ -60,14 +63,18 @@ class Talking extends Phaser.Scene {
         this.nextText = this.add.bitmapText(this.NEXT_X, this.NEXT_Y, this.DBOX_FONT, '', this.TEXT_SIZE);
 
         // // ready the character json images offscreen
-        this.bear = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'player').setOrigin(0, 1).setScale(2);
+        this.bear = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'PlayerIcon').setOrigin(0, 1);
         this.bee = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'bee').setOrigin(0, 1).setScale(.02,.02);
         // this.neptune = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'neptune').setOrigin(0, 1);
         // this.jove = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'jove').setOrigin(0, 1);
+        this.Dog = this.add.sprite(this.OFFSCREEN_X,this.OFFSCREEN_Y, this.DBOX_Y+8,"basicDogNPC").setOrigin(0, 1);
+        keyY = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Y);
+        keyN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.N);
 
         // input
         cursors = this.input.keyboard.createCursorKeys();
         this.dialogConvo = dialogueSection;
+
 
         // start json
         this.typeText();
@@ -85,7 +92,25 @@ class Talking extends Phaser.Scene {
         // check for spacebar press
         if(Phaser.Input.Keyboard.JustDown(cursors.space) && !this.dialogTyping) {
             // trigger json
+            this.dialogOver = false;
             this.typeText();
+        }
+        if(Phaser.Input.Keyboard.JustDown(keyN)){
+                console.log("no");
+                sellChoice = "no";
+                this.scene.stop('talkingScene');
+                this.scene.resume('marketScene');
+            //isPaused = true;
+
+        }
+        if(Phaser.Input.Keyboard.JustDown(keyY)){
+
+            console.log("Pyes");
+            sellChoice = "yes";
+            this.scene.stop('talkingScene');
+            this.scene.resume('marketScene');
+            //isPaused = true;
+
         }
     }
 
@@ -130,8 +155,10 @@ class Talking extends Phaser.Scene {
             // make text box invisible
             //this.dialogbox.visible = false;
             //this.dialogConvo = 0;
-            this.scene.resume(this.prevScene);
-            this.scene.stop();
+            this.dialogOver = true;
+            dialogGlobal[dialogueSection] = dialogSlice;
+            this.scene.stop('talkingScene');
+            this.scene.resume(previousScene);
 
         } else {
             // if not, set current speaker
