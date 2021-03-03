@@ -20,7 +20,7 @@ class Shop extends Phaser.Scene {
         //Initialize images
         this.background = this.add.image(config.width/2, config.height/2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-10);
         this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 2).setDepth(-10);
-        this.toadLeckman = this.add.image(4*config.width/5, 2*config.height/3, 'toadLeckman').setOrigin(0.5, 0.5).setScale(0.5, 0.5);
+        this.toadLeckman = this.add.image(config.width/4,config.height/2, 'toadLeckman').setOrigin(0.5, 0.5).setScale(0.5, 0.5);
 
         //Initialize image animation variables
         this.bounceFactor = .1;
@@ -46,9 +46,9 @@ class Shop extends Phaser.Scene {
         };
 
         //create shop text
-        this.shopText = this.add.text(config.width/4,config.height/2, "SHOP", this.textConfig).setOrigin(.5,.5).setVisible(true);
-        this.shopTextInteract = this.add.text(config.width/4,(config.height/2)-20, "Space to interact with shop", this.textConfig).setOrigin(.5,.5).setVisible(false);
-        this.toadTextInteract = this.add.text(this.toadLeckman.x,this.toadLeckman.y, "Space to go back to hub", this.textConfig).setOrigin(.5,.5).setVisible(false);
+        this.shopExit = this.add.text(4*config.width/5, 2*config.height/3, "EXIT", this.textConfig).setOrigin(.5,.5).setVisible(true);
+        this.shopExitInteract = this.add.text(4*config.width/5, (2*config.height/3)-20, "Space to go back to the hub", this.textConfig).setOrigin(.5,.5).setVisible(false);
+        this.toadTextInteract = this.add.text(this.toadLeckman.x,this.toadLeckman.y, "Space to interact with the shop", this.textConfig).setOrigin(.5,.5).setVisible(false);
 
         //establish controls for gameplay
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -118,22 +118,22 @@ class Shop extends Phaser.Scene {
         }
 
         this.player.update();
-        if (Math.abs(Phaser.Math.Distance.Between(this.shopText.x,this.shopText.y, this.player.x,this.player.y)) < 100){
-            this.shopTextInteract.setVisible(true);
+        if (Math.abs(Phaser.Math.Distance.Between(this.shopExit.x,this.shopExit.y, this.player.x,this.player.y)) < 100){
+            this.shopExitInteract.setVisible(true);
+            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+                console.log("returning to hub");
+                this.musicManager.stop();
+                this.scene.start("hubScene", {previousScene: "shopScene"});
+            }
+        } else {
+            this.shopExitInteract.setVisible(false);
+        }
+        if (Math.abs(Phaser.Math.Distance.Between(this.toadLeckman.x,this.toadLeckman.y, this.player.x,this.player.y)) < 100){
+            this.toadTextInteract.setVisible(true);
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 console.log("launching shop ui");
                 this.scene.pause('shopScene');
                 this.scene.launch("shopUIScene");
-            }
-        } else {
-            this.shopTextInteract.setVisible(false);
-        }
-        if (Math.abs(Phaser.Math.Distance.Between(this.toadLeckman.x,this.toadLeckman.y, this.player.x,this.player.y)) < 100){
-            this.toadTextInteract.setVisible(true);
-            this.musicManager.transitionSong("hubMusic", true);
-            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
-                console.log("returning to hub");
-                this.scene.start("hubScene", {previousScene: "shopScene"});
             }
         } else {
             this.toadTextInteract.setVisible(false);

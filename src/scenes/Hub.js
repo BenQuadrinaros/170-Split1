@@ -87,8 +87,6 @@ class Hub extends Phaser.Scene {
         this.bikeShed.depth = this.bikeShed.y / 10;
         this.gardeningShed = this.add.image(4 * config.width / 5, 3 * config.height / 4, 'gardeningShed').setScale(1.2, 1.2);
         this.gardeningShed.depth = this.gardeningShed.y / 10;
-        this.toadLeckman = this.add.image(6*config.width/5, 2*config.height/5, 'toadLeckman').setOrigin(0.5,0.5).setScale(0.5,0.5);
-        this.toadLeckman.depth = this.toadLeckman.y/10;
         this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 2, this.worldWidth, this.worldHeight);
         this.player.depth = this.player.y / 10;
 
@@ -157,6 +155,8 @@ class Hub extends Phaser.Scene {
         this.moveText.depth = 100;
         this.turnText = this.add.text(6 * game.config.width / 7, game.config.height / 4, "Turns Remaining: ", this.textConfig).setOrigin(.5);
         this.turnText.depth = 100;
+        this.toadLeckman = this.add.text(6*config.width/5, 2*config.height/5, "Toad Leckman's Shop", this.textConfig).setOrigin(0.5,0.5);
+        this.toadLeckman.depth = this.toadLeckman.y/10;
 
         //Text that starts invisible
         this.interactText = this.add.text(this.player.x, this.player.y, "'SPACE' to interact", this.textConfig).setOrigin(.5, .5).setVisible(false);
@@ -436,7 +436,23 @@ class Hub extends Phaser.Scene {
                 //this.scene.start('mapScene', { arrivingAt: -1 }) //for going to biking map
                 this.scene.start('marketScene');
             }
-        } else {
+        }
+        //Check if the player is close enough to the bike to Toad Leckman to shop
+        else if (Math.abs(Phaser.Math.Distance.Between(this.toadLeckman.x, this.toadLeckman.y, this.player.x, this.player.y)) < 100) {
+            //this.bike.y += this.bounceFactor;
+            this.interactText.text = "'SPACE' to go shopping";
+            this.interactText.x = this.toadLeckman.x;
+            this.interactText.y = this.toadLeckman.y + 20;
+            this.interactText.setVisible(true);
+            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+                //-1 to indicate that it just left the hub
+                this.music.stop();
+                //this.scene.start('mapScene', { arrivingAt: -1 }) //for going to biking map
+                this.scene.start('shopScene');
+            }
+        }
+
+        else {
 
             this.interactText.setVisible(false);
         }
@@ -494,23 +510,6 @@ class Hub extends Phaser.Scene {
             this.bikeUpgrades.setVisible(false);
         }
         */
-
-        //Check if the player is close enough to the bike to Toad Leckman to shop
-        if (Math.abs(Phaser.Math.Distance.Between(this.toadLeckman.x, this.toadLeckman.y, this.player.x, this.player.y)) < 100) {
-            //this.bike.y += this.bounceFactor;
-            this.interactText.text = "'SPACE' to go shopping";
-            this.interactText.x = this.toadLeckman.x;
-            this.interactText.y = this.toadLeckman.y;
-            this.interactText.setVisible(true);
-            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
-                //-1 to indicate that it just left the hub
-                this.music.stop();
-                //this.scene.start('mapScene', { arrivingAt: -1 }) //for going to biking map
-                this.scene.start('shopScene');
-            }
-        } else {
-            this.interactText.setVisible(false);
-        }
 
         //When the player starts to move, get rid of the instructions
         if (this.moveText != null) {
