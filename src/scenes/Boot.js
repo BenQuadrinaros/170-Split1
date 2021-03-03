@@ -59,6 +59,12 @@ class Boot extends Phaser.Scene {
             this.load.image("Obstacle_1", './assets/sprites/character/playerMapIcon.png');
             //For pauseScene
             this.load.image("TempPause", "./assets/sprites/background/tempPause.png");
+            //For settingsScene
+            this.load.image("TempSettingsScreen", "./assets/img/TempSettings3_3_21.png");
+            //For creditsScene
+            this.load.image("TempCreditsScreen", "./assets/img/TempCredits3_3_20-01.png");
+            //For tutorialScene
+            this.load.image("TempTutorialScreen", "./assets/img/TempTutorial3_3_21-01.png");
 
 
         //Load Spritesheets
@@ -83,8 +89,9 @@ class Boot extends Phaser.Scene {
             //For menuScene
             this.load.spritesheet('Play','./assets/spritesheets/PlayInitial.png',{frameWidth: 130, frameHeight: 66, startFrame:0 , endFrame: 1});
             this.load.spritesheet('Settings','./assets/spritesheets/SettingsInitial.png',{frameWidth: 158, frameHeight: 50, startFrame:0 , endFrame: 1});
+            this.load.spritesheet('Tutorial', './assets/spritesheets/TempTutorialCombined.png', {frameWidth: 148, frameHeight: 28, startFrame:0 , endFrame: 1});
+            this.load.spritesheet('Credits', './assets/spritesheets/TempCreditsCombined.png', {frameWidth: 124, frameHeight: 28, startFrame:0 , endFrame: 1});
             //For settingsScene
-            this.load.spritesheet('Settings', './assets/spritesheets/SettingsInitial.png', {frameWidth: 158, frameHeight: 50, startFrame: 0, endFrame: 1});
             this.load.spritesheet('Back', './assets/spritesheets/BackInitial.png', {frameWidth: 114, frameHeight: 36, startFrame: 0, endFrame: 1});
 
 
@@ -102,6 +109,8 @@ class Boot extends Phaser.Scene {
             this.load.audio("marketMusic", "./assets/audio/music/market.mp3");
 
         //Load SFX
+            //For hubScene and marketScene
+            this.load.audio("hubMarketTransition", "./assets/audio/sfx/settingupstall.mp3");
 
 
     
