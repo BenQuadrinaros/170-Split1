@@ -78,9 +78,6 @@ class Hub extends Phaser.Scene {
         //Initialize images
         this.cameras.main.setBackgroundColor(0x000000);
         this.background = this.add.image(config.width / 2, config.height / 2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5);
-        this.bike = this.add.image(config.width / 6, config.height / 4, 'bike').setOrigin(0.5, 0.5).setScale(0.35, 0.35);
-        this.bike.depth = this.bike.y / 10;
-        this.bike.flipX = true;
         this.bee = this.add.image(config.width / 2, config.height / 4, 'bee').setOrigin(0.5, 0.5).setScale(.01, .01);
         this.bee.depth = this.bee.y / 10;
         this.bikeShed = this.add.image(config.width / 5, 3 * config.height / 4, 'bikeShed').setScale(0.9, 0.9);
@@ -155,6 +152,8 @@ class Hub extends Phaser.Scene {
         this.moveText.depth = 100;
         this.turnText = this.add.text(6 * game.config.width / 7, game.config.height / 4, "Turns Remaining: ", this.textConfig).setOrigin(.5);
         this.turnText.depth = 100;
+        this.marketEntrance = this.add.text(6*config.width/5, 4*config.height/5, "The Farmer's Market", this.textConfig).setOrigin(0.5, 0.5);
+        this.marketEntrance.depth = this.marketEntrance.y / 10;
         this.toadLeckman = this.add.text(6*config.width/5, 2*config.height/5, "Toad Leckman's Shop", this.textConfig).setOrigin(0.5,0.5);
         this.toadLeckman.depth = this.toadLeckman.y/10;
 
@@ -424,22 +423,26 @@ class Hub extends Phaser.Scene {
             this.bounceFactor = -this.bounceFactor;
         }
         //Check if the player is close enough to the bike to head to the world map
-        if (Math.abs(Phaser.Math.Distance.Between(this.bike.x, this.bike.y, this.player.x, this.player.y)) < 100) {
-            this.bike.y += this.bounceFactor;
-            this.interactText.text = "'SPACE' to make deliveries";
-            this.interactText.x = this.bike.x;
-            this.interactText.y = this.bike.y;
+        if (Math.abs(Phaser.Math.Distance.Between(this.marketEntrance.x, this.marketEntrance.y, this.player.x, this.player.y)) < 100) {
+            this.marketEntrance.y += this.bounceFactor;
+            this.interactText.text = "'SPACE' to end day by selling your honey";
+            this.interactText.x = this.marketEntrance.x;
+            this.interactText.y = this.marketEntrance.y + 20;
             this.interactText.setVisible(true);
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 //-1 to indicate that it just left the hub
-                this.music.stop();
-                //this.scene.start('mapScene', { arrivingAt: -1 }) //for going to biking map
-                this.scene.start('marketScene');
+                //this.music.stop();
+                this.music.transitionSong("hubMarketTransition", false);
+                this.cameras.main.fadeOut(3000, 0, 0, 0);
+                this.time.delayedCall(9500, () => {
+                    //this.scene.start('mapScene', { arrivingAt: -1 }) //for going to biking map
+                    this.music.stop();
+                    this.scene.start('marketScene');
+                });
             }
         }
         //Check if the player is close enough to the bike to Toad Leckman to shop
         else if (Math.abs(Phaser.Math.Distance.Between(this.toadLeckman.x, this.toadLeckman.y, this.player.x, this.player.y)) < 100) {
-            //this.bike.y += this.bounceFactor;
             this.interactText.text = "'SPACE' to go shopping";
             this.interactText.x = this.toadLeckman.x;
             this.interactText.y = this.toadLeckman.y + 20;

@@ -309,8 +309,13 @@ class Market extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
                 //go to map
                 //ADD HERE
-                this.music.stop();
-                this.scene.start('hubScene', {previousScene: "marketScene"});
+                this.music.transitionSong("hubMarketTransition", false);
+                this.cameras.main.fadeOut(3000, 0, 0, 0);
+                this.time.delayedCall(9500, () => {
+                    //this.scene.start('mapScene', { arrivingAt: -1 }) //for going to biking map
+                    this.music.stop();
+                    this.scene.start('hubScene', {previousScene: "marketScene"});
+                });
             }
         } else {
             if (this.state == "waiting") { //Patrons come and go
