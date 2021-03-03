@@ -6,6 +6,11 @@ class Settings extends Phaser.Scene {
         this.COLOR_DARK = 0x260e04;
     }
 
+    init(data){
+        console.log("Previous Scene: " + data.previousScene);
+        this.prevScene = data.previousScene;
+    }
+
     preload() {
         this.load.scenePlugin({
             key: 'rexuiplugin',
@@ -19,9 +24,14 @@ class Settings extends Phaser.Scene {
         let centerX = game.config.width / 2;
         let centerY = game.config.height / 2;
         let textSpacer = 64;
+        
+        //Creating interactable images
+        let settings = this.add.image(centerX, centerY, 'TempSettingsScreen').setOrigin(0.5);
+        let back = this.add.image(centerX / 2, centerY + textSpacer * 2, 'Back').setOrigin(0.5);
+
         this.slider = this.rexUI.add.slider({
-            x: 200,
-            y: 300,
+            x: centerX,
+            y: centerY/3 + textSpacer,
             width: 200,
             height: 20,
             orientation: 'x',
@@ -42,22 +52,14 @@ class Settings extends Phaser.Scene {
         })
             .layout();
 
-        //Setting controls
-        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
-        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-
-        //Setting Background
-
-        //Creating interactable images
-        let settings = this.add.image(centerX, textSpacer, 'Settings').setOrigin(0.5);
-        let back = this.add.image(centerX / 2, centerY + textSpacer * 2, 'Back').setOrigin(0.5);
         //Making images interactable
         back.setInteractive();
         //Setting interactive behaviors
         back.on('pointerover', () => back.setFrame(1));
         back.on("pointerout", () => back.setFrame(0));
         back.on('pointerup', () => {
-            this.scene.start('menuScene');
+            this.scene.resume(this.prevScene);
+            this.scene.stop();
         });
 
         console.log(this);

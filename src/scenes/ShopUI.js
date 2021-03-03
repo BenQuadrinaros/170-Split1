@@ -28,6 +28,39 @@ class ShopUI extends Phaser.Scene {
     create() {
         uiScene = this;
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+
+        this.backpack = this.add.image(16*config.width/24, config.height / 6, 'PlayerIcon')
+        .setInteractive().setAlpha(.5)
+        .on('pointerover', () => {
+            this.backpack.setAlpha(1);
+        })
+        .on('pointerout', () => {
+            this.backpack.setAlpha(.5);
+        })
+        .on('pointerdown', () => {
+            console.log("Previous scene key: " + this.previousScene);
+            menu = undefined;
+            this.scene.resume(previousScene.scene.key);
+            this.scene.stop("shopUIScene");
+        });
+        this.add.text(this.backpack.x, this.backpack.y, "EXIT").setOrigin(.5, .5);
+
+
+        //Add text showing how much money the player has
+        this.textConfig = {
+            fontFamily: "Courier",
+            fontSize: "14px",
+            color: "#ffffff",
+            align: "center",
+            stroke: "#000000",
+            strokeThickness: 4,
+            padding: {
+                top: 5,
+                bottom: 5
+            },
+        };
+        this.currPlayerMoney = this.add.text(config.width/4, config.height / 6 - 20, "Current Money: " + playerVariables.money, this.textConfig);
+
         this.selectedTab = "Seeds";
 
         var db = createDataBase(5);
@@ -223,10 +256,13 @@ class ShopUI extends Phaser.Scene {
 
     update() {
         if(Phaser.Input.Keyboard.JustDown(keyESCAPE)){
-            console.log("escape")
+            console.log("escape");
             menu = undefined;
             this.scene.resume(previousScene.scene.key);
-            this.scene.stop("shopUIScene")
+            this.scene.stop("shopUIScene");
+        }
+        else{
+            this.currPlayerMoney.text = "Current Money: " + playerVariables.money;
         }
     }
 }

@@ -4,7 +4,7 @@ let config = {
     type: Phaser.CANVAS,
     width: 960,
     height: 540,
-    scene: [Boot, Hub, Garden, Map, Market, Play, Menu, Settings, Talking, OldRhythm,  Shop, ShopUI, BackPackUI, HubPopup, Pause],
+    scene: [Boot, Hub, Garden, Map, Market, Play, Menu, Credits, Tutorial, Talking, OldRhythm,  Shop, ShopUI, BackPackUI, HubPopup, Pause, Settings],
     volume: .7,
     physics: {
         default: 'arcade',
