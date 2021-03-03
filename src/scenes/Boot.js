@@ -62,7 +62,7 @@ class Boot extends Phaser.Scene {
             //For settingsScene
             this.load.image("TempSettingsScreen", "./assets/img/TempSettings3_3_21.png");
             //For creditsScene
-            this.load.image("TempCreditsScreen", "./assets/img/TempCredits3_3_20-01.png");
+            this.load.image("TempCreditsScreen", "./assets/img/TempCredits3_2_20-01.png");
             //For tutorialScene
             this.load.image("TempTutorialScreen", "./assets/img/TempTutorial3_3_21-01.png");
 

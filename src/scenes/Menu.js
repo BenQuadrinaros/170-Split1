@@ -11,7 +11,7 @@ class Menu extends Phaser.Scene {
 
         let centerX = game.config.width/2;
         let centerY = game.config.height/2;
-        let textSpacer = 64;
+        let textSpacer = 44;
 
         //Setting controls
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -23,14 +23,18 @@ class Menu extends Phaser.Scene {
         this.menu = this.add.image(centerX, centerY, 'TitleScreen').setOrigin(0.5);
         //Creating interactable images
         this.play = this.add.image(centerX/2, centerY + textSpacer, 'Play').setOrigin(0.5);
-        this.settings = this.add.image(centerX/2, centerY + textSpacer * 2, 'Settings').setOrigin(0.5);
+        this.tutorial = this.add.image(centerX/2, centerY + textSpacer * 2, 'Tutorial').setOrigin(0.5);
+        this.settings = this.add.image(centerX/2, centerY + textSpacer * 3, 'Settings').setOrigin(0.5);
+        this.credits = this.add.image(centerX/2, centerY + textSpacer * 4, 'Credits').setOrigin(0.5);
         
         //Create selection change event
         this.events.on("selectionChange", this.selectionUpdated, this);
 
         //Making images interactable
         this.play.setInteractive();
+        this.tutorial.setInteractive();
         this.settings.setInteractive();
+        this.credits.setInteractive();
         //Setting interactive behaviors
         this.play.on('pointerover', () => {
             this.currSelected = 1;
@@ -40,14 +44,28 @@ class Menu extends Phaser.Scene {
             this.currSelected = -1;
             this.events.emit("selectionChange");
         });
-            
         this.play.on('pointerup', () => {
             //this.music.stop();
             //this.scene.start('hubScene');
             this.moveToNewScene(1);
         });
-        this.settings.on('pointerover', () => {
+
+        this.tutorial.on('pointerover', () => {
             this.currSelected = 2;
+            this.events.emit("selectionChange");
+        });
+        this.tutorial.on("pointerout", () => {
+            this.currSelected = -1;
+            this.events.emit("selectionChange");
+        });
+        this.tutorial.on('pointerup', () => {
+            //this.music.stop();
+            //this.scene.start('settingsScene');
+            this.moveToNewScene(2);
+        });
+
+        this.settings.on('pointerover', () => {
+            this.currSelected = 3;
             this.events.emit("selectionChange");
         });
         this.settings.on("pointerout", () => {
@@ -57,7 +75,21 @@ class Menu extends Phaser.Scene {
         this.settings.on('pointerup', () => {
             //this.music.stop();
             //this.scene.start('settingsScene');
-            this.moveToNewScene(2);
+            this.moveToNewScene(3);
+        });
+
+        this.credits.on('pointerover', () => {
+            this.currSelected = 4;
+            this.events.emit("selectionChange");
+        });
+        this.credits.on("pointerout", () => {
+            this.currSelected = -1;
+            this.events.emit("selectionChange");
+        });
+        this.credits.on('pointerup', () => {
+            //this.music.stop();
+            //this.scene.start('settingsScene');
+            this.moveToNewScene(4);
         });
 
         //background music for the menu
@@ -81,7 +113,7 @@ class Menu extends Phaser.Scene {
             else{
                 this.currSelected -= 1;
                 if(this.currSelected === 0){
-                    this.currSelected = 2;
+                    this.currSelected = 4;
                 }
                 this.events.emit("selectionChange");
             }
@@ -94,7 +126,7 @@ class Menu extends Phaser.Scene {
             }
             else{
                 this.currSelected += 1;
-                if(this.currSelected === 3){
+                if(this.currSelected === 5){
                     this.currSelected = 1;
                 }
                 this.events.emit("selectionChange");
@@ -122,12 +154,28 @@ class Menu extends Phaser.Scene {
             this.play.setFrame(0);
         }
 
-        //Settings
+        //Tutorial
         if(this.currSelected === 2){
+            this.tutorial.setFrame(1);
+        }
+        else{
+            this.tutorial.setFrame(0);
+        }
+
+        //Settings
+        if(this.currSelected === 3){
             this.settings.setFrame(1);
         }
         else{
             this.settings.setFrame(0);
+        }
+
+        //Credits
+        if(this.currSelected === 4){
+            this.credits.setFrame(1);
+        }
+        else{
+            this.credits.setFrame(0);
         }
     }
 
@@ -137,9 +185,20 @@ class Menu extends Phaser.Scene {
         if(newScene === 1){
             this.scene.start('hubScene', {previousScene: "menuScene"});
         }
-        //Settings is being pressed
+        //Tutorial is being pressed
         else if(newScene === 2){
-            this.scene.start('settingsScene');
+            this.scene.pause();
+            this.scene.launch("tutorialScene", {previousScene: "menuScene"});
+        }
+        //Settings is being pressed
+        else if(newScene === 3){
+            this.scene.pause();
+            this.scene.launch("settingsScene", {previousScene: "menuScene"});
+        }
+        //Credits is being pressed
+        else if(newScene === 4){
+            this.scene.pause();
+            this.scene.launch("creditsScene", {previousScene: "menuScene"});
         }
         //Other result
         else{
