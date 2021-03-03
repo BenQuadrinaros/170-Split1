@@ -46,7 +46,7 @@ class Shop extends Phaser.Scene {
         };
 
         //create shop text
-        this.shopExit = this.add.text(4*config.width/5, 2*config.height/3, "EXIT", this.textConfig).setOrigin(.5,.5).setVisible(true);
+        this.shopExit = this.add.text(4*config.width/5, 2*config.height/3, "STORE EXIT", this.textConfig).setOrigin(.5,.5).setVisible(true);
         this.shopExitInteract = this.add.text(4*config.width/5, (2*config.height/3)-20, "Space to go back to the hub", this.textConfig).setOrigin(.5,.5).setVisible(false);
         this.toadTextInteract = this.add.text(this.toadLeckman.x,this.toadLeckman.y, "Space to interact with the shop", this.textConfig).setOrigin(.5,.5).setVisible(false);
 

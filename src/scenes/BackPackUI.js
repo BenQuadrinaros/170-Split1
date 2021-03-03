@@ -63,7 +63,7 @@ class BackPackUI extends Phaser.Scene {
                 this.scene.resume(this.previousScene);
                 this.scene.stop();
             });
-        this.add.text(this.backpack.x, this.backpack.y, "EXIT").setOrigin(.5, .5)
+        this.add.text(this.backpack.x, this.backpack.y, "EXIT").setOrigin(.5, .5);
         var db = createDataBaseInventory(5);
 
 
@@ -207,7 +207,7 @@ class BackPackUI extends Phaser.Scene {
                                     name: 'Cancel',
                                 },
                             ];
-                            uiScene.scene.resume("hubScene");
+                            uiScene.scene.resume(this.previousScene);
                             uiScene.scene.stop("backpackUI")
 
                         });
