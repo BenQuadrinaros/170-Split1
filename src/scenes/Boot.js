@@ -63,6 +63,10 @@ class Boot extends Phaser.Scene {
             this.load.image('honeyPink', './assets/sprites/background/honeyPink.png');
             this.load.image('honeyBlue', './assets/sprites/background/honeyBlue.png');
             this.load.image('honeyPurple', './assets/sprites/background/honeyPurple.png');
+            this.load.image('redMinus', './assets/sprites/UI/minusRed_240.png');
+            this.load.image('greenMinus', './assets/sprites/UI/minusGreen_240.png');
+            this.load.image('greenPlus', './assets/sprites/UI/plusGreen_240.png');
+            this.load.image('plusRed', './assets/sprites/UI/plusRed_240.png');
             //For mapScene
             this.load.image('TownMap', './assets/sprites/background/WhiteBackground.png');
             this.load.image('PlayerIcon', './assets/sprites/character/playerMapIcon.png');
@@ -173,6 +177,6 @@ class Boot extends Phaser.Scene {
 
     create(){
         // go to Title scene
-        this.scene.start('menuScene');
+        this.scene.start('marketScene');
     }
 }

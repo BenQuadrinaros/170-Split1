@@ -111,8 +111,8 @@ class Market extends Phaser.Scene {
         this.transactionText.alpha = 0;
 
         //Price Setting Yellow
-        this.yellowPlus = this.add.image(config.width / 5, 1.25 * config.height / 5, 'PlayerIcon', 0)
-            .setOrigin(.5, .5).setDepth(100).setScale(.5, .5).setAlpha(.5).setInteractive()
+        this.yellowPlus = this.add.image(config.width / 5, 1.25 * config.height / 5, 'greenPlus', 0)
+            .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
             .on("pointerover", () => {
                 this.yellowPlus.alpha = 1;
                 this.yellowPriceText.alpha = 1;
@@ -125,8 +125,8 @@ class Market extends Phaser.Scene {
                 this.yellowPrice += .25;
                 this.yellowPriceText.text = "\tYellow\n" + "\t" + this.yellowPrice + "$/Jar";
             });
-        this.yellowMinus = this.add.image((config.width / 5) - 150, 1.25 * config.height / 5, 'PlayerIcon', 0)
-            .setOrigin(.5, .5).setDepth(100).setScale(.5, .5).setAlpha(.5).setInteractive()
+        this.yellowMinus = this.add.image((config.width / 5) - 150, 1.25 * config.height / 5, 'redMinus', 0)
+            .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
             .on("pointerover", () => {
                 this.yellowMinus.alpha = 1;
                 this.yellowPriceText.alpha = 1;
@@ -146,8 +146,8 @@ class Market extends Phaser.Scene {
             .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
 
         //Price Setting Blue
-        this.bluePlus = this.add.image(config.width / 5, 1.75 * config.height / 5, 'PlayerIcon', 0)
-            .setOrigin(.5, .5).setDepth(100).setScale(.5, .5).setAlpha(.5).setInteractive()
+        this.bluePlus = this.add.image(config.width / 5, 1.75 * config.height / 5, 'greenPlus', 0)
+            .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
             .on("pointerover", () => {
                 this.bluePlus.alpha = 1;
                 this.bluePriceText.alpha = 1;
@@ -160,8 +160,8 @@ class Market extends Phaser.Scene {
                 this.bluePrice += .25
                 this.bluePriceText.text = "\tBlue\n" + "\t" + this.bluePrice + "$/Jar";
             });
-        this.blueMinus = this.add.image((config.width / 5) - 150, 1.75 * config.height / 5, 'PlayerIcon', 0)
-            .setOrigin(.5, .5).setDepth(100).setScale(.5, .5).setAlpha(.5).setInteractive()
+        this.blueMinus = this.add.image((config.width / 5) - 150, 1.75 * config.height / 5, 'redMinus', 0)
+            .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
             .on("pointerover", () => {
                 this.blueMinus.alpha = 1;
                 this.bluePriceText.alpha = 1;
@@ -182,8 +182,8 @@ class Market extends Phaser.Scene {
 
         //Price Setting Pink
         //create plus and minus icon with events for pink price
-        this.pinkPlus = this.add.image(config.width / 5, 2.25 * config.height / 5, 'PlayerIcon', 0)
-            .setOrigin(.5, .5).setDepth(100).setScale(.5, .5).setAlpha(.5).setInteractive()
+        this.pinkPlus = this.add.image(config.width / 5, 2.25 * config.height / 5, 'greenPlus', 0)
+            .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
             .on("pointerover", () => {
                 this.pinkPlus.alpha = 1;
                 this.pinkPriceText.alpha = 1;
@@ -197,8 +197,8 @@ class Market extends Phaser.Scene {
                 this.pinkPriceText.text = "\tPink\n" + "\t" + this.pinkPrice + "$/Jar";
             });
 
-        this.pinkMinus = this.add.image((config.width / 5) - 150, 2.25 * config.height / 5, 'PlayerIcon', 0)
-            .setOrigin(.5, .5).setDepth(100).setScale(.5, .5).setAlpha(.5).setInteractive()
+        this.pinkMinus = this.add.image((config.width / 5) - 150, 2.25 * config.height / 5, 'redMinus', 0)
+            .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
             .on("pointerover", () => {
                 this.pinkMinus.alpha = 1;
                 this.pinkPriceText.alpha = 1;
@@ -218,8 +218,8 @@ class Market extends Phaser.Scene {
             .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
 
         //Price Setting Purple
-        this.purplePlus = this.add.image(config.width / 5, 2.75 * config.height / 5, 'PlayerIcon', 0)
-            .setOrigin(.5, .5).setDepth(100).setScale(.5, .5).setAlpha(.5).setInteractive()
+        this.purplePlus = this.add.image(config.width / 5, 2.75 * config.height / 5, 'greenPlus', 0)
+            .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
             .on("pointerover", () => {
                 this.purplePlus.alpha = 1;
                 this.purplePriceText.alpha = 1;
@@ -233,8 +233,8 @@ class Market extends Phaser.Scene {
                 this.purplePriceText.text = "\tPurple\n" + "\t" + this.purplePrice + "$/Jar";
             });
 
-        this.purpleMinus = this.add.image((config.width / 5) - 150, 2.75 * config.height / 5, 'PlayerIcon', 0)
-            .setOrigin(.5, .5).setDepth(100).setScale(.5, .5).setAlpha(.5).setInteractive()
+        this.purpleMinus = this.add.image((config.width / 5) - 150, 2.75 * config.height / 5, 'redMinus', 0)
+            .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
             .on("pointerover", () => {
                 this.purpleMinus.alpha = 1;
                 this.purplePriceText.alpha = 1;
@@ -288,7 +288,6 @@ class Market extends Phaser.Scene {
 
     update() {
         //update text UIs
-        console.log("im in market")
         this.moneyText.text = "Money: $" + Math.floor(playerVariables.money) + "." + Math.floor(playerVariables.money * 10) % 10 +
             Math.floor(playerVariables.money * 100) % 10;
         this.honeyText.text = "Honey: " + playerVariables.inventory.honey.total;
