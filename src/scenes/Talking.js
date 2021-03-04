@@ -54,9 +54,11 @@ class Talking extends Phaser.Scene {
         this.dialog = dialogGlobal;
         //console.log(this.dialog);
         this.dialogOver = false;
+        dialogEnded = false;
 
         // add json box sprite
-        this.dialogbox = this.add.sprite(this.DBOX_X, this.DBOX_Y, 'dialogbox').setOrigin(0).setAlpha(.3);
+        this.dialogbox = this.add.sprite(this.DBOX_X, this.DBOX_Y, 'dialogbox').setOrigin(0);
+        this.dialogLine = 0;
 
         // initialize json text objects (with no text)
         this.dialogText = this.add.bitmapText(this.TEXT_X, this.TEXT_Y, this.DBOX_FONT, '', this.TEXT_SIZE);
@@ -75,7 +77,7 @@ class Talking extends Phaser.Scene {
         cursors = this.input.keyboard.createCursorKeys();
         this.dialogConvo = dialogueSection;
 
-
+        console.log("in talking")
         // start json
         this.typeText();
     }
@@ -96,19 +98,21 @@ class Talking extends Phaser.Scene {
             this.typeText();
         }
         if(Phaser.Input.Keyboard.JustDown(keyN)){
-                console.log("no");
                 sellChoice = "no";
+                dialogGlobal[dialogueSection] = dialogSlice;
+                dialogEnded = true;
                 this.scene.stop('talkingScene');
-                this.scene.resume('marketScene');
+                //this.scene.resume('marketScene');
             //isPaused = true;
 
         }
         if(Phaser.Input.Keyboard.JustDown(keyY)){
 
-            console.log("Pyes");
             sellChoice = "yes";
+            dialogGlobal[dialogueSection] = dialogSlice;
+            dialogEnded = true;
             this.scene.stop('talkingScene');
-            this.scene.resume('marketScene');
+            //this.scene.resume('marketScene');
             //isPaused = true;
 
         }
@@ -157,6 +161,7 @@ class Talking extends Phaser.Scene {
             //this.dialogConvo = 0;
             this.dialogOver = true;
             dialogGlobal[dialogueSection] = dialogSlice;
+            dialogEnded = true;
             this.scene.stop('talkingScene');
             this.scene.resume(previousScene);
 
