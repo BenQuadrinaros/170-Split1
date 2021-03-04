@@ -15,12 +15,13 @@ class Boot extends Phaser.Scene {
     preload() {
         //Load images
             //For gardenScene
+            this.load.image("extraLargeGrass", "./assets/sprites/background/massiveGrassbackdrop.png")
             this.load.image("gardenBackground", "./assets/sprites/background/sampleGarden-01.png");
             this.load.image("exit", "./assets/sprites/background/LeftArrowGREEN.png");
             this.load.image("dirtDry", "./assets/sprites/spritesheetFrames/plotDry.png");
             this.load.image("dirtWet", "./assets/sprites/spritesheetFrames/plotWet.png");
             this.load.image("hive", "./assets/sprites/background/hive.png");
-            this.load.image("bearBee", "./assets/sprites/character/bearBee.png");
+            this.load.image("bearBee", "./assets/sprites/character/beeTiny.png");
             this.load.image("tempLavender", "./assets/sprites/background/lavTest.png");
             this.load.image('sprinkler', './assets/sprites/background/sprinkler.png');
             this.load.image('sprinklerHighlight', './assets/sprites/old/blue.png');
@@ -81,9 +82,9 @@ class Boot extends Phaser.Scene {
             //For settingsScene
             this.load.image("TempSettingsScreen", "./assets/img/TempSettings3_3_21.png");
             //For creditsScene
-            this.load.image("TempCreditsScreen", "./assets/img/TempCredits3_2_20-01.png");
+            this.load.image("TempCreditsScreen", "./assets/img/TempCredits3_3_21.png");
             //For tutorialScene
-            this.load.image("TempTutorialScreen", "./assets/img/TempTutorial3_3_21-01.png");
+            this.load.image("TempTutorialScreen", "./assets/img/TempTutorial3_3_21.png");
 
 
         //Load Spritesheets
@@ -126,6 +127,7 @@ class Boot extends Phaser.Scene {
             this.load.audio("shopMusicShort", "./assets/audio/music/toad_shop_theme_short_intro.mp3");
             //For marketScene
             this.load.audio("marketMusic", "./assets/audio/music/market.mp3");
+            this.load.audio("bedtimeMusic", "./assets/audio/music/Bedtime.mp3");
 
         //Load SFX
             //For hubScene and marketScene
