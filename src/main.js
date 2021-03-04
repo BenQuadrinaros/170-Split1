@@ -33,31 +33,22 @@ const Random = Phaser.Math.Between;
 
 let currentDay = 0;
 
-let upgrades = { "bike": 0, "bee": 0, "tools": 0 };
+let upgrades = { "bike": 0 };
 //Starting garden state
 let flow0 = new Flower(2, 3, "Cosmo");
 let flow1 = new Flower(2, 3, "Cosmo");
 let hive = new Hive(2, 5);
+let sprink = new Sprinkler(3, 5);
 //more flowers for testing purposes
-let flow2 = new Flower(0, 3, "Lavender");
-let flow3 = new Flower(1, 3, "Blue Bonnet");
-let flow4 = new Flower(2, 2, "Tulip");
-let flow5 = new Flower(2, 1, "Orchid");
-//test honey
-let flow10 = new Flower(3, 3, "Lavender");
-let flow11 = new Flower(3, 3, "Lavender");
-let hive1 = new Hive(7, 5);
-//test sprinkler
-let sprink = new Sprinkler(4, 4);
 let gardenGrid = [ // 10 x 8 grid for garden generating
     //Starting placements for intial garden
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   null,   flow2,  flow3,  flow4,  flow5,  null,   null,   null],
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   null,   flow1, sprink,  null,  flow10,  null,   null,   null],
-    [null,    null,   hive,   null,   null,   null,   null,   hive1,  null,   null],
-    [null,    flow0,  null,   null,   null,   null,   null,   null,  flow11,  null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,  flow1,   null,   null,   null,   null,   null,   null],
+    [null,    null,   hive, sprink,   null,   null,   null,   null,   null,   null],
+    [null,   flow0,   null,   null,   null,   null,   null,   null,   null,   null],
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null]
 ];
 let mulch = {};
@@ -75,15 +66,15 @@ let vars = {}
 
 //Player variables so we dont have to pass them around forever
 let playerVariables = {
-    money: 10.00,
+    money: 100.00,
     actions: 4,
     inventory: {
         honey: {
-            "total": 36,
-            "yellow": 12,
-            "blue": 8,
-            "purple": 8,
-            "pink": 8
+            "total": 3,
+            "yellow": 3,
+            "blue": 0,
+            "purple": 0,
+            "pink": 0
         },
         items: {
             "Beehive": 0,
@@ -99,9 +90,9 @@ let playerVariables = {
         },
         seeds: {
             "Cosmo": 2,
-            "Blue Bonnet": 1,
-            "Lavender": 1,
-            "Tulip": 1,
+            "Blue Bonnet": 0,
+            "Lavender": 0,
+            "Tulip": 0,
             "Orchid": 0
         }
     }
@@ -110,14 +101,14 @@ let shopInventory = {
     "Seeds": {
         "Cosmo": {"amount": 2, "img": "bearBee", "cost":2},
         "Lavender":{"amount": 3, "img": "PlayerIcon", "cost": 3},
-        "Orchid":{"amount": 3, "img": "PlayerIcon", "cost": 3},
+        //"Orchid":{"amount": 3, "img": "PlayerIcon", "cost": 3},
         "Blue Bonnet":{"amount": 3, "img": "PlayerIcon", "cost": 4},
         "Tulip":{"amount": 3, "img": "PlayerIcon", "cost": 4}
     },
     "Items":{
         "Sprinkler":{"amount": 2, "img": "bearBee","cost":15},
-        "Beehive":{"amount": 2, "img": "PlayerIcon","cost":12},
-        "Fertilizer":{"amount": 5, "img": "PlayerIcon", "cost": 4}
+        "Beehive":{"amount": 2, "img": "PlayerIcon","cost":12}
+        //,        "Fertilizer":{"amount": 5, "img": "PlayerIcon", "cost": 4}
     }
 }
 
@@ -138,5 +129,7 @@ let rangeDialogue = {
 }
 let dialogGlobal = undefined;
 let dialogSlice = undefined;
+let dialogEnded = false;
+let dialogActive = false;
 
 let sellChoice = undefined;
