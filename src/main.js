@@ -129,5 +129,7 @@ let rangeDialogue = {
 }
 let dialogGlobal = undefined;
 let dialogSlice = undefined;
+let dialogEnded = false;
+let dialogActive = false;
 
 let sellChoice = undefined;
