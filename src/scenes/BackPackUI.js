@@ -208,6 +208,8 @@ class BackPackUI extends Phaser.Scene {
                                 } else {
                                     console.log("Holding invalid object");
                                 }
+                                uiScene.scene.resume(uiScene.previousScene);
+                                uiScene.scene.stop();
 
                             }
                             menu.collapse();

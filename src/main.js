@@ -66,7 +66,7 @@ let vars = {}
 
 //Player variables so we dont have to pass them around forever
 let playerVariables = {
-    money: 100.00,
+    money: 10.00,
     actions: 4,
     inventory: {
         honey: {
@@ -133,3 +133,10 @@ let dialogEnded = false;
 let dialogActive = false;
 
 let sellChoice = undefined;
+
+let priceMap = {
+    "yellow": 3,
+    "blue": 5,
+    "purple": 5,
+    "pink": 6
+}
