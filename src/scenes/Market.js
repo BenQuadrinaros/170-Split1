@@ -100,7 +100,7 @@ class Market extends Phaser.Scene {
         this.timeText = this.add.text(game.config.width / 8, game.config.height / 8 + 25, "Time Remaining: ", this.textConfig).setOrigin(.5, .5);
         this.timeText.depth = 100;
         this.timeUpText = this.add.text(game.config.width / 8, game.config.height / 8 - 25,
-            "TIME'S UP\nPress Down to go to the Map", this.textConfig).setOrigin(.5, .5);
+            "TIME'S UP\nPress Down to sleep\nand end the day", this.textConfig).setOrigin(.5, .5);
         this.timeUpText.depth = 100;
         this.timeUpText.alpha = 0;
         this.timeUp = false;
@@ -123,8 +123,8 @@ class Market extends Phaser.Scene {
                 this.yellowPriceText.alpha = .5;
             })
             .on("pointerdown", () => {
-                this.yellowPrice += .25;
-                this.yellowPriceText.text = "\tYellow\n" + "\t" + this.yellowPrice + "$/Jar";
+                priceMap["yellow"] += .25;
+                this.yellowPriceText.text = "\tYellow\n" + "\t" + priceMap["yellow"] + "$/Jar";
             });
         this.yellowMinus = this.add.image((config.width / 5) - 150, 1.25 * config.height / 5, 'redMinus', 0)
             .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
@@ -138,12 +138,11 @@ class Market extends Phaser.Scene {
 
             })
             .on("pointerdown", () => {
-                this.yellowPrice -= .25;
-                this.yellowPriceText.text = "\tYellow\n" + "\t" + this.yellowPrice + "$/Jar";
+                priceMap["yellow"] -= .25;
+                this.yellowPriceText.text = "\tYellow\n" + "\t" + priceMap["yellow"] + "$/Jar";
             });
-        this.yellowPrice = 3.50
         this.yellowPriceText = this.add.text((config.width / 5) - 75, 1.25 * config.height / 5,
-            "\tYellow\n" + "\t" + this.yellowPrice + "$/Jar", this.textConfig)
+            "\tYellow\n" + "\t" + priceMap["yellow"] + "$/Jar", this.textConfig)
             .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
 
         //Price Setting Blue
@@ -158,8 +157,8 @@ class Market extends Phaser.Scene {
                 this.bluePriceText.alpha = .5;
             })
             .on("pointerdown", () => {
-                this.bluePrice += .25
-                this.bluePriceText.text = "\tBlue\n" + "\t" + this.bluePrice + "$/Jar";
+                priceMap["blue"] += .25;
+                this.bluePriceText.text = "\tBlue\n" + "\t" + priceMap["blue"] + "$/Jar";
             });
         this.blueMinus = this.add.image((config.width / 5) - 150, 1.75 * config.height / 5, 'redMinus', 0)
             .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
@@ -172,13 +171,11 @@ class Market extends Phaser.Scene {
                 this.bluePriceText.alpha = .5;
             })
             .on("pointerdown", () => {
-                this.bluePrice -= .25
-                this.bluePriceText.text = "\tBlue\n" + "\t" + this.bluePrice + "$/Jar";
+                priceMap["blue"] -= .25;
+                this.bluePriceText.text = "\tBlue\n" + "\t" + priceMap["blue"] + "$/Jar";
             });
-        //Default blue price
-        this.bluePrice = 5.50
         this.bluePriceText = this.add.text((config.width / 5) - 75, 1.75 * config.height / 5,
-            "Blue\n" + "\t" + this.bluePrice + "$/Jar", this.textConfig)
+            "Blue\n" + "\t" + priceMap["blue"] + "$/Jar", this.textConfig)
             .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
 
         //Price Setting Pink
@@ -194,8 +191,8 @@ class Market extends Phaser.Scene {
                 this.pinkPriceText.alpha = .5;
             })
             .on("pointerdown", () => {
-                this.pinkPrice += .25
-                this.pinkPriceText.text = "\tPink\n" + "\t" + this.pinkPrice + "$/Jar";
+                priceMap["pink"] += .25;
+                this.pinkPriceText.text = "\tPink\n" + "\t" + priceMap["pink"] + "$/Jar";
             });
 
         this.pinkMinus = this.add.image((config.width / 5) - 150, 2.25 * config.height / 5, 'redMinus', 0)
@@ -209,13 +206,11 @@ class Market extends Phaser.Scene {
                 this.pinkPriceText.alpha = .5;
             })
             .on("pointerdown", () => {
-                this.pinkPrice -= .25
-                this.pinkPriceText.text = "\tPink\n" + "\t" + this.pinkPrice + "$/Jar";
+                priceMap["pink"] -= .25;
+                this.pinkPriceText.text = "\tPink\n" + "\t" + priceMap["pink"] + "$/Jar";
             });
-        //default pink price
-        this.pinkPrice = 5.50
         this.pinkPriceText = this.add.text((config.width / 5) - 75, 2.25 * config.height / 5,
-            "Pink\n" + "\t" + this.pinkPrice + "$/Jar", this.textConfig)
+            "Pink\n" + "\t" + priceMap["pink"] + "$/Jar", this.textConfig)
             .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
 
         //Price Setting Purple
@@ -230,8 +225,8 @@ class Market extends Phaser.Scene {
                 this.purplePriceText.alpha = .5;
             })
             .on("pointerdown", () => {
-                this.purplePrice += .25
-                this.purplePriceText.text = "\tPurple\n" + "\t" + this.purplePrice + "$/Jar";
+                priceMap["purple"] += .25;
+                this.purplePriceText.text = "\tPurple\n" + "\t" + priceMap["purple"] + "$/Jar";
             });
 
         this.purpleMinus = this.add.image((config.width / 5) - 150, 2.75 * config.height / 5, 'redMinus', 0)
@@ -245,13 +240,12 @@ class Market extends Phaser.Scene {
                 this.purplePriceText.alpha = .5;
             })
             .on("pointerdown", () => {
-                this.purplePrice -= .25
-                this.purplePriceText.text = "\tPurple\n" + "\t" + this.purplePrice + "$/Jar";
+                priceMap["purple"] -= .25;
+                this.purplePriceText.text = "\tPurple\n" + "\t" + priceMap["purple"] + "$/Jar";
             });
         //default purple price
-        this.purplePrice = 5.5
         this.purplePriceText = this.add.text((config.width / 5) - 75, 2.75 * config.height / 5,
-            "Purple\n" + "\t" + this.purplePrice + "$/Jar", this.textConfig)
+            "Purple\n" + "\t" + priceMap["purple"] + "$/Jar", this.textConfig)
             .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
 
         //establish controls for gameplay
@@ -307,12 +301,10 @@ class Market extends Phaser.Scene {
         }
         if (this.timeUp) {
             if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
-                //go to map
-                //ADD HERE
+                //Go to hub and start next day
                 this.music.transitionSong("bedtimeMusic", false);
                 this.cameras.main.fadeOut(3000, 0, 0, 0);
                 this.time.delayedCall(8000, () => {
-                    //this.scene.start('mapScene', { arrivingAt: -1 }) //for going to biking map
                     this.music.stop();
                     this.scene.start('hubScene', {previousScene: "marketScene"});
                 });
@@ -395,7 +387,7 @@ class Market extends Phaser.Scene {
                 if (!dialogActive) {
                     dialogActive = true;
                     dialogGlobal = this.cache.json.get('dialog');
-                    this.priceRange(this.npcAmount, this.npcPrice);
+                    this.exchange = this.priceRange(this.npcAmount, this.npcPrice);
                 }
             } else if (this.state == "leaving") {
                 //Constant bear wiggle
@@ -426,7 +418,7 @@ class Market extends Phaser.Scene {
                 if (this.sold) {
                     dialogActive = false;
                     this.state = "leaving";
-                    playerVariables.money += Math.floor(this.npcPrice * 100) / 100;
+                    playerVariables.money += Math.floor(this.exchange * 100) / 100;
                     console.log(this.npcAmount)
                     this.reduceStock(this.typeToBuy, this.npcAmount);
                     this.time.addEvent({
@@ -482,14 +474,9 @@ class Market extends Phaser.Scene {
 
     priceRange(amt, proposedPrice) {
         console.log(`${amt} at price of ${proposedPrice}`)
-        let priceMap = {
-            "yellow": this.yellowPrice,
-            "blue": this.bluePrice,
-            "purple": this.purplePrice,
-            "pink": this.pinkPrice
-
-        }
+        //Prices moved to global
         let setPrice = amt * priceMap[this.typeToBuy]
+        console.log("transaction price = "+setPrice);
         let propUnitPrice = proposedPrice / amt;
         let setUnitPrice = setPrice / amt;
         console.log(`prop: ${propUnitPrice} ; set ${setUnitPrice}`)
@@ -528,8 +515,11 @@ class Market extends Phaser.Scene {
         if (this.sold) {
             dialogGlobal[dialogueSection].push(dialogGlobal[rangeDialogue["goodbyes"][0]][0])
         }
-        console.log("luanching dialog from bartering")
+        console.log("launching dialog from bartering")
         this.scene.launch('talkingScene');
+        if(this.sold) {
+            return setUnitPrice * amt;
+        }
 
     }
 }
