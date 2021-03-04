@@ -177,6 +177,6 @@ class Boot extends Phaser.Scene {
 
     create(){
         // go to Title scene
-        this.scene.start('marketScene');
+        this.scene.start('menuScene');
     }
 }
