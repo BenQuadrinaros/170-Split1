@@ -256,7 +256,7 @@ class Hub extends Phaser.Scene {
                 } else { //its not blank
                     let temp = gardenGrid[row][col];
                     temp.addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
-                        (9 + row) * (game.config.height - 50) / 8 + 100 /*+ Phaser.Math.Between(-7,7)*/);
+                        (9 + row) * (game.config.height - 50) / 8 + 85 /*+ Phaser.Math.Between(-7,7)*/);
                     temp.image.setOrigin(.5,.5).setScale(.2, .2);
                     temp.image.depth = temp.image.y / 10;
                     this.inScene[row][col] = temp;
@@ -561,7 +561,7 @@ class Hub extends Phaser.Scene {
                             spot.setPos(row, col);
                         }
                         this.inScene[row][col].addToScene(this, (1 + col) * game.config.width / 9,
-                            (9 + row) * (game.config.height - 50) / 8 + 90);
+                            (9 + row) * (game.config.height - 50) / 8 + 80);
                         this.inScene[row][col].image.setScale(.2,.2).setOrigin(.5,.5);
                         this.inScene[row][col].image.depth = this.inScene[row][col].image.y / 10;
                         //set the held image to nothing
