@@ -22,7 +22,7 @@ class Boot extends Phaser.Scene {
             this.load.image("hive", "./assets/sprites/background/hive.png");
             this.load.image("bearBee", "./assets/sprites/character/bearBee.png");
             this.load.image("tempLavender", "./assets/sprites/background/lavTest.png");
-            this.load.image('sprinkler', './assets/sprites/old/sprinklerTemp.jpg');
+            this.load.image('sprinkler', './assets/sprites/background/sprinkler.png');
             this.load.image('sprinklerHighlight', './assets/sprites/old/blue.png');
             this.load.image('hiveHighlight', './assets/sprites/old/orange.png');
             //Flower stages for Garden
