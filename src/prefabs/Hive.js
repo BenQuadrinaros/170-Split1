@@ -44,8 +44,8 @@ class Hive {
         }
     }
 
-    addToScene(scene, initx, inity, texture, frame) {
-        this.image = new Phaser.GameObjects.Sprite(scene, initx, inity, texture, frame);
+    addToScene(scene, initx, inity) {
+        this.image = new Phaser.GameObjects.Sprite(scene, initx, inity, "hive", 0);
         scene.add.existing(this.image);
         this.image.setPosition(initx, inity);
     }

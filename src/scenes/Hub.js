@@ -164,12 +164,8 @@ class Hub extends Phaser.Scene {
         this.fadeMessage.depth = 100;
         this.fadeMessage.setVisible(false);
         /*
-        this.beeUpgrades = this.add.text(this.bee.x, this.bee.y - 35, "You have " + upgrades.bee + 1 + " beehive.\nThe next beehive will cost $" + (5 * upgrades.bee + 10), this.textConfig).setOrigin(.5, .5).setVisible(false);
-        this.beeUpgrades.depth = 100;
         this.bikeUpgrades = this.add.text(this.bikeShed.x, this.bikeShed.y - 35, "Your bike's durability: " + upgrades.bike, this.textConfig).setOrigin(.5, .5).setVisible(false);
         this.bikeUpgrades.depth = 100;
-        this.toolUpgrades = this.add.text(this.gardeningShed.x, this.gardeningShed.y - 35, "Grab your tools and\nhead out to the garden?", this.textConfig).setOrigin(.5, .5).setVisible(false);
-        this.toolUpgrades.depth = 100;
         */
 
         //establish controls for gameplay
@@ -258,36 +254,14 @@ class Hub extends Phaser.Scene {
                     }
                     */
                 } else { //its not blank
-                    if(gardenGrid[row][col] instanceof Hive) {
-                        let temp = gardenGrid[row][col];
-                        temp.addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
-                            (9 + row) * (game.config.height - 50) / 8 + 100 /*+ Phaser.Math.Between(-7,7)*/, "hive", 0);
-                        temp.image.setOrigin(.5,.5).setScale(.1, .1);
+                    let temp = gardenGrid[row][col];
+                    temp.addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
+                        (9 + row) * (game.config.height - 50) / 8 + 100 /*+ Phaser.Math.Between(-7,7)*/);
+                    temp.image.setOrigin(.5,.5).setScale(.2, .2);
+                    temp.image.depth = temp.image.y / 10;
+                    this.inScene[row][col] = temp;
+                    if(gardenGrid[row][col] instanceof Hive || gardenGrid[row][col] instanceof Flower) {
                         this.path.push([temp.image.x, temp.image.y]);
-                        temp.image.depth = temp.image.y / 10;
-                        this.inScene[row][col] = temp;
-                    } else if(gardenGrid[row][col] instanceof Sprinkler) {
-                        let temp = gardenGrid[row][col];
-                        temp.addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
-                            (9 + row) * (game.config.height - 50) / 8 + 100 /*+ Phaser.Math.Between(-7,7)*/, 
-                            "sprinkler", 0);
-                        temp.image.setOrigin(.5,.5).setScale(.1, .1);
-                        temp.image.depth = temp.image.y / 10;
-                        this.inScene[row][col] = temp;
-                    } else if(gardenGrid[row][col] instanceof Flower) {
-                        let temp = gardenGrid[row][col];
-                        let img = "flower";
-                        if(gardenGrid[row][col].type == "Cosmo") { img += "White"; }
-                        else if(gardenGrid[row][col].type == "Lavender") { img += "Purple"; }
-                        else if(gardenGrid[row][col].type == "Blue Bonnet") { img += "Blue"; }
-                        else if(gardenGrid[row][col].type == "Tulip") { img += "Red"; }
-                        else { img = "tempLavender"; } //This is for Orchids
-                        temp.addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
-                            (9 + row) * (game.config.height - 50) / 8 + 90 /*+ Phaser.Math.Between(-7,7)*/, img, 0);
-                        temp.image.setOrigin(.5,.5).setScale(.2, .2);
-                        this.path.push([temp.image.x, temp.image.y]);
-                        temp.image.depth = temp.image.y / 10;
-                        this.inScene[row][col] = temp;
                     }
                 }
             }
@@ -297,7 +271,7 @@ class Hub extends Phaser.Scene {
         this.swarm = [];
         let numBees = 5;                    //5 seems to be max for flower following to look decent
         for (let i = 0; i < numBees; ++i) {
-            let temp = new Bee(this, 'bearBee', 0, game.config.width/2,game.config.height/2);
+            let temp = new Bee(this, 'bearBee', 0, game.config.width/2,3 * game.config.height/2);
             temp.setOrigin(.5).setScale(.25, .25).setVisible(true);
             temp.depth = 200;
             this.swarm.push(temp);
@@ -341,28 +315,15 @@ class Hub extends Phaser.Scene {
         //if the player is holding an object, render it and move it alongside the player
         if (heldItem !== undefined) {
             if (this.heldImg < 1) {
-                let img = "";
-                if(heldItem instanceof Flower) {
-                    //Get the correct Flower image
-                    img = "flower";
-                    if(heldItem.type == "Cosmo") { img += "White"; }
-                    else if(heldItem.type == "Lavender") { img += "Purple"; }
-                    else if(heldItem.type == "Blue Bonnet") { img += "Blue"; }
-                    else if(heldItem.type == "Tulip") { img += "Red"; }
-                    else { img = "tempLavender"; } //This is for Orchids
-                } else if(heldItem instanceof Sprinkler) { img = "sprinkler"; }
-                else if(heldItem instanceof Hive) { img = "hive"; }
-                
-                
                 heldItem.addToScene(this, this.player.x /*+ Phaser.Math.Between(-7,7)*/,
-                    this.player.y /*+ Phaser.Math.Between(-7,7)*/, img, 0);
+                    this.player.y /*+ Phaser.Math.Between(-7,7)*/);
                 this.heldImg = 1;
-                heldItem.image.setScale(.15,.15)
-                heldItem.image.depth = 100;
+                heldItem.image.setScale(.2, .2);
             }
             //Always update location
             heldItem.image.x = this.player.x;
             heldItem.image.y = this.player.y;
+            heldItem.image.depth = this.player.depth + 1;
 
             //Also update highlight
             if(heldItem instanceof Sprinkler) {
@@ -385,21 +346,23 @@ class Hub extends Phaser.Scene {
             //Input to place item in backpack
             if (Phaser.Input.Keyboard.JustDown(keyB)) {
                 //console.log(heldItem)
-                if (heldItem instanceof Flower || heldItem instanceof Sprinkler || heldItem instanceof Hive) {
+                if (heldItem instanceof Flower) {
                     console.log(`Storing held flower ${heldItem.type} in inventory.`)
                     console.log(`before storage ${playerVariables.inventory.flowers[heldItem.type]}`)
                     playerVariables.inventory.flowers[heldItem.type] +=1;
                     console.log(`after storage ${playerVariables.inventory.flowers[heldItem.type]}`)
-
+                } else if(heldItem instanceof Sprinkler) {
                     //If item has highlight, hide that as well
-                    if(heldItem instanceof Sprinkler) { this.sprinklerHighlightHold.alpha = 0; }
-                    else if(heldItem instanceof Hive) { this.hiveHighlightHold.alpha = 0; }
-
-                    heldItem.destroy();
-                    heldItem = undefined
-                    this.heldImg = 0;
+                    playerVariables.inventory.items["Sprinkler"] +=1;
+                    this.sprinklerHighlightHold.alpha = 0;
+                } else if (heldItem instanceof Hive) {
+                    playerVariables.inventory.items["Beehive"] +=1;
+                    this.hiveHighlightHold.alpha = 0;
                 }
-
+                    
+                heldItem.destroy();
+                heldItem = undefined
+                this.heldImg = 0;
             }
         }
         //If the player press B open the backpack
@@ -460,36 +423,7 @@ class Hub extends Phaser.Scene {
             this.interactText.setVisible(false);
         }
 
-        /*
-        // Checking if the player is close enough to the bee upgrade
-        if (Math.abs(Phaser.Math.Distance.Between(this.bee.x, this.bee.y, this.player.x, this.player.y)) < 100) {
-            this.bee.y += this.bounceFactor;
-            this.interactText.text = "'SPACE' to upgrade";
-            this.interactText.x = this.bee.x;
-            this.interactText.y = this.bee.y;
-            this.interactText.setVisible(true);
-            this.beeUpgrades.setVisible(true);
-            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
-                console.log("Bee Upgrades: " + upgrades.bee);
-                let upgradeCost = 5 * upgrades.bee + 10;
-                if (playerVariables.actions > 0 && this.money >= upgradeCost) {
-                    playerVariables.actions -= 1;
-                    playerVariables.money -= upgradeCost;
-                    this.fadeText("Your bees are happier. :)");
-                    upgrades.bee += 1;
-                    this.beeUpgrades.text = "You have " + upgrades.bee + 1 + " beehive.\nThe next beehive will cost $" + upgradeCost;
-                    dialogueSection = 1;
-                    this.scene.pause();
-                    this.scene.launch('talkingScene', { previousScene: "hubScene" });
-                } else if (playerVariables.money < upgradeCost) {
-                    this.fadeText("You do not have enough money");
-                } else {
-                    this.fadeText("You are out of time today.\nMake your deliveries.");
-                }
-            }
-        } else {
-            this.beeUpgrades.setVisible(false);
-        }
+        /*      
         // Check if player is near the bikeshed
         if (Math.abs(Phaser.Math.Distance.Between(this.bikeShed.x, this.bikeShed.y, this.player.x, this.player.y)) < 100) {
             this.bikeShed.y += this.bounceFactor;
@@ -547,6 +481,11 @@ class Hub extends Phaser.Scene {
         } else {
             this.hiveHighlight.alpha = 0;
             this.sprinklerHighlight.alpha = 0;
+        }
+
+        for(let i = 0; i < this.swarm.length; i++) {
+            this.swarm[i].update();
+            this.swarm[i].flock(this.swarm, this.path, this.player);
         }
 
         //Misc updates for player and UI
@@ -614,27 +553,15 @@ class Hub extends Phaser.Scene {
                         heldItem = undefined;
                         //Get the right image
                         let spot = gardenGrid[row][col];
-                        let img = "";
-                        if(spot instanceof Flower) {
-                            //Get the correct Flower image
-                            img = "flower";
-                            if(spot.type == "Cosmo") { img += "White"; }
-                            else if(spot.type == "Lavender") { img += "Purple"; }
-                            else if(spot.type == "Blue Bonnet") { img += "Blue"; }
-                            else if(spot.type == "Tulip") { img += "Red"; }
-                            else { img = "tempLavender"; } //This is for Orchids
-                        } else if(spot instanceof Sprinkler) { 
-                            img = "sprinkler";
+                         if(spot instanceof Sprinkler) { 
                             this.sprinklerHighlightHold.alpha = 0;
-                            gardenGrid[row][col].setPos(row, col);
+                            spot.setPos(row, col);
                         } else if(spot instanceof Hive) {
-                            img = "hive";
                             this.hiveHighlightHold.alpha = 0;
-                            gardenGrid[row][col].setPos(row, col);
-                            console.log("hive placed at: " + row + ", " + col);
+                            spot.setPos(row, col);
                         }
-                        this.inScene[row][col].addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
-                            (9 + row) * (game.config.height - 50) / 8 + 90 /*+ Phaser.Math.Between(-7,7)*/, img, 0);
+                        this.inScene[row][col].addToScene(this, (1 + col) * game.config.width / 9,
+                            (9 + row) * (game.config.height - 50) / 8 + 90);
                         this.inScene[row][col].image.setScale(.2,.2).setOrigin(.5,.5);
                         this.inScene[row][col].image.depth = this.inScene[row][col].image.y / 10;
                         //set the held image to nothing

@@ -34,74 +34,19 @@ class Bee extends Phaser.GameObjects.Sprite {
         //For random movement in update()
 		this.moveTick = 0;
 
-		//Side detection
-		this.hitTop = this.hitBot = this.hitRight = this.hitLeft = false;
-
 		//Decision label to gather or scout
-		this.scoutOrGather = 'scout';
+		this.scoutOrGather = 'gather';
     }
 
-    // If the bee gets close to an edge, then he moves opposite to that edge
-    // width: 640 / height: 420
-	ifAtEdge(){
-		if(this.position.x > config.width - 50){
-			this.hitRight = true;
-			this.hitTop = this.hitBot = this.hitLeft = false
-			console.log("HIT RIGHT")
-		}
-		else if(this.position.x < 50){
-			this.hitLeft = true;
-			this.hitTop = this.hitBot = this.hitRight = false
-			console.log("HIT LEFT")
-		}
-
-		else if(this.position.y > config.height - 50){
-			this.hitBot = true;
-			this.hitTop = this.hitRight = this.hitLeft = false
-			console.log("HIT BOT")
-		}
-		else if(this.position.y < 50){
-			this.hitTop = true;
-			this.hitBot = this.hitRight = this.hitLeft = false
-			console.log("HIT TOP")
-		}
-	}
-
     update() {
-    	this.ifAtEdge();
-
         this.position.add(this.velocity);
         this.x = this.position.x;
         this.y = this.position.y;
         this.velocity.add(this.acceleration);
-        printTest = false
+        printTest = false;
         this.velocity.limit(this.maxSpeed);
         this.acceleration.reset();
         //console.log("Bee is at : " + this.x + " " + this.y)
-
-        //does random movement when scouting ('scout')
-        if(this.scoutOrGather == 'scout'){
-			this.moveTick += 1;
-			if(this.moveTick == 20){
-				if(this.hitRight){
-					this.velocity = new Phaser.Math.Vector2(Math.random() * (0 - -2) + -2, Math.random() * (2 - -2) + -2);
-				}
-				else if(this.hitLeft){
-					console.log("HIT LEFT INNIT")
-					this.velocity = new Phaser.Math.Vector2(Math.random() * (2 - 0) + 0, Math.random() * (2 - -2) + -2);
-				}
-				else if(this.hitBot){
-					this.velocity = new Phaser.Math.Vector2(Math.random() * (2 - -2) + -2, Math.random() * (0 - -2) + -2);
-				}
-				else if(this.hitTop){
-					this.velocity = new Phaser.Math.Vector2(Math.random() * (2 - -2) + -2, Math.random() * (2 - 0) + 0);
-				}
-				else{
-					this.velocity = new Phaser.Math.Vector2(Math.random() * (2 - -2) + -2, Math.random() * (2 - -2) + -2);
-				}
-				this.moveTick = 0;
-			}
-		}
     }
 
     avg(fellowBoids, vectorType, tetherDistance) {
@@ -257,6 +202,7 @@ class Bee extends Phaser.GameObjects.Sprite {
 	            Phaser.Math.FloatBetween(-.25, .25)));
 	    	}
 	    }
+		/*
 	    //When the first bees go out to find the flowers
 	    else if(this.scoutOrGather == 'scout'){
 	    	//*************************************************************************************
@@ -313,5 +259,6 @@ class Bee extends Phaser.GameObjects.Sprite {
 				this.acceleration.add(separation);
 				this.acceleration.add(alignment);
 	    }
+		*/
     }
 }

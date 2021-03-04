@@ -19,16 +19,31 @@ class Boot extends Phaser.Scene {
             this.load.image("exit", "./assets/sprites/background/LeftArrowGREEN.png");
             this.load.image("dirtDry", "./assets/sprites/spritesheetFrames/plotDry.png");
             this.load.image("dirtWet", "./assets/sprites/spritesheetFrames/plotWet.png");
-            this.load.image("hive", "./assets/sprites/background/hubHive.png");
+            this.load.image("hive", "./assets/sprites/background/hive.png");
             this.load.image("bearBee", "./assets/sprites/character/bearBee.png");
-            this.load.image("flowerWhite", "./assets/sprites/spritesheetFrames/white3.png");
-            this.load.image("flowerBlue", "./assets/sprites/spritesheetFrames/blue3.png");
-            this.load.image("flowerRed", "./assets/sprites/spritesheetFrames/red3.png");
-            this.load.image("flowerPurple", "./assets/sprites/spritesheetFrames/purple3.png");
             this.load.image("tempLavender", "./assets/sprites/background/lavTest.png");
             this.load.image('sprinkler', './assets/sprites/old/sprinklerTemp.jpg');
             this.load.image('sprinklerHighlight', './assets/sprites/old/blue.png');
             this.load.image('hiveHighlight', './assets/sprites/old/orange.png');
+            //Flower stages for Garden
+            this.load.image("seedling", "./assets/sprites/spritesheetFrames/uni0.png");
+            this.load.image("sprout", "./assets/sprites/spritesheetFrames/uni1.png");
+            this.load.image("flowerWhite2", "./assets/sprites/spritesheetFrames/white2.png");
+            this.load.image("flowerWhite3", "./assets/sprites/spritesheetFrames/white3.png");
+            this.load.image("flowerWhite4", "./assets/sprites/spritesheetFrames/white4.png");
+            this.load.image("flowerWhite5", "./assets/sprites/spritesheetFrames/white5.png");
+            this.load.image("flowerBlue2", "./assets/sprites/spritesheetFrames/blue2.png");
+            this.load.image("flowerBlue3", "./assets/sprites/spritesheetFrames/blue3.png");
+            this.load.image("flowerBlue4", "./assets/sprites/spritesheetFrames/blue4.png");
+            this.load.image("flowerBlue5", "./assets/sprites/spritesheetFrames/blue5.png");
+            this.load.image("flowerRed2", "./assets/sprites/spritesheetFrames/red2.png");
+            this.load.image("flowerRed3", "./assets/sprites/spritesheetFrames/red3.png");
+            this.load.image("flowerRed4", "./assets/sprites/spritesheetFrames/red4.png");
+            this.load.image("flowerRed5", "./assets/sprites/spritesheetFrames/red5.png");
+            this.load.image("flowerPurple2", "./assets/sprites/spritesheetFrames/purple2.png");
+            this.load.image("flowerPurple3", "./assets/sprites/spritesheetFrames/purple3.png");
+            this.load.image("flowerPurple4", "./assets/sprites/spritesheetFrames/purple4.png");
+            this.load.image("flowerPurple5", "./assets/sprites/spritesheetFrames/purple5.png");
             //For hubScene
             this.load.image('background', './assets/sprites/background/garden_base.png');
             this.load.image('bee','./assets/sprites/character/hubBee.jpg');

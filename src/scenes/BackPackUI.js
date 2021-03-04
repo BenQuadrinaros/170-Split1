@@ -193,8 +193,21 @@ class BackPackUI extends Phaser.Scene {
 
                             if (button.text === "Hold") {
                                 //console.log(`holding a flower ${cellContainer.text}`)
-                                heldItem = new Flower(2, 2, cellContainer.text);
-                                playerVariables.inventory[uiScene.selectedTab][item] -= 1;
+                                if(uiScene.selectedTab == "seeds") {
+                                    heldItem = new Flower(0, 5, cellContainer.text);
+                                    playerVariables.inventory[uiScene.selectedTab][item] -= 1;
+                                } else if(uiScene.selectedTab == "flowers") {
+                                    heldItem = new Flower(5, 5, cellContainer.text);
+                                    playerVariables.inventory[uiScene.selectedTab][item] -= 1;
+                                } else if(item == "Beehive") {
+                                    heldItem = new Hive(-1, -1);
+                                    playerVariables.inventory[uiScene.selectedTab][item] -= 1;
+                                } else if(item == "Sprinkler") {
+                                    heldItem = new Sprinkler(-1, -1);
+                                    playerVariables.inventory[uiScene.selectedTab][item] -= 1;
+                                } else {
+                                    console.log("Holding invalid object");
+                                }
 
                             }
                             menu.collapse();
