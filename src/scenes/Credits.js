@@ -28,7 +28,7 @@ class Credits extends Phaser.Scene {
 
         //Creating interactable images
         let credits = this.add.image(centerX, centerY, 'TempCreditsScreen').setOrigin(0.5);
-        let back = this.add.image(centerX / 2, centerY + textSpacer * 2, 'Back').setOrigin(0.5);
+        let back = this.add.image(centerX / 4, centerY + textSpacer * 3, 'Back').setOrigin(0.5);
         //Making images interactable
         back.setInteractive();
         //Setting interactive behaviors

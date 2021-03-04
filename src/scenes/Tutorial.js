@@ -28,7 +28,7 @@ class Tutorial extends Phaser.Scene {
 
         //Creating interactable images
         let tutorial = this.add.image(centerX, centerY, 'TempTutorialScreen').setOrigin(0.5);
-        let back = this.add.image(centerX / 6, centerY/8, 'Back').setOrigin(0.5);
+        let back = this.add.image(centerX / 6, 9*config.height/10, 'Back').setOrigin(0.5).setScale(0.85);
         //Making images interactable
         back.setInteractive();
         //Setting interactive behaviors

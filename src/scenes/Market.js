@@ -309,9 +309,9 @@ class Market extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
                 //go to map
                 //ADD HERE
-                this.music.transitionSong("hubMarketTransition", false);
+                this.music.transitionSong("bedtimeMusic", false);
                 this.cameras.main.fadeOut(3000, 0, 0, 0);
-                this.time.delayedCall(9500, () => {
+                this.time.delayedCall(8000, () => {
                     //this.scene.start('mapScene', { arrivingAt: -1 }) //for going to biking map
                     this.music.stop();
                     this.scene.start('hubScene', {previousScene: "marketScene"});
@@ -497,15 +497,16 @@ class Market extends Phaser.Scene {
         console.log(`${dif} dif between prop price and set price`)
         let bart = "Hello, I would like to buy " + amt + " " + this.typeToBuy + " honey."
         let response = "Certainly. That would be " + setUnitPrice * amt + "$ for "
-            + amt + " jars of " + this.typeToBuy + " honey."
+            + amt + " jars of " + this.typeToBuy + " honey.";
+        
         let barter = [
             {
-                "speaker": "DogNPC",
+                "speaker": "",
                 "dialog": bart,
                 "newSpeaker": "true"
             },
             {
-                "speaker": "bear",
+                "speaker": "",
                 "dialog": response,
                 "newSpeaker": "true"
             }

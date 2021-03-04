@@ -77,6 +77,7 @@ class Hub extends Phaser.Scene {
 
         //Initialize images
         this.cameras.main.setBackgroundColor(0x000000);
+        this.extraGrassBackdrop = this.add.image(0, 0, "extraLargeGrass");
         this.background = this.add.image(config.width / 2, config.height / 2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5);
         this.bee = this.add.image(config.width / 2, config.height / 4, 'bee').setOrigin(0.5, 0.5).setScale(.01, .01);
         this.bee.depth = this.bee.y / 10;
@@ -152,10 +153,10 @@ class Hub extends Phaser.Scene {
         this.moveText.depth = 100;
         this.turnText = this.add.text(6 * game.config.width / 7, game.config.height / 4, "Turns Remaining: ", this.textConfig).setOrigin(.5);
         this.turnText.depth = 100;
-        this.marketEntrance = this.add.text(6*config.width/5, 4*config.height/5, "The Farmer's Market", this.textConfig).setOrigin(0.5, 0.5);
-        this.marketEntrance.depth = this.marketEntrance.y / 10;
-        this.toadLeckman = this.add.text(6*config.width/5, 2*config.height/5, "Toad Leckman's Shop", this.textConfig).setOrigin(0.5,0.5);
-        this.toadLeckman.depth = this.toadLeckman.y/10;
+        this.marketEntrance = this.add.text(config.width/5, 4*config.height/5-25, "The Farmer's Market", this.textConfig).setOrigin(0.5, 0.5);
+        this.marketEntrance.depth = this.marketEntrance.y*10;
+        this.toadLeckman = this.add.text(config.width/5, 2*config.height/5, "Toad Leckman's Shop", this.textConfig).setOrigin(0.5,0.5);
+        this.toadLeckman.depth = this.toadLeckman.y*10;
 
         //Text that starts invisible
         this.interactText = this.add.text(this.player.x, this.player.y, "'SPACE' to interact", this.textConfig).setOrigin(.5, .5).setVisible(false);
