@@ -424,6 +424,7 @@ class Market extends Phaser.Scene {
                 sellChoice = undefined;
             } else {
                 if (this.sold) {
+                    dialogActive = false;
                     this.state = "leaving";
                     playerVariables.money += Math.floor(this.npcPrice * 100) / 100;
                     console.log(this.npcAmount)
