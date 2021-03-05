@@ -127,12 +127,14 @@ let rangeDialogue = {
     goodbyes: [6, 7]
 
 }
+
 let dialogGlobal = undefined;
 let dialogSlice = undefined;
 let dialogEnded = false;
 let dialogActive = false;
 
 let sellChoice = undefined;
+let bartering = false;
 
 let priceMap = {
     "yellow": 3,
