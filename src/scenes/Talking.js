@@ -165,6 +165,10 @@ class Talking extends Phaser.Scene {
             this.dialogOver = true;
             dialogGlobal[dialogueSection] = dialogSlice;
             dialogEnded = true;
+            if (bartering){
+                sellChoice = "no";
+                bartering = false;
+            }
             this.scene.stop('talkingScene');
             this.scene.resume(previousScene);
 

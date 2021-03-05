@@ -504,10 +504,12 @@ class Market extends Phaser.Scene {
             //too high
             console.log("dif to high for customer");
             dialogueSection = rangeDialogue['high'][0];
+            bartering = true;
             this.sold = false;
         } else {
             dialogueSection = rangeDialogue['mid'][0];
             this.sold = true;
+            bartering = false;
         }
 
         dialogSlice = dialogGlobal[dialogueSection];
