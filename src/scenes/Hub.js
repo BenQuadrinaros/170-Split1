@@ -79,12 +79,8 @@ class Hub extends Phaser.Scene {
         this.cameras.main.setBackgroundColor(0x000000);
         this.extraGrassBackdrop = this.add.image(0, 0, "extraLargeGrass");
         this.background = this.add.image(config.width / 2, config.height / 2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5);
-        this.bee = this.add.image(config.width / 2, config.height / 4, 'bee').setOrigin(0.5, 0.5).setScale(.01, .01);
-        this.bee.depth = this.bee.y / 10;
         this.bikeShed = this.add.image(config.width / 5, 3 * config.height / 4, 'bikeShed').setScale(0.9, 0.9);
         this.bikeShed.depth = this.bikeShed.y / 10;
-        this.gardeningShed = this.add.image(4 * config.width / 5, 3 * config.height / 4, 'gardeningShed').setScale(1.2, 1.2);
-        this.gardeningShed.depth = this.gardeningShed.y / 10;
         this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 2, this.worldWidth, this.worldHeight);
         this.player.depth = this.player.y / 10;
 
@@ -424,31 +420,6 @@ class Hub extends Phaser.Scene {
             this.interactText.setVisible(false);
         }
 
-        /*      
-        // Check if player is near the bikeshed
-        if (Math.abs(Phaser.Math.Distance.Between(this.bikeShed.x, this.bikeShed.y, this.player.x, this.player.y)) < 100) {
-            this.bikeShed.y += this.bounceFactor;
-            this.interactText.text = "'SPACE' to upgrade bike";
-            this.interactText.x = this.bikeShed.x;
-            this.interactText.y = this.bikeShed.y;
-            this.interactText.setVisible(true)
-            this.bikeUpgrades.setVisible(true)
-            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
-                if (playerVariables.actions > 0) {
-                    playerVariables.actions -= 1;
-                    this.bikeUpgrades.text = "Your bike's durability: " + upgrades.bike;
-                    //launch dialog
-                    dialogueSection = 0;
-                    this.scene.launch('talkingScene', { previousScene: "hubScene" });
-                } else {
-                    this.fadeText("You are out of time today.\nMake your deliveries.");
-                }
-            }
-        } else {
-            this.bikeUpgrades.setVisible(false);
-        }
-        */
-
         //When the player starts to move, get rid of the instructions
         if (this.moveText != null) {
             if (keyLEFT.isDown || keyRIGHT.isDown || keyUP.isDown || keyDOWN.isDown) {
@@ -544,22 +515,22 @@ class Hub extends Phaser.Scene {
                     //If that spot is empty, place item there
                     if(gardenGrid[row][col] == null) {
                         //console.log(heldItem);
-                        //destroy whatever is in the spot
+                        //destroy the image of whatever is in the spot
                         this.inScene[row][col].destroy();
                         //place held object in the spot
                         this.inScene[row][col] = heldItem;
                         gardenGrid[row][col] = heldItem;
-                        //clear item held
+                        //clear image of item held
                         heldItem.image.destroy();
                         heldItem = undefined;
                         //Get the right image
                         let spot = gardenGrid[row][col];
                          if(spot instanceof Sprinkler) { 
                             this.sprinklerHighlightHold.alpha = 0;
-                            spot.setPos(row, col);
+                            spot.setPos(col, row);
                         } else if(spot instanceof Hive) {
                             this.hiveHighlightHold.alpha = 0;
-                            spot.setPos(row, col);
+                            spot.setPos(col, row);
                         }
                         this.inScene[row][col].addToScene(this, (1 + col) * game.config.width / 9,
                             (9 + row) * (game.config.height - 50) / 8 + 80);
