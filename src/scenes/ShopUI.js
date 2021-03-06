@@ -4,6 +4,19 @@ let pointer ;
 
 let shopCosts = {
 };
+let idImages = {
+    "Cosmo": ["flowerWhite3", .125],
+    "Blue Bonnet": ["flowerBlue3", .125],
+    "Tulip": ["flowerRed3", .125],
+    "Lavender": ["flowerPurple3", .125],
+    "Sprinkler": ["sprinkler", .125],
+    "Beehive": ["hive", .125],
+    "yellow": ["honeyPlain", .5],
+    "blue": ["honeyBlue", .5],
+    "pink": ["honeyPink", .5],
+    "purple": ["honeyPurple", .5]
+};
+
 class ShopUI extends Phaser.Scene {
     constructor() {
         super({
@@ -106,13 +119,21 @@ class ShopUI extends Phaser.Scene {
                         width = cell.width,
                         height = cell.height,
                         item = cell.item,
-                        index = cell.index;
+                        index = cell.index,
+                        img = "PlayerIcon",
+                        scale = .45
+                    //console.log("item id " + item.id);
+                    if(item.id in idImages) {
+                        img = idImages[item.id][0];
+                        scale = idImages[item.id][1];
+                    }
+
                     return scene.rexUI.add.label({
                         width: width,
                         height: height,
 
                         background: scene.rexUI.add.roundRectangle(0, 0, 20, 20, 0).setStrokeStyle(2, COLOR_DARK),
-                        icon: scene.add.image(0,0, item.img).setScale(.45,.45),
+                        icon: scene.add.image(0, 0, img).setScale(scale, scale),
                         text: scene.add.text(0, 0, item.id),
 
                         space: {
