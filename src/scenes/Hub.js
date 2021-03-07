@@ -160,10 +160,6 @@ class Hub extends Phaser.Scene {
         this.fadeMessage = this.add.text(0, 0, "", this.textConfig).setOrigin(.5, .5);
         this.fadeMessage.depth = 100;
         this.fadeMessage.setVisible(false);
-        /*
-        this.bikeUpgrades = this.add.text(this.bikeShed.x, this.bikeShed.y - 35, "Your bike's durability: " + upgrades.bike, this.textConfig).setOrigin(.5, .5).setVisible(false);
-        this.bikeUpgrades.depth = 100;
-        */
 
         //establish controls for gameplay
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -283,7 +279,11 @@ class Hub extends Phaser.Scene {
     }
 
     update() {
-        if(this.previousScene === "marketScene" && !this.popupVisited){
+        if(playerVariables.money >= 100) {
+            console.log("here");
+            this.scene.pause();
+            this.scene.start("winScene");
+        } else if(this.previousScene === "marketScene" && !this.popupVisited){
             console.log("Sending to popup");
             //isPaused = true;
             this.popupVisited = true;

@@ -349,11 +349,11 @@ class Market extends Phaser.Scene {
                             }
                             //Could be a call to NPC characteristics
                             this.npcAmount = 1;
-                            let rand = Math.random();
-                            if(rand > .9) {
-                                this.npcAmount = 3;
-                            } else if(rand > .65) {
-                                this.npcAmount = 2;
+                            let random = Math.random();
+                            if(random > .9) {
+                                this.npcAmount = Math.min(3, playerVariables.inventory.honey[this.typeToBuy]);
+                            } else if(random > .65) {
+                                this.npcAmount = Math.min(2, playerVariables.inventory.honey[this.typeToBuy]);
                             }
                             this.npcPrice = 0;
                             if (this.typeToBuy == "yellow") {
