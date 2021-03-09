@@ -35,8 +35,8 @@ class Pause extends Phaser.Scene {
             this.tutorial.alpha = 1;
         });
         this.tutorial.on('pointerup', () => {
-            this.scene.stop("pauseScene");
-            this.scene.launch("tutorialScene", {previousScene: "hubScene"});
+            this.scene.pause("pauseScene");
+            this.scene.launch("tutorialScene", {previousScene: "pauseScene"});
         });
     }
 

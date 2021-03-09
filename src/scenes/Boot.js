@@ -85,6 +85,8 @@ class Boot extends Phaser.Scene {
             this.load.image("TempCreditsScreen", "./assets/img/TempCredits3_3_21.png");
             //For tutorialScene
             this.load.image("TempTutorialScreen", "./assets/img/TempTutorial3_3_21.png");
+            //For player Inventory
+            this.load.image("tempBackpackIcon", "./assets/sprites/UI/tempBackpack.png");
 
 
         //Load Spritesheets

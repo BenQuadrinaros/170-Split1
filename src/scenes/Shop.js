@@ -87,8 +87,8 @@ class Shop extends Phaser.Scene {
         }, this);
 
         //create interactible backpack image
-        this.backpack = this.add.image(config.width- config.width/6, config.height/6, 'PlayerIcon')
-            .setInteractive().setAlpha(.5)
+        this.backpack = this.add.image(config.width- config.width/6, config.height/6, 'tempBackpackIcon')
+            .setInteractive().setAlpha(.5).setScale(.15)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1);
                 this.pointerCurrentlyOver = "backpack";

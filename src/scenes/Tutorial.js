@@ -20,10 +20,6 @@ class Tutorial extends Phaser.Scene {
         let centerY = game.config.height / 2;
         let textSpacer = 64;
 
-        //Setting controls
-        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
-        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-
         //Setting Background
 
         //Creating interactable images
