@@ -348,8 +348,13 @@ class Market extends Phaser.Scene {
                                 this.typeToBuy = "yellow";
                             }
                             //Could be a call to NPC characteristics
-                            this.npcAmount = Math.min(Phaser.Math.Between(1, 4) + Phaser.Math.Between(1, 3),
-                                playerVariables.inventory.honey[this.typeToBuy]);
+                            this.npcAmount = 1;
+                            let random = Math.random();
+                            if(random > .9) {
+                                this.npcAmount = Math.min(3, playerVariables.inventory.honey[this.typeToBuy]);
+                            } else if(random > .65) {
+                                this.npcAmount = Math.min(2, playerVariables.inventory.honey[this.typeToBuy]);
+                            }
                             this.npcPrice = 0;
                             if (this.typeToBuy == "yellow") {
                                 //yellow price range $2 - $4, average $3
@@ -504,10 +509,12 @@ class Market extends Phaser.Scene {
             //too high
             console.log("dif to high for customer");
             dialogueSection = rangeDialogue['high'][0];
+            bartering = true;
             this.sold = false;
         } else {
             dialogueSection = rangeDialogue['mid'][0];
             this.sold = true;
+            bartering = false;
         }
 
         dialogSlice = dialogGlobal[dialogueSection];

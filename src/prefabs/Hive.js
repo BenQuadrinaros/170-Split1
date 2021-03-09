@@ -5,7 +5,7 @@ class Hive {
     }
 
     collect() {
-        console.log("collecting");
+        //console.log("collecting");
         let collectedPollen = {
             "colorless": 0,
             "blue": 0,

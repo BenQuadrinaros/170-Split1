@@ -89,11 +89,12 @@ class Boot extends Phaser.Scene {
 
         //Load Spritesheets
             //For gardenScene
-            this.load.spritesheet('flowerSheet', './assets/spritesheets/flowerStages.png', { frameWidth: 407, frameHeight: 456, startFrame: 0, endFrame: 4 });
+            //this.load.spritesheet('flowerSheet', './assets/spritesheets/flowerStages.png', { frameWidth: 407, frameHeight: 456, startFrame: 0, endFrame: 4 });
             //For hubScene
             //this.load.spritesheet('player', './assets/spritesheets/bearFrontBack.png', {frameWidth:40, frameHeight:72, startFrame:0, endFrame:1});
             this.load.spritesheet('player', './assets/spritesheets/bearIdle.png', {frameWidth: 140, frameHeight:249, startFrame:0, endFrame:3});
-            //For mapScene
+            //For mapScene 
+            /*
             this.load.spritesheet('Beehive','./assets/spritesheets/HoneyBearSampleHive.png',{frameWidth: 88, frameHeight: 108, startFrame:0 , endFrame: 1});
             this.load.spritesheet('Work','./assets/spritesheets/HoneyBearSampleWork.png',{frameWidth: 69, frameHeight: 87, startFrame:0 , endFrame: 1});
             this.load.spritesheet('House','./assets/spritesheets/HoneyBearHouseSample1.png',{frameWidth: 80, frameHeight: 80, startFrame:0 , endFrame: 1});
@@ -106,6 +107,7 @@ class Boot extends Phaser.Scene {
             this.load.spritesheet('PathWork_2','./assets/spritesheets/RoadWork_2.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
             this.load.spritesheet('PathWork_3','./assets/spritesheets/RoadWork_3.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
             this.load.spritesheet('PathWork_4','./assets/spritesheets/RoadWork_4.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
+            */
             //For menuScene
             this.load.spritesheet('Play','./assets/spritesheets/PlayInitial.png',{frameWidth: 130, frameHeight: 66, startFrame:0 , endFrame: 1});
             this.load.spritesheet('Settings','./assets/spritesheets/SettingsInitial.png',{frameWidth: 158, frameHeight: 50, startFrame:0 , endFrame: 1});

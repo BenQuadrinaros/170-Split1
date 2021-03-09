@@ -4,7 +4,8 @@ let config = {
     type: Phaser.CANVAS,
     width: 960,
     height: 540,
-    scene: [Boot, Hub, Garden, Map, Market, Play, Menu, Credits, Tutorial, Talking, OldRhythm,  Shop, ShopUI, BackPackUI, HubPopup, Pause, Settings],
+    scene: [Boot, Hub, Garden, Map, Market, Play, Menu, Credits, Tutorial, Talking,
+        OldRhythm,  Shop, ShopUI, BackPackUI, HubPopup, Pause, Settings, Win],
     volume: .7,
     physics: {
         default: 'arcade',
@@ -127,12 +128,14 @@ let rangeDialogue = {
     goodbyes: [6, 7]
 
 }
+
 let dialogGlobal = undefined;
 let dialogSlice = undefined;
 let dialogEnded = false;
 let dialogActive = false;
 
 let sellChoice = undefined;
+let bartering = false;
 
 let priceMap = {
     "yellow": 3,
