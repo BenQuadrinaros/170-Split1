@@ -49,7 +49,7 @@ class Hub extends Phaser.Scene {
 
             //Update all Flowers for the day
             //Retrieve list of Hives for random collection
-            let beehives = []
+            let beehives = [];
             for (let row = 0; row < gardenGrid.length; row++) {
                 for (let col = 0; col < gardenGrid[0].length; col++) {
                     //console.log("["+col+","+row+"]");
@@ -62,6 +62,7 @@ class Hub extends Phaser.Scene {
                     } 
                 }
             }
+            this.numHives = beehives.length;
 
             //Assess Beehives in a random order
             while (beehives.length > 0) {
@@ -114,7 +115,7 @@ class Hub extends Phaser.Scene {
         });
                 
         //Restore all actions
-        playerVariables.actions = 4;
+        //playerVariables.actions = 4;
 
         //Initialize image animation variables
         this.bounceFactor = .1;
@@ -132,7 +133,7 @@ class Hub extends Phaser.Scene {
 
         //Text config without a background, which blends better with the background
         this.textConfig = {
-            fontFamily: "Courier",
+            fontFamily: font,
             fontSize: "14px",
             color: "#ffffff",
             align: "center",
@@ -184,6 +185,7 @@ class Hub extends Phaser.Scene {
         //Make sure the escape keybinding isn't consumed by the backpack UI
         this.events.on("resume", () => {
             console.log("ReenableEsc called");
+            this.music.setVolume(config.volume);
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         });
 
@@ -229,9 +231,12 @@ class Hub extends Phaser.Scene {
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
                 if (gardenGrid[row][col] == null) {
+                    // determine if spot has been watered
+                    let img = "dirtDry";
+                    if(wateredTiles[[row, col]]) { img = "dirtWet"; }
                     // blank plots to be interacted with
                     let temp = this.add.image((1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
-                        (9 + row) * (game.config.height - 50) / 8 + 50 /*+ Phaser.Math.Between(-7,7)*/, "dirtDry");
+                        (9 + row) * (game.config.height - 50) / 8 + 50 /*+ Phaser.Math.Between(-7,7)*/, img);
                     temp.setOrigin(.5,.5).setScale(.35, .35);
                     temp.depth = temp.y / 10 - 20;
                     this.inScene[row][col] = temp;
@@ -254,7 +259,7 @@ class Hub extends Phaser.Scene {
                     temp.image.depth = temp.image.y / 10;
                     this.inScene[row][col] = temp;
                     if(gardenGrid[row][col] instanceof Hive || gardenGrid[row][col] instanceof Flower) {
-                        this.path.push([temp.image.x, temp.image.y]);
+                        this.path.push([temp.image.x, temp.image.y - 15]);
                     }
                 }
             }
@@ -262,7 +267,7 @@ class Hub extends Phaser.Scene {
         
         //Create bee swarm for simulated pollination
         this.swarm = [];
-        let numBees = 5;                    //5 seems to be max for flower following to look decent
+        let numBees = 3 + 2 * this.numHives;     //5 seems to be a good base for flower following to look decent
         for (let i = 0; i < numBees; ++i) {
             let temp = new Bee(this, 'bearBee', 0, game.config.width/2,3 * game.config.height/2);
             temp.setOrigin(.5).setScale(.25, .25).setVisible(true);
@@ -282,6 +287,7 @@ class Hub extends Phaser.Scene {
         if(playerVariables.money >= 100) {
             console.log("here");
             this.scene.pause();
+            this.music.stop();
             this.scene.start("winScene");
         } else if(this.previousScene === "marketScene" && !this.popupVisited){
             console.log("Sending to popup");
@@ -464,7 +470,7 @@ class Hub extends Phaser.Scene {
         this.player.update();
         this.player.depth = this.player.y / 10 + 3;
         this.counter++;
-        this.turnText.text = "Actions Remaining: " + playerVariables.actions + "\nHoney: " +
+        this.turnText.text = /*"Actions Remaining: " + playerVariables.actions + */"Honey: " +
             playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
     }
 

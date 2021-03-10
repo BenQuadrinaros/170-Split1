@@ -61,7 +61,7 @@ class ShopUI extends Phaser.Scene {
 
         //Add text showing how much money the player has
         this.textConfig = {
-            fontFamily: "Courier",
+            fontFamily: font,
             fontSize: "14px",
             color: "#ffffff",
             align: "center",

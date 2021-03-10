@@ -80,7 +80,7 @@ class Market extends Phaser.Scene {
 
         //Text config without a background, which blends better with the background
         this.textConfig = {
-            fontFamily: "Courier",
+            fontFamily: font,
             fontSize: "18px",
             color: "#ffffff",
             align: "center",
@@ -262,6 +262,7 @@ class Market extends Phaser.Scene {
 
         this.events.on("resume", () => {
             console.log("ReenableEsc called");
+            this.music.setVolume(config.volume);
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         });
 
@@ -296,8 +297,6 @@ class Market extends Phaser.Scene {
             //isPaused = true;
             this.scene.pause();
             this.scene.launch("pauseScene", {previousScene: "marketScene"});
-        } else {
-            keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         }
         if (this.timeUp) {
             if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
@@ -370,8 +369,6 @@ class Market extends Phaser.Scene {
                                 " jars\nof " + this.typeToBuy + " honey for $" + Math.floor(this.npcPrice) + "." +
                                 Math.floor((this.npcPrice * 10) % 10) + Math.floor((this.npcPrice * 100) % 10) +
                                 "\n[Y]es  /   [N]o";
-                            //this.transactionText.alpha = 1;
-
                         },
                         loop: false,
                         callbackScope: this
@@ -442,7 +439,7 @@ class Market extends Phaser.Scene {
                             delay: 3000,
                             callback: () => {
                                 console.log("yes im lowering the price")
-                                this.priceRange(this.npcAmount, this.npcPrice);
+                                this.exchange = this.priceRange(this.npcAmount, this.npcPrice);
                             }
                         });
                     }
@@ -524,9 +521,7 @@ class Market extends Phaser.Scene {
         }
         console.log("launching dialog from bartering")
         this.scene.launch('talkingScene');
-        if(this.sold) {
-            return setUnitPrice * amt;
-        }
-
+        
+        return setUnitPrice * amt;
     }
 }

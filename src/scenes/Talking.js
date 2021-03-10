@@ -46,7 +46,7 @@ class Talking extends Phaser.Scene {
 
     create() {
         //Create escape key for pausing
-        keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        //keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
         console.log(dialogGlobal);
         console.log(dialogSlice)
@@ -87,12 +87,12 @@ class Talking extends Phaser.Scene {
 
     update() {
         //Pause Game
-        if(Phaser.Input.Keyboard.JustDown(keyESCAPE)){
+        /*if(Phaser.Input.Keyboard.JustDown(keyESCAPE)){
             console.log("Pausing Game");
             //isPaused = true;
             this.scene.pause();
             this.scene.launch("pauseScene", {previousScene:"talkingScene"});
-        }
+        }*/
         
         // check for spacebar press
         if(Phaser.Input.Keyboard.JustDown(cursors.space) && !this.dialogTyping) {

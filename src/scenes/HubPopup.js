@@ -19,7 +19,7 @@ class HubPopup extends Phaser.Scene {
         //Create the text with the info
         //Text config without a background, which blends better with the background
         this.textConfig = {
-            fontFamily: "Courier",
+            fontFamily: font,
             fontSize: "14px",
             color: "#ffffff",
             align: "center",
