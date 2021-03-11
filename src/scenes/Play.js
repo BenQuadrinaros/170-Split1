@@ -34,7 +34,7 @@ class Play extends Phaser.Scene {
 
         //UI Text Configurations
         this.textConfig = {
-            fontFamily: "Ariel",
+            fontFamily: font,
             fontSize: "20px",
             color: "#000",
             align: "center",

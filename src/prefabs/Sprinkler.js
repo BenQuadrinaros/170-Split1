@@ -11,6 +11,7 @@ class Sprinkler {
                 for (let col = this.gridx - 2; col <= this.gridx + 2; col++) {
                     if (col > -1 && col < gardenGrid[0].length) {
                         //console.log("location: "+col+', '+row);
+                        wateredTiles[[row, col]] = true;
                         try {
                             gardenGrid[row][col].addWater();
                             //console.log("watering flower at: "+col+', '+row+"\nwater: "+gardenGrid[row][col].water);

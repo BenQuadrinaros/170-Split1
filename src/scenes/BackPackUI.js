@@ -27,7 +27,7 @@ class BackPackUI extends Phaser.Scene {
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         //Text config without a background, which blends better with the background
         this.textConfig = {
-            fontFamily: "Courier",
+            fontFamily: font,
             fontSize: "14px",
             color: "#ffffff",
             align: "center",

@@ -44,7 +44,7 @@ class OldRhythm extends Phaser.Scene {
         this.missTreshold = 5;
 
         this.textConfig = {
-            fontFamily: "Ariel",
+            fontFamily: font,
             fontSize: "20px",
             color: "#000",
             align: "center",

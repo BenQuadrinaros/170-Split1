@@ -33,7 +33,7 @@ class Shop extends Phaser.Scene {
 
         //Text config without a background, which blends better with the background
         this.textConfig = {
-            fontFamily: "Courier",
+            fontFamily: font,
             fontSize: "14px",
             color: "#ffffff",
             align: "center",
@@ -64,13 +64,14 @@ class Shop extends Phaser.Scene {
         this.pointerCurrentlyOver = ""; 
 
         //create the background music manager
-        this.musicManager = new BGMManager(this);
-        this.musicManager.playSong("shopMusicFull", false);
-        this.musicManager.queueSong("shopMusicShort", true);
+        this.music = new BGMManager(this);
+        this.music.playSong("shopMusicFull", false);
+        this.music.queueSong("shopMusicShort", true);
 
         //Make sure the escape keybinding isn't consumed by the backpack UI
         this.events.on("resume", () => {
             console.log("ReenableEsc called");
+            this.music.setVolume(config.volume);
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         });
 
@@ -122,7 +123,7 @@ class Shop extends Phaser.Scene {
             this.shopExitInteract.setVisible(true);
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 console.log("returning to hub");
-                this.musicManager.stop();
+                this.music.stop();
                 this.scene.start("hubScene", {previousScene: "shopScene"});
             }
         } else {

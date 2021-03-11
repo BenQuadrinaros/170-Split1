@@ -4,8 +4,8 @@ let config = {
     type: Phaser.CANVAS,
     width: 960,
     height: 540,
-    scene: [Boot, Hub, Garden, Map, Market, Play, Menu, Credits, Talking,
-        OldRhythm,  Shop, ShopUI, BackPackUI, HubPopup, Pause, Tutorial, Settings, Win],
+    scene: [Boot, Hub, Garden, Map, Market, Play, Menu, Credits, Tutorial, Talking,
+        OldRhythm,  Shop, ShopUI, BackPackUI, HubPopup, Pause, Settings, Win],
     volume: .7,
     physics: {
         default: 'arcade',
@@ -31,13 +31,14 @@ const COLOR_PRIMARY = 0x808ADE;
 const COLOR_LIGHT = 0x684ADE;
 const COLOR_DARK = 0x80DECB;
 const Random = Phaser.Math.Between;
+const font = 'helvetica';
 
 let currentDay = 0;
 
 let upgrades = { "bike": 0 };
 //Starting garden state
-let flow0 = new Flower(2, 3, "Cosmo");
-let flow1 = new Flower(2, 3, "Cosmo");
+let flow0 = new Flower(2, 3, "Cosmos");
+let flow1 = new Flower(2, 3, "Cosmos");
 let hive = new Hive(2, 5);
 let sprink = new Sprinkler(3, 5);
 //more flowers for testing purposes
@@ -58,17 +59,23 @@ for(row = 0; row < gardenGrid.length; row++) {
         mulch[[row, col]] = 0;
     }
 }
+let wateredTiles = {};
+for(row = 0; row < gardenGrid.length; row++) {
+    for(col = 0; col < gardenGrid[0].length; col++) {
+        wateredTiles[[row, col]] = false;
+    }
+}
 
 let cursors = null;
 let dialogueSection = 0;
 //let isPaused = false;
 let heldItem = undefined;
-let vars = {}
+let vars = {};
 
 //Player variables so we dont have to pass them around forever
 let playerVariables = {
     money: 10.00,
-    actions: 4,
+    //actions: 4,
     inventory: {
         honey: {
             "total": 3,
@@ -83,15 +90,15 @@ let playerVariables = {
             "Mulch": 0
         },
         flowers: {
-            "Cosmo": 0,
-            "Blue Bonnet": 0,
+            "Cosmos": 0,
+            "Bluebonnet": 0,
             "Lavender": 0,
             "Tulip": 0,
             "Orchid": 0
         },
         seeds: {
-            "Cosmo": 2,
-            "Blue Bonnet": 0,
+            "Cosmos": 2,
+            "Bluebonnet": 0,
             "Lavender": 0,
             "Tulip": 0,
             "Orchid": 0
@@ -100,10 +107,10 @@ let playerVariables = {
 }
 let shopInventory = {
     "Seeds": {
-        "Cosmo": {"amount": 2, "img": "bearBee", "cost":2},
+        "Cosmos": {"amount": 2, "img": "bearBee", "cost":2},
         "Lavender":{"amount": 3, "img": "PlayerIcon", "cost": 3},
         //"Orchid":{"amount": 3, "img": "PlayerIcon", "cost": 3},
-        "Blue Bonnet":{"amount": 3, "img": "PlayerIcon", "cost": 4},
+        "Bluebonnet":{"amount": 3, "img": "PlayerIcon", "cost": 4},
         "Tulip":{"amount": 3, "img": "PlayerIcon", "cost": 4}
     },
     "Items":{

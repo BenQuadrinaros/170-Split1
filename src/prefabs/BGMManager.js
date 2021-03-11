@@ -2,11 +2,13 @@ class BGMManager {
     constructor(scene){
         this.scene = scene;
         this.currentSong = null;
-        this.volume = 1;
+        this.volume = config.volume;
     }
 
     setVolume(newValue){
         this.volume = newValue;
+        this.musicPlayer.volume = this.volume;
+        console.log("volume changed to " + this.volume);
     }
 
     stop(){

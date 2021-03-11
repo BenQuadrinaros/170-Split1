@@ -36,6 +36,11 @@ class Menu extends Phaser.Scene {
         this.settings.setInteractive();
         this.credits.setInteractive();
         //Setting interactive behaviors
+        this.events.on("resume", () => {
+            console.log("ReenableEsc called");
+            this.music.setVolume(config.volume);
+        });
+
         this.play.on('pointerover', () => {
             this.currSelected = 1;
             this.events.emit("selectionChange");
@@ -93,10 +98,9 @@ class Menu extends Phaser.Scene {
         });
 
         //background music for the menu
-        this.music = this.sound.add("menuMusic");
-        this.music.volume = config.volume;
-        this.music.loop = true;
-        this.music.play();
+        this.music = new BGMManager(this);
+        this.music.playSong("menuMusic", true);
+        this.music.setVolume(config.volume);
     }
 
     update() {
@@ -180,23 +184,23 @@ class Menu extends Phaser.Scene {
     }
 
     moveToNewScene(newScene){
-        this.music.stop();
         //Play is being pressed
-        if(newScene === 1){
+        if(newScene === 1) {
+            this.music.stop();
             this.scene.start('hubScene', {previousScene: "menuScene"});
         }
         //Tutorial is being pressed
-        else if(newScene === 2){
+        else if(newScene === 2) {
             this.scene.pause();
             this.scene.launch("tutorialScene", {previousScene: "menuScene"});
         }
         //Settings is being pressed
-        else if(newScene === 3){
+        else if(newScene === 3) {
             this.scene.pause();
             this.scene.launch("settingsScene", {previousScene: "menuScene"});
         }
         //Credits is being pressed
-        else if(newScene === 4){
+        else if(newScene === 4) {
             this.scene.pause();
             this.scene.launch("creditsScene", {previousScene: "menuScene"});
         }
