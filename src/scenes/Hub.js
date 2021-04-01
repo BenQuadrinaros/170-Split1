@@ -220,6 +220,7 @@ class Hub extends Phaser.Scene {
             this.scene.launch("backpackUI", {previousScene:"hubScene"});
         });
         this.backpack.depth = 200;
+
         // Build out Garden below main Hub area
         this.path = [];    //Path for the bees to follow
         this.inScene = [   //This array will let us track local changes and update images
@@ -230,28 +231,25 @@ class Hub extends Phaser.Scene {
         ];
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
-                if (gardenGrid[row][col] == null) {
-                    // determine if spot has been watered
-                    let img = "dirtDry";
-                    if(wateredTiles[[row, col]]) { img = "dirtWet"; }
-                    // blank plots to be interacted with
-                    let temp = this.add.image((1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
-                        (9 + row) * (game.config.height - 50) / 8 + 50 /*+ Phaser.Math.Between(-7,7)*/, img);
-                    temp.setOrigin(.5,.5).setScale(.35, .35);
-                    temp.depth = temp.y / 10 - 20;
-                    this.inScene[row][col] = temp;
+                // determine if spot has been watered
+                let img = "dirtDry";
+                if(wateredTiles[[row, col]]) { img = "dirtWet"; }
+                // blank plots to be interacted with
+                let temp = this.add.image((1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
+                    (9 + row) * (game.config.height - 50) / 8 + 65 /*+ Phaser.Math.Between(-7,7)*/, img);
+                temp.setOrigin(.5,.5).setScale(.35, .35);
+                temp.depth = temp.y / 10 - 20;
 
-                    //mulch to be added
-                    /*
-                    if(mulch[[row,col]] > 0) {
-                        let temp = this.add.image((1 + col) * game.config.width / 9 + Phaser.Math.Between(-7,7),
-                        (9 + row) * (game.config.height - 50) / 8 + 50 + Phaser.Math.Between(-7,7), "mulch");
-                        temp.setOrigin(.5,.5).setScale(.5, .75);
-                        temp.depth = temp.y / 10;
-                        this.inScene[row][col] = temp
-                    }
-                    */
-                } else { //its not blank
+                //mulch to be added
+                /*
+                if(mulch[[row,col]] > 0) {
+                    let temp = this.add.image((1 + col) * game.config.width / 9 + Phaser.Math.Between(-7,7),
+                    (9 + row) * (game.config.height - 50) / 8 + 65 + Phaser.Math.Between(-7,7), "mulch");
+                    temp.setOrigin(.5,.5).setScale(.5, .75);
+                    temp.depth = temp.y / 10;
+                }
+                */
+                if (gardenGrid[row][col] != null) { //its not blank
                     let temp = gardenGrid[row][col];
                     temp.addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
                         (9 + row) * (game.config.height - 50) / 8 + 85 /*+ Phaser.Math.Between(-7,7)*/);
@@ -281,6 +279,8 @@ class Hub extends Phaser.Scene {
         this.fadeMessage.depth = 200;
         this.flowerText = this.add.text(0, 0, "Press SPACE\nto interact", this.textConfig).setOrigin(0.5);
         this.flowerText.depth = 200;
+        this.plotHighlight = this.add.ellipse(0, 0, config.width/10, config.height/10, 0xD3D3D3);
+        this.plotHighlight.alpha = 0;
     }
 
     update() {
@@ -481,7 +481,7 @@ class Hub extends Phaser.Scene {
             this.fadeTimer = null;
         }
         this.fadeMessage.x = this.player.x;
-        this.fadeMessage.y = this.player.y + this.player.height / 4;
+        this.fadeMessage.y = this.player.y;
         this.fadeMessage.text = message;
         this.fadeMessage.setVisible(true);
         this.fadeTimer = this.time.addEvent({
@@ -506,11 +506,15 @@ class Hub extends Phaser.Scene {
         if(plot == null) {
             //If closestplot is far away, clear text
             this.flowerText.alpha = 0;
+            this.plotHighlight.alpha = 0;
         } else {
             //Else, move text to that location
             this.flowerText.alpha = 1;
             this.flowerText.x = (1 + plot[1]) * game.config.width / 9;
             this.flowerText.y = (9 + plot[0]) * (game.config.height - 50) / 8 + 80;
+            this.plotHighlight.alpha = 1;
+            this.plotHighlight.x = (1 + plot[1]) * game.config.width / 9;
+            this.plotHighlight.y = (9 + plot[0]) * (game.config.height - 50) / 8 + 120;
             //Logic for if player presses space near a plot
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 let row = plot[0];
@@ -521,8 +525,6 @@ class Hub extends Phaser.Scene {
                     //If that spot is empty, place item there
                     if(gardenGrid[row][col] == null) {
                         //console.log(heldItem);
-                        //destroy the image of whatever is in the spot
-                        this.inScene[row][col].destroy();
                         //place held object in the spot
                         this.inScene[row][col] = heldItem;
                         gardenGrid[row][col] = heldItem;
@@ -531,7 +533,7 @@ class Hub extends Phaser.Scene {
                         heldItem = undefined;
                         //Get the right image
                         let spot = gardenGrid[row][col];
-                         if(spot instanceof Sprinkler) { 
+                        if(spot instanceof Sprinkler) { 
                             this.sprinklerHighlightHold.alpha = 0;
                             spot.setPos(col, row);
                         } else if(spot instanceof Hive) {
@@ -542,25 +544,32 @@ class Hub extends Phaser.Scene {
                             (9 + row) * (game.config.height - 50) / 8 + 80);
                         this.inScene[row][col].image.setScale(.2,.2).setOrigin(.5,.5);
                         this.inScene[row][col].image.depth = this.inScene[row][col].image.y / 10;
+                        //If a flower or hive, add to bee path
+                        if(spot instanceof Hive || spot instanceof Flower) {
+                            this.path.push([this.inScene[row][col].image.x, this.inScene[row][col].image.y - 15]);
+                        }
                         //set the held image to nothing
                         this.heldImg = 0;
                     } else {
-                        //Display something like "You cannot do this"
+                        this.fadeText("This plot is\noccupied");
                     }
                 } else {
-                    //if the player is attempting to interact with a flower, pick it up for now.
-                    if (this.inScene[row][col] instanceof Flower || this.inScene[row][col] instanceof Hive ||
-                        this.inScene[row][col] instanceof Sprinkler){
-                        heldItem = this.inScene[row][col];
-                        //let texture = this.inScene[row][col].image.texture;
+                    //if the player is attempting to interact with a flower or item, pick it up for now.
+                    let obj = this.inScene[row][col];
+                    if (obj instanceof Flower || obj instanceof Hive || obj instanceof Sprinkler) {
+                        //If on the bee path, remove it
+                        if(obj instanceof Flower || obj instanceof Hive) {
+                            this.path = this.removeFromPath(obj.image, this.path);
+                        }
+                        heldItem = obj;
+                        //let texture = obj.image.texture;
                         //remove the flower from the scene
-                        this.inScene[row][col].destroy();
+                        obj.destroy();
                         //create a dirt image and place it in the spot
                         let temp = this.add.image((1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
-                            (9 + row) * (game.config.height - 50) / 8 + 50 /*+ Phaser.Math.Between(-7,7)*/, "dirtDry");
+                            (9 + row) * (game.config.height - 50) / 8 + 65 /*+ Phaser.Math.Between(-7,7)*/, "dirtDry");
                         temp.setOrigin(.5,.5).setScale(.35, .35);
                         temp.depth = temp.y / 10 - 20;
-                        this.inScene[row][col] = temp;
                         gardenGrid[row][col] = null;
                     }
                 }
@@ -571,23 +580,36 @@ class Hub extends Phaser.Scene {
     closestPlot() {
         // Helper function to find closest plot, if any within 100 units
         let closestXY = [];
-        let closestDist = 100;
+        let closestDist = 65;
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
                 if(Math.sqrt(Math.pow((1 + col) * game.config.width / 9 - this.player.x,2) + 
-                    Math.pow((9 + row) * (game.config.height - 50) / 8 + 50 - this.player.y,2)) < closestDist) {
+                    Math.pow((9 + row) * (game.config.height - 50) / 8 + 65 - this.player.y - 25,2)) < closestDist) {
                         closestDist = Math.sqrt(Math.pow((1 + col) * game.config.width / 9 - this.player.x,2) + 
-                            Math.pow((9 + row) * (game.config.height - 50) / 8 + 50 - this.player.y,2));
+                            Math.pow((9 + row) * (game.config.height - 50) / 8 + 65 - this.player.y - 25,2));
                         closestXY = [row, col];
                     }
             }
         }
-        if(closestDist >= 100) {
+        if(closestDist == 65) {
             //If closest plot is far away, return null
             return null;
         } else {
             //else, return plot coords [row, col]
             return closestXY;
         }
+    }
+
+    removeFromPath(object, path) {
+        let coords;
+        for(let i = 0; i < path.length; i++) {
+            coords = path[i];
+            if(Math.abs(object.x - coords[0]) < 1 && Math.abs(object.y - 15 - coords[1] < 1)) {
+                path.splice(i, 1);
+                break;
+            }
+        }
+        console.log("path is", path);
+        return path;
     }
 }
