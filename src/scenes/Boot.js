@@ -47,10 +47,6 @@ class Boot extends Phaser.Scene {
             this.load.image("flowerPurple5", "./assets/sprites/spritesheetFrames/purple5.png");
             //For hubScene
             this.load.image('background', './assets/sprites/background/garden_base.png');
-            this.load.image('bee','./assets/sprites/character/hubBee.jpg');
-            this.load.image('bike','./assets/sprites/background/bike.png');
-            this.load.image('bikeShed', './assets/sprites/background/tempBikeUpgrade.png');
-            this.load.image('gardeningShed','./assets/sprites/background/tempGardeningSupplies.png');
             this.load.image('dialogbox', './assets/img/dialogbox.png');
             this.load.image('playerWealthTracker', './assets/sprites/UI/moneyhoney.png');
             //For shop

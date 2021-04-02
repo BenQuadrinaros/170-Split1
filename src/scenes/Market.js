@@ -100,7 +100,7 @@ class Market extends Phaser.Scene {
         this.timeText = this.add.text(game.config.width / 8, game.config.height / 8 + 25, "Time Remaining: ", this.textConfig).setOrigin(.5, .5);
         this.timeText.depth = 100;
         this.timeUpText = this.add.text(game.config.width / 8, game.config.height / 8 - 25,
-            "TIME'S UP\nPress Down to sleep\nand end the day", this.textConfig).setOrigin(.5, .5);
+            "TIME'S UP\nPress Down to go\nback to town", this.textConfig).setOrigin(.5, .5);
         this.timeUpText.depth = 100;
         this.timeUpText.alpha = 0;
         this.timeUp = false;
@@ -301,12 +301,13 @@ class Market extends Phaser.Scene {
         if (this.timeUp) {
             if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
                 //Go to hub and start next day
-                this.music.transitionSong("bedtimeMusic", false);
-                this.cameras.main.fadeOut(3000, 0, 0, 0);
-                this.time.delayedCall(8000, () => {
+                //this.music.transitionSong("bedtimeMusic", false);
+                //this.cameras.main.fadeOut(3000, 0, 0, 0);
+                //this.time.delayedCall(8000, () => {
+                    hasSoldForDay = true;
                     this.music.stop();
-                    this.scene.start('hubScene', {previousScene: "marketScene"});
-                });
+                    this.scene.start('shopScene', {previousScene: "marketScene"});
+                //});
             }
         } else {
             if (this.state == "waiting") { //Patrons come and go

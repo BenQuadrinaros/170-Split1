@@ -29,6 +29,11 @@ class ShopUI extends Phaser.Scene {
 
     }
 
+    init(data) {
+        //See where you are returning from
+        this.previousScene = data.previousScene;
+    }
+
     preload(){
         console.log("in ShopUI Scene")
         this.load.scenePlugin({
@@ -53,7 +58,7 @@ class ShopUI extends Phaser.Scene {
         .on('pointerdown', () => {
             console.log("Previous scene key: " + this.previousScene);
             menu = undefined;
-            this.scene.resume(previousScene.scene.key);
+            this.scene.resume(this.previousScene);
             this.scene.stop("shopUIScene");
         });
         this.add.text(this.backpack.x, this.backpack.y, "EXIT").setOrigin(.5, .5);
@@ -279,7 +284,7 @@ class ShopUI extends Phaser.Scene {
         if(Phaser.Input.Keyboard.JustDown(keyESCAPE)){
             console.log("escape");
             menu = undefined;
-            this.scene.resume(previousScene.scene.key);
+            this.scene.resume(this.previousScene);
             this.scene.stop("shopUIScene");
         }
         else{
