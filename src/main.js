@@ -34,6 +34,7 @@ const Random = Phaser.Math.Between;
 const font = 'helvetica';
 
 let currentDay = 0;
+let hasSoldForDay = false;
 
 let upgrades = { "bike": 0 };
 //Starting garden state
