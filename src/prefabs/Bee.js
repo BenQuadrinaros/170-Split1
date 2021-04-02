@@ -110,6 +110,7 @@ class Bee extends Phaser.GameObjects.Sprite {
     	//This pathway is used whenever the workers have already cone out & seen the flowers
     	if(this.scoutOrGather == 'gather'){
 	        // Get the target to go to & distance to
+			this.target = this.target % path.length;
 	        let targetLocation = new Phaser.Math.Vector2(path[this.target][0], path[this.target][1]);
 	        let playerLocation = new Phaser.Math.Vector2(player.x, player.y);
 	        let distance = this.position.distance(targetLocation);
