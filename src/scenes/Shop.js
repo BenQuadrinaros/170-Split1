@@ -69,6 +69,10 @@ class Shop extends Phaser.Scene {
     createBackgroundImages(){
         this.background = this.add.image(config.width/2, config.height/2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-10);
         this.toadLeckman = this.add.image(config.width/2,config.height/4, 'toadLeckman').setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-5);
+        if(hasSoldForDay){
+            this.sunsetTint = this.add.rectangle(0, 0, 2000, 2000, 0xFD5E53, 0.25);
+            this.sunsetTint.depth = 1000;
+        }
     }
 
     createText(){

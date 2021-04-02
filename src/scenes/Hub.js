@@ -202,6 +202,7 @@ class Hub extends Phaser.Scene {
         this.cameras.main.setBackgroundColor(0x000000);
         this.cameras.main.setBounds(0, 0, this.worldWidth, this.worldHeight);
         this.cameras.main.setZoom(1.15);
+        //this.cameras.main.setTint(0x000000);
         //Have it track the player
         // startFollow(target [, roundPixels] [, lerpX] [, lerpY] [, offsetX] [, offsetY])
         this.cameras.main.startFollow(this.player, true, 0.4, 0.4);
@@ -210,6 +211,10 @@ class Hub extends Phaser.Scene {
     createBackgroundImages(){
         this.extraGrassBackdrop = this.add.image(0, 0, "extraLargeGrass");
         this.background = this.add.image(config.width / 2, config.height / 2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5);
+        if(hasSoldForDay){
+            this.sunsetTint = this.add.rectangle(0, 0, 2*this.worldWidth, 2*this.worldHeight, 0xFD5E53, 0.25);
+            this.sunsetTint.depth = 1000;
+        }
     }
 
     createUIElements(){
@@ -274,7 +279,7 @@ class Hub extends Phaser.Scene {
             playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
         this.turnText.depth = 100;
         this.townAccess = this.add.text(config.width/5, 2*config.height/5, "Path to Town", this.textConfig).setOrigin(0.5,0.5);
-        this.townAccess.depth = this.townAccess.y*10;
+        
 
         //Text that starts invisible
         this.interactText = this.add.text(this.player.x, this.player.y, "'SPACE' to interact", this.textConfig).setOrigin(.5, .5).setVisible(false);
