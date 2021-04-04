@@ -19,7 +19,6 @@ class Flower {
         if (this.water < this.ref["water"]) {
             this.water += 1;
         }
-        //console.log("This flower got watered!");
     }
 
     advance() {

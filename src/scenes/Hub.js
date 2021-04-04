@@ -51,7 +51,7 @@ class Hub extends Phaser.Scene {
         this.createUIElements();
         //Initialize Text Objects
         this.createText();
-        //Initialize Miscelanious Events
+        //Initialize Miscellanious Events
         this.createEvents();
         //Initialize Garden
         this.createGarden();
@@ -98,10 +98,9 @@ class Hub extends Phaser.Scene {
         this.updateMoveHighlight();
 
         //Update other things existing in the scene
-        for(let i = 0; i < this.swarm.length; i++) {
-            this.swarm[i].update();
-            this.swarm[i].flock(this.swarm, this.path, this.player);
-        }
+        this.updateSwarm();
+
+        //Update player movement and location
         this.player.update();
         this.player.depth = this.player.y / 10 + 3;
 
@@ -372,6 +371,12 @@ class Hub extends Phaser.Scene {
                 }
             }
         }
+
+        //create water bucket for manual watering
+        this.waterBucket = this.add.image(.8 * config.width, .8 * config.height, "water");
+        this.waterBucket.setOrigin(.5, .5).setScale(1.5, 1.5);
+        this.waterBucket.depth = this.waterBucket.y / 10;
+        this.waterHeld = new WateringCan();
     }
 
     createBees(){
@@ -410,10 +415,11 @@ class Hub extends Phaser.Scene {
 
     updateHeldItemBehavior(){
         if (this.heldImg < 1) {
-            heldItem.addToScene(this, this.player.x /*+ Phaser.Math.Between(-7,7)*/,
-                this.player.y /*+ Phaser.Math.Between(-7,7)*/);
+            heldItem.addToScene(this, this.player.x, this.player.y);
             this.heldImg = 1;
-            heldItem.image.setScale(.2, .2);
+            if(!(heldItem instanceof WateringCan)) {
+                heldItem.image.setScale(.2, .2);
+            }
         }
         //Always update location
         heldItem.image.x = this.player.x;
@@ -526,6 +532,13 @@ class Hub extends Phaser.Scene {
         }
     }
 
+    updateSwarm() {
+        for(let i = 0; i < this.swarm.length; i++) {
+            this.swarm[i].update();
+            this.swarm[i].flock(this.swarm, this.path, this.player);
+        }
+    }
+
     fadeText(message) {
         if (this.fadeTimer != null) {
             this.fadeTimer.callback = () => { };
@@ -580,8 +593,26 @@ class Hub extends Phaser.Scene {
     textHover() {
         //find the closest interactable point
         let plot = this.closestPlot();
-        if(plot == null) {
-            //If closestplot is far away, clear text
+        //If close to water bucket
+        if(Math.sqrt(Math.pow(this.waterBucket.x - this.player.x,2) + 
+            Math.pow(this.waterBucket.y - this.player.y,2)) < 75) {
+            //Move display to this spot
+            this.flowerText.alpha = 1;
+            this.flowerText.x = this.waterBucket.x;
+            this.flowerText.y = this.waterBucket.y;
+            this.plotHighlight.alpha = 1;
+            this.plotHighlight.x = this.waterBucket.x;
+            this.plotHighlight.y = this.waterBucket.y + 25;
+            //Logic for if player presses space near water bucket
+            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+                //If the player is not holding an item
+                if (heldItem == undefined) {
+                    //Put water in hands
+                    heldItem = this.waterHeld;
+                }
+            }
+        } else if(plot == null) {
+            //If closest plot is far away, clear text
             this.flowerText.alpha = 0;
             this.plotHighlight.alpha = 0;
         } else {
@@ -596,9 +627,24 @@ class Hub extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 let row = plot[0];
                 let col = plot[1];
-                //console.log(this.inScene[row][col])
+                console.log("player start holding", heldItem);
+                //If player holding the watering can
+                if(heldItem instanceof WateringCan) {
+                    let spot = gardenGrid[row][col];
+                    if(spot instanceof Flower) {
+                        spot.addWater();
+                        wateredTiles[[row. col]] = true;
+                        let temp = this.add.image((1 + col) * game.config.width / 9,
+                            (9 + row) * (game.config.height - 50) / 8 + 65, "dirtWet");
+                        temp.setOrigin(.5,.5).setScale(.35, .35);
+                        temp.depth = temp.y / 10 - 20;
+                        //clear image of item held
+                        heldItem.image.destroy();
+                        heldItem = undefined;
+                    }
+                }
                 //If the player is holding an item, modify garden plots and add image to scene.
-                if (heldItem !== undefined){
+                else if (heldItem !== undefined){
                     //If that spot is empty, place item there
                     if(gardenGrid[row][col] == null) {
                         //console.log(heldItem);
@@ -608,7 +654,7 @@ class Hub extends Phaser.Scene {
                         //clear image of item held
                         heldItem.image.destroy();
                         heldItem = undefined;
-                        //Get the right image
+                        //clear highlights
                         let spot = gardenGrid[row][col];
                         if(spot instanceof Sprinkler) { 
                             this.sprinklerHighlightHold.alpha = 0;
@@ -631,7 +677,7 @@ class Hub extends Phaser.Scene {
                         this.fadeText("This plot is\noccupied");
                     }
                 } else {
-                    //if the player is attempting to interact with a flower or item, pick it up for now.
+                    //if the player is attempting to interact with a flower or item, pick it up for now
                     let obj = this.inScene[row][col];
                     if (obj instanceof Flower || obj instanceof Hive || obj instanceof Sprinkler) {
                         //If on the bee path, remove it
@@ -639,17 +685,21 @@ class Hub extends Phaser.Scene {
                             this.path = this.removeFromPath(obj.image, this.path);
                         }
                         heldItem = obj;
-                        //let texture = obj.image.texture;
                         //remove the flower from the scene
                         obj.destroy();
                         //create a dirt image and place it in the spot
-                        let temp = this.add.image((1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
-                            (9 + row) * (game.config.height - 50) / 8 + 65 /*+ Phaser.Math.Between(-7,7)*/, "dirtDry");
+                        let img = "dirtDry";
+                        if(wateredTiles[[row, col]]) {
+                            img = "dirtWet";
+                        }
+                        let temp = this.add.image((1 + col) * game.config.width / 9,
+                            (9 + row) * (game.config.height - 50) / 8 + 65, img);
                         temp.setOrigin(.5,.5).setScale(.35, .35);
                         temp.depth = temp.y / 10 - 20;
                         gardenGrid[row][col] = null;
                     }
                 }
+                console.log("player end holding", heldItem);
             }
         }
     }
