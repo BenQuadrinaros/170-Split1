@@ -191,6 +191,11 @@ class BackPackUI extends Phaser.Scene {
         // Grid table
         tabs.getElement('panel')
             .on('cell.click', function (cellContainer, cellIndex) {
+                //If the user tries to hold an item in the shop it crashes, removing functionality for now.
+                //TODO: Fix crash ?
+                if (uiScene.previousScene === "shopScene"){
+                    return ;
+                }
                 let item = uiScene.selectedItem;
                 //console.log(`item ${item} in tab ${uiScene.selectedTab}`)
                 let amount = playerVariables.inventory[uiScene.selectedTab][item];
