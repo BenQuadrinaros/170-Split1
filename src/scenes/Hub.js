@@ -609,6 +609,7 @@ class Hub extends Phaser.Scene {
                 if (heldItem == undefined) {
                     //Put water in hands
                     heldItem = this.waterHeld;
+                    console.log("picked up water", heldItem);
                 }
             }
         } else if(plot == null) {
@@ -641,6 +642,8 @@ class Hub extends Phaser.Scene {
                         //clear image of item held
                         heldItem.image.destroy();
                         heldItem = undefined;
+                        //set the held image to nothing
+                        this.heldImg = 0;
                     }
                 }
                 //If the player is holding an item, modify garden plots and add image to scene.
