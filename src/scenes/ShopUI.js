@@ -215,6 +215,9 @@ class ShopUI extends Phaser.Scene {
         // Grid table
         tabs.getElement('panel')
             .on('cell.click', function (cellContainer, cellIndex) {
+                if (uiScene.previousScene === "shopScene"){
+                    return ;
+                }
                 //create popup menu for confirmation
                 let item = uiScene.selectedItem;
                 let tab = uiScene.selectedTab.toLowerCase();
