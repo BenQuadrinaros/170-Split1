@@ -15,7 +15,7 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
     }
 
     update(){
-        if (keyLEFT.isDown){
+        if (keyLEFT.isDown || keyA.isDown) {
             this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
             this.flipX = true;
             if (this.x > 0){
@@ -23,7 +23,7 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
             }
         }
 
-        if (keyRIGHT.isDown){
+        if (keyRIGHT.isDown || keyD.isDown) {
             this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
             this.flipX = false;
             if (this.x < this.maxWidth){
@@ -31,7 +31,7 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
             }
         }
 
-        if (keyUP.isDown){
+        if (keyUP.isDown || keyW.isDown) {
             this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
             //this.setFrame(0);
             this.anims.play("playerBackIdle", true);
@@ -45,7 +45,7 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         }
         
 
-        if (keyDOWN.isDown){
+        if (keyDOWN.isDown || keyS.isDown) {
             this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
             //this.setFrame(2);
             this.anims.play("playerFrontIdle", true);

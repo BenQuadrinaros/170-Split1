@@ -32,6 +32,11 @@ class Hub extends Phaser.Scene {
         this.music = new BGMManager(this);
         this.music.playSong("hubMusic", true);
         this.music.setVolume(config.volume);
+        
+        //Initialize Controls
+        this.createControls();
+        //Initialize Background Elements
+        this.createBackgroundImages();
 
         //If coming from the menu or the market, advance to the next day
         if(this.previousScene === "menuScene" || this.previousScene === "marketScene" || this.previousScene === "hubScene"){
@@ -39,10 +44,6 @@ class Hub extends Phaser.Scene {
             this.advanceDay();    
         }
 
-        //Initialize Controls
-        this.createControls();
-        //Initialize Background Elements
-        this.createBackgroundImages();
         //Initialize Player
         this.createPlayer();
         //Initialize Camera Stuff
@@ -114,6 +115,7 @@ class Hub extends Phaser.Scene {
     advanceDay(){
         currentDay += 1;
         hasSoldForDay = false;
+        this.sunsetTint.alpha = 0;
         console.log("Advancing to day " + currentDay);
         //If you are returning to the hub
         console.log("Welcome back. Honey was " + playerVariables.inventory.honey["total"]);
@@ -174,6 +176,10 @@ class Hub extends Phaser.Scene {
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+        keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+        keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+        keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     }
 
     createPlayer(){
@@ -210,8 +216,10 @@ class Hub extends Phaser.Scene {
     createBackgroundImages(){
         this.extraGrassBackdrop = this.add.image(0, 0, "extraLargeGrass");
         this.background = this.add.image(config.width / 2, config.height / 2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5);
+        this.sunsetTint= this.add.rectangle(0, 0, 2*this.worldWidth, 2*this.worldHeight, 0xFD5E53, 0.25);
+        this.sunsetTint.alpha = 0;
         if(hasSoldForDay){
-            this.sunsetTint = this.add.rectangle(0, 0, 2*this.worldWidth, 2*this.worldHeight, 0xFD5E53, 0.25);
+            this.sunsetTint.alpha = 1;
             this.sunsetTint.depth = 1000;
         }
     }
@@ -274,8 +282,7 @@ class Hub extends Phaser.Scene {
         this.moveText = this.add.text(this.player.x, this.player.y - config.height / 9, "Use the arrowkeys to move", this.textConfig).setOrigin(.5, .5);
         this.moveText.depth = 100;
         this.turnText = this.add.text(6 * game.config.width / 7, game.config.height / 4, "Turns Remaining: ", this.textConfig).setOrigin(.5);
-        this.turnText.text = /*"Actions Remaining: " + playerVariables.actions + */"Honey: " +
-            playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
+        this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
         this.turnText.depth = 100;
         this.townAccess = this.add.text(config.width/5, 2*config.height/5, "Path to Town", this.textConfig).setOrigin(0.5,0.5);
         
@@ -485,11 +492,12 @@ class Hub extends Phaser.Scene {
         // -------------------------------------------
         // Quick day advancement for testing purposes
         if (Phaser.Input.Keyboard.JustDown(keyP)) {
-            this.music.stop();
-            this.scene.restart("hubScene");
+            this.advanceDay();
+            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
         }
         if (Phaser.Input.Keyboard.JustDown(keyO)) {
             playerVariables.money += 10;
+            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
         }
         // -------------------------------------------
     }
