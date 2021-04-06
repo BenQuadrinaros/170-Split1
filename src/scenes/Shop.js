@@ -53,6 +53,9 @@ class Shop extends Phaser.Scene {
 
         //Create behavior around held items
         this.updateHeldItem();
+
+        //Check other various keyboard
+        this.updateCheckMiscKeyboard();
     }
 
     createControls(){
@@ -142,6 +145,7 @@ class Shop extends Phaser.Scene {
             })
             .on('pointerdown', () =>{
                 console.log("clicked backpack");
+                this.music.playSFX("backpackOpen");
                 this.scene.pause('shopScene');
                 this.scene.launch("backpackUI", {previousScene:"shopScene"});
             });
@@ -165,7 +169,11 @@ class Shop extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 console.log("returning to hub");
                 this.music.stop();
-                this.scene.start("hubScene", {previousScene: "shopScene"});
+                this.music.playSFX("mapTransition");
+                this.time.delayedCall(300, () => {
+                    this.music.stop();
+                    this.scene.start("hubScene", {previousScene: "shopScene"});
+                });
             }
         } else {
             this.townExitInteract.setVisible(false);
@@ -211,6 +219,15 @@ class Shop extends Phaser.Scene {
         if (heldItem !== undefined){
             vars[heldItem].x = this.player.x;
             vars[heldItem].y = this.player.y;
+        }
+    }
+
+    updateCheckMiscKeyboard(){
+        //If the player press B open the backpack
+        if (Phaser.Input.Keyboard.JustDown(keyB)){
+            this.music.playSFX("backpackOpen");
+            this.scene.pause('hubScene');
+            this.scene.launch("backpackUI", {previousScene: "shopScene"});
         }
     }
 }

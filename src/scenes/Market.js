@@ -10,6 +10,220 @@ class Market extends Phaser.Scene {
         previousScene = this;
         this.sold = false;
         this.cameras.main.setBackgroundColor(0x000000);
+
+        this.createControls(); //Sets the various controls
+        this.createBackground(); //Creates backdrop
+        this.createPopulatedTable(); //Create table and fill with jars of honey
+        this.createPlayer(); //Creates player prefab
+        this.createPlayerAnims(); //Creates animations associated with player
+        this.createText(); //Creates text objects
+        this.createPriceChanging(); //Creates UI for changing prices
+        this.createEvents(); //Creates misc events that occur during the scene
+        
+        //background music for the hub
+        //CHNAGE SONG FOR MARKET
+        this.music = new BGMManager(this);
+        this.music.playSong("marketMusic", true);
+        this.music.setVolume(config.volume);
+
+        //Start the timer for the selling portion
+        this.timer = this.time.addEvent({
+            delay: 90000,
+            callback: () => {
+                this.honeyText.alpha = 0;
+                this.moneyText.alpha = 0;
+                this.timeText.alpha = 0;
+                this.timeUpText.alpha = 1;
+                this.timeUp = true;
+            },
+            loop: false,
+            callbackScope: this
+        });
+        this.state = "waiting";
+    }
+
+    update() {
+
+        this.updateText(); //Updates text as player takes actions
+        this.updateCheckPause(); //Checks if the game needs to pause
+
+        if (this.timeUp) {
+            this.updateTimeUp();
+            return;
+        }
+        if (this.state == "waiting") { //Patrons come and go
+
+            this.updateBearShuffle();
+
+            if (playerVariables.inventory.honey.total > 0 && Phaser.Math.Between(0, 1000) > 985) {
+                this.state = "approaching";
+
+                this.npc = this.generateNPC(); //Generate the NPC
+                this.npc.approach();
+
+                this.time.addEvent({
+                    delay: 1500,
+                    callback: () => {
+                        this.state = "bargaining";
+                        this.updatePrepareInteraction();
+                    },
+                    loop: false,
+                    callbackScope: this
+                });
+            } else if (playerVariables.inventory.honey.total <= 0) {
+                this.timer.delay = 0;
+            }
+        } else if (this.state == "approaching") { //NPC approaches the stand
+            //Constant bear wiggle
+            this.updateBearShuffle();
+
+        } else if (this.state == "bargaining") { //Ask for honey at price
+            if (!dialogActive) {
+                dialogActive = true;
+                dialogGlobal = this.cache.json.get('dialog');
+                this.exchange = this.priceRange(this.npcAmount, this.npcPrice);
+            }
+        } else if (this.state == "leaving") {
+            //Constant bear wiggle
+            this.bear.x += .25 * Math.sin(this.currTime / 2);
+            this.bear.y += .1 * Math.sin(this.currTime / 4 + 1);
+
+            this.npc.leave();
+        }
+    
+        if (dialogEnded){
+            
+            dialogEnded = false;
+            if (sellChoice === "no"){
+                dialogActive = false;
+                this.state = "leaving";
+                this.time.addEvent({
+                    delay: 1500,
+                    callback: () => {
+                        this.npc.destroy();
+                        this.state = "waiting";
+                    },
+                    loop: false,
+                    callbackScope: this
+                });
+                sellChoice = undefined;
+            } else {
+                if (this.sold) {
+                    dialogActive = false;
+                    this.state = "leaving";
+                    playerVariables.money += Math.floor(this.exchange * 100) / 100;
+                    console.log(this.npcAmount)
+                    this.reduceStock(this.typeToBuy, this.npcAmount);
+                    this.time.addEvent({
+                        delay: 1500,
+                        callback: () => {
+                            this.npc.destroy();
+                            this.state = "waiting";
+                        },
+                        loop: false,
+                        callbackScope: this
+                    });
+                } else {
+                    if (sellChoice === "yes") {
+                        sellChoice = undefined;
+                        this.time.addEvent({
+                            delay: 3000,
+                            callback: () => {
+                                console.log("yes im lowering the price")
+                                this.exchange = this.priceRange(this.npcAmount, this.npcPrice);
+                            }
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    reduceStock(type, amount) {
+        playerVariables.inventory.honey.total -= amount;
+        if (type == "yellow") {
+            playerVariables.inventory.honey["yellow"] -= amount;
+            while (this.yellowStock.length > playerVariables.inventory.honey["yellow"]) {
+                this.yellowStock.pop().destroy();
+            }
+        } else if (type == "blue") {
+            playerVariables.inventory.honey["blue"] -= amount;
+            while (this.blueStock.length > playerVariables.inventory.honey["blue"]) {
+                this.blueStock.pop().destroy();
+            }
+        } else if (type == "purple") {
+            playerVariables.inventory.honey["purple"] -= amount;
+            while (this.purpleStock.length > playerVariables.inventory.honey["purple"]) {
+                this.purpleStock.pop().destroy();
+            }
+        } else {
+            playerVariables.inventory.honey["pink"] -= amount;
+            while (this.pinkStock.length > playerVariables.inventory.honey["pink"]) {
+                this.pinkStock.pop().destroy();
+            }
+        }
+    }
+
+    priceRange(amt, proposedPrice) {
+        console.log(`${amt} at price of ${proposedPrice}`)
+        //Prices moved to global
+        let setPrice = amt * priceMap[this.typeToBuy]
+        console.log("transaction price = "+setPrice);
+        let propUnitPrice = proposedPrice / amt;
+        let setUnitPrice = setPrice / amt;
+        console.log(`prop: ${propUnitPrice} ; set ${setUnitPrice}`)
+        let dif = propUnitPrice - setUnitPrice;
+        console.log(`${dif} dif between prop price and set price`)
+        let bart = "Hello, I would like to buy " + amt + " " + this.typeToBuy + " honey."
+        let response = "Certainly. That would be " + setUnitPrice * amt + "$ for "
+            + amt + " jars of " + this.typeToBuy + " honey.";
+        
+        let barter = [
+            {
+                "speaker": "",
+                "dialog": bart,
+                "newSpeaker": "true"
+            },
+            {
+                "speaker": "",
+                "dialog": response,
+                "newSpeaker": "true"
+            }
+        ]
+
+
+        if (dif < -1) {
+            //too high
+            console.log("dif to high for customer");
+            dialogueSection = rangeDialogue['high'][0];
+            bartering = true;
+            this.sold = false;
+        } else {
+            dialogueSection = rangeDialogue['mid'][0];
+            this.sold = true;
+            bartering = false;
+        }
+
+        dialogSlice = dialogGlobal[dialogueSection];
+        dialogGlobal[dialogueSection] = barter.concat(dialogGlobal[dialogueSection]);
+        if (this.sold) {
+            dialogGlobal[dialogueSection].push(dialogGlobal[rangeDialogue["goodbyes"][0]][0])
+        }
+        console.log("launching dialog from bartering")
+        this.scene.launch('talkingScene');
+        
+        return setUnitPrice * amt;
+    }
+
+    createControls(){
+                //establish controls for gameplay
+                keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+                keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+                keyY = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Y);
+                keyN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.N);
+    }
+
+    createBackground(){
         //REPLACE with actual background
         //this.background = this.add.image(config.width / 2, config.height / 2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5);
         //background
@@ -19,7 +233,9 @@ class Market extends Phaser.Scene {
         this.bike = this.add.image(game.config.width / 6, 8 * game.config.height / 10, 'bike');
         this.bike.setOrigin(.5, .5).setScale(.75, .75);
         this.bike.depth = 75;
+    }
 
+    createPopulatedTable(){
         //stand for visual space
         this.stand = this.add.image(game.config.width / 2, game.config.height / 2, 'booth');
         this.stand.setOrigin(.5, .5).setScale(.675, .675);
@@ -63,12 +279,16 @@ class Market extends Phaser.Scene {
             temp.depth = 97;
             this.pinkStock.push(temp);
         }
-
+    }
+    
+    createPlayer(){
         //bear in costume selling honey
         this.bear = this.add.sprite(game.config.width / 2.5, 7 * game.config.height / 10, 'player', 0);
         this.bear.setOrigin(.5, .5).setScale(2.5, 2.5);
         this.bear.depth = 99;
+    }
 
+    createPlayerAnims(){
         //Create player idle animation
         this.anims.create({
             key: 'playerBackIdle',
@@ -77,7 +297,9 @@ class Market extends Phaser.Scene {
             frameRate: 2
         });
         this.bear.anims.play('playerBackIdle', true);
+    }
 
+    createText(){
         //Text config without a background, which blends better with the background
         this.textConfig = {
             fontFamily: font,
@@ -110,7 +332,9 @@ class Market extends Phaser.Scene {
             this.textConfig).setOrigin(.5, .5);
         this.transactionText.depth = 100;
         this.transactionText.alpha = 0;
+    }
 
+    createPriceChanging(){
         //Price Setting Yellow
         this.yellowPlus = this.add.image(config.width / 5, 1.25 * config.height / 5, 'greenPlus', 0)
             .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
@@ -247,50 +471,28 @@ class Market extends Phaser.Scene {
         this.purplePriceText = this.add.text((config.width / 5) - 75, 2.75 * config.height / 5,
             "Purple\n" + "\t" + priceMap["purple"] + "$/Jar", this.textConfig)
             .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
+    }
 
-        //establish controls for gameplay
-        keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
-        keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
-        keyY = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Y);
-        keyN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.N);
-
-        //background music for the hub
-        //CHNAGE SONG FOR MARKET
-        this.music = new BGMManager(this);
-        this.music.playSong("marketMusic", true);
-        this.music.setVolume(config.volume);
-
+    createEvents(){
+        //Rebinds escape
         this.events.on("resume", () => {
             console.log("ReenableEsc called");
             this.music.setVolume(config.volume);
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         });
-
-        //Start the timer for the selling portion
-        this.timer = this.time.addEvent({
-            delay: 90000,
-            callback: () => {
-                this.honeyText.alpha = 0;
-                this.moneyText.alpha = 0;
-                this.timeText.alpha = 0;
-                this.timeUpText.alpha = 1;
-                this.timeUp = true;
-            },
-            loop: false,
-            callbackScope: this
-        });
-        this.state = "waiting";
     }
 
-    update() {
+    updateText(){
         //update text UIs
         this.moneyText.text = "Money: $" + Math.floor(playerVariables.money) + "." + Math.floor(playerVariables.money * 10) % 10 +
             Math.floor(playerVariables.money * 100) % 10;
         this.honeyText.text = "Honey: " + playerVariables.inventory.honey.total;
-        let currTime = Math.floor((this.timer.delay - this.timer.getElapsed()) / 1000);
-        this.timeText.text = "Time Remaining: " + Math.floor(currTime / 60) + ":" + Math.floor((currTime % 60) / 10) + currTime % 10;
+        this.currTime = Math.floor((this.timer.delay - this.timer.getElapsed()) / 1000);
+        this.timeText.text = "Time Remaining: " + Math.floor(this.currTime / 60) + ":" + Math.floor((this.currTime % 60) / 10) + this.currTime % 10;
 
+    }
 
+    updateCheckPause(){
         //Pause Game
         if (Phaser.Input.Keyboard.JustDown(keyESCAPE)) {
             console.log("Pausing Game");
@@ -298,238 +500,84 @@ class Market extends Phaser.Scene {
             this.scene.pause();
             this.scene.launch("pauseScene", {previousScene: "marketScene"});
         }
-        if (this.timeUp) {
-            if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
-                //Go to hub and start next day
-                //this.music.transitionSong("bedtimeMusic", false);
-                //this.cameras.main.fadeOut(3000, 0, 0, 0);
-                //this.time.delayedCall(8000, () => {
-                    hasSoldForDay = true;
-                    this.music.stop();
-                    this.scene.start('shopScene', {previousScene: "marketScene"});
-                //});
-            }
-        } else {
-            if (this.state == "waiting") { //Patrons come and go
+    }
 
-                //Constant bear hustle
-                this.bear.x += .25 * Math.sin(currTime / 2);
-                this.bear.y += .1 * Math.sin(currTime / 4 + 1);
-
-                if (playerVariables.inventory.honey.total > 0 && Phaser.Math.Between(0, 1000) > 985) {
-                    this.state = "approaching";
-                    let NPCSelection = Math.floor(2*Math.random());
-                    if(NPCSelection === 0){
-                        this.npc = new NPC(this, 2 * game.config.width / 3, 4 * game.config.height / 7, 'basicBunNPC',
-                                    0, "Bagel", "easy", [["Hullo", "Good day"], ["Thanks", "Bye"]]);
-                    }
-                    else{
-                        this.npc = new NPC(this, 2 * game.config.width / 3, 4 * game.config.height / 7, 'basicDogNPC',
-                                    0, "Bagel", "easy", [["Hullo", "Good day"], ["Thanks", "Bye"]]);
-                    }
-                    this.closeness = .1;
-                    this.npc.depth = 0;
-                    this.npc.setScale(this.closeness, this.closeness);
-                    //play walk up animation
-                    this.time.addEvent({
-                        delay: 1500,
-                        callback: () => {
-                            this.state = "bargaining";
-                            //determine what type of honey to buy
-                            //proportions depend on how much of each you have
-                            let rand = Math.random();
-                            rand -= playerVariables.inventory.honey["yellow"] / playerVariables.inventory.honey.total;
-                            if (rand > 0) {
-                                rand -= playerVariables.inventory.honey["blue"] / playerVariables.inventory.honey.total;
-                                if (rand > 0) {
-                                    rand -= playerVariables.inventory.honey["purple"] / playerVariables.inventory.honey.total;
-                                    if (rand > 0) {
-                                        this.typeToBuy = "pink"
-                                    } else {
-                                        this.typeToBuy = "purple";
-                                    }
-                                } else {
-                                    this.typeToBuy = "blue";
-                                }
-                            } else {
-                                this.typeToBuy = "yellow";
-                            }
-                            //Could be a call to NPC characteristics
-                            this.npcAmount = 1;
-                            let random = Math.random();
-                            if(random > .9) {
-                                this.npcAmount = Math.min(3, playerVariables.inventory.honey[this.typeToBuy]);
-                            } else if(random > .65) {
-                                this.npcAmount = Math.min(2, playerVariables.inventory.honey[this.typeToBuy]);
-                            }
-                            this.npcPrice = 0;
-                            if (this.typeToBuy == "yellow") {
-                                //yellow price range $2 - $4, average $3
-                                this.npcPrice = (1.5 + Phaser.Math.FloatBetween(.25, 1.5) + Phaser.Math.FloatBetween(.25, 1))
-                                    * this.npcAmount;
-                            } else {
-                                //non-yellow price range $3 - $7, average $5
-                                this.npcPrice = (2 + Phaser.Math.FloatBetween(.5, 3) + Phaser.Math.FloatBetween(.5, 2))
-                                    * this.npcAmount;
-                            }
-                            this.transactionText.text = this.npc.name + ": " + this.npc.voiceLines[0][Phaser.Math.Between(0,
-                                this.npc.voiceLines[0].length - 1)] + "\nI would like to buy " + this.npcAmount +
-                                " jars\nof " + this.typeToBuy + " honey for $" + Math.floor(this.npcPrice) + "." +
-                                Math.floor((this.npcPrice * 10) % 10) + Math.floor((this.npcPrice * 100) % 10) +
-                                "\n[Y]es  /   [N]o";
-                        },
-                        loop: false,
-                        callbackScope: this
-                    });
-                } else if (playerVariables.inventory.honey.total <= 0) {
-                    this.timer.delay = 0;
-                }
-            } else if (this.state == "approaching") { //NPC approaches the stand
-
-                //Constant bear wiggle
-                this.bear.x += .25 * Math.sin(currTime / 2);
-                this.bear.y += .1 * Math.sin(currTime / 4 + 1);
-
-                this.closeness += .01;
-                this.npc.setScale(this.closeness, this.closeness);
-                this.depth = this.closeness / .05;
-            } else if (this.state == "bargaining") { //Ask for honey at price
-                if (!dialogActive) {
-                    dialogActive = true;
-                    dialogGlobal = this.cache.json.get('dialog');
-                    this.exchange = this.priceRange(this.npcAmount, this.npcPrice);
-                }
-            } else if (this.state == "leaving") {
-                //Constant bear wiggle
-                this.bear.x += .25 * Math.sin(currTime / 2);
-                this.bear.y += .1 * Math.sin(currTime / 4 + 1);
-
-                this.closeness -= .01;
-                this.npc.setScale(this.closeness, this.closeness);
-                this.depth = this.closeness / .05;
-            }
+    updateTimeUp(){
+        if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
+            //Go to hub and start next day
+            //this.music.transitionSong("bedtimeMusic", false);
+            //this.cameras.main.fadeOut(3000, 0, 0, 0);
+            //this.time.delayedCall(8000, () => {
+                hasSoldForDay = true;
+                this.music.stop();
+                this.music.playSFX("mapTransition");
+                this.scene.start('shopScene', {previousScene: "marketScene"});
+            //});
         }
-        if (dialogEnded){
-            dialogEnded = false;
-            if (sellChoice === "no"){
-                dialogActive = false;
-                this.state = "leaving";
-                this.time.addEvent({
-                    delay: 1500,
-                    callback: () => {
-                        this.npc.destroy();
-                        this.state = "waiting";
-                    },
-                    loop: false,
-                    callbackScope: this
-                });
-                sellChoice = undefined;
-            } else {
-                if (this.sold) {
-                    dialogActive = false;
-                    this.state = "leaving";
-                    playerVariables.money += Math.floor(this.exchange * 100) / 100;
-                    console.log(this.npcAmount)
-                    this.reduceStock(this.typeToBuy, this.npcAmount);
-                    this.time.addEvent({
-                        delay: 1500,
-                        callback: () => {
-                            this.npc.destroy();
-                            this.state = "waiting";
-                        },
-                        loop: false,
-                        callbackScope: this
-                    });
+    }
+
+    updateBearShuffle(){
+        //Constant bear hustle
+        this.bear.x += .25 * Math.sin(this.currTime / 2);
+        this.bear.y += .1 * Math.sin(this.currTime / 4 + 1);
+    }
+
+    updatePrepareInteraction(){
+        //determine what type of honey to buy
+        //proportions depend on how much of each you have
+        let rand = Math.random();
+        rand -= playerVariables.inventory.honey["yellow"] / playerVariables.inventory.honey.total;
+        if (rand > 0) {
+            rand -= playerVariables.inventory.honey["blue"] / playerVariables.inventory.honey.total;
+            if (rand > 0) {
+                rand -= playerVariables.inventory.honey["purple"] / playerVariables.inventory.honey.total;
+                if (rand > 0) {
+                    this.typeToBuy = "pink"
                 } else {
-                    if (sellChoice === "yes") {
-                        sellChoice = undefined;
-                        this.time.addEvent({
-                            delay: 3000,
-                            callback: () => {
-                                console.log("yes im lowering the price")
-                                this.exchange = this.priceRange(this.npcAmount, this.npcPrice);
-                            }
-                        });
-                    }
+                    this.typeToBuy = "purple";
                 }
-            }
-
-        }
-    }
-
-    reduceStock(type, amount) {
-        playerVariables.inventory.honey.total -= amount;
-        if (type == "yellow") {
-            playerVariables.inventory.honey["yellow"] -= amount;
-            while (this.yellowStock.length > playerVariables.inventory.honey["yellow"]) {
-                this.yellowStock.pop().destroy();
-            }
-        } else if (type == "blue") {
-            playerVariables.inventory.honey["blue"] -= amount;
-            while (this.blueStock.length > playerVariables.inventory.honey["blue"]) {
-                this.blueStock.pop().destroy();
-            }
-        } else if (type == "purple") {
-            playerVariables.inventory.honey["purple"] -= amount;
-            while (this.purpleStock.length > playerVariables.inventory.honey["purple"]) {
-                this.purpleStock.pop().destroy();
+            } else {
+                this.typeToBuy = "blue";
             }
         } else {
-            playerVariables.inventory.honey["pink"] -= amount;
-            while (this.pinkStock.length > playerVariables.inventory.honey["pink"]) {
-                this.pinkStock.pop().destroy();
-            }
+            this.typeToBuy = "yellow";
         }
+        //Could be a call to NPC characteristics
+        this.npcAmount = 1;
+        let random = Math.random();
+        if(random > .9) {
+            this.npcAmount = Math.min(3, playerVariables.inventory.honey[this.typeToBuy]);
+        } else if(random > .65) {
+            this.npcAmount = Math.min(2, playerVariables.inventory.honey[this.typeToBuy]);
+        }
+        this.npcPrice = 0;
+        if (this.typeToBuy == "yellow") {
+            //yellow price range $2 - $4, average $3
+            this.npcPrice = (1.5 + Phaser.Math.FloatBetween(.25, 1.5) + Phaser.Math.FloatBetween(.25, 1))
+                * this.npcAmount;
+        } else {
+            //non-yellow price range $3 - $7, average $5
+            this.npcPrice = (2 + Phaser.Math.FloatBetween(.5, 3) + Phaser.Math.FloatBetween(.5, 2))
+                * this.npcAmount;
+        }
+        this.transactionText.text = this.npc.name + ": " + this.npc.voiceLines[0][Phaser.Math.Between(0,
+            this.npc.voiceLines[0].length - 1)] + "\nI would like to buy " + this.npcAmount +
+            " jars\nof " + this.typeToBuy + " honey for $" + Math.floor(this.npcPrice) + "." +
+            Math.floor((this.npcPrice * 10) % 10) + Math.floor((this.npcPrice * 100) % 10) +
+            "\n[Y]es  /   [N]o";
     }
 
-    priceRange(amt, proposedPrice) {
-        console.log(`${amt} at price of ${proposedPrice}`)
-        //Prices moved to global
-        let setPrice = amt * priceMap[this.typeToBuy]
-        console.log("transaction price = "+setPrice);
-        let propUnitPrice = proposedPrice / amt;
-        let setUnitPrice = setPrice / amt;
-        console.log(`prop: ${propUnitPrice} ; set ${setUnitPrice}`)
-        let dif = propUnitPrice - setUnitPrice;
-        console.log(`${dif} dif between prop price and set price`)
-        let bart = "Hello, I would like to buy " + amt + " " + this.typeToBuy + " honey."
-        let response = "Certainly. That would be " + setUnitPrice * amt + "$ for "
-            + amt + " jars of " + this.typeToBuy + " honey.";
-        
-        let barter = [
-            {
-                "speaker": "",
-                "dialog": bart,
-                "newSpeaker": "true"
-            },
-            {
-                "speaker": "",
-                "dialog": response,
-                "newSpeaker": "true"
-            }
-        ]
-
-
-        if (dif < -1) {
-            //too high
-            console.log("dif to high for customer");
-            dialogueSection = rangeDialogue['high'][0];
-            bartering = true;
-            this.sold = false;
-        } else {
-            dialogueSection = rangeDialogue['mid'][0];
-            this.sold = true;
-            bartering = false;
+    generateNPC(){
+        var randNPC;
+        var NPCSelection = Math.floor(2*Math.random());
+        if(NPCSelection === 0){
+            randNPC = new NPC(this, 2 * game.config.width / 3, 4 * game.config.height / 7, 'basicBunNPC',
+                        0, "Bagel", "easy", [["Hullo", "Good day"], ["Thanks", "Bye"]]);
         }
-
-        dialogSlice = dialogGlobal[dialogueSection];
-        dialogGlobal[dialogueSection] = barter.concat(dialogGlobal[dialogueSection]);
-        if (this.sold) {
-            dialogGlobal[dialogueSection].push(dialogGlobal[rangeDialogue["goodbyes"][0]][0])
+        else{
+            randNPC = new NPC(this, 2 * game.config.width / 3, 4 * game.config.height / 7, 'basicDogNPC',
+                        0, "Bagel", "easy", [["Hullo", "Good day"], ["Thanks", "Bye"]]);
         }
-        console.log("launching dialog from bartering")
-        this.scene.launch('talkingScene');
-        
-        return setUnitPrice * amt;
+        return randNPC;
     }
 }

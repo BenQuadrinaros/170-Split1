@@ -19,8 +19,8 @@ class Hub extends Phaser.Scene {
 
     create() {
         //Initialize various global variables
-        this.worldWidth = 5000; //Set the width of the scene
-        this.worldHeight = 2000; //Set the height of the scene
+        this.worldWidth = 2000; //Set the width of the scene
+        this.worldHeight = 1500; //Set the height of the scene
         this.heldImg = 0; //Determines which item is being held by the player
         this.bounceFactor = .1; //Constant for images bouncing
         this.counter = 0; //A generic counter
@@ -42,6 +42,14 @@ class Hub extends Phaser.Scene {
         if(this.previousScene === "menuScene" || this.previousScene === "marketScene" || this.previousScene === "hubScene"){
             //Advance to the next day
             this.advanceDay();    
+        }
+
+        //If coming from the menu, load data
+        if(this.previousScene === "menuScene"){
+            this.loadData();
+        }
+        else{
+            this.saveData();
         }
 
         //Initialize Player
@@ -163,6 +171,14 @@ class Hub extends Phaser.Scene {
         }
 
         console.log("Honey increases to " + playerVariables.inventory.honey["total"]);
+
+        //Refresh Shop
+        shopInventory["Seeds"]["Cosmos"]["amount"] = 2;
+        shopInventory["Seeds"]["Bluebonnet"]["amount"] = 3;
+        shopInventory["Seeds"]["Lavender"]["amount"] = 3;
+        shopInventory["Seeds"]["Tulip"]["amount"] = 3;
+        shopInventory["Items"]["Beehive"]["amount"] = 2;
+        shopInventory["Items"]["Sprinkler"]["amount"] = 2;
     }
 
     createControls(){
@@ -214,8 +230,8 @@ class Hub extends Phaser.Scene {
     }
 
     createBackgroundImages(){
-        this.extraGrassBackdrop = this.add.image(0, 0, "extraLargeGrass");
-        this.background = this.add.image(config.width / 2, config.height / 2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5);
+        this.extraGrassBackdrop = this.add.image(0, 0, "extraLargeGrass").setOrigin(0, 0).setScale(0.5);
+        this.background = this.add.image(config.width / 2, config.height / 2, 'background').setOrigin(0.5, 0.5).setScale(0.5);
         this.sunsetTint= this.add.rectangle(0, 0, 2*this.worldWidth, 2*this.worldHeight, 0xFD5E53, 0.25);
         this.sunsetTint.alpha = 0;
         if(hasSoldForDay){
@@ -257,6 +273,7 @@ class Hub extends Phaser.Scene {
             })
             .on('pointerdown', () =>{
                 console.log("clicked backpack");
+                this.music.playSFX("backpackOpen");
                 this.scene.pause('hubScene');
                 this.scene.launch("backpackUI", {previousScene:"hubScene"});
             });
@@ -477,6 +494,7 @@ class Hub extends Phaser.Scene {
     updateCheckMiscKeyboard(){
         //If the player press B open the backpack
         if (Phaser.Input.Keyboard.JustDown(keyB)){
+            this.music.playSFX("backpackOpen");
             this.scene.pause('hubScene');
             this.scene.launch("backpackUI", {previousScene: "hubScene"});
         }
@@ -512,8 +530,13 @@ class Hub extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 //-1 to indicate that it just left the hub
                 this.music.stop();
+                this.music.playSFX("mapTransition");
                 //this.scene.start('mapScene', { arrivingAt: -1 }) //for going to biking map
-                this.scene.start('shopScene');
+                this.time.delayedCall(300, () => {
+                    this.music.stop();
+                    this.scene.start('shopScene');
+                });
+                
             }
         }
         //Check if the player is close enough to the cave to rest
@@ -641,6 +664,7 @@ class Hub extends Phaser.Scene {
                 if(heldItem instanceof WateringCan) {
                     let spot = gardenGrid[row][col];
                     if(spot instanceof Flower) {
+                        this.music.playSFX("waterFlowers");
                         spot.addWater();
                         wateredTiles[[row. col]] = true;
                         let temp = this.add.image((1 + col) * game.config.width / 9,
@@ -749,5 +773,21 @@ class Hub extends Phaser.Scene {
         }
         console.log("path is", path);
         return path;
+    }
+
+    loadData(){
+        //TODO:: Load data as needed
+
+        //Check Garden Grid
+
+        //Check Player Variables
+
+        //Check Shop Inventory
+
+        //Check Price Map
+    }
+
+    saveData(){
+        //TODO:: save data when previous scene is not the menu
     }
 }

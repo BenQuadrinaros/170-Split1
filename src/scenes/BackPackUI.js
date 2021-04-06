@@ -1,5 +1,6 @@
 let selectedTab = "seeds"
 let lineWidth = 2;
+let music;
 
 class BackPackUI extends Phaser.Scene {
     constructor() {
@@ -22,6 +23,7 @@ class BackPackUI extends Phaser.Scene {
     }
 
     create() {
+        music = new BGMManager(this);
 
         uiScene = this;
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
@@ -60,6 +62,7 @@ class BackPackUI extends Phaser.Scene {
             })
             .on('pointerdown', () => {
                 console.log("Previous scene key: " + this.previousScene);
+                music.playSFX("backpackOpen");
                 this.scene.resume(this.previousScene);
                 this.scene.stop();
             });
@@ -221,6 +224,7 @@ class BackPackUI extends Phaser.Scene {
                                 } else {
                                     console.log("Holding invalid object");
                                 }
+                                music.playSFX("backpackOpen");
                                 uiScene.scene.resume(uiScene.previousScene);
                                 uiScene.scene.stop();
 
@@ -235,8 +239,9 @@ class BackPackUI extends Phaser.Scene {
                                     name: 'Cancel',
                                 },
                             ];
+                            music.playSFX("backpackOpen");
                             uiScene.scene.resume(this.previousScene);
-                            uiScene.scene.stop("backpackUI")
+                            uiScene.scene.stop("backpackUI");
 
                         });
                     } else if (!menu.isInTouching(pointer)) {
@@ -271,6 +276,7 @@ class BackPackUI extends Phaser.Scene {
     update() {
         if (Phaser.Input.Keyboard.JustDown(keyESCAPE)) {
             //console.log("escape")
+            music.playSFX("backpackOpen");
             this.scene.resume(this.previousScene);
             this.scene.stop();
         }

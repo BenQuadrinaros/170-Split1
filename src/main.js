@@ -10,7 +10,7 @@ let config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true,
+            debug: false,
             gravity: {
                 x: 0,
                 y: 0
@@ -21,7 +21,7 @@ let config = {
 
 let game = new Phaser.Game(config);
 let previousScene = null;
-
+const VERSION_NUMBER = "0.3.6";
 //reserve some keyboard variables
 let keyP, keyO, keyESCAPE, keyLEFT, keyRIGHT, keyDOWN, keyUP, keySPACE,
     keyY, keyN, keyT, keyB, keyW, keyA, keyS, keyD;

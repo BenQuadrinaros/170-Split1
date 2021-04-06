@@ -54,7 +54,7 @@ class Talking extends Phaser.Scene {
         this.dialog = dialogGlobal;
         //console.log(this.dialog);
         this.dialogOver = false;
-        dialogEnded = false;
+        let dialogEnded = false;
 
         // add json box sprite
         this.dialogbox = this.add.sprite(this.DBOX_X, this.DBOX_Y, 'dialogbox').setOrigin(0);
