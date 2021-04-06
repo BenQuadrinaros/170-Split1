@@ -201,7 +201,7 @@ class Shop extends Phaser.Scene {
                 this.time.delayedCall(9500, () => {
                     //this.scene.start('mapScene', { arrivingAt: -1 }) //for going to biking map
                     this.music.stop();
-                    this.scene.start('marketScene');
+                    this.scene.start('marketPriceSettingScene');
                 });
             }
         }

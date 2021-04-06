@@ -236,11 +236,12 @@ class ShopUI extends Phaser.Scene {
                 if (menu === undefined) {
                     console.log("Selected item is " + uiScene.selectedItem + " in group " + tab +
                         " which has stock " + shopInventory[uiScene.selectedTab][uiScene.selectedItem].amount);
+                    music.playSFX("shopSelect");
                     menu = createMenu(this, 600, 350, confirmBuy, function (button) {
                         if (button.text === costText) {
                             if (cost > playerVariables.money) {
                                 console.log("Not enough money...");
-                                music.playSFX("shopMistake");
+                                music.playSFX("failtosell");
                                 //eventDispatcher.dispatch("failedPurchase");
                             } else {
                                 if (shopInventory[uiScene.selectedTab][item] === undefined) {
@@ -253,7 +254,7 @@ class ShopUI extends Phaser.Scene {
                                 console.log(`after changing inv, ${playerVariables.inventory[tab][item]}`)
                                 playerVariables.money -= cost;
                                 let newStock = parseInt(stock) - 1;
-                                music.playSFX("shopSelect");
+                                music.playSFX("buyFlowers");
                                 //eventDispatcher.dispatch("successfulPurchase");
                                 shopInventory[uiScene.selectedTab][item].amount = newStock;
                             }

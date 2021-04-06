@@ -142,6 +142,8 @@ class Boot extends Phaser.Scene {
             this.load.audio("shopMistake", "./assets/audio/sfx/mistake.mp3");
             this.load.audio("waterFlowers", "./assets/audio/sfx/water_flowers.mp3");
             this.load.audio("mapTransition", "./assets/audio/sfx/closemap.mp3");
+            this.load.audio("buyFlowers", "./assets/audio/sfx/buy_flowers.mp3");
+            this.load.audio("failtosell", "./assets/audio/sfx/failtosell.mp3");
     
         //Load Fonts
             //For hubScene

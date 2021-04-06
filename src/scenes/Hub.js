@@ -196,6 +196,10 @@ class Hub extends Phaser.Scene {
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        keyH = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
+        keyJ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.J);
+        keyK = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.K);
+        keyL = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.L);
     }
 
     createPlayer(){
@@ -515,6 +519,26 @@ class Hub extends Phaser.Scene {
         }
         if (Phaser.Input.Keyboard.JustDown(keyO)) {
             playerVariables.money += 10;
+            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
+        }
+        if (Phaser.Input.Keyboard.JustDown(keyH)) {
+            playerVariables.inventory.honey["yellow"] += 3;
+            playerVariables.inventory.honey["total"] += 3;
+            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
+        }
+        if (Phaser.Input.Keyboard.JustDown(keyJ)) {
+            playerVariables.inventory.honey["blue"] += 3;
+            playerVariables.inventory.honey["total"] += 3;
+            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
+        }
+        if (Phaser.Input.Keyboard.JustDown(keyK)) {
+            playerVariables.inventory.honey["pink"] += 3;
+            playerVariables.inventory.honey["total"] += 3;
+            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
+        }
+        if (Phaser.Input.Keyboard.JustDown(keyL)) {
+            playerVariables.inventory.honey["purple"] += 3;
+            playerVariables.inventory.honey["total"] += 3;
             this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
         }
         // -------------------------------------------

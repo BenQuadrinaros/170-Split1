@@ -49,8 +49,29 @@ class Settings extends Phaser.Scene {
                 bottom: 4
             },
             input: 'drag', // 'drag'|'click'
-        })
-            .layout();
+        }).layout();
+
+        this.sfxSlider = this.rexUI.add.slider({
+            x: centerX,
+            y: centerY/3 + 3*textSpacer,
+            width: 200,
+            height: 20,
+            orientation: 'x',
+            value: sfxVolume,
+
+            track: this.rexUI.add.roundRectangle(0, 0, 0, 0, 6, this.COLOR_DARK),
+            thumb: this.rexUI.add.roundRectangle(0, 0, 0, 0, 10, this.COLOR_LIGHT),
+
+            valuechangeCallback: function (value) {
+                console.log("value of slider? " + value );
+                sfxVolume = value;
+            },
+            space: {
+                top: 4,
+                bottom: 4
+            },
+            input: 'drag', // 'drag'|'click'
+        }).layout();
 
         //Making images interactable
         back.setInteractive();
