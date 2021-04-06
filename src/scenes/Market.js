@@ -85,8 +85,7 @@ class Market extends Phaser.Scene {
             }
         } else if (this.state == "leaving") {
             //Constant bear wiggle
-            this.bear.x += .25 * Math.sin(this.currTime / 2);
-            this.bear.y += .1 * Math.sin(this.currTime / 4 + 1);
+            this.updateBearShuffle();
 
             this.npc.leave();
         }
@@ -336,141 +335,146 @@ class Market extends Phaser.Scene {
 
     createPriceChanging(){
         //Price Setting Yellow
-        this.yellowPlus = this.add.image(config.width / 5, 1.25 * config.height / 5, 'greenPlus', 0)
-            .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
-            .on("pointerover", () => {
-                this.yellowPlus.alpha = 1;
-                this.yellowPriceText.alpha = 1;
-            })
-            .on("pointerout", () => {
-                this.yellowPlus.alpha = .5;
-                this.yellowPriceText.alpha = .5;
-            })
-            .on("pointerdown", () => {
-                priceMap["yellow"] += .25;
-                this.yellowPriceText.text = "\tYellow\n" + "\t" + priceMap["yellow"] + "$/Jar";
-            });
-        this.yellowMinus = this.add.image((config.width / 5) - 150, 1.25 * config.height / 5, 'redMinus', 0)
-            .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
-            .on("pointerover", () => {
-                this.yellowMinus.alpha = 1;
-                this.yellowPriceText.alpha = 1;
-            })
-            .on("pointerout", () => {
-                this.yellowMinus.alpha = .5;
-                this.yellowPriceText.alpha = .5;
+        if(playerVariables.inventory.honey["yellow"]){
+            this.yellowPlus = this.add.image(config.width / 5, 1.25 * config.height / 5, 'greenPlus', 0)
+                .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
+                .on("pointerover", () => {
+                    this.yellowPlus.alpha = 1;
+                    this.yellowPriceText.alpha = 1;
+                })
+                .on("pointerout", () => {
+                    this.yellowPlus.alpha = .5;
+                    this.yellowPriceText.alpha = .5;
+                })
+                .on("pointerdown", () => {
+                    priceMap["yellow"] += .25;
+                    this.yellowPriceText.text = "\tYellow\n" + "\t" + priceMap["yellow"] + "$/Jar";
+                });
+            this.yellowMinus = this.add.image((config.width / 5) - 150, 1.25 * config.height / 5, 'redMinus', 0)
+                .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
+                .on("pointerover", () => {
+                    this.yellowMinus.alpha = 1;
+                    this.yellowPriceText.alpha = 1;
+                })
+                .on("pointerout", () => {
+                    this.yellowMinus.alpha = .5;
+                    this.yellowPriceText.alpha = .5;
 
-            })
-            .on("pointerdown", () => {
-                priceMap["yellow"] -= .25;
-                this.yellowPriceText.text = "\tYellow\n" + "\t" + priceMap["yellow"] + "$/Jar";
-            });
-        this.yellowPriceText = this.add.text((config.width / 5) - 75, 1.25 * config.height / 5,
-            "\tYellow\n" + "\t" + priceMap["yellow"] + "$/Jar", this.textConfig)
-            .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
-
+                })
+                .on("pointerdown", () => {
+                    priceMap["yellow"] -= .25;
+                    this.yellowPriceText.text = "\tYellow\n" + "\t" + priceMap["yellow"] + "$/Jar";
+                });
+            this.yellowPriceText = this.add.text((config.width / 5) - 75, 1.25 * config.height / 5,
+                "\tYellow\n" + "\t" + priceMap["yellow"] + "$/Jar", this.textConfig)
+                .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
+        }
         //Price Setting Blue
-        this.bluePlus = this.add.image(config.width / 5, 1.75 * config.height / 5, 'greenPlus', 0)
-            .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
-            .on("pointerover", () => {
-                this.bluePlus.alpha = 1;
-                this.bluePriceText.alpha = 1;
-            })
-            .on("pointerout", () => {
-                this.bluePlus.alpha = .5;
-                this.bluePriceText.alpha = .5;
-            })
-            .on("pointerdown", () => {
-                priceMap["blue"] += .25;
-                this.bluePriceText.text = "\tBlue\n" + "\t" + priceMap["blue"] + "$/Jar";
-            });
-        this.blueMinus = this.add.image((config.width / 5) - 150, 1.75 * config.height / 5, 'redMinus', 0)
-            .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
-            .on("pointerover", () => {
-                this.blueMinus.alpha = 1;
-                this.bluePriceText.alpha = 1;
-            })
-            .on("pointerout", () => {
-                this.blueMinus.alpha = .5;
-                this.bluePriceText.alpha = .5;
-            })
-            .on("pointerdown", () => {
-                priceMap["blue"] -= .25;
-                this.bluePriceText.text = "\tBlue\n" + "\t" + priceMap["blue"] + "$/Jar";
-            });
-        this.bluePriceText = this.add.text((config.width / 5) - 75, 1.75 * config.height / 5,
-            "Blue\n" + "\t" + priceMap["blue"] + "$/Jar", this.textConfig)
-            .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
-
+        if(playerVariables.inventory.honey["blue"]){
+            this.bluePlus = this.add.image(config.width / 5, 1.75 * config.height / 5, 'greenPlus', 0)
+                .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
+                .on("pointerover", () => {
+                    this.bluePlus.alpha = 1;
+                    this.bluePriceText.alpha = 1;
+                })
+                .on("pointerout", () => {
+                    this.bluePlus.alpha = .5;
+                    this.bluePriceText.alpha = .5;
+                })
+                .on("pointerdown", () => {
+                    priceMap["blue"] += .25;
+                    this.bluePriceText.text = "\tBlue\n" + "\t" + priceMap["blue"] + "$/Jar";
+                });
+            this.blueMinus = this.add.image((config.width / 5) - 150, 1.75 * config.height / 5, 'redMinus', 0)
+                .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
+                .on("pointerover", () => {
+                    this.blueMinus.alpha = 1;
+                    this.bluePriceText.alpha = 1;
+                })
+                .on("pointerout", () => {
+                    this.blueMinus.alpha = .5;
+                    this.bluePriceText.alpha = .5;
+                })
+                .on("pointerdown", () => {
+                    priceMap["blue"] -= .25;
+                    this.bluePriceText.text = "\tBlue\n" + "\t" + priceMap["blue"] + "$/Jar";
+                });
+            this.bluePriceText = this.add.text((config.width / 5) - 75, 1.75 * config.height / 5,
+                "Blue\n" + "\t" + priceMap["blue"] + "$/Jar", this.textConfig)
+                .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
+        }
         //Price Setting Pink
-        //create plus and minus icon with events for pink price
-        this.pinkPlus = this.add.image(config.width / 5, 2.25 * config.height / 5, 'greenPlus', 0)
-            .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
-            .on("pointerover", () => {
-                this.pinkPlus.alpha = 1;
-                this.pinkPriceText.alpha = 1;
-            })
-            .on("pointerout", () => {
-                this.pinkPlus.alpha = .5;
-                this.pinkPriceText.alpha = .5;
-            })
-            .on("pointerdown", () => {
-                priceMap["pink"] += .25;
-                this.pinkPriceText.text = "\tPink\n" + "\t" + priceMap["pink"] + "$/Jar";
-            });
+        if(playerVariables.inventory.honey["pink"]){
+            //create plus and minus icon with events for pink price
+            this.pinkPlus = this.add.image(config.width / 5, 2.25 * config.height / 5, 'greenPlus', 0)
+                .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
+                .on("pointerover", () => {
+                    this.pinkPlus.alpha = 1;
+                    this.pinkPriceText.alpha = 1;
+                })
+                .on("pointerout", () => {
+                    this.pinkPlus.alpha = .5;
+                    this.pinkPriceText.alpha = .5;
+                })
+                .on("pointerdown", () => {
+                    priceMap["pink"] += .25;
+                    this.pinkPriceText.text = "\tPink\n" + "\t" + priceMap["pink"] + "$/Jar";
+                });
 
-        this.pinkMinus = this.add.image((config.width / 5) - 150, 2.25 * config.height / 5, 'redMinus', 0)
-            .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
-            .on("pointerover", () => {
-                this.pinkMinus.alpha = 1;
-                this.pinkPriceText.alpha = 1;
-            })
-            .on("pointerout", () => {
-                this.pinkMinus.alpha = .5;
-                this.pinkPriceText.alpha = .5;
-            })
-            .on("pointerdown", () => {
-                priceMap["pink"] -= .25;
-                this.pinkPriceText.text = "\tPink\n" + "\t" + priceMap["pink"] + "$/Jar";
-            });
-        this.pinkPriceText = this.add.text((config.width / 5) - 75, 2.25 * config.height / 5,
-            "Pink\n" + "\t" + priceMap["pink"] + "$/Jar", this.textConfig)
-            .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
-
+            this.pinkMinus = this.add.image((config.width / 5) - 150, 2.25 * config.height / 5, 'redMinus', 0)
+                .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
+                .on("pointerover", () => {
+                    this.pinkMinus.alpha = 1;
+                    this.pinkPriceText.alpha = 1;
+                })
+                .on("pointerout", () => {
+                    this.pinkMinus.alpha = .5;
+                    this.pinkPriceText.alpha = .5;
+                })
+                .on("pointerdown", () => {
+                    priceMap["pink"] -= .25;
+                    this.pinkPriceText.text = "\tPink\n" + "\t" + priceMap["pink"] + "$/Jar";
+                });
+            this.pinkPriceText = this.add.text((config.width / 5) - 75, 2.25 * config.height / 5,
+                "Pink\n" + "\t" + priceMap["pink"] + "$/Jar", this.textConfig)
+                .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
+        }
         //Price Setting Purple
-        this.purplePlus = this.add.image(config.width / 5, 2.75 * config.height / 5, 'greenPlus', 0)
-            .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
-            .on("pointerover", () => {
-                this.purplePlus.alpha = 1;
-                this.purplePriceText.alpha = 1;
-            })
-            .on("pointerout", () => {
-                this.purplePlus.alpha = .5;
-                this.purplePriceText.alpha = .5;
-            })
-            .on("pointerdown", () => {
-                priceMap["purple"] += .25;
-                this.purplePriceText.text = "\tPurple\n" + "\t" + priceMap["purple"] + "$/Jar";
-            });
+        if(playerVariables.inventory.honey["purple"]){
+            this.purplePlus = this.add.image(config.width / 5, 2.75 * config.height / 5, 'greenPlus', 0)
+                .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
+                .on("pointerover", () => {
+                    this.purplePlus.alpha = 1;
+                    this.purplePriceText.alpha = 1;
+                })
+                .on("pointerout", () => {
+                    this.purplePlus.alpha = .5;
+                    this.purplePriceText.alpha = .5;
+                })
+                .on("pointerdown", () => {
+                    priceMap["purple"] += .25;
+                    this.purplePriceText.text = "\tPurple\n" + "\t" + priceMap["purple"] + "$/Jar";
+                });
 
-        this.purpleMinus = this.add.image((config.width / 5) - 150, 2.75 * config.height / 5, 'redMinus', 0)
-            .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
-            .on("pointerover", () => {
-                this.purpleMinus.alpha = 1;
-                this.purplePriceText.alpha = 1;
-            })
-            .on("pointerout", () => {
-                this.purpleMinus.alpha = .5;
-                this.purplePriceText.alpha = .5;
-            })
-            .on("pointerdown", () => {
-                priceMap["purple"] -= .25;
-                this.purplePriceText.text = "\tPurple\n" + "\t" + priceMap["purple"] + "$/Jar";
-            });
-        //default purple price
-        this.purplePriceText = this.add.text((config.width / 5) - 75, 2.75 * config.height / 5,
-            "Purple\n" + "\t" + priceMap["purple"] + "$/Jar", this.textConfig)
-            .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
+            this.purpleMinus = this.add.image((config.width / 5) - 150, 2.75 * config.height / 5, 'redMinus', 0)
+                .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
+                .on("pointerover", () => {
+                    this.purpleMinus.alpha = 1;
+                    this.purplePriceText.alpha = 1;
+                })
+                .on("pointerout", () => {
+                    this.purpleMinus.alpha = .5;
+                    this.purplePriceText.alpha = .5;
+                })
+                .on("pointerdown", () => {
+                    priceMap["purple"] -= .25;
+                    this.purplePriceText.text = "\tPurple\n" + "\t" + priceMap["purple"] + "$/Jar";
+                });
+            //default purple price
+            this.purplePriceText = this.add.text((config.width / 5) - 75, 2.75 * config.height / 5,
+                "Purple\n" + "\t" + priceMap["purple"] + "$/Jar", this.textConfig)
+                .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
+        }
     }
 
     createEvents(){

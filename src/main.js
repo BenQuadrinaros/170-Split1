@@ -4,7 +4,7 @@ let config = {
     type: Phaser.CANVAS,
     width: 960,
     height: 540,
-    scene: [Boot, Hub, Garden, Map, Market, Play, Menu, Credits, Talking,
+    scene: [Boot, Hub, Garden, Map, Market, MarketPriceSetting, Play, Menu, Credits, Talking,
         OldRhythm,  Shop, ShopUI, BackPackUI, HubPopup, Pause, Settings, Tutorial, Win],
     volume: .7,
     physics: {
@@ -19,12 +19,13 @@ let config = {
     }
 };
 
+let sfxVolume = .7;
 let game = new Phaser.Game(config);
 let previousScene = null;
 const VERSION_NUMBER = "0.3.6";
 //reserve some keyboard variables
-let keyP, keyO, keyESCAPE, keyLEFT, keyRIGHT, keyDOWN, keyUP, keySPACE,
-    keyY, keyN, keyT, keyB, keyW, keyA, keyS, keyD;
+let keyP, keyO, keyESCAPE, keyENTER, keyLEFT, keyRIGHT, keyDOWN, keyUP, keySPACE,
+    keyY, keyN, keyT, keyB, keyW, keyA, keyS, keyD, keyH, keyJ, keyK, keyL;
 
 //colors for ui elements
 let uiScene; // global variable for current active ui scene

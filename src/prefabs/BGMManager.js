@@ -4,12 +4,19 @@ class BGMManager {
         this.currentSong = null;
         this.currentSFX = null;
         this.volume = config.volume;
+        this.sfxVolume = sfxVolume;
     }
 
     setVolume(newValue){
         this.volume = newValue;
         this.musicPlayer.volume = this.volume;
         console.log("volume changed to " + this.volume);
+    }
+
+    setSFXVolume(newValue){
+        this.sfxVolume = newValue;
+        this.sfxPlayer.volume = this.sfxVolume;
+        console.log("volume changed to " + this.sfxVolume);
     }
 
     stop(){
@@ -110,7 +117,7 @@ class BGMManager {
     playSFX(fileName){
         var config = {
             mute: false,
-            volume: this.volume,
+            volume: this.sfxVolume,
             rate: 1,
             detune: 0,
             seek: 0,
