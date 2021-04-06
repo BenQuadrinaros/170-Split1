@@ -3,16 +3,19 @@ class Boot extends Phaser.Scene {
         super("bootScene");
     }
 
-    create() {
+    preload() {
+        //Take actions based on local storage
+        this.storesLocally;
         // check for local storage browser support
         if(window.localStorage) {
             console.log('Local storage supported');
+            this.storesLocally = true;
+            this.takeLocalStorageActions();
         } else {
             console.log('Local storage not supported');
+            this.storesLocally = false;
         }
-    }
-
-    preload() {
+        
         //Load images
             //For gardenScene
             this.load.image("extraLargeGrass", "./assets/sprites/background/massiveGrassbackdrop.png")
@@ -134,8 +137,11 @@ class Boot extends Phaser.Scene {
         //Load SFX
             //For hubScene and marketScene
             this.load.audio("hubMarketTransition", "./assets/audio/sfx/settingupstall.mp3");
-
-
+            this.load.audio("backpackOpen", "./assets/audio/sfx/backpack_open.mp3");
+            this.load.audio("shopSelect", "./assets/audio/sfx/shopselect.mp3");
+            this.load.audio("shopMistake", "./assets/audio/sfx/mistake.mp3");
+            this.load.audio("waterFlowers", "./assets/audio/sfx/water_flowers.mp3");
+            this.load.audio("mapTransition", "./assets/audio/sfx/closemap.mp3");
     
         //Load Fonts
             //For hubScene
@@ -182,5 +188,19 @@ class Boot extends Phaser.Scene {
     create(){
         // go to Title scene
         this.scene.start('menuScene');
+    }
+
+    takeLocalStorageActions(){
+        //Check Version Number
+        var storedVersion = localStorage.getItem("versionNumber");
+        console.log("Stored Version: " + storedVersion);
+        console.log("Game Version: " + VERSION_NUMBER);
+        if(storedVersion === VERSION_NUMBER){
+            console.log("The versions match");
+        }
+        else{
+            console.log("The versions do not match");
+            return;
+        }
     }
 }

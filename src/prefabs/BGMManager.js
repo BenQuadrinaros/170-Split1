@@ -2,6 +2,7 @@ class BGMManager {
     constructor(scene){
         this.scene = scene;
         this.currentSong = null;
+        this.currentSFX = null;
         this.volume = config.volume;
     }
 
@@ -104,6 +105,21 @@ class BGMManager {
             });
         });
 
+    }
+
+    playSFX(fileName){
+        var config = {
+            mute: false,
+            volume: this.volume,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: 0,
+            delay: 0
+        }
+        this.currentSFX = fileName;
+        this.sfxPlayer = this.scene.sound.add(fileName);
+        this.sfxPlayer.play(config);
     }
     
 }

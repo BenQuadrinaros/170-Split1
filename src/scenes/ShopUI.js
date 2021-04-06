@@ -44,6 +44,8 @@ class ShopUI extends Phaser.Scene {
     create() {
         uiScene = this;
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        let music = new BGMManager(this);
+        //eventDispacher.add(this.heardEvent ,this);
 
         this.backpack = this.add.image(16 * config.width / 24, config.height / 6, 'PlayerIcon')
             .setInteractive().setAlpha(.5)
@@ -215,9 +217,9 @@ class ShopUI extends Phaser.Scene {
         // Grid table
         tabs.getElement('panel')
             .on('cell.click', function (cellContainer, cellIndex) {
-                if (uiScene.previousScene === "shopScene"){
-                    return ;
-                }
+                //if (uiScene.previousScene === "shopScene"){
+                    //return ;
+                //}
                 //create popup menu for confirmation
                 let item = uiScene.selectedItem;
                 let tab = uiScene.selectedTab.toLowerCase();
@@ -237,7 +239,9 @@ class ShopUI extends Phaser.Scene {
                     menu = createMenu(this, 600, 350, confirmBuy, function (button) {
                         if (button.text === costText) {
                             if (cost > playerVariables.money) {
-                                console.log("Not enough money...")
+                                console.log("Not enough money...");
+                                music.playSFX("shopMistake");
+                                //eventDispatcher.dispatch("failedPurchase");
                             } else {
                                 if (shopInventory[uiScene.selectedTab][item] === undefined) {
                                     return;
@@ -249,6 +253,8 @@ class ShopUI extends Phaser.Scene {
                                 console.log(`after changing inv, ${playerVariables.inventory[tab][item]}`)
                                 playerVariables.money -= cost;
                                 let newStock = parseInt(stock) - 1;
+                                music.playSFX("shopSelect");
+                                //eventDispatcher.dispatch("successfulPurchase");
                                 shopInventory[uiScene.selectedTab][item].amount = newStock;
                             }
                         }
