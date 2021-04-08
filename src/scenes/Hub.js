@@ -246,20 +246,20 @@ class Hub extends Phaser.Scene {
 
     createUIElements(){
         //Create some overlays for displaying ranges
-        this.plotHighlight = this.add.ellipse(0, 0, config.width/10, config.height/10, 0xD3D3D3);
+        this.plotHighlight = this.add.ellipse(0, 0, config.width/13, config.height/13, 0xD3D3D3);
         this.plotHighlight.alpha = 0;
         this.highlightOpacity = .4;
         this.sprinklerHighlight = this.add.image(0, 0, 'sprinklerHighlight');
-        this.sprinklerHighlight.setOrigin(0.5, 0.5).setScale(16.32, 9.18);
+        this.sprinklerHighlight.setOrigin(0.5, 0.5).setScale(12.5, 9.5);
         this.sprinklerHighlight.alpha = 0;
         this.hiveHighlight = this.add.image(0, 0, 'hiveHighlight');
-        this.hiveHighlight.setOrigin(0.5, 0.5).setScale(16.32, 9.18);
+        this.hiveHighlight.setOrigin(0.5, 0.5).setScale(12.5, 9.5);
         this.hiveHighlight.alpha = 0;
         this.sprinklerHighlightHold = this.add.image(0, 0, 'sprinklerHighlight');
-        this.sprinklerHighlightHold.setOrigin(0.5, 0.5).setScale(16.32, 9.18);
+        this.sprinklerHighlightHold.setOrigin(0.5, 0.5).setScale(12.5, 9.5);
         this.sprinklerHighlightHold.alpha = 0;
         this.hiveHighlightHold = this.add.image(0, 0, 'hiveHighlight');
-        this.hiveHighlightHold.setOrigin(0.5, 0.5).setScale(16.32, 9.18);
+        this.hiveHighlightHold.setOrigin(0.5, 0.5).setScale(12.5, 9.5);
         this.hiveHighlightHold.alpha = 0;
 
         //create interactible backpack image
@@ -332,8 +332,6 @@ class Hub extends Phaser.Scene {
         this.fadeMessage = this.add.text(this.player.x, this.player.y, "Nada", this.textConfig);
         this.fadeMessage.setOrigin(0.5).setVisible(false);
         this.fadeMessage.depth = 200;
-        this.flowerText = this.add.text(0, 0, "Press SPACE\nto interact", this.textConfig).setOrigin(0.5);
-        this.flowerText.depth = 200;
     }
 
     createEvents(){
@@ -360,48 +358,22 @@ class Hub extends Phaser.Scene {
     createGarden(){
         // Build out Garden below main Hub area
         this.path = [];    //Path for the bees to follow
-        this.inScene = [   //This array will let us track local changes and update images
-            [null*10], [null*10], [null*10], [null*10], [null*10], [null*10], [null*10], [null*10]
-        ];
         this.mulchInScene = [   //This array will let us track local changes and update images
             [null*10], [null*10], [null*10], [null*10], [null*10], [null*10], [null*10], [null*10]
         ];
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
-                // determine if spot has been watered
-                let img = "dirtDry";
-                if(wateredTiles[[row, col]]) { img = "dirtWet"; }
-                // blank plots to be interacted with
-                let temp = this.add.image((1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
-                    (9 + row) * (game.config.height - 50) / 8 + 65 /*+ Phaser.Math.Between(-7,7)*/, img);
-                temp.setOrigin(.5,.5).setScale(.35, .35);
-                temp.depth = temp.y / 10 - 20;
-
-                //mulch to be added
-                /*
-                if(mulch[[row,col]] > 0) {
-                    let temp = this.add.image((1 + col) * game.config.width / 9 + Phaser.Math.Between(-7,7),
-                    (9 + row) * (game.config.height - 50) / 8 + 65 + Phaser.Math.Between(-7,7), "mulch");
-                    temp.setOrigin(.5,.5).setScale(.5, .75);
-                    temp.depth = temp.y / 10;
-                }
-                */
-                if (gardenGrid[row][col] != null) { //its not blank
-                    let temp = gardenGrid[row][col];
-                    temp.addToScene(this, (1 + col) * game.config.width / 9 /*+ Phaser.Math.Between(-7,7)*/,
-                        (9 + row) * (game.config.height - 50) / 8 + 85 /*+ Phaser.Math.Between(-7,7)*/);
-                    temp.image.setOrigin(.5,.5).setScale(.2, .2);
-                    temp.image.depth = temp.image.y / 10;
-                    this.inScene[row][col] = temp;
-                    if(gardenGrid[row][col] instanceof Hive || gardenGrid[row][col] instanceof Flower) {
-                        this.path.push([temp.image.x, temp.image.y - 15]);
-                    }
+                let plot = gardenGrid[row][col];
+                let coords = this.gridToCoord(col, row);
+                plot.renderPlot(this, coords);
+                if(plot.item instanceof Hive || plot.item instanceof Flower) {
+                    this.path.push([coords[0], coords[1] - 25]);
                 }
             }
         }
 
         //create water bucket for manual watering
-        this.waterBucket = this.add.image(.8 * config.width, .8 * config.height, "water");
+        this.waterBucket = this.add.image(.8 * config.width, .55 * config.height, "water");
         this.waterBucket.setOrigin(.5, .5).setScale(1.5, 1.5);
         this.waterBucket.depth = this.waterBucket.y / 10;
         this.waterHeld = new WateringCan();
@@ -458,13 +430,13 @@ class Hub extends Phaser.Scene {
         if(heldItem instanceof Sprinkler) {
             this.sprinklerHighlightHold.alpha = this.highlightOpacity;
             this.sprinklerHighlightHold.x = this.player.x;
-            this.sprinklerHighlightHold.y = this.player.y + 25;
+            this.sprinklerHighlightHold.y = this.player.y+35;
             this.sprinklerHighlightHold.depth = this.sprinklerHighlightHold.y / 10 - 5;
             this.hiveHighlightHold.alpha = 0;
         } else if(heldItem instanceof Hive) {
             this.hiveHighlightHold.alpha = this.highlightOpacity;
             this.hiveHighlightHold.x = this.player.x;
-            this.hiveHighlightHold.y = this.player.y + 25;
+            this.hiveHighlightHold.y = this.player.y+35;
             this.hiveHighlightHold.depth = this.hiveHighlightHold.y / 10 - 5;
             this.sprinklerHighlightHold.alpha = 0;
         } else {
@@ -474,7 +446,7 @@ class Hub extends Phaser.Scene {
 
         //Input to place item in backpack
         if (Phaser.Input.Keyboard.JustDown(keyB)) {
-            //console.log(heldItem)
+            console.log(heldItem)
             if (heldItem instanceof Flower) {
                 console.log(`Storing held flower ${heldItem.type} in inventory.`)
                 console.log(`before storage ${playerVariables.inventory.flowers[heldItem.type]}`)
@@ -484,13 +456,13 @@ class Hub extends Phaser.Scene {
                 //If item has highlight, hide that as well
                 playerVariables.inventory.items["Sprinkler"] +=1;
                 this.sprinklerHighlightHold.alpha = 0;
-            } else if (heldItem instanceof Hive) {
+            } else if(heldItem instanceof Hive) {
                 playerVariables.inventory.items["Beehive"] +=1;
                 this.hiveHighlightHold.alpha = 0;
             }
                 
             heldItem.destroy();
-            heldItem = undefined
+            heldItem = undefined;
             this.heldImg = 0;
         }
     }
@@ -546,7 +518,8 @@ class Hub extends Phaser.Scene {
 
     updateCheckNearLocation(){
         //Check if the player is close enough to the way to town
-        if (Math.abs(Phaser.Math.Distance.Between(this.townAccess.x, this.townAccess.y, this.player.x, this.player.y)) < 100) {
+        if (Math.abs(Phaser.Math.Distance.Between(this.townAccess.x, this.townAccess.y,
+            this.player.x, this.player.y)) < 100) {
             this.interactText.text = "'SPACE' to go shopping";
             this.interactText.x = this.townAccess.x;
             this.interactText.y = this.townAccess.y + 20;
@@ -564,7 +537,8 @@ class Hub extends Phaser.Scene {
             }
         }
         //Check if the player is close enough to the cave to rest
-        else if(Math.abs(Phaser.Math.Distance.Between(this.caveText.x, this.caveText.y, this.player.x, this.player.y)) < 100){
+        else if(Math.abs(Phaser.Math.Distance.Between(this.caveText.x, this.caveText.y,
+            this.player.x, this.player.y)) < 100){
             if(!hasSoldForDay){
                 this.caveText.setVisible(true);
             }
@@ -623,16 +597,18 @@ class Hub extends Phaser.Scene {
     updateMoveHighlight(){
         let loc = this.closestPlot();
         if(loc != null) {
-            if(gardenGrid[loc[0]][loc[1]] instanceof Hive) {
+            if(gardenGrid[loc[0]][loc[1]].item instanceof Hive) {
                 this.hiveHighlight.alpha = this.highlightOpacity;
-                this.hiveHighlight.x = (1 + loc[1]) * game.config.width / 9;
-                this.hiveHighlight.y = (9 + loc[0]) * (game.config.height - 50) / 8 + 105;
+                let coords = this.gridToCoord(loc[1], loc[0]);
+                this.hiveHighlight.x = coords[0];
+                this.hiveHighlight.y = coords[1]+35;
                 this.hiveHighlight.depth = this.hiveHighlight.y / 10 - 5;
                 this.sprinklerHighlight.alpha = 0;
-            } else if (gardenGrid[loc[0]][loc[1]] instanceof Sprinkler) {
+            } else if (gardenGrid[loc[0]][loc[1]].item instanceof Sprinkler) {
                 this.sprinklerHighlight.alpha = this.highlightOpacity;
-                this.sprinklerHighlight.x = (1 + loc[1]) * game.config.width / 9;
-                this.sprinklerHighlight.y = (9 + loc[0]) * (game.config.height - 50) / 8 + 105;
+                let coords = this.gridToCoord(loc[1], loc[0]);
+                this.sprinklerHighlight.x = coords[0];
+                this.sprinklerHighlight.y = coords[1]+35;
                 this.sprinklerHighlight.depth = this.sprinklerHighlight.y / 10 - 5;
                 this.hiveHighlight.alpha = 0;
             } else {
@@ -652,9 +628,6 @@ class Hub extends Phaser.Scene {
         if(Math.sqrt(Math.pow(this.waterBucket.x - this.player.x,2) + 
             Math.pow(this.waterBucket.y - this.player.y,2)) < 75) {
             //Move display to this spot
-            this.flowerText.alpha = 1;
-            this.flowerText.x = this.waterBucket.x;
-            this.flowerText.y = this.waterBucket.y;
             this.plotHighlight.alpha = 1;
             this.plotHighlight.x = this.waterBucket.x;
             this.plotHighlight.y = this.waterBucket.y + 25;
@@ -664,37 +637,29 @@ class Hub extends Phaser.Scene {
                 if (heldItem == undefined) {
                     //Put water in hands
                     heldItem = this.waterHeld;
-                    console.log("picked up water", heldItem);
                 }
             }
         } else if(plot == null) {
-            //If closest plot is far away, clear text
-            this.flowerText.alpha = 0;
+            //If closest plot is far away, clear highlight
             this.plotHighlight.alpha = 0;
         } else {
-            //Else, move text to that location
-            this.flowerText.alpha = 1;
-            this.flowerText.x = (1 + plot[1]) * game.config.width / 9;
-            this.flowerText.y = (9 + plot[0]) * (game.config.height - 50) / 8 + 80;
+            //Else, move highlight to that location
             this.plotHighlight.alpha = 1;
-            this.plotHighlight.x = (1 + plot[1]) * game.config.width / 9;
-            this.plotHighlight.y = (9 + plot[0]) * (game.config.height - 50) / 8 + 120;
+            let coords = this.gridToCoord(plot[1], plot[0]);
+            this.plotHighlight.x = coords[0];
+            this.plotHighlight.y = coords[1]+40;
             //Logic for if player presses space near a plot
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 let row = plot[0];
                 let col = plot[1];
-                console.log("player start holding", heldItem);
                 //If player holding the watering can
                 if(heldItem instanceof WateringCan) {
                     let spot = gardenGrid[row][col];
-                    if(spot instanceof Flower) {
+                    if(spot.item instanceof Flower) {
                         this.music.playSFX("waterFlowers");
-                        spot.addWater();
-                        wateredTiles[[row. col]] = true;
-                        let temp = this.add.image((1 + col) * game.config.width / 9,
-                            (9 + row) * (game.config.height - 50) / 8 + 65, "dirtWet");
-                        temp.setOrigin(.5,.5).setScale(.35, .35);
-                        temp.depth = temp.y / 10 - 20;
+                        spot.item.addWater();
+                        spot.water = true;
+                        spot.renderPlot(this, this.gridToCoord(col, row));
                         //clear image of item held
                         heldItem.image.destroy();
                         heldItem = undefined;
@@ -702,33 +667,31 @@ class Hub extends Phaser.Scene {
                         this.heldImg = 0;
                     }
                 }
-                //If the player is holding an item, modify garden plots and add image to scene.
+                //If the player is holding an item, modify garden plots and add image to scene
                 else if (heldItem !== undefined){
                     //If that spot is empty, place item there
-                    if(gardenGrid[row][col] == null) {
+                    if(gardenGrid[row][col].item == null) {
                         //console.log(heldItem);
                         //place held object in the spot
-                        this.inScene[row][col] = heldItem;
-                        gardenGrid[row][col] = heldItem;
+                        let loc = gardenGrid[row][col];
+                        loc.item = heldItem;
                         //clear image of item held
                         heldItem.image.destroy();
                         heldItem = undefined;
                         //clear highlights
-                        let spot = gardenGrid[row][col];
-                        if(spot instanceof Sprinkler) { 
+                        if(loc.item instanceof Sprinkler) { 
                             this.sprinklerHighlightHold.alpha = 0;
-                            spot.setPos(col, row);
-                        } else if(spot instanceof Hive) {
+                            loc.item.setPos(col, row);
+                        } else if(loc.item instanceof Hive) {
                             this.hiveHighlightHold.alpha = 0;
-                            spot.setPos(col, row);
+                            loc.item.setPos(col, row);
+                        } else if (loc.item instanceof Flower) {
+                            loc.dug = true;
                         }
-                        this.inScene[row][col].addToScene(this, (1 + col) * game.config.width / 9,
-                            (9 + row) * (game.config.height - 50) / 8 + 80);
-                        this.inScene[row][col].image.setScale(.2,.2).setOrigin(.5,.5);
-                        this.inScene[row][col].image.depth = this.inScene[row][col].image.y / 10;
+                        loc.renderPlot(this, this.gridToCoord(col, row));
                         //If a flower or hive, add to bee path
-                        if(spot instanceof Hive || spot instanceof Flower) {
-                            this.path.push([this.inScene[row][col].image.x, this.inScene[row][col].image.y - 15]);
+                        if(loc.item instanceof Hive || loc.item instanceof Flower) {
+                            this.path.push([loc.spot.x, loc.spot.y - 25]);
                         }
                         //set the held image to nothing
                         this.heldImg = 0;
@@ -737,42 +700,35 @@ class Hub extends Phaser.Scene {
                     }
                 } else {
                     //if the player is attempting to interact with a flower or item, pick it up for now
-                    let obj = this.inScene[row][col];
+                    let loc = gardenGrid[row][col];
+                    let obj = loc.item;
+                    loc.item = null;
                     if (obj instanceof Flower || obj instanceof Hive || obj instanceof Sprinkler) {
                         //If on the bee path, remove it
                         if(obj instanceof Flower || obj instanceof Hive) {
                             this.path = this.removeFromPath(obj.image, this.path);
+                            loc.dug = false;
                         }
                         heldItem = obj;
-                        //remove the flower from the scene
-                        obj.destroy();
-                        //create a dirt image and place it in the spot
-                        let img = "dirtDry";
-                        if(wateredTiles[[row, col]]) {
-                            img = "dirtWet";
-                        }
-                        let temp = this.add.image((1 + col) * game.config.width / 9,
-                            (9 + row) * (game.config.height - 50) / 8 + 65, img);
-                        temp.setOrigin(.5,.5).setScale(.35, .35);
-                        temp.depth = temp.y / 10 - 20;
-                        gardenGrid[row][col] = null;
+                        //recreate the plot
+                        loc.renderPlot(this, this.gridToCoord(col, row));
                     }
                 }
-                console.log("player end holding", heldItem);
             }
         }
     }
 
     closestPlot() {
-        // Helper function to find closest plot, if any within 100 units
+        // Helper function to find closest plot, if any within 65 units
         let closestXY = [];
         let closestDist = 65;
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
-                if(Math.sqrt(Math.pow((1 + col) * game.config.width / 9 - this.player.x,2) + 
-                    Math.pow((9 + row) * (game.config.height - 50) / 8 + 65 - this.player.y - 25,2)) < closestDist) {
-                        closestDist = Math.sqrt(Math.pow((1 + col) * game.config.width / 9 - this.player.x,2) + 
-                            Math.pow((9 + row) * (game.config.height - 50) / 8 + 65 - this.player.y - 25,2));
+                let coords = this.gridToCoord(col, row);
+                if(Math.sqrt(Math.pow(coords[0] - this.player.x,2) + 
+                    Math.pow(coords[1] - this.player.y -  this.player.height/5,2)) < closestDist) {
+                        closestDist = Math.sqrt(Math.pow(coords[0] - this.player.x,2) + 
+                            Math.pow(coords[1] - this.player.y - this.player.height/5,2));
                         closestXY = [row, col];
                     }
             }
@@ -790,13 +746,16 @@ class Hub extends Phaser.Scene {
         let coords;
         for(let i = 0; i < path.length; i++) {
             coords = path[i];
-            if(Math.abs(object.x - coords[0]) < 1 && Math.abs(object.y - 15 - coords[1] < 1)) {
+            if(Math.abs(object.x - coords[0]) < 1 && Math.abs(object.y - 25 - coords[1] < 1)) {
                 path.splice(i, 1);
                 break;
             }
         }
-        console.log("path is", path);
         return path;
+    }
+
+    gridToCoord(gridx, gridy) {
+        return [(1 + gridx) * game.config.width / 12, (8 + gridy) * (game.config.height - 50) / 8 + 15];
     }
 
     loadData(){
