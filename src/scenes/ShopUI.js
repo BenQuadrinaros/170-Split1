@@ -23,6 +23,7 @@ class ShopUI extends Phaser.Scene {
 
         this.selectedItem = undefined;
         this.selectedTab = "Seeds";
+        this.prevText = undefined;
 
 
     }
@@ -139,7 +140,7 @@ class ShopUI extends Phaser.Scene {
 
                         background: scene.rexUI.add.roundRectangle(0, 0, 20, 20, 0).setStrokeStyle(2, COLOR_DARK),
                         icon: scene.add.image(0, 0, img).setScale(scale, scale),
-                        text: scene.add.text(0, 0, item.id),
+                        text: scene.add.text(0, 0, item.id+'\n'+item.cost+"$"),
 
                         space: {
                             icon: 10,
@@ -271,8 +272,9 @@ class ShopUI extends Phaser.Scene {
                 cellContainer.getElement('background')
                     .setStrokeStyle(2, COLOR_LIGHT)
                     .setDepth(1);
-                let item = cellContainer.text;
-                uiScene.selectedItem = cellContainer.text;
+                let item = cellContainer.text.split("\n")[0];
+                uiScene.selectedItem = item;
+                uiScene.prevText = cellContainer.text;
                 let available = shopInventory[uiScene.selectedTab][uiScene.selectedItem].amount;
                 if (available <= 0) {
                     cellContainer.text = "OUT OF \nSTOCK";
@@ -284,7 +286,7 @@ class ShopUI extends Phaser.Scene {
                 cellContainer.getElement('background')
                     .setStrokeStyle(2, COLOR_DARK)
                     .setDepth(0);
-                cellContainer.text = uiScene.selectedItem;
+                cellContainer.text = uiScene.prevText;
             }, this);
 
         tabs.emitButtonClick('left', 0).emitButtonClick('right', 0);
