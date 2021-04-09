@@ -69,6 +69,8 @@ class Boot extends Phaser.Scene {
             this.load.image('greenMinus', './assets/sprites/UI/minusGreen_240.png');
             this.load.image('greenPlus', './assets/sprites/UI/plusGreen_240.png');
             this.load.image('plusRed', './assets/sprites/UI/plusRed_240.png');
+            this.load.image('sellYes', './assets/sprites/UI/sellYes.png');
+            this.load.image('sellNo', './assets/sprites/UI/sellNo.png');
             //For mapScene
             this.load.image('TownMap', './assets/sprites/background/WhiteBackground.png');
             this.load.image('PlayerIcon', './assets/sprites/character/playerMapIcon.png');

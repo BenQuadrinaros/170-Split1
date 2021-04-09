@@ -19,6 +19,7 @@ class Market extends Phaser.Scene {
         this.createText(); //Creates text objects
         this.createPriceChanging(); //Creates UI for changing prices
         this.createEvents(); //Creates misc events that occur during the scene
+        this.createSellOptions() //Create popup sell dialogue options
         
         //background music for the hub
         //CHNAGE SONG FOR MARKET
@@ -212,6 +213,11 @@ class Market extends Phaser.Scene {
         this.scene.launch('talkingScene');
         
         return setUnitPrice * amt;
+    }
+
+    priceChange(){
+
+
     }
 
     createControls(){
@@ -475,6 +481,12 @@ class Market extends Phaser.Scene {
                 "Purple\n" + "\t" + priceMap["purple"] + "$/Jar", this.textConfig)
                 .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
         }
+    }
+    createSellOptions(){
+
+        this.sellYes = this.add.image(this.bear.x+150, this.bear.y-200, 'sellYes', 0).setDepth(100).setAlpha(0);
+        this.sellNo = this.add.image(this.bear.x-150, this.bear.y-200, 'sellNo', 0).setDepth(100).setAlpha(0);
+        console.log(this.sellNo);
     }
 
     createEvents(){
