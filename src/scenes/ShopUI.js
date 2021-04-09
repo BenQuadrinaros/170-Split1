@@ -3,8 +3,8 @@ let pointer;
 
 let shopCosts = {};
 let idImages = {
-    "Cosmo": ["flowerWhite3", .125],
-    "Blue Bonnet": ["flowerBlue3", .125],
+    "Cosmos": ["flowerWhite3", .125],
+    "Bluebonnet": ["flowerBlue3", .125],
     "Tulip": ["flowerRed3", .125],
     "Lavender": ["flowerPurple3", .125],
     "Sprinkler": ["sprinkler", .125],

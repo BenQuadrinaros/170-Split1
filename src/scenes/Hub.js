@@ -137,8 +137,8 @@ class Hub extends Phaser.Scene {
         //All sprinklers water surroundings
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
-                if(gardenGrid[row][col] instanceof Sprinkler) {
-                    gardenGrid[row][col].watering();
+                if(gardenGrid[row][col].item instanceof Sprinkler) {
+                    gardenGrid[row][col].item.watering();
                     //console.log("found sprinkler at "+col+', '+row);
                 }
             }
@@ -150,11 +150,11 @@ class Hub extends Phaser.Scene {
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
                 //console.log("["+col+","+row+"]");
-                if (gardenGrid[row][col] instanceof Hive) {
+                if (gardenGrid[row][col].item instanceof Hive) {
                     beehives.push([row, col]);
                     //console.log("found beehive at "+col+', '+row);
-                } else if(gardenGrid[row][col] instanceof Flower) {
-                    gardenGrid[row][col].advance();
+                } else if(gardenGrid[row][col].item instanceof Flower) {
+                    gardenGrid[row][col].item.advance();
                     //console.log("found flower at "+col+', '+row);
                 } 
             }
@@ -166,7 +166,7 @@ class Hub extends Phaser.Scene {
             let rand = Phaser.Math.Between(0, beehives.length - 1);
             //console.log("selecting beehive #"+rand);
             //console.log("accessing "+beehives[rand][0]+", "+beehives[rand][1]);
-            gardenGrid[beehives[rand][0]][beehives[rand][1]].collect();
+            gardenGrid[beehives[rand][0]][beehives[rand][1]].item.collect();
             beehives.splice(rand, 1);
         }
 
@@ -656,16 +656,18 @@ class Hub extends Phaser.Scene {
                 if(heldItem instanceof WateringCan) {
                     let spot = gardenGrid[row][col];
                     if(spot.item instanceof Flower) {
+                        //Water flower if present
                         this.music.playSFX("waterFlowers");
                         spot.item.addWater();
-                        spot.water = true;
-                        spot.renderPlot(this, this.gridToCoord(col, row));
-                        //clear image of item held
-                        heldItem.image.destroy();
-                        heldItem = undefined;
-                        //set the held image to nothing
-                        this.heldImg = 0;
                     }
+                    //Then wet the spot and reload
+                    spot.water = true;
+                    spot.renderPlot(this, this.gridToCoord(col, row));
+                    //clear image of item held
+                    heldItem.image.destroy();
+                    heldItem = undefined;
+                    //set the held image to nothing
+                    this.heldImg = 0;
                 }
                 //If the player is holding an item, modify garden plots and add image to scene
                 else if (heldItem !== undefined){
@@ -687,6 +689,9 @@ class Hub extends Phaser.Scene {
                             loc.item.setPos(col, row);
                         } else if (loc.item instanceof Flower) {
                             loc.dug = true;
+                            if(loc.water) {
+                                loc.item.addWater();
+                            }
                         }
                         loc.renderPlot(this, this.gridToCoord(col, row));
                         //If a flower or hive, add to bee path

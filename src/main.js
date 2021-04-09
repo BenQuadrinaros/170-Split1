@@ -45,18 +45,19 @@ let flow1 = new Flower(2, 3, "Cosmos");
 let hive = new Hive(2, 5);
 let sprink = new Sprinkler(3, 5);
 //more flowers for testing purposes
-let gardenGrid = [ // 10 x 10 grid for garden generating
+let gardenGrid = [ // 11 x 11 grid for garden generating
     //Starting placements for intial garden
-    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,   flow0,   null,  flow1,   null,   null,   null,   null,   null,   null],
-    [null,    null,   hive,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null]
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,   flow0,   null,  flow1,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   hive,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null]
 ];
 //Assign plots to each spot on the grid
 for(let row = 0; row < gardenGrid.length; row++) {
