@@ -20,7 +20,7 @@ class Market extends Phaser.Scene {
         this.createPriceChanging(); //Creates UI for changing prices
         this.createEvents(); //Creates misc events that occur during the scene
         this.createSellOptions() //Create popup sell dialogue options
-        
+
         //background music for the hub
         //CHNAGE SONG FOR MARKET
         this.music = new BGMManager(this);
@@ -90,12 +90,69 @@ class Market extends Phaser.Scene {
 
             this.npc.leave();
         }
-    
-        if (dialogEnded){
-            
+
+        if (dialogEnded) {
+
             dialogEnded = false;
-            if (sellChoice === "no"){
+            this.priceChange();
+        }
+    }
+
+    priceChange() {
+        if (this.sold) {
+            dialogActive = false;
+            this.state = "leaving";
+            playerVariables.money += Math.floor(this.exchange * 100) / 100;
+            console.log(this.npcAmount)
+            this.reduceStock(this.typeToBuy, this.npcAmount);
+            this.time.addEvent({
+                delay: 1500,
+                callback: () => {
+                    this.npc.destroy();
+                    this.state = "waiting";
+                },
+                loop: false,
+                callbackScope: this
+            });
+        } else {
+            this.priceChangeChoicePopUp();
+        }
+    }
+
+    priceChangeChoicePopUp() {
+        this.sellNo.setVisible(true);
+        this.sellYes.setVisible(true);
+        this.sellYes.alpha = .5;
+        this.sellNo.alpha = .5;
+        this.sellYes.setInteractive()
+            .on("pointerover", () => {
+                this.sellYes.alpha = 1;
+            })
+            .on("pointerout", () => {
+                this.sellYes.alpha = .5;
+            })
+            .on("pointerdown", () => {
+                console.log("lowering price");
+                this.sellNo.setVisible(false);
+                this.sellYes.setVisible(false);
+                dialogGlobal[dialogueSection] = dialogSlice;
+
+                this.exchange = this.priceRange(this.npcAmount, this.npcPrice);
+            });
+        this.sellNo.setInteractive()
+            .on("pointerover", () => {
+                this.sellNo.alpha = 1;
+            })
+            .on("pointerout", () => {
+                this.sellNo.alpha = .5;
+            })
+            .on("pointerdown", () => {
+                console.log(" not lowering price")
+                this.sellNo.setVisible(false);
+                this.sellYes.setVisible(false);
                 dialogActive = false;
+                this.sellYes.setInteractive(false);
+                this.sellNo.setInteractive(false);
                 this.state = "leaving";
                 this.time.addEvent({
                     delay: 1500,
@@ -106,38 +163,53 @@ class Market extends Phaser.Scene {
                     loop: false,
                     callbackScope: this
                 });
-                sellChoice = undefined;
-            } else {
-                if (this.sold) {
-                    dialogActive = false;
-                    this.state = "leaving";
-                    playerVariables.money += Math.floor(this.exchange * 100) / 100;
-                    console.log(this.npcAmount)
-                    this.reduceStock(this.typeToBuy, this.npcAmount);
-                    this.time.addEvent({
-                        delay: 1500,
-                        callback: () => {
-                            this.npc.destroy();
-                            this.state = "waiting";
-                        },
-                        loop: false,
-                        callbackScope: this
-                    });
-                } else {
-                    if (sellChoice === "yes") {
-                        sellChoice = undefined;
-                        this.time.addEvent({
-                            delay: 3000,
-                            callback: () => {
-                                console.log("yes im lowering the price")
-                                this.exchange = this.priceRange(this.npcAmount, this.npcPrice);
-                            }
-                        });
-                    }
-                }
-            }
-        }
+            });
     }
+
+    // priceChange(){ old code here if logic is needed idk
+    //     if (sellChoice === "no"){
+    //         dialogActive = false;
+    //         this.state = "leaving";
+    //         this.time.addEvent({
+    //             delay: 1500,
+    //             callback: () => {
+    //                 this.npc.destroy();
+    //                 this.state = "waiting";
+    //             },
+    //             loop: false,
+    //             callbackScope: this
+    //         });
+    //         sellChoice = undefined;
+    //     } else {
+    //         if (this.sold) {
+    //             dialogActive = false;
+    //             this.state = "leaving";
+    //             playerVariables.money += Math.floor(this.exchange * 100) / 100;
+    //             console.log(this.npcAmount)
+    //             this.reduceStock(this.typeToBuy, this.npcAmount);
+    //             this.time.addEvent({
+    //                 delay: 1500,
+    //                 callback: () => {
+    //                     this.npc.destroy();
+    //                     this.state = "waiting";
+    //                 },
+    //                 loop: false,
+    //                 callbackScope: this
+    //             });
+    //         } else {
+    //             if (sellChoice === "yes") {
+    //                 sellChoice = undefined;
+    //                 this.time.addEvent({
+    //                     delay: 3000,
+    //                     callback: () => {
+    //                         console.log("yes im lowering the price")
+    //                         this.exchange = this.priceRange(this.npcAmount, this.npcPrice);
+    //                     }
+    //                 });
+    //             }
+    //         }
+    //     }
+    // }
 
     reduceStock(type, amount) {
         playerVariables.inventory.honey.total -= amount;
@@ -168,7 +240,7 @@ class Market extends Phaser.Scene {
         console.log(`${amt} at price of ${proposedPrice}`)
         //Prices moved to global
         let setPrice = amt * priceMap[this.typeToBuy]
-        console.log("transaction price = "+setPrice);
+        console.log("transaction price = " + setPrice);
         let propUnitPrice = proposedPrice / amt;
         let setUnitPrice = setPrice / amt;
         console.log(`prop: ${propUnitPrice} ; set ${setUnitPrice}`)
@@ -177,7 +249,7 @@ class Market extends Phaser.Scene {
         let bart = "Hello, I would like to buy " + amt + " " + this.typeToBuy + " honey."
         let response = "Certainly. That would be " + setUnitPrice * amt + "$ for "
             + amt + " jars of " + this.typeToBuy + " honey.";
-        
+
         let barter = [
             {
                 "speaker": "",
@@ -211,24 +283,20 @@ class Market extends Phaser.Scene {
         }
         console.log("launching dialog from bartering")
         this.scene.launch('talkingScene');
-        
+
         return setUnitPrice * amt;
     }
 
-    priceChange(){
 
-
+    createControls() {
+        //establish controls for gameplay
+        keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+        keyY = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Y);
+        keyN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.N);
     }
 
-    createControls(){
-                //establish controls for gameplay
-                keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
-                keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
-                keyY = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Y);
-                keyN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.N);
-    }
-
-    createBackground(){
+    createBackground() {
         //REPLACE with actual background
         //this.background = this.add.image(config.width / 2, config.height / 2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5);
         //background
@@ -240,7 +308,7 @@ class Market extends Phaser.Scene {
         this.bike.depth = 75;
     }
 
-    createPopulatedTable(){
+    createPopulatedTable() {
         //stand for visual space
         this.stand = this.add.image(game.config.width / 2, game.config.height / 2, 'booth');
         this.stand.setOrigin(.5, .5).setScale(.675, .675);
@@ -285,15 +353,15 @@ class Market extends Phaser.Scene {
             this.pinkStock.push(temp);
         }
     }
-    
-    createPlayer(){
+
+    createPlayer() {
         //bear in costume selling honey
         this.bear = this.add.sprite(game.config.width / 2.5, 7 * game.config.height / 10, 'player', 0);
         this.bear.setOrigin(.5, .5).setScale(2.5, 2.5);
         this.bear.depth = 99;
     }
 
-    createPlayerAnims(){
+    createPlayerAnims() {
         //Create player idle animation
         this.anims.create({
             key: 'playerBackIdle',
@@ -304,7 +372,7 @@ class Market extends Phaser.Scene {
         this.bear.anims.play('playerBackIdle', true);
     }
 
-    createText(){
+    createText() {
         //Text config without a background, which blends better with the background
         this.textConfig = {
             fontFamily: font,
@@ -339,9 +407,9 @@ class Market extends Phaser.Scene {
         this.transactionText.alpha = 0;
     }
 
-    createPriceChanging(){
+    createPriceChanging() {
         //Price Setting Yellow
-        if(playerVariables.inventory.honey["yellow"]){
+        if (playerVariables.inventory.honey["yellow"]) {
             this.yellowPlus = this.add.image(config.width / 5, 1.25 * config.height / 5, 'greenPlus', 0)
                 .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
                 .on("pointerover", () => {
@@ -376,7 +444,7 @@ class Market extends Phaser.Scene {
                 .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
         }
         //Price Setting Blue
-        if(playerVariables.inventory.honey["blue"]){
+        if (playerVariables.inventory.honey["blue"]) {
             this.bluePlus = this.add.image(config.width / 5, 1.75 * config.height / 5, 'greenPlus', 0)
                 .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
                 .on("pointerover", () => {
@@ -410,7 +478,7 @@ class Market extends Phaser.Scene {
                 .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
         }
         //Price Setting Pink
-        if(playerVariables.inventory.honey["pink"]){
+        if (playerVariables.inventory.honey["pink"]) {
             //create plus and minus icon with events for pink price
             this.pinkPlus = this.add.image(config.width / 5, 2.25 * config.height / 5, 'greenPlus', 0)
                 .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
@@ -446,7 +514,7 @@ class Market extends Phaser.Scene {
                 .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
         }
         //Price Setting Purple
-        if(playerVariables.inventory.honey["purple"]){
+        if (playerVariables.inventory.honey["purple"]) {
             this.purplePlus = this.add.image(config.width / 5, 2.75 * config.height / 5, 'greenPlus', 0)
                 .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
                 .on("pointerover", () => {
@@ -482,14 +550,15 @@ class Market extends Phaser.Scene {
                 .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
         }
     }
-    createSellOptions(){
 
-        this.sellYes = this.add.image(this.bear.x+150, this.bear.y-200, 'sellYes', 0).setDepth(100).setAlpha(0);
-        this.sellNo = this.add.image(this.bear.x-150, this.bear.y-200, 'sellNo', 0).setDepth(100).setAlpha(0);
+    createSellOptions() {
+
+        this.sellYes = this.add.image(this.bear.x + 150, this.bear.y - 200, 'sellYes', 0).setDepth(100).setAlpha(0);
+        this.sellNo = this.add.image(this.bear.x - 150, this.bear.y - 200, 'sellNo', 0).setDepth(100).setAlpha(0);
         console.log(this.sellNo);
     }
 
-    createEvents(){
+    createEvents() {
         //Rebinds escape
         this.events.on("resume", () => {
             console.log("ReenableEsc called");
@@ -498,7 +567,7 @@ class Market extends Phaser.Scene {
         });
     }
 
-    updateText(){
+    updateText() {
         //update text UIs
         this.moneyText.text = "Money: $" + Math.floor(playerVariables.money) + "." + Math.floor(playerVariables.money * 10) % 10 +
             Math.floor(playerVariables.money * 100) % 10;
@@ -508,7 +577,7 @@ class Market extends Phaser.Scene {
 
     }
 
-    updateCheckPause(){
+    updateCheckPause() {
         //Pause Game
         if (Phaser.Input.Keyboard.JustDown(keyESCAPE)) {
             console.log("Pausing Game");
@@ -518,27 +587,27 @@ class Market extends Phaser.Scene {
         }
     }
 
-    updateTimeUp(){
+    updateTimeUp() {
         if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
             //Go to hub and start next day
             //this.music.transitionSong("bedtimeMusic", false);
             //this.cameras.main.fadeOut(3000, 0, 0, 0);
             //this.time.delayedCall(8000, () => {
-                hasSoldForDay = true;
-                this.music.stop();
-                this.music.playSFX("mapTransition");
-                this.scene.start('shopScene', {previousScene: "marketScene"});
+            hasSoldForDay = true;
+            this.music.stop();
+            this.music.playSFX("mapTransition");
+            this.scene.start('shopScene', {previousScene: "marketScene"});
             //});
         }
     }
 
-    updateBearShuffle(){
+    updateBearShuffle() {
         //Constant bear hustle
         this.bear.x += .25 * Math.sin(this.currTime / 2);
         this.bear.y += .1 * Math.sin(this.currTime / 4 + 1);
     }
 
-    updatePrepareInteraction(){
+    updatePrepareInteraction() {
         //determine what type of honey to buy
         //proportions depend on how much of each you have
         let rand = Math.random();
@@ -561,9 +630,9 @@ class Market extends Phaser.Scene {
         //Could be a call to NPC characteristics
         this.npcAmount = 1;
         let random = Math.random();
-        if(random > .9) {
+        if (random > .9) {
             this.npcAmount = Math.min(3, playerVariables.inventory.honey[this.typeToBuy]);
-        } else if(random > .65) {
+        } else if (random > .65) {
             this.npcAmount = Math.min(2, playerVariables.inventory.honey[this.typeToBuy]);
         }
         this.npcPrice = 0;
@@ -583,16 +652,15 @@ class Market extends Phaser.Scene {
             "\n[Y]es  /   [N]o";
     }
 
-    generateNPC(){
+    generateNPC() {
         var randNPC;
-        var NPCSelection = Math.floor(2*Math.random());
-        if(NPCSelection === 0){
+        var NPCSelection = Math.floor(2 * Math.random());
+        if (NPCSelection === 0) {
             randNPC = new NPC(this, 2 * game.config.width / 3, 4 * game.config.height / 7, 'basicBunNPC',
-                        0, "Bagel", "easy", [["Hullo", "Good day"], ["Thanks", "Bye"]]);
-        }
-        else{
+                0, "Bagel", "easy", [["Hullo", "Good day"], ["Thanks", "Bye"]]);
+        } else {
             randNPC = new NPC(this, 2 * game.config.width / 3, 4 * game.config.height / 7, 'basicDogNPC',
-                        0, "Bagel", "easy", [["Hullo", "Good day"], ["Thanks", "Bye"]]);
+                0, "Bagel", "easy", [["Hullo", "Good day"], ["Thanks", "Bye"]]);
         }
         return randNPC;
     }
