@@ -210,9 +210,12 @@ class BackPackUI extends Phaser.Scene {
                             if (button.text === "Hold") {
                                 //console.log(`holding a flower ${cellContainer.text}`)
                                 if(uiScene.selectedTab == "seeds") {
+                                    heldType = "seeds";
+                                    plantingSeeds = true;
                                     heldItem = new Flower(0, 5, cellContainer.text);
                                     playerVariables.inventory[uiScene.selectedTab][item] -= 1;
                                 } else if(uiScene.selectedTab == "flowers") {
+                                    heldType = "flowers";
                                     heldItem = new Flower(5, 5, cellContainer.text);
                                     playerVariables.inventory[uiScene.selectedTab][item] -= 1;
                                 } else if(item == "Beehive") {

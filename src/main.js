@@ -75,6 +75,8 @@ let cursors = null;
 let dialogueSection = 0;
 //let isPaused = false;
 let heldItem = undefined;
+let heldType = undefined;
+let plantingSeeds = false;
 let vars = {};
 
 //Player variables so we dont have to pass them around forever
