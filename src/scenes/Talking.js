@@ -100,25 +100,25 @@ class Talking extends Phaser.Scene {
             this.dialogOver = false;
             this.typeText();
         }
-        if(Phaser.Input.Keyboard.JustDown(keyN)){
-                sellChoice = "no";
-                dialogGlobal[dialogueSection] = dialogSlice;
-                dialogEnded = true;
-                this.scene.stop('talkingScene');
-                //this.scene.resume('marketScene');
-            //isPaused = true;
-
-        }
-        if(Phaser.Input.Keyboard.JustDown(keyY)){
-
-            sellChoice = "yes";
-            dialogGlobal[dialogueSection] = dialogSlice;
-            dialogEnded = true;
-            this.scene.stop('talkingScene');
-            //this.scene.resume('marketScene');
-            //isPaused = true;
-
-        }
+        // if(Phaser.Input.Keyboard.JustDown(keyN)){
+        //         sellChoice = "no";
+        //         dialogGlobal[dialogueSection] = dialogSlice;
+        //         dialogEnded = true;
+        //         this.scene.stop('talkingScene');
+        //         //this.scene.resume('marketScene');
+        //     //isPaused = true;
+        //
+        // }
+        // if(Phaser.Input.Keyboard.JustDown(keyY)){
+        //
+        //     sellChoice = "yes";
+        //     dialogGlobal[dialogueSection] = dialogSlice;
+        //     dialogEnded = true;
+        //     this.scene.stop('talkingScene');
+        //     //this.scene.resume('marketScene');
+        //     //isPaused = true;
+        //
+        // }
     }
 
     typeText() {
