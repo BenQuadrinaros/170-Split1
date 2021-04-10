@@ -45,27 +45,29 @@ let flow1 = new Flower(2, 3, "Cosmos");
 let hive = new Hive(2, 5);
 let sprink = new Sprinkler(3, 5);
 //more flowers for testing purposes
-let gardenGrid = [ // 10 x 8 grid for garden generating
+let gardenGrid = [ // 11 x 11 grid for garden generating
     //Starting placements for intial garden
-    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   null,  flow1,   null,   null,   null,   null,   null,   null],
-    [null,    null,   hive, sprink,   null,   null,   null,   null,   null,   null],
-    [null,   flow0,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null]
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,   flow0,   null,  flow1,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   hive,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null]
 ];
-let mulch = {};
-for(row = 0; row < gardenGrid.length; row++) {
-    for(col = 0; col < gardenGrid[0].length; col++) {
-        mulch[[row, col]] = 0;
-    }
-}
-let wateredTiles = {};
-for(row = 0; row < gardenGrid.length; row++) {
-    for(col = 0; col < gardenGrid[0].length; col++) {
-        wateredTiles[[row, col]] = false;
+//Assign plots to each spot on the grid
+for(let row = 0; row < gardenGrid.length; row++) {
+    for(let col = 0; col < gardenGrid[0].length; col++) {
+        let temp = new Plot(col, row);
+        if(gardenGrid[row][col] instanceof Flower) {
+            temp.dug = true;
+        }
+        temp.item = gardenGrid[row][col];
+        gardenGrid[row][col] = temp;
     }
 }
 
@@ -73,6 +75,8 @@ let cursors = null;
 let dialogueSection = 0;
 //let isPaused = false;
 let heldItem = undefined;
+let heldType = undefined;
+let plantingSeeds = false;
 let vars = {};
 
 //Player variables so we dont have to pass them around forever

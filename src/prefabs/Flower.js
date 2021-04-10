@@ -11,8 +11,11 @@ class Flower {
         this.image = this.updateImg(scene);
         this.image.x = initx;
         this.image.y = inity;
+        this.image.setOrigin(.5, .5).setScale(.2, .2);
+        this.image.depth = this.image.y/10 - 3;
         scene.add.existing(this.image);
         this.image.setPosition(initx, inity);
+        return this.image;
     }
 
     addWater() {
@@ -73,6 +76,6 @@ class Flower {
             //Level 5 - Dead
             texture = sprites[5];
         }
-        return new Phaser.GameObjects.Sprite(scene, 0, 0, texture, 0);
+        return scene.add.image(0, 0, texture);
     }
 }
