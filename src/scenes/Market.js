@@ -655,13 +655,14 @@ class Market extends Phaser.Scene {
     generateNPC() {
         var randNPC;
         var NPCSelection = Math.floor(2 * Math.random());
-        if (NPCSelection === 0) {
+        randNPC = new NPC(this);
+        /*if (NPCSelection === 0) {
             randNPC = new NPC(this, 2 * game.config.width / 3, 4 * game.config.height / 7, 'basicBunNPC',
                 0, "Bagel", "easy", [["Hullo", "Good day"], ["Thanks", "Bye"]]);
         } else {
             randNPC = new NPC(this, 2 * game.config.width / 3, 4 * game.config.height / 7, 'basicDogNPC',
                 0, "Bagel", "easy", [["Hullo", "Good day"], ["Thanks", "Bye"]]);
-        }
+        }*/
         return randNPC;
     }
 }

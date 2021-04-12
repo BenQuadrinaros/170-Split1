@@ -19,7 +19,7 @@ class Boot extends Phaser.Scene {
         //Load images
             //For gardenScene
             this.load.image("extraLargeGrass", "./assets/sprites/background/massiveGrassbackdrop.png")
-            this.load.image("gardenBackground", "./assets/sprites/background/sampleGarden-01.png");
+            this.load.image("gardenBackground", "./assets/sprites/background/3xEmpty.png");
             this.load.image("exit", "./assets/sprites/background/LeftArrowGREEN.png");
             this.load.image("dirtDry", "./assets/sprites/spritesheetFrames/plotDry.png");
             this.load.image("dirtWet", "./assets/sprites/spritesheetFrames/plotWet.png");
@@ -57,7 +57,16 @@ class Boot extends Phaser.Scene {
             this.load.image('toadLeckman', './assets/sprites/character/mrleckman_510x300.png');
             //For Market
             this.load.image('basicDogNPC', './assets/sprites/character/dognpc_275x458.png');
-            this.load.image('basicBunNPC', './assets/sprites/character/bunnynpc_253x558.png');
+            this.load.image('dalmationDogNPC', './assets/sprites/character/dalmatian.png');
+            this.load.image('dobermanDogNPC', './assets/sprites/character/dobberman.png');
+            this.load.image('huskyDogNPC', './assets/sprites/character/husky.png');
+            this.load.image('spotDogNPC', './assets/sprites/character/spotdog.png');
+            this.load.image('basicBunNPC', './assets/sprites/character/bunnynpc_251x546.png');
+            this.load.image('secondBunNPC', './assets/sprites/character/bunnynpc_253x558.png');
+            this.load.image('albinoBunNPC', './assets/sprites/character/albinobunny.png');
+            this.load.image('bluegreyBunNPC', './assets/sprites/character/bluegreybunny.png');
+            this.load.image('brownBunNPC', './assets/sprites/character/brownbunny.png');
+            this.load.image('pinkBunNPC', './assets/sprites/character/pinkbunny.png');
             this.load.image('boothFull', './assets/sprites/background/boothFull.png');
             this.load.image('booth', './assets/sprites/background/boothZoom.png');
             this.load.image('cloth', './assets/sprites/background/clothFull.png');

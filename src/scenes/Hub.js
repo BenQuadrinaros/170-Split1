@@ -18,8 +18,8 @@ class Hub extends Phaser.Scene {
 
     create() {
         //Initialize various global variables
-        this.worldWidth = 2000; //Set the width of the scene
-        this.worldHeight = 1500; //Set the height of the scene
+        this.worldWidth = 960; //Set the width of the scene
+        this.worldHeight = 1080; //Set the height of the scene
         this.heldImg = 0; //Determines which item is being held by the player
         this.bounceFactor = .1; //Constant for images bouncing
         this.counter = 0; //A generic counter
@@ -224,6 +224,7 @@ class Hub extends Phaser.Scene {
         //Provide basic controls
         this.cameras.main.setBackgroundColor(0x000000);
         this.cameras.main.setBounds(0, 0, this.worldWidth, this.worldHeight);
+        this.cameras.main.setZoom(1);
         this.cameras.main.setZoom(1.15);
         //this.cameras.main.setTint(0x000000);
         //Have it track the player
@@ -232,8 +233,8 @@ class Hub extends Phaser.Scene {
     }
 
     createBackgroundImages() {
-        this.extraGrassBackdrop = this.add.image(0, 0, "extraLargeGrass").setOrigin(0, 0).setScale(0.5);
-        this.background = this.add.image(config.width / 2, config.height / 2, 'background').setOrigin(0.5, 0.5).setScale(0.5);
+        //this.extraGrassBackdrop = this.add.image(0, 0, "extraLargeGrass").setOrigin(0, 0).setScale(0.5);
+        this.background = this.add.image(0, 0, 'gardenBackground').setOrigin(0, 0).setScale(0.5);
         this.sunsetTint = this.add.rectangle(0, 0, 2 * this.worldWidth, 2 * this.worldHeight, 0xFD5E53, 0.25);
         this.sunsetTint.alpha = 0;
         if (hasSoldForDay) {
@@ -303,7 +304,7 @@ class Hub extends Phaser.Scene {
         this.turnText = this.add.text(6 * game.config.width / 7, game.config.height / 4, "Turns Remaining: ", this.textConfig).setOrigin(.5);
         this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
         this.turnText.depth = 100;
-        this.townAccess = this.add.text(config.width / 5, 2 * config.height / 5, "Path to Town", this.textConfig).setOrigin(0.5, 0.5);
+        this.townAccess = this.add.text(config.width / 7, 2.5 * config.height / 5, "Path to Town", this.textConfig).setOrigin(0.5, 0.5);
 
 
         //Text that starts invisible
