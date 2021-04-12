@@ -42,8 +42,7 @@ let upgrades = { "bike": 0 };
 //Starting garden state
 let flow0 = new Flower(2, 3, "Cosmos");
 let flow1 = new Flower(2, 3, "Cosmos");
-let hive = new Hive(2, 5);
-let sprink = new Sprinkler(3, 5);
+let hive = new Hive(2, 2);
 //more flowers for testing purposes
 let gardenGrid = [ // 11 x 11 grid for garden generating
     //Starting placements for intial garden

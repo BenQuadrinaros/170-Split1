@@ -18,14 +18,16 @@ class Hive {
                 for (let col = this.gridx - 2; col < this.gridx + 2; col++) {
                     if (col > -1 && col < gardenGrid[0].length) {
                         //console.log("location: "+col+', '+row);
-                        try {
-                            let type = gardenGrid[row][col].getPollen();
-                            //console.log("collecting from flower at: " + col+', '+row+"\nwater: "+gardenGrid[row][col].water);
+                        let loc = gardenGrid[row][col];
+                        if(loc.item instanceof Flower) {
+                            let type = loc.item.getPollen();
+                            //console.log("collecting from flower at: " + col+', '+row+"\nwater: "
+                                //+gardenGrid[row][col].item.water);
                             if(type != "none") {
                                 collectedPollen[type] += 1;
                                 totalPollen += 1;
                             }
-                        } catch(error) { null; }
+                        }
                     }
                 }
             }
