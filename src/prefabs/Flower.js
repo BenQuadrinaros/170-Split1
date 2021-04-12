@@ -28,6 +28,8 @@ class Flower {
         this.water -= 1;
         if (this.water > 0 && this.age < this.ref["grow"]) {
             this.age += 1;
+        } else if(this.water < 0) {
+            return true;
         }
         this.collected = false;
     }

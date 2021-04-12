@@ -132,11 +132,19 @@ class Hub extends Phaser.Scene {
             "pink": playerVariables.inventory.honey["pink"]
         };
 
+        //Dry out all plots
+        for (let row = 0; row < gardenGrid.length; row++) {
+            for (let col = 0; col < gardenGrid[0].length; col++) {
+                gardenGrid[row][col].water = false;
+            }
+        }
+
         //All sprinklers water surroundings
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
-                if (gardenGrid[row][col].item instanceof Sprinkler) {
-                    gardenGrid[row][col].item.watering();
+                let loc = gardenGrid[row][col];
+                if (loc.item instanceof Sprinkler) {
+                    loc.item.watering();
                     //console.log("found sprinkler at "+col+', '+row);
                 }
             }
@@ -148,11 +156,15 @@ class Hub extends Phaser.Scene {
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
                 //console.log("["+col+","+row+"]");
-                if (gardenGrid[row][col].item instanceof Hive) {
+                let loc = gardenGrid[row][col];
+                if (loc.item instanceof Hive) {
                     beehives.push([row, col]);
                     //console.log("found beehive at "+col+', '+row);
-                } else if (gardenGrid[row][col].item instanceof Flower) {
-                    gardenGrid[row][col].item.advance();
+                } else if (loc.item instanceof Flower) {
+                    if(loc.item.advance()) {
+                        loc.spot.destroy();
+                        loc.item = null;
+                    }
                     //console.log("found flower at "+col+', '+row);
                 }
             }
@@ -356,9 +368,6 @@ class Hub extends Phaser.Scene {
     createGarden() {
         // Build out Garden below main Hub area
         this.path = [];    //Path for the bees to follow
-        this.mulchInScene = [   //This array will let us track local changes and update images
-            [null * 10], [null * 10], [null * 10], [null * 10], [null * 10], [null * 10], [null * 10], [null * 10]
-        ];
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
                 let plot = gardenGrid[row][col];
@@ -371,7 +380,7 @@ class Hub extends Phaser.Scene {
         }
 
         //create water bucket for manual watering
-        this.waterBucket = this.add.image(.8 * config.width, .55 * config.height, "water");
+        this.waterBucket = this.add.image(.65 * config.width, .75 * config.height, "water");
         this.waterBucket.setOrigin(.5, .5).setScale(1.5, 1.5);
         this.waterBucket.depth = this.waterBucket.y / 10;
         this.waterHeld = new WateringCan();
@@ -689,17 +698,19 @@ class Hub extends Phaser.Scene {
                         //If on the bee path, remove it
                         if (obj instanceof Flower || obj instanceof Hive) {
                             this.path = this.removeFromPath(obj.image, this.path);
-                            loc.dug = false;
                         }
                         heldItem = obj;
                         this.heldImg = 0;
-                        //recreate the plot
-                        loc.renderPlot(this, this.gridToCoord(col, row));
+                    } else {
+                        loc.dug = true;
                     }
+                    //recreate the plot
+                    loc.renderPlot(this, this.gridToCoord(col, row));
                 }
             }
         }
     }
+
     placeItemHandler(row, col){
         let loc = gardenGrid[row][col];
         loc.item = heldItem;
@@ -707,6 +718,7 @@ class Hub extends Phaser.Scene {
         if (loc.item instanceof Sprinkler) {
             this.sprinklerHighlightHold.alpha = 0;
             loc.item.setPos(col, row);
+            loc.dug = true;
         } else if (loc.item instanceof Hive) {
             this.hiveHighlightHold.alpha = 0;
             loc.item.setPos(col, row);
@@ -721,22 +733,26 @@ class Hub extends Phaser.Scene {
         if (loc.item instanceof Hive || loc.item instanceof Flower) {
             this.path.push([loc.spot.x, loc.spot.y - 25]);
         }
-        //set the held image to nothing
-            console.log(plantingSeeds);
+        //check to see if holding stack of seeds
+        console.log(plantingSeeds);
         if (plantingSeeds) {
             if (playerVariables.inventory[heldType][heldItem.type] > 0) {
+                //if yes, repopulate hand
                 console.log("holding another " + heldItem.type);
                 this.heldImg = 0;
                 playerVariables.inventory[heldType][heldItem.type]--;
                 heldItem = new Flower(0, 5, heldItem.type);
                 console.log(heldItem);
             } else {
+                //if not, empty hand
                 console.log("No more " + heldItem.type + " to hold")
                 //heldItem.image.destroy();
                 heldItem = undefined;
                 plantingSeeds = false;
+                this.heldImg = 0;
             }
         } else {
+            //otherwise, empty hand
             heldItem = undefined;
             this.heldImg = 0;
         }

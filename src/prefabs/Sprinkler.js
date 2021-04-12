@@ -6,9 +6,10 @@ class Sprinkler {
 
     watering() {
         //console.log("watering");
-        for (let row = this.gridy - 2; row <= this.gridy + 2; row++) {
+        let range = 1;
+        for (let row = this.gridy - range; row <= this.gridy + range; row++) {
             if (row > -1 && row < gardenGrid.length) {
-                for (let col = this.gridx - 2; col <= this.gridx + 2; col++) {
+                for (let col = this.gridx - range; col <= this.gridx + range; col++) {
                     if (col > -1 && col < gardenGrid[0].length) {
                         //console.log("location: "+col+', '+row);
                         let loc = gardenGrid[row][col];
