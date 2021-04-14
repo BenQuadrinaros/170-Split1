@@ -52,7 +52,10 @@ class NPC extends Phaser.GameObjects.Sprite{
             ease: 'Sine.easeOut',
             duration: 1500,
             delay: 0,
-            repeat: 0
+            repeat: 0,
+            onComplete:function (){
+                console.log("done leaving")
+            }
         });
     }
 

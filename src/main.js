@@ -140,7 +140,8 @@ let rangeDialogue = {
     low: [0,1],
     mid: [2,3],
     high: [4,5],
-    goodbyes: [6, 7]
+    goodbyes: [6, 7],
+    angry:[8]
 
 }
 
@@ -160,8 +161,8 @@ let priceMap = {
 }
 let moodMap = {
     0:"happy",
-    1:"neutral",
-    2:"barter",
+    1:"pleased",
+    2:"neutral",
     3:"displeased"
 }
 

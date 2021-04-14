@@ -72,5 +72,19 @@
       "dialog": "Good day sir.",
       "newSpeaker": "true"
     }
+  ],
+  [
+    {
+      "_8": 8,
+      "speaker": "",
+      "dialog": "That is an outrageous price!",
+      "newSpeaker": true
+    },
+    {
+      "_8": 8,
+      "speaker": "",
+      "dialog": "I will take my business elsewhere.",
+      "newSpeaker": true
+    }
   ]
 ]

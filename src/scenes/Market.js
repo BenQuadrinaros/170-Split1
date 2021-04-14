@@ -52,12 +52,13 @@ class Market extends Phaser.Scene {
             this.updateTimeUp();
             return;
         }
-        if (this.state == "waiting") { //Patrons come and go
+        if (this.state === "waiting") { //Patrons come and go
 
             this.updateBearShuffle();
 
             if (playerVariables.inventory.honey.total > 0 && Phaser.Math.Between(0, 1000) > 985) {
                 this.state = "approaching";
+
 
                 this.npc = this.generateNPC(); //Generate the NPC
                 this.npc.approach();
@@ -71,32 +72,47 @@ class Market extends Phaser.Scene {
                     loop: false,
                     callbackScope: this
                 });
+
             } else if (playerVariables.inventory.honey.total <= 0) {
                 this.timer.delay = 0;
             }
-        } else if (this.state == "approaching") { //NPC approaches the stand
+        } else if (this.state === "approaching") { //NPC approaches the stand
             //Constant bear wiggle
             this.updateBearShuffle();
 
-        } else if (this.state == "bargaining") { //Ask for honey at price
+        } else if (this.state === "bargaining") { //Ask for honey at price
             if (!dialogActive) {
                 dialogActive = true;
                 dialogGlobal = this.cache.json.get('dialog');
                 this.exchange = this.barter(this.npcAmount, this.npcPrice);
 
             }
-        } else if (this.state == "leaving") {
+        } else if (this.state === "leaving") {
             //Constant bear wiggle
             this.updateBearShuffle();
 
             this.npc.leave();
+
         }
 
         if (dialogEnded) {
-
             dialogEnded = false;
-            this.priceChange();
-        }
+            if (this.angry) {
+                dialogActive = false;
+                this.state = "leaving";
+                this.time.addEvent({
+                    delay: 1500,
+                    callback: () => {
+                        this.npc.destroy();
+                        this.state = "waiting";
+                    },
+                    loop: false,
+                    callbackScope: this
+                });
+            } else {
+                this.priceChange();
+            }
+            }
     }
 
     priceChange() {
@@ -238,6 +254,7 @@ class Market extends Phaser.Scene {
     }
 
     barter(amt, proposedPrice) {
+        this.angry = false;
         console.log(`${amt} at price of ${proposedPrice}`)
         //Prices moved to global
         let setPrice = amt * priceMap[this.typeToBuy]
@@ -256,13 +273,16 @@ class Market extends Phaser.Scene {
             dialogueSection = rangeDialogue['high'][0];
             bartering = true;
             this.sold = false;
-        } else if (mood === "happy" || mood === "neutral"){
+        } else if (mood === "happy" || mood === "neutral") {
             dialogueSection = rangeDialogue['mid'][0];
             this.sold = true;
             bartering = false;
-            playerVariables.reputation+=1;
-        } else if (mood === "displeased"){
-            playerVariables.reputation-=1;
+            playerVariables.reputation += 1;
+        } else if (mood === "displeased") {
+            playerVariables.reputation -= 1;
+            dialogueSection = rangeDialogue['angry'][0];
+            this.sold = false;
+            this.angry = true;
         }
 
         this.createMoodPopup(mood);
@@ -279,7 +299,7 @@ class Market extends Phaser.Scene {
         return setUnitPrice * amt;
     }
 
-    createGreeting(amt, setUnitPrice){
+    createGreeting(amt, setUnitPrice) {
         let bart = "I would like to buy " + amt + " " + this.typeToBuy + " honey."
         let response = "Certainly. That would be " + setUnitPrice * amt + "$ for "
             + amt + " jars of " + this.typeToBuy + " honey.";
@@ -302,7 +322,8 @@ class Market extends Phaser.Scene {
             }
         ];
     }
-    createFarewell(){
+
+    createFarewell() {
         return [
             {
                 "speaker": this.npc.name,
@@ -317,7 +338,11 @@ class Market extends Phaser.Scene {
         ];
     }
 
-    npcMoodGenerator(propUnitPrice, setUnitPrice){
+    createAngryResponse() {
+        return;
+    }
+
+    npcMoodGenerator(propUnitPrice, setUnitPrice) {
         let npcHigh = this.npc.priceRange[1] * Math.random();
         let npcLow = this.npc.priceRange[0] * Math.random();
         console.log("**NPC Mood generation***");
@@ -325,39 +350,42 @@ class Market extends Phaser.Scene {
         console.log(this.npc.priceRange)
         console.log(npcHigh + propUnitPrice);
         console.log(npcLow + propUnitPrice);
-        console.log("set price is " + setUnitPrice);
+
 
         let npcRange = [npcLow + propUnitPrice, npcHigh + propUnitPrice, Math.abs(npcLow) + npcHigh + propUnitPrice];
-        if ( setUnitPrice <= npcRange[0]){
+        console.log("npc range and set price");
+        console.log(npcRange);
+        console.log(setUnitPrice);
+        if (setUnitPrice <= npcRange[0]) {
             //happy
             console.log("hapy price")
             return 0;
-        } else if (npcRange[0] < setUnitPrice <= npcRange[1]){
+        } else if (npcRange[0] < setUnitPrice && setUnitPrice <= npcRange[1]) {
             //neutral
             console.log(" netural")
             return 1;
-        } else if (npcRange[1] < setUnitPrice <= npcRange[2]){
+        } else if (npcRange[1] < setUnitPrice && setUnitPrice <= npcRange[2]) {
             //barter
             console.log("barter time")
             return 2;
-        } else if (npcRange[2] <= setUnitPrice){
+        } else if (npcRange[2] <= setUnitPrice) {
             console.log("im leaving")
             return 3;
         }
     }
 
-    createMoodPopup(mood){
-        this.moodPopUp = this.add.image(this.npc.x+100, this.npc.y -150, mood).setAlpha(0).setDepth(100);
+    createMoodPopup(mood) {
+        this.moodPopUp = this.add.image(this.npc.x + 100, this.npc.y - 150, mood).setAlpha(0).setDepth(100);
         let basicTween = this.tweens.add({
             targets: this.moodPopUp,
-            alpha: { from: 0, to: .6 },
-            scale: { from: .3, to: .25 },
+            alpha: {from: 0, to: .6},
+            scale: {from: .3, to: .25},
             ease: 'Sine.easeInOut',
             duration: 500,
             repeat: 1,
             yoyo: true,
             hold: 0,
-            onComplete: function() {
+            onComplete: function () {
                 console.log("done tweening mood");
                 this.moodPopUp.destroy();
             },
