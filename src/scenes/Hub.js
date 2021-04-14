@@ -311,7 +311,7 @@ class Hub extends Phaser.Scene {
         };
 
         //Text that starts visible
-        this.moveText = this.add.text(this.player.x, this.player.y - config.height / 9, "Use the arrowkeys to move", this.textConfig).setOrigin(.5, .5);
+        this.moveText = this.add.text(this.player.x, this.player.y - 3*config.height / 9, "Use the arrowkeys to move", this.textConfig).setOrigin(.5, .5);
         this.moveText.depth = 100;
         this.turnText = this.add.text(6 * game.config.width / 7, game.config.height / 4, "Turns Remaining: ", this.textConfig).setOrigin(.5);
         this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
@@ -410,7 +410,7 @@ class Hub extends Phaser.Scene {
 
     updateMoveBackpackIcon() {
         //move backpack icon alongside player and camera
-        var backpackUIMinX = config.width - 5 * config.width / 24;
+        /*var backpackUIMinX = config.width - 5 * config.width / 24;
         var backpackUIMaxX = this.worldWidth - config.width / 8;
         var backpackPlayerRelativeX = this.player.x + 14 * config.width / 40;
         this.backpack.x = Math.min(backpackUIMaxX, Math.max(backpackUIMinX, backpackPlayerRelativeX));
@@ -418,6 +418,9 @@ class Hub extends Phaser.Scene {
         var backpackUIMaxY = this.worldHeight - config.height + 2 * config.height / 9;
         var backpackPlayerRelativeY = this.player.y - 9 * config.height / 27;
         this.backpack.y = Math.min(backpackUIMaxY, Math.max(backpackUIMinY, backpackPlayerRelativeY));
+        */
+        this.backpack.x = this.cameras.main.scrollX + 4*config.width/5;
+        this.backpack.y = this.cameras.main.scrollY + config.height/5;
     }
 
     updateHeldItemBehavior() {

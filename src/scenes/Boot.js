@@ -55,6 +55,9 @@ class Boot extends Phaser.Scene {
             this.load.image('playerWealthTracker', './assets/sprites/UI/moneyhoney.png');
             //For shop
             this.load.image('toadLeckman', './assets/sprites/character/mrleckman_510x300.png');
+            //For market price setting
+            this.load.image('chalkboard', './assets/sprites/UI/chalkboardBlank.png');
+            this.load.image('brickFence', './assets/sprites/background/brickFence.png');
             //For Market
             this.load.image('basicDogNPC', './assets/sprites/character/dognpc_275x458.png');
             this.load.image('dalmationDogNPC', './assets/sprites/character/dalmatian.png');

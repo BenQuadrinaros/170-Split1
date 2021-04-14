@@ -267,13 +267,13 @@ class Market extends Phaser.Scene {
         let barter = this.createGreeting(amt, setUnitPrice);
         let mood = moodMap[this.npcMoodGenerator(propUnitPrice, setUnitPrice)];
         console.log("mood after generation is " + mood);
-        if (mood === "barter") {
+        if (mood === "neutral") {
             //too high
             console.log("customer wants to barter");
             dialogueSection = rangeDialogue['high'][0];
             bartering = true;
             this.sold = false;
-        } else if (mood === "happy" || mood === "neutral") {
+        } else if (mood === "happy" || mood === "pleased") {
             dialogueSection = rangeDialogue['mid'][0];
             this.sold = true;
             bartering = false;
@@ -381,7 +381,7 @@ class Market extends Phaser.Scene {
             alpha: {from: 0, to: .6},
             scale: {from: .3, to: .25},
             ease: 'Sine.easeInOut',
-            duration: 500,
+            duration: 2000,
             repeat: 1,
             yoyo: true,
             hold: 0,

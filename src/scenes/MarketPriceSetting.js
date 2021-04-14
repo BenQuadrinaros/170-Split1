@@ -25,8 +25,9 @@ class MarketPriceSetting extends Phaser.Scene {
     }
 
     createBackgroundImages(){
-        this.backgroundBackpack = this.add.image(config.width/2, config.height/2, "tempBackpackIcon").setScale(1.275);
-        this.playerWealthTracker = this.add.image(config.width/2, config.height/3.5, "playerWealthTracker").setOrigin(0.5, .5);
+        this.brickFenceBackground = this.add.image(config.width/2, config.height/2, "brickFence").setScale(0.5);
+        this.backgroundChalkboard = this.add.image(config.width/2, config.height/2, "chalkboard").setScale(.65);
+        //this.playerWealthTracker = this.add.image(config.width/2, config.height/3.5, "playerWealthTracker").setOrigin(0.5, .5);
     }
 
     createText(){
@@ -45,10 +46,11 @@ class MarketPriceSetting extends Phaser.Scene {
         };
 
         //UI texts for resources
-        this.moneyText = this.add.text(game.config.width / 2 + 15, (game.config.height /3.5) - 35, playerVariables.money, this.textConfig).setOrigin(.5, .5);
-        this.moneyText.depth = 100;
-        this.honeyText = this.add.text(game.config.width / 2 + 15, (game.config.height /3.5) + 40, playerVariables.inventory.honey["total"], this.textConfig).setOrigin(.5, .5);
-        this.honeyText.depth = 100;
+        //this.moneyText = this.add.text(game.config.width / 2 + 15, (game.config.height /3.5) - 35, playerVariables.money, this.textConfig).setOrigin(.5, .5);
+        //this.moneyText.depth = 100;
+        //this.honeyText = this.add.text(game.config.width / 2 + 15, (game.config.height /3.5) + 40, playerVariables.inventory.honey["total"], this.textConfig).setOrigin(.5, .5);
+        //this.honeyText.depth = 100;
+        this.priceTitle = this.add.text(game.config.width/2, game.config.height/5.5 - 55, "PRICE", this.textConfig).setOrigin(.5, .5);
         this.textConfig.fontSize = "28px";
         this.continueText = this.add.text(config.width - 125, config.height - 50, "Continue", this.textConfig).setOrigin(0.5, 0.5).setDepth(5);
         this.continueBackground = this.add.rectangle(config.width - 125, config.height - 50, 150, 75, 0xffffff, .5).setOrigin(0.5, 0.5).setInteractive()
@@ -72,7 +74,7 @@ class MarketPriceSetting extends Phaser.Scene {
         //Text config without a background, which blends better with the background
         this.textConfig = {
             fontFamily: font,
-            fontSize: "16px",
+            fontSize: "24px",
             color: "#ffffff",
             align: "center",
             stroke: "#000000",
@@ -85,10 +87,10 @@ class MarketPriceSetting extends Phaser.Scene {
         //Price Setting Yellow
         if(playerVariables.inventory.honey["yellow"]){
             var yellowCenter = config.width/2;
-            var yellowHeight = 1.15 * config.height/2;
+            var yellowHeight = .75 * config.height/2 - 85;
             typesUsed++; //Let other honey types know the first slot was used
-            this.yellowPlus = this.add.image(yellowCenter + 65, yellowHeight, 'greenPlus', 0)
-                .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
+            this.yellowPlus = this.add.image(yellowCenter + 130, yellowHeight, 'greenPlus', 0)
+                .setOrigin(.5, .5).setDepth(100).setScale(.15, .15).setAlpha(.5).setInteractive()
                 .on("pointerover", () => {
                     this.yellowPlus.alpha = 1;
                     this.yellowPriceText.alpha = 1;
@@ -99,10 +101,10 @@ class MarketPriceSetting extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["yellow"] += .25;
-                    this.yellowPriceText.text = "\tYellow\n" + "\t" + priceMap["yellow"] + "$/Jar\n" + playerVariables.inventory.honey["yellow"] + " jars";
+                    this.yellowPriceText.text = priceMap["yellow"] + "$/Jar\n" + playerVariables.inventory.honey["yellow"] + " jars";
                 });
-            this.yellowMinus = this.add.image((yellowCenter) - 65, yellowHeight, 'redMinus', 0)
-                .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
+            this.yellowMinus = this.add.image(yellowCenter + 85, yellowHeight, 'redMinus', 0)
+                .setOrigin(.5, .5).setDepth(100).setScale(.15, .15).setAlpha(.5).setInteractive()
                 .on("pointerover", () => {
                     this.yellowMinus.alpha = 1;
                     this.yellowPriceText.alpha = 1;
@@ -114,19 +116,22 @@ class MarketPriceSetting extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["yellow"] -= .25;
-                    this.yellowPriceText.text = "\tYellow\n" + "\t" + priceMap["yellow"] + "$/Jar\n" + playerVariables.inventory.honey["yellow"] + " jars";
+                    this.yellowPriceText.text = priceMap["yellow"] + "$/Jar\n" + playerVariables.inventory.honey["yellow"] + " jars";
                 });
             this.yellowPriceText = this.add.text(yellowCenter, yellowHeight,
-                "\tYellow\n" + "\t" + priceMap["yellow"] + "$/Jar\n" + playerVariables.inventory.honey["yellow"] + " jars", this.textConfig)
+                priceMap["yellow"] + "$/Jar\n" + playerVariables.inventory.honey["yellow"] + " jars", this.textConfig)
                 .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
+
+            //Add a yellow honey jar
+            this.yellowHoneyJar = this.add.image(yellowCenter - 95, yellowHeight, "honeyPlain", 0);
         }
         //Price Setting Blue
         if(playerVariables.inventory.honey["blue"]){
             var blueCenter = config.width/2;
-            var blueHeight = 1.15 * config.height/2 + 65*typesUsed;
+            var blueHeight = .75 * config.height/2 - 85 + 115*typesUsed;
             typesUsed++; //Let other honey types know that a slot was used
-            this.bluePlus = this.add.image(blueCenter + 65, blueHeight, 'greenPlus', 0)
-                .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
+            this.bluePlus = this.add.image(blueCenter + 130, blueHeight, 'greenPlus', 0)
+                .setOrigin(.5, .5).setDepth(100).setScale(.15, .15).setAlpha(.5).setInteractive()
                 .on("pointerover", () => {
                     this.bluePlus.alpha = 1;
                     this.bluePriceText.alpha = 1;
@@ -137,10 +142,10 @@ class MarketPriceSetting extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["blue"] += .25;
-                    this.bluePriceText.text = "Blue\n" + "\t" + priceMap["blue"] + "$/Jar\n" + playerVariables.inventory.honey["blue"] + " jars";
+                    this.bluePriceText.text = priceMap["blue"] + "$/Jar\n" + playerVariables.inventory.honey["blue"] + " jars";
                 });
-            this.blueMinus = this.add.image(blueCenter - 65, blueHeight, 'redMinus', 0)
-                .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
+            this.blueMinus = this.add.image(blueCenter + 85, blueHeight, 'redMinus', 0)
+                .setOrigin(.5, .5).setDepth(100).setScale(.15, .15).setAlpha(.5).setInteractive()
                 .on("pointerover", () => {
                     this.blueMinus.alpha = 1;
                     this.bluePriceText.alpha = 1;
@@ -151,20 +156,22 @@ class MarketPriceSetting extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["blue"] -= .25;
-                    this.bluePriceText.text = "Blue\n" + "\t" + priceMap["blue"] + "$/Jar\n" + playerVariables.inventory.honey["blue"] + " jars";
+                    this.bluePriceText.text = priceMap["blue"] + "$/Jar\n" + playerVariables.inventory.honey["blue"] + " jars";
                 });
             this.bluePriceText = this.add.text(blueCenter, blueHeight,
-                "Blue\n" + "\t" + priceMap["blue"] + "$/Jar\n" + playerVariables.inventory.honey["blue"] + " jars", this.textConfig)
+                priceMap["blue"] + "$/Jar\n" + playerVariables.inventory.honey["blue"] + " jars", this.textConfig)
                 .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
+            //Add a blue honey jar
+            this.blueHoneyJar = this.add.image(blueCenter - 95, blueHeight, "honeyBlue", 0);
         }
         //Price Setting Pink
         if(playerVariables.inventory.honey["pink"]){
             var pinkCenter = config.width/2;
-            var pinkHeight = 1.15 * config.height/2 + 65*typesUsed;
+            var pinkHeight = .75 * config.height/2 - 85 + 115*typesUsed;
             typesUsed++; //Let other honey types know that a slot was used
             //create plus and minus icon with events for pink price
-            this.pinkPlus = this.add.image(pinkCenter + 65, pinkHeight, 'greenPlus', 0)
-                .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
+            this.pinkPlus = this.add.image(pinkCenter + 130, pinkHeight, 'greenPlus', 0)
+                .setOrigin(.5, .5).setDepth(100).setScale(.15, .15).setAlpha(.5).setInteractive()
                 .on("pointerover", () => {
                     this.pinkPlus.alpha = 1;
                     this.pinkPriceText.alpha = 1;
@@ -175,11 +182,11 @@ class MarketPriceSetting extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["pink"] += .25;
-                    this.pinkPriceText.text = "\tPink\n" + "\t" + priceMap["pink"] + "$/Jar\n" + playerVariables.inventory.honey["pink"] + " jars";
+                    this.pinkPriceText.text = priceMap["pink"] + "$/Jar\n" + playerVariables.inventory.honey["pink"] + " jars";
                 });
 
-            this.pinkMinus = this.add.image(pinkCenter - 65, pinkHeight, 'redMinus', 0)
-                .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
+            this.pinkMinus = this.add.image(pinkCenter + 85, pinkHeight, 'redMinus', 0)
+                .setOrigin(.5, .5).setDepth(100).setScale(.15, .15).setAlpha(.5).setInteractive()
                 .on("pointerover", () => {
                     this.pinkMinus.alpha = 1;
                     this.pinkPriceText.alpha = 1;
@@ -190,19 +197,21 @@ class MarketPriceSetting extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["pink"] -= .25;
-                    this.pinkPriceText.text = "\tPink\n" + "\t" + priceMap["pink"] + "$/Jar\n" + playerVariables.inventory.honey["pink"] + " jars";
+                    this.pinkPriceText.text = priceMap["pink"] + "$/Jar\n" + playerVariables.inventory.honey["pink"] + " jars";
                 });
             this.pinkPriceText = this.add.text(pinkCenter, pinkHeight,
-                "Pink\n" + "\t" + priceMap["pink"] + "$/Jar\n" + playerVariables.inventory.honey["pink"] + " jars", this.textConfig)
+                priceMap["pink"] + "$/Jar\n" + playerVariables.inventory.honey["pink"] + " jars", this.textConfig)
                 .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
+            //Add a pink honey jar
+            this.pinkHoneyJar = this.add.image(pinkCenter - 95, pinkHeight, "honeyPink", 0);
         }
         //Price Setting Purple
         if(playerVariables.inventory.honey["purple"]){
             var purpleCenter = config.width/2;
-            var purpleHeight = 1.15 * config.height/2 + 65*typesUsed;
+            var purpleHeight = .75 * config.height/2 - 85 + 115*typesUsed;
             typesUsed++; //Let other honey types know that a slot was used
-            this.purplePlus = this.add.image(purpleCenter + 65, purpleHeight, 'greenPlus', 0)
-                .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
+            this.purplePlus = this.add.image(purpleCenter + 130, purpleHeight, 'greenPlus', 0)
+                .setOrigin(.5, .5).setDepth(100).setScale(.15, .15).setAlpha(.5).setInteractive()
                 .on("pointerover", () => {
                     this.purplePlus.alpha = 1;
                     this.purplePriceText.alpha = 1;
@@ -213,11 +222,11 @@ class MarketPriceSetting extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["purple"] += .25;
-                    this.purplePriceText.text = "\tPurple\n" + "\t" + priceMap["purple"] + "$/Jar\n" + playerVariables.inventory.honey["purple"] + " jars";
+                    this.purplePriceText.text = priceMap["purple"] + "$/Jar\n" + playerVariables.inventory.honey["purple"] + " jars";
                 });
 
-            this.purpleMinus = this.add.image(purpleCenter -65, purpleHeight, 'redMinus', 0)
-                .setOrigin(.5, .5).setDepth(100).setScale(.125, .125).setAlpha(.5).setInteractive()
+            this.purpleMinus = this.add.image(purpleCenter + 85, purpleHeight, 'redMinus', 0)
+                .setOrigin(.5, .5).setDepth(100).setScale(.15, .15).setAlpha(.5).setInteractive()
                 .on("pointerover", () => {
                     this.purpleMinus.alpha = 1;
                     this.purplePriceText.alpha = 1;
@@ -228,12 +237,14 @@ class MarketPriceSetting extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["purple"] -= .25;
-                    this.purplePriceText.text = "\tPurple\n" + "\t" + priceMap["purple"] + "$/Jar\n" + playerVariables.inventory.honey["purple"] + " jars";
+                    this.purplePriceText.text = priceMap["purple"] + "$/Jar\n" + playerVariables.inventory.honey["purple"] + " jars";
                 });
             //default purple price
             this.purplePriceText = this.add.text(purpleCenter, purpleHeight,
-                "Purple\n" + "\t" + priceMap["purple"] + "$/Jar\n" + playerVariables.inventory.honey["purple"] + " jars", this.textConfig)
+                priceMap["purple"] + "$/Jar\n" + playerVariables.inventory.honey["purple"] + " jars", this.textConfig)
                 .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
+            //Add a purple honey jar
+            this.purpleHoneyJar = this.add.image(purpleCenter - 95, purpleHeight, "honeyPurple", 0);
         }
     }
 
