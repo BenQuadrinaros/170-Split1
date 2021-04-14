@@ -82,7 +82,8 @@ class Market extends Phaser.Scene {
             if (!dialogActive) {
                 dialogActive = true;
                 dialogGlobal = this.cache.json.get('dialog');
-                this.exchange = this.priceRange(this.npcAmount, this.npcPrice);
+                this.exchange = this.barter(this.npcAmount, this.npcPrice);
+
             }
         } else if (this.state == "leaving") {
             //Constant bear wiggle
@@ -137,7 +138,7 @@ class Market extends Phaser.Scene {
                 this.sellYes.setVisible(false);
                 dialogGlobal[dialogueSection] = dialogSlice;
 
-                this.exchange = this.priceRange(this.npcAmount, this.npcPrice);
+                this.exchange = this.barter(this.npcAmount, this.npcPrice);
             });
         this.sellNo.setInteractive()
             .on("pointerover", () => {
@@ -236,7 +237,7 @@ class Market extends Phaser.Scene {
         }
     }
 
-    priceRange(amt, proposedPrice) {
+    barter(amt, proposedPrice) {
         console.log(`${amt} at price of ${proposedPrice}`)
         //Prices moved to global
         let setPrice = amt * priceMap[this.typeToBuy]
@@ -246,45 +247,122 @@ class Market extends Phaser.Scene {
         console.log(`prop: ${propUnitPrice} ; set ${setUnitPrice}`)
         let dif = propUnitPrice - setUnitPrice;
         console.log(`${dif} dif between prop price and set price`)
-        let bart = "Hello, I would like to buy " + amt + " " + this.typeToBuy + " honey."
-        let response = "Certainly. That would be " + setUnitPrice * amt + "$ for "
-            + amt + " jars of " + this.typeToBuy + " honey.";
-
-        let barter = [
-            {
-                "speaker": "",
-                "dialog": bart,
-                "newSpeaker": "true"
-            },
-            {
-                "speaker": "",
-                "dialog": response,
-                "newSpeaker": "true"
-            }
-        ]
-
-
-        if (dif < -1) {
+        let barter = this.createGreeting(amt, setUnitPrice);
+        let mood = moodMap[this.npcMoodGenerator(propUnitPrice, setUnitPrice)];
+        console.log("mood after generation is " + mood);
+        if (mood === "barter") {
             //too high
-            console.log("dif to high for customer");
+            console.log("customer wants to barter");
             dialogueSection = rangeDialogue['high'][0];
             bartering = true;
             this.sold = false;
-        } else {
+        } else if (mood === "happy" || mood === "neutral"){
             dialogueSection = rangeDialogue['mid'][0];
             this.sold = true;
             bartering = false;
+            playerVariables.reputation+=1;
+        } else if (mood === "displeased"){
+            playerVariables.reputation-=1;
         }
 
+        this.createMoodPopup(mood);
         dialogSlice = dialogGlobal[dialogueSection];
         dialogGlobal[dialogueSection] = barter.concat(dialogGlobal[dialogueSection]);
+
         if (this.sold) {
-            dialogGlobal[dialogueSection].push(dialogGlobal[rangeDialogue["goodbyes"][0]][0])
+            //console.log("pushing farewell")
+            dialogGlobal[dialogueSection] = dialogGlobal[dialogueSection].concat(this.createFarewell());
         }
         console.log("launching dialog from bartering")
         this.scene.launch('talkingScene');
 
         return setUnitPrice * amt;
+    }
+
+    createGreeting(amt, setUnitPrice){
+        let bart = "I would like to buy " + amt + " " + this.typeToBuy + " honey."
+        let response = "Certainly. That would be " + setUnitPrice * amt + "$ for "
+            + amt + " jars of " + this.typeToBuy + " honey.";
+        let greetLine = this.npc.voiceLines[0][Math.floor(2 * Math.random())] + " " + playerVariables.name;
+        return [
+            {
+                "speaker": this.npc.name,
+                "dialog": greetLine,
+                "newSpeaker": "true"
+            },
+            {
+                "speaker": this.npc.name,
+                "dialog": bart,
+                "newSpeaker": "false"
+            },
+            {
+                "speaker": playerVariables.name,
+                "dialog": response,
+                "newSpeaker": "true"
+            }
+        ];
+    }
+    createFarewell(){
+        return [
+            {
+                "speaker": this.npc.name,
+                "dialog": this.npc.voiceLines[1][Math.floor(2 * Math.random())],
+                "newSpeaker": "true"
+            },
+            {
+                "speaker": playerVariables.name,
+                "dialog": "Goodbye friend.",
+                "newSpeaker": "true"
+            }
+        ];
+    }
+
+    npcMoodGenerator(propUnitPrice, setUnitPrice){
+        let npcHigh = this.npc.priceRange[1] * Math.random();
+        let npcLow = this.npc.priceRange[0] * Math.random();
+        console.log("**NPC Mood generation***");
+        console.log("price ranges for npc mood");
+        console.log(this.npc.priceRange)
+        console.log(npcHigh + propUnitPrice);
+        console.log(npcLow + propUnitPrice);
+        console.log("set price is " + setUnitPrice);
+
+        let npcRange = [npcLow + propUnitPrice, npcHigh + propUnitPrice, Math.abs(npcLow) + npcHigh + propUnitPrice];
+        if ( setUnitPrice <= npcRange[0]){
+            //happy
+            console.log("hapy price")
+            return 0;
+        } else if (npcRange[0] < setUnitPrice <= npcRange[1]){
+            //neutral
+            console.log(" netural")
+            return 1;
+        } else if (npcRange[1] < setUnitPrice <= npcRange[2]){
+            //barter
+            console.log("barter time")
+            return 2;
+        } else if (npcRange[2] <= setUnitPrice){
+            console.log("im leaving")
+            return 3;
+        }
+    }
+
+    createMoodPopup(mood){
+        this.moodPopUp = this.add.image(this.npc.x+100, this.npc.y -150, mood).setAlpha(0).setDepth(100);
+        let basicTween = this.tweens.add({
+            targets: this.moodPopUp,
+            alpha: { from: 0, to: .6 },
+            scale: { from: .3, to: .25 },
+            ease: 'Sine.easeInOut',
+            duration: 500,
+            repeat: 1,
+            yoyo: true,
+            hold: 0,
+            onComplete: function() {
+                console.log("done tweening mood");
+                this.moodPopUp.destroy();
+            },
+            onCompleteScope: this
+        });
     }
 
 

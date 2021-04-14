@@ -81,6 +81,8 @@ let vars = {};
 //Player variables so we dont have to pass them around forever
 let playerVariables = {
     money: 10.00,
+    reputation: 0,
+    name: "Bearry",
     //actions: 4,
     inventory: {
         honey: {
@@ -156,3 +158,10 @@ let priceMap = {
     "purple": 5,
     "pink": 6
 }
+let moodMap = {
+    0:"happy",
+    1:"neutral",
+    2:"barter",
+    3:"displeased"
+}
+
