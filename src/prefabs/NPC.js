@@ -25,6 +25,10 @@ class NPC extends Phaser.GameObjects.Sprite{
 
     }
 
+    generateNPCValues(){
+
+    }
+
     approach(){
         console.log("NPC has been asked to approach");
         this.setScale(0, 0);
@@ -48,7 +52,10 @@ class NPC extends Phaser.GameObjects.Sprite{
             ease: 'Sine.easeOut',
             duration: 1500,
             delay: 0,
-            repeat: 0
+            repeat: 0,
+            onComplete:function (){
+                console.log("done leaving")
+            }
         });
     }
 
@@ -57,6 +64,11 @@ class NPC extends Phaser.GameObjects.Sprite{
         this.name = NPCTable[idNum].name;
         this.personality = NPCTable[idNum].personality;
         this.voiceLines = NPCTable[idNum].voiceLines;
+
+        let npcType = npcTypes.types[Math.floor(npcTypes.amt * Math.random())];
+        this.barterChance = npcType.barterChance;
+        this.priceRange = npcType.priceRange;
+
         return NPCTable[idNum].texture;
     }
 }
@@ -129,6 +141,22 @@ let NPCTable = [
         voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
     }
 ];
+
+let npcTypes = {
+    amt: 2,
+    types:[
+        {
+            type:"cheap",
+            priceRange:[-2,1],
+            barterChance:60
+    },
+        {
+            type:"agreeable",
+            priceRange:[-1.5, 1],
+            barterChance:20
+    },
+    ]
+}
 
 function generateNPCSprite(idNum){
     return NPCTable[idNum].texture;

@@ -80,6 +80,14 @@ class Boot extends Phaser.Scene {
             this.load.image('plusRed', './assets/sprites/UI/plusRed_240.png');
             this.load.image('sellYes', './assets/sprites/UI/sellYes.png');
             this.load.image('sellNo', './assets/sprites/UI/sellNo.png');
+            this.load.image('angry', './assets/img/angry.png');
+            this.load.image('displeased', './assets/img/displeased.png');
+            this.load.image('ecstatic', './assets/img/ecstatic.png');
+            this.load.image('happy', './assets/img/happy.png');
+            this.load.image('neutral', './assets/img/neutral.png');
+            this.load.image('pleased', './assets/img/pleased.png');
+            this.load.image('sad', './assets/img/sad.png');
+            this.load.image('satisfied', './assets/img/satisfied.png');
             //For mapScene
             this.load.image('TownMap', './assets/sprites/background/WhiteBackground.png');
             this.load.image('PlayerIcon', './assets/sprites/character/playerMapIcon.png');

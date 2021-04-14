@@ -2,7 +2,7 @@
   [
     {
       "_0": 0,
-      "speaker": "DogNPC",
+      "speaker": "",
       "dialog": "Wow! Thats a great price! Sure!",
       "newSpeaker": "true"
     }
@@ -10,7 +10,7 @@
   [
     {
       "_1": 1,
-      "speaker": "DogNPC",
+      "speaker": "",
       "dialog": "Fantastic Price! Sure!",
       "newSpeaker": "true"
     }
@@ -18,7 +18,7 @@
   [
     {
       "_2": 2,
-      "speaker": "DogNPC",
+      "speaker": "",
       "dialog": "Hmmph. That's a fine price.",
       "newSpeaker": "true"
     }
@@ -26,7 +26,7 @@
   [
     {
       "_3": 3,
-      "speaker": "DogNPC",
+      "speaker": "",
       "dialog": "Hmmph. That's a fine price.",
       "newSpeaker": "true"
     }
@@ -34,26 +34,26 @@
   [
     {
       "_4": 4,
-      "speaker": "DogNPC",
+      "speaker": "",
       "dialog": "That price is too high...",
       "newSpeaker": "true"
     },
     {
-    "speaker": "DogNPC",
-    "dialog": "Could you maybe go lower?\n [Y]es or [N]o.",
+    "speaker": "",
+    "dialog": "Could you maybe go lower?",
     "newSpeaker": "true"
   }
   ],
   [
     {
       "_5": 5,
-      "speaker": "DogNPC",
+      "speaker": "",
       "dialog": "That's a high price...",
       "newSpeaker": "true"
     },
     {
-      "speaker": "DogNPC",
-      "dialog": "Could you perhaps lower it?\n [Y]es or [N]o.",
+      "speaker": "",
+      "dialog": "Could you perhaps lower it?",
       "newSpeaker": "true"
     }
   ],
@@ -71,6 +71,20 @@
       "speaker": "bear",
       "dialog": "Good day sir.",
       "newSpeaker": "true"
+    }
+  ],
+  [
+    {
+      "_8": 8,
+      "speaker": "",
+      "dialog": "That is an outrageous price!",
+      "newSpeaker": true
+    },
+    {
+      "_8": 8,
+      "speaker": "",
+      "dialog": "I will take my business elsewhere.",
+      "newSpeaker": true
     }
   ]
 ]
