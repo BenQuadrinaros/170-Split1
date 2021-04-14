@@ -2,6 +2,7 @@ class Sprinkler {
     constructor(gridx, gridy) {
         this.gridx = gridx;
         this.gridy = gridy;
+        this.type = "Sprinkler";
     }
 
     watering() {

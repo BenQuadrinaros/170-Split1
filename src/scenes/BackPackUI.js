@@ -219,9 +219,11 @@ class BackPackUI extends Phaser.Scene {
                                     heldItem = new Flower(5, 5, cellContainer.text);
                                     playerVariables.inventory[uiScene.selectedTab][item] -= 1;
                                 } else if(item == "Beehive") {
+                                    heldType = "items";
                                     heldItem = new Hive(-1, -1);
                                     playerVariables.inventory[uiScene.selectedTab][item] -= 1;
                                 } else if(item == "Sprinkler") {
+                                    heldType = "items";
                                     heldItem = new Sprinkler(-1, -1);
                                     playerVariables.inventory[uiScene.selectedTab][item] -= 1;
                                 } else {
