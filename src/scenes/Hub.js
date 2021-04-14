@@ -716,50 +716,56 @@ class Hub extends Phaser.Scene {
 
     placeItemHandler(row, col){
         let loc = gardenGrid[row][col];
-        loc.item = heldItem;
-        //clear highlights
-        if (loc.item instanceof Sprinkler) {
-            this.sprinklerHighlightHold.alpha = 0;
-            loc.item.setPos(col, row);
-            loc.dug = true;
-        } else if (loc.item instanceof Hive) {
+        //Set the location's item to a new item
+        if(heldItem instanceof Hive){
+            loc.item = new Hive(-1, -1);
+            //clear highlight
             this.hiveHighlightHold.alpha = 0;
-            loc.item.setPos(col, row);
-        } else if (loc.item instanceof Flower) {
+        }
+        else if(heldItem instanceof Sprinkler){
+            loc.item = new Sprinkler(-1, -1);
+            //clear highlight
+            this.sprinklerHighlightHold.alpha = 0;
+        }
+        else{
+            loc.item = new Flower(0, 5, heldItem.type);
             loc.dug = true;
             if (loc.water) {
                 loc.item.addWater();
             }
         }
+        heldItem.image.destroy(); //Clear the ghost image
         loc.renderPlot(this, this.gridToCoord(col, row));
+
         //If a flower or hive, add to bee path
         if (loc.item instanceof Hive || loc.item instanceof Flower) {
             this.path.push([loc.spot.x, loc.spot.y - 25]);
         }
+
         //check to see if holding stack of seeds
-        console.log(plantingSeeds);
-        if (plantingSeeds) {
-            if (playerVariables.inventory[heldType][heldItem.type] > 0) {
-                //if yes, repopulate hand
-                console.log("holding another " + heldItem.type);
-                this.heldImg = 0;
-                playerVariables.inventory[heldType][heldItem.type]--;
-                heldItem = new Flower(0, 5, heldItem.type);
-                console.log(heldItem);
-            } else {
-                //if not, empty hand
-                console.log("No more " + heldItem.type + " to hold")
-                //heldItem.image.destroy();
-                heldItem = undefined;
-                plantingSeeds = false;
-                this.heldImg = 0;
+        if (playerVariables.inventory[heldType][heldItem.type] > 0) {
+            //if yes, repopulate hand
+            console.log("holding another " + heldItem.type);
+            this.heldImg = 0;
+            playerVariables.inventory[heldType][heldItem.type]--;
+            if(heldItem instanceof Hive){
+                heldItem = new Hive(-1, -1);
             }
+            else if(heldItem instanceof Sprinkler){
+                heldItem = new Sprinkler(-1, -1);
+            }
+            else{
+                heldItem = new Flower(0, 5, heldItem.type);
+            }
+            console.log(heldItem);
         } else {
-            //otherwise, empty hand
+            //if not, empty hand
+            console.log("No more " + heldItem.type + " to hold")
+            //heldItem.image.destroy();
             heldItem = undefined;
+            plantingSeeds = false;
             this.heldImg = 0;
         }
-
     }
 
     closestPlot() {

@@ -101,7 +101,7 @@ class MarketPriceSetting extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["yellow"] += .25;
-                    this.yellowPriceText.text = priceMap["yellow"] + "$/Jar\n" + playerVariables.inventory.honey["yellow"] + " jars";
+                    this.yellowPriceText.text = "$" + priceMap["yellow"] + "\n" + playerVariables.inventory.honey["yellow"] + " jars";
                 });
             this.yellowMinus = this.add.image(yellowCenter + 85, yellowHeight, 'redMinus', 0)
                 .setOrigin(.5, .5).setDepth(100).setScale(.15, .15).setAlpha(.5).setInteractive()
@@ -116,10 +116,10 @@ class MarketPriceSetting extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["yellow"] -= .25;
-                    this.yellowPriceText.text = priceMap["yellow"] + "$/Jar\n" + playerVariables.inventory.honey["yellow"] + " jars";
+                    this.yellowPriceText.text = "$" + priceMap["yellow"] + "\n" + playerVariables.inventory.honey["yellow"] + " jars";
                 });
             this.yellowPriceText = this.add.text(yellowCenter, yellowHeight,
-                priceMap["yellow"] + "$/Jar\n" + playerVariables.inventory.honey["yellow"] + " jars", this.textConfig)
+                "$" + priceMap["yellow"] + "\n" + playerVariables.inventory.honey["yellow"] + " jars", this.textConfig)
                 .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
 
             //Add a yellow honey jar
@@ -142,7 +142,7 @@ class MarketPriceSetting extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["blue"] += .25;
-                    this.bluePriceText.text = priceMap["blue"] + "$/Jar\n" + playerVariables.inventory.honey["blue"] + " jars";
+                    this.bluePriceText.text = "$" + priceMap["blue"] + "\n" + playerVariables.inventory.honey["blue"] + " jars";
                 });
             this.blueMinus = this.add.image(blueCenter + 85, blueHeight, 'redMinus', 0)
                 .setOrigin(.5, .5).setDepth(100).setScale(.15, .15).setAlpha(.5).setInteractive()
@@ -156,10 +156,10 @@ class MarketPriceSetting extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["blue"] -= .25;
-                    this.bluePriceText.text = priceMap["blue"] + "$/Jar\n" + playerVariables.inventory.honey["blue"] + " jars";
+                    this.bluePriceText.text = "$" + priceMap["blue"] + "\n" + playerVariables.inventory.honey["blue"] + " jars";
                 });
             this.bluePriceText = this.add.text(blueCenter, blueHeight,
-                priceMap["blue"] + "$/Jar\n" + playerVariables.inventory.honey["blue"] + " jars", this.textConfig)
+                "$" + priceMap["blue"] + "\n" + playerVariables.inventory.honey["blue"] + " jars", this.textConfig)
                 .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
             //Add a blue honey jar
             this.blueHoneyJar = this.add.image(blueCenter - 95, blueHeight, "honeyBlue", 0);
@@ -182,7 +182,7 @@ class MarketPriceSetting extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["pink"] += .25;
-                    this.pinkPriceText.text = priceMap["pink"] + "$/Jar\n" + playerVariables.inventory.honey["pink"] + " jars";
+                    this.pinkPriceText.text = "$" + priceMap["pink"] + "\n" + playerVariables.inventory.honey["pink"] + " jars";
                 });
 
             this.pinkMinus = this.add.image(pinkCenter + 85, pinkHeight, 'redMinus', 0)
@@ -197,10 +197,10 @@ class MarketPriceSetting extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["pink"] -= .25;
-                    this.pinkPriceText.text = priceMap["pink"] + "$/Jar\n" + playerVariables.inventory.honey["pink"] + " jars";
+                    this.pinkPriceText.text = "$" + priceMap["pink"] + "\n" + playerVariables.inventory.honey["pink"] + " jars";
                 });
             this.pinkPriceText = this.add.text(pinkCenter, pinkHeight,
-                priceMap["pink"] + "$/Jar\n" + playerVariables.inventory.honey["pink"] + " jars", this.textConfig)
+                "$" + priceMap["pink"] + "\n" + playerVariables.inventory.honey["pink"] + " jars", this.textConfig)
                 .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
             //Add a pink honey jar
             this.pinkHoneyJar = this.add.image(pinkCenter - 95, pinkHeight, "honeyPink", 0);
@@ -222,7 +222,7 @@ class MarketPriceSetting extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["purple"] += .25;
-                    this.purplePriceText.text = priceMap["purple"] + "$/Jar\n" + playerVariables.inventory.honey["purple"] + " jars";
+                    this.purplePriceText.text = "$" + priceMap["purple"] + "\n" + playerVariables.inventory.honey["purple"] + " jars";
                 });
 
             this.purpleMinus = this.add.image(purpleCenter + 85, purpleHeight, 'redMinus', 0)
@@ -237,11 +237,11 @@ class MarketPriceSetting extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["purple"] -= .25;
-                    this.purplePriceText.text = priceMap["purple"] + "$/Jar\n" + playerVariables.inventory.honey["purple"] + " jars";
+                    this.purplePriceText.text = "$" + priceMap["purple"] + "\n" + playerVariables.inventory.honey["purple"] + " jars";
                 });
             //default purple price
             this.purplePriceText = this.add.text(purpleCenter, purpleHeight,
-                priceMap["purple"] + "$/Jar\n" + playerVariables.inventory.honey["purple"] + " jars", this.textConfig)
+                "$" + priceMap["purple"] + "\n" + playerVariables.inventory.honey["purple"] + " jars", this.textConfig)
                 .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
             //Add a purple honey jar
             this.purpleHoneyJar = this.add.image(purpleCenter - 95, purpleHeight, "honeyPurple", 0);
