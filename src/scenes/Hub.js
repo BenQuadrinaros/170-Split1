@@ -260,17 +260,13 @@ class Hub extends Phaser.Scene {
         this.plotHighlight = this.add.ellipse(0, 0, config.width / 13, config.height / 13, 0xD3D3D3);
         this.plotHighlight.alpha = 0;
         this.highlightOpacity = .4;
-        this.sprinklerHighlight = this.add.image(0, 0, 'sprinklerHighlight');
-        this.sprinklerHighlight.setOrigin(0.5, 0.5).setScale(12.5, 9.5);
+        this.sprinklerHighlight = this.add.rectangle(0, 0, this.worldWidth/4, .75*this.worldWidth/4, 0x1535D3);
         this.sprinklerHighlight.alpha = 0;
-        this.hiveHighlight = this.add.image(0, 0, 'hiveHighlight');
-        this.hiveHighlight.setOrigin(0.5, 0.5).setScale(12.5, 9.5);
+        this.hiveHighlight = this.add.rectangle(0, 0, 5*this.worldWidth/12, .75*5*this.worldWidth/12, 0xD38515);
         this.hiveHighlight.alpha = 0;
-        this.sprinklerHighlightHold = this.add.image(0, 0, 'sprinklerHighlight');
-        this.sprinklerHighlightHold.setOrigin(0.5, 0.5).setScale(12.5, 9.5);
+        this.sprinklerHighlightHold = this.add.rectangle(0, 0, this.worldWidth/4, .75*this.worldWidth/4, 0x1535D3);
         this.sprinklerHighlightHold.alpha = 0;
-        this.hiveHighlightHold = this.add.image(0, 0, 'hiveHighlight');
-        this.hiveHighlightHold.setOrigin(0.5, 0.5).setScale(12.5, 9.5);
+        this.hiveHighlightHold = this.add.rectangle(0, 0, 5*this.worldWidth/12, .75*5*this.worldWidth/12, 0xD38515);
         this.hiveHighlightHold.alpha = 0;
 
         //create interactible backpack image
@@ -380,7 +376,7 @@ class Hub extends Phaser.Scene {
         }
 
         //create water bucket for manual watering
-        this.waterBucket = this.add.image(.65 * config.width, .75 * config.height, "water");
+        this.waterBucket = this.add.image(.925 * config.width, .525 * config.height, "water");
         this.waterBucket.setOrigin(.5, .5).setScale(1.5, 1.5);
         this.waterBucket.depth = this.waterBucket.y / 10;
         this.waterHeld = new WateringCan();
@@ -686,7 +682,6 @@ class Hub extends Phaser.Scene {
                     if (gardenGrid[row][col].item == null) {
                         //console.log(heldItem);
                         //place held object in the spot
-
                         this.placeItemHandler(row, col);
                     } else {
                         this.fadeText("This plot is\noccupied");
@@ -706,6 +701,15 @@ class Hub extends Phaser.Scene {
                         this.heldImg = 0;
                     } else {
                         loc.dug = true;
+                    }
+                    if(heldItem instanceof Hive || heldItem instanceof Sprinkler){
+                        heldType = "items";
+                    } else if (heldItem instanceof Flower) {
+                        if(heldItem.age == 0) {
+                            heldType = "seed";
+                        } else {
+                            heldType = "flowers";
+                        }
                     }
                     //recreate the plot
                     loc.renderPlot(this, this.gridToCoord(col, row));
@@ -728,7 +732,7 @@ class Hub extends Phaser.Scene {
             this.sprinklerHighlightHold.alpha = 0;
         }
         else{
-            loc.item = new Flower(0, 5, heldItem.type);
+            loc.item = new Flower(heldItem.age, heldItem.water, heldItem.type);
             loc.dug = true;
             if (loc.water) {
                 loc.item.addWater();
@@ -805,7 +809,7 @@ class Hub extends Phaser.Scene {
     }
 
     gridToCoord(gridx, gridy) {
-        return [(1 + gridx) * game.config.width / 12, (8 + gridy) * (game.config.height - 50) / 8 + 15];
+        return [(1 + gridx) * game.config.width / 12, (6 + gridy) * game.config.height / 9 + 15];
     }
 
     loadData() {

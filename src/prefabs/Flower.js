@@ -2,7 +2,7 @@ class Flower {
     constructor(age, water, type) {
         this.ref = flowerTypes[type];
         this.water = Math.min(water, this.ref["water"]); //Int between 0 and its max, only produces Honey when fully grown
-        this.age = Math.min(age, this.ref["water"]);     //Int between 0 and its max, only produces Honey above 0
+        this.age = Math.min(age, this.ref["grow"]);     //Int between 0 and its max, only produces Honey above 0
         this.collected = false;                          //Can only produce pollen once a day
         this.type = type;                                //Cosmo, Lavender, Blue Bonnet, Tulip, Orchid
     }
