@@ -1,5 +1,7 @@
 class WateringCan {
     constructor() {
+        this.waterMax = 4;
+        this.water = this.waterMax;
     }
 
     addToScene(scene, initx, inity) {
