@@ -36,7 +36,7 @@ class Plot {
             this.mulch.depth = this.mulch.y/10 - 18;
         }*/
         if(this.item) {
-            console.log("putting",this.item,"at",spotx," ",spoty);
+            //console.log("putting",this.item,"at",spotx," ",spoty);
             this.spot = this.item.addToScene(scene, spotx, spoty);
         } 
     }

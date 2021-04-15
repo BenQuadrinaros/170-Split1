@@ -42,13 +42,13 @@ let upgrades = { "bike": 0 };
 //Starting garden state
 let flow0 = new Flower(2, 3, "Cosmos");
 let flow1 = new Flower(2, 3, "Cosmos");
-let hive = new Hive(2, 2);
+let hive = new Hive(5, 2);
 //more flowers for testing purposes
 let gardenGrid = [ // 11 x 11 grid for garden generating
     //Starting placements for intial garden
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
-    [null,   flow0,   null,  flow1,   null,   null,   null,   null,   null,   null,   null],
-    [null,    null,   hive,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,  flow0,   null,  flow1,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   hive,   null,   null,   null,   null,   null],
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
@@ -62,7 +62,7 @@ let gardenGrid = [ // 11 x 11 grid for garden generating
 for(let row = 0; row < gardenGrid.length; row++) {
     for(let col = 0; col < gardenGrid[0].length; col++) {
         let temp = new Plot(col, row);
-        if(gardenGrid[row][col] instanceof Flower) {
+        if(gardenGrid[row][col] instanceof Flower || gardenGrid[row][col] instanceof Sprinkler) {
             temp.dug = true;
         }
         temp.item = gardenGrid[row][col];

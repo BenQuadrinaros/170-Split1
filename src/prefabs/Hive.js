@@ -6,7 +6,7 @@ class Hive {
     }
 
     collect() {
-        //console.log("collecting");
+        //console.log("hive at ",this.gridx,this.gridy);
         let collectedPollen = {
             "colorless": 0,
             "blue": 0,
@@ -14,16 +14,15 @@ class Hive {
             "pink": 0
         };
         let totalPollen = 0;
-        for (let row = this.gridy - 2; row < this.gridy + 2; row++) {
+        for (let row = this.gridy - 2; row <= this.gridy + 2; row++) {
             if (row > -1 && row < gardenGrid.length) {
-                for (let col = this.gridx - 2; col < this.gridx + 2; col++) {
+                for (let col = this.gridx - 2; col <= this.gridx + 2; col++) {
                     if (col > -1 && col < gardenGrid[0].length) {
                         //console.log("location: "+col+', '+row);
                         let loc = gardenGrid[row][col];
                         if(loc.item instanceof Flower) {
                             let type = loc.item.getPollen();
-                            //console.log("collecting from flower at: " + col+', '+row+"\nwater: "
-                                //+gardenGrid[row][col].item.water);
+                            console.log("collecting from flower at: " + col+', '+row);
                             if(type != "none") {
                                 collectedPollen[type] += 1;
                                 totalPollen += 1;
@@ -33,6 +32,7 @@ class Hive {
                 }
             }
         }
+        console.log("honey",collectedPollen,"and",totalPollen);
         playerVariables.inventory.honey["total"] += totalPollen;
         if (collectedPollen["colorless"] / totalPollen > .45) {
             playerVariables.inventory.honey["yellow"] += totalPollen;

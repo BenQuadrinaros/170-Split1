@@ -398,6 +398,7 @@ class Market extends Phaser.Scene {
         //establish controls for gameplay
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+        keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         keyY = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Y);
         keyN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.N);
     }
@@ -501,7 +502,7 @@ class Market extends Phaser.Scene {
         this.timeText = this.add.text(game.config.width / 8, game.config.height / 8 + 25, "Time Remaining: ", this.textConfig).setOrigin(.5, .5);
         this.timeText.depth = 100;
         this.timeUpText = this.add.text(game.config.width / 8, game.config.height / 8 - 25,
-            "TIME'S UP\nPress Down to go\nback to town", this.textConfig).setOrigin(.5, .5);
+            "TIME'S UP\nPress Down/S to go\nback to town", this.textConfig).setOrigin(.5, .5);
         this.timeUpText.depth = 100;
         this.timeUpText.alpha = 0;
         this.timeUp = false;
@@ -694,11 +695,8 @@ class Market extends Phaser.Scene {
     }
 
     updateTimeUp() {
-        if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
+        if (Phaser.Input.Keyboard.JustDown(keyDOWN) || Phaser.Input.Keyboard.JustDown(keyS)) {
             //Go to hub and start next day
-            //this.music.transitionSong("bedtimeMusic", false);
-            //this.cameras.main.fadeOut(3000, 0, 0, 0);
-            //this.time.delayedCall(8000, () => {
             hasSoldForDay = true;
             this.music.stop();
             this.music.playSFX("mapTransition");
