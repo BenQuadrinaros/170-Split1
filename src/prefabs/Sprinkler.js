@@ -7,17 +7,20 @@ class Sprinkler {
 
     watering() {
         //console.log("watering");
-        let range = 1;
-        for (let row = this.gridy - range; row <= this.gridy + range; row++) {
-            if (row > -1 && row < gardenGrid.length) {
-                for (let col = this.gridx - range; col <= this.gridx + range; col++) {
-                    if (col > -1 && col < gardenGrid[0].length) {
-                        //console.log("location: "+col+', '+row);
-                        let loc = gardenGrid[row][col];
-                        loc.water = true;
-                        if(loc.item instanceof Flower) {
-                            loc.item.addWater();
-                            //console.log("watering flower at: "+col+', '+row+"\nwater: "+gardenGrid[row][col].water);
+        if(playerVariables.money >= 1) {
+            playerVariables.money -= 1;
+            let range = 1;
+            for (let row = this.gridy - range; row <= this.gridy + range; row++) {
+                if (row > -1 && row < gardenGrid.length) {
+                    for (let col = this.gridx - range; col <= this.gridx + range; col++) {
+                        if (col > -1 && col < gardenGrid[0].length) {
+                            //console.log("location: "+col+', '+row);
+                            let loc = gardenGrid[row][col];
+                            loc.water = true;
+                            if(loc.item instanceof Flower) {
+                                loc.item.addWater();
+                                //console.log("watering flower at: "+col+', '+row+"\nwater: "+gardenGrid[row][col].water);
+                            }
                         }
                     }
                 }

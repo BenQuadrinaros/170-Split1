@@ -115,7 +115,7 @@ class BackPackUI extends Phaser.Scene {
                         height: height,
                         background: scene.rexUI.add.roundRectangle(0, 0, 20, 20, 0).setStrokeStyle(lineWidth, COLOR_DARK),
                         icon: scene.add.image(0, 0, img).setScale(scale, scale),
-                        text: scene.add.text(0, 0, item.id),
+                        text: scene.add.text(0, 0, item.id + ": " + item.amt),
 
                         space: {
                             icon: 10,
@@ -199,7 +199,7 @@ class BackPackUI extends Phaser.Scene {
                 if (uiScene.previousScene === "shopScene"){
                     return ;
                 }
-                let item = uiScene.selectedItem;
+                let item = uiScene.selectedItem.substring(0, uiScene.selectedItem.indexOf(":"));
                 //console.log(`item ${item} in tab ${uiScene.selectedTab}`)
                 let amount = playerVariables.inventory[uiScene.selectedTab][item];
                 //console.log(`amount of item ${item} is ${amount}`)
@@ -212,11 +212,11 @@ class BackPackUI extends Phaser.Scene {
                                 if(uiScene.selectedTab == "seeds") {
                                     heldType = "seeds";
                                     plantingSeeds = true;
-                                    heldItem = new Flower(0, 5, cellContainer.text);
+                                    heldItem = new Flower(0, 5, item);
                                     playerVariables.inventory[uiScene.selectedTab][item] -= 1;
                                 } else if(uiScene.selectedTab == "flowers") {
                                     heldType = "flowers";
-                                    heldItem = new Flower(5, 5, cellContainer.text);
+                                    heldItem = new Flower(5, 5, item);
                                     playerVariables.inventory[uiScene.selectedTab][item] -= 1;
                                 } else if(item == "Beehive") {
                                     heldType = "items";
@@ -263,7 +263,7 @@ class BackPackUI extends Phaser.Scene {
                 uiScene.selectedItem = cellContainer.text;
                 //console.log(cellContainer.text);
                 let amt = playerVariables.inventory[uiScene.selectedTab][uiScene.selectedItem];
-                cellContainer.text = uiScene.selectedItem + ":" + amt;
+                cellContainer.text = uiScene.selectedItem;
 
             }, this)
             .on('cell.out', function (cellContainer, cellIndex) {
@@ -297,11 +297,14 @@ var createDataBaseInventory = function (count) {
     var items = db.addCollection('items');
     // Insert documents
 
-    for (const [tab, inv] of Object.entries(playerVariables.inventory)) {
-        for (const [item, info] of Object.entries(inv)) {
+    for (var [tab, inv] of Object.entries(playerVariables.inventory)) {
+        for (var [item, info] of Object.entries(inv)) {
             //console.log(`${info}`);
             if (info > 0) {
                 if (item !== "total") {
+                    if(item.indexOf("Leftover") > -1) {
+                        info = Math.floor(info*100);
+                    }
                     items.insert({
                         id: item,
                         type: tab,

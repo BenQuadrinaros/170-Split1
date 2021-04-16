@@ -83,14 +83,17 @@ let playerVariables = {
     money: 10.00,
     reputation: 0,
     name: "Bearry",
-    //actions: 4,
     inventory: {
         honey: {
             "total": 3,
             "yellow": 3,
             "blue": 0,
             "purple": 0,
-            "pink": 0
+            "pink": 0,
+            "Leftover Yellow": 0,
+            "Leftover Blue": 0,
+            "Leftover Purple": 0,
+            "Leftover Pink": 0
         },
         items: {
             "Beehive": 0,
@@ -105,6 +108,7 @@ let playerVariables = {
             "Orchid": 0
         },
         seeds: {
+            //Daisy, Delphinium, Lavender, Tulip
             "Cosmos": 2,
             "Bluebonnet": 0,
             "Lavender": 0,

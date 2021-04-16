@@ -406,15 +406,6 @@ class Hub extends Phaser.Scene {
 
     updateMoveBackpackIcon() {
         //move backpack icon alongside player and camera
-        /*var backpackUIMinX = config.width - 5 * config.width / 24;
-        var backpackUIMaxX = this.worldWidth - config.width / 8;
-        var backpackPlayerRelativeX = this.player.x + 14 * config.width / 40;
-        this.backpack.x = Math.min(backpackUIMaxX, Math.max(backpackUIMinX, backpackPlayerRelativeX));
-        var backpackUIMinY = config.height / 9;
-        var backpackUIMaxY = this.worldHeight - config.height + 2 * config.height / 9;
-        var backpackPlayerRelativeY = this.player.y - 9 * config.height / 27;
-        this.backpack.y = Math.min(backpackUIMaxY, Math.max(backpackUIMinY, backpackPlayerRelativeY));
-        */
         this.backpack.x = this.cameras.main.scrollX + 4*config.width/5;
         this.backpack.y = this.cameras.main.scrollY + config.height/5;
     }
@@ -633,7 +624,7 @@ class Hub extends Phaser.Scene {
         let plot = this.closestPlot();
         //If close to water bucket
         if (Math.sqrt(Math.pow(this.waterBucket.x - this.player.x, 2) +
-            Math.pow(this.waterBucket.y - this.player.y, 2)) < 75) {
+            Math.pow(this.waterBucket.y - this.player.y - this.player.height/5, 2)) < 65) {
             //Move display to this spot
             this.plotHighlight.alpha = 1;
             this.plotHighlight.x = this.waterBucket.x;
@@ -643,7 +634,15 @@ class Hub extends Phaser.Scene {
                 //If the player is not holding an item
                 if (heldItem == undefined) {
                     //Put water in hands
-                    heldItem = this.waterHeld;
+                    if(playerVariables.money >= .25) {
+                        playerVariables.money -= .25;
+                        this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + 
+                            "\nMoney: " + playerVariables.money;
+                            heldItem = this.waterHeld;
+                            heldItem.water = heldItem.waterMax;
+                    } else {
+                        this.fadeText("Not enough money!\nCosts $0.25 to water.");
+                    }
                 }
             }
         } else if (plot == null) {
@@ -669,12 +668,16 @@ class Hub extends Phaser.Scene {
                     }
                     //Then wet the spot and reload
                     spot.water = true;
+                    heldItem.water--;
+                    if(heldItem.water <= 0) {
+                        //clear image of item held
+                        heldItem.image.destroy();
+                        heldItem = undefined;
+                        //set the held image to nothing
+                        this.heldImg = 0;
+                    }
                     spot.renderPlot(this, this.gridToCoord(col, row));
-                    //clear image of item held
-                    heldItem.image.destroy();
-                    heldItem = undefined;
-                    //set the held image to nothing
-                    this.heldImg = 0;
+                    
                 }
                 //If the player is holding an item, modify garden plots and add image to scene
                 else if (heldItem !== undefined) {
@@ -722,12 +725,13 @@ class Hub extends Phaser.Scene {
         let loc = gardenGrid[row][col];
         //Set the location's item to a new item
         if(heldItem instanceof Hive){
-            loc.item = new Hive(-1, -1);
+            loc.item = new Hive(col, row);
             //clear highlight
             this.hiveHighlightHold.alpha = 0;
         }
         else if(heldItem instanceof Sprinkler){
-            loc.item = new Sprinkler(-1, -1);
+            loc.item = new Sprinkler(col, row);
+            loc.dug = true;
             //clear highlight
             this.sprinklerHighlightHold.alpha = 0;
         }

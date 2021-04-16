@@ -32,18 +32,44 @@ class Hive {
                 }
             }
         }
-        console.log("honey",collectedPollen,"and",totalPollen);
-        playerVariables.inventory.honey["total"] += totalPollen;
+        //console.log("honey",collectedPollen,"and",totalPollen);
+        let honeyStock = playerVariables.inventory.honey;
+        let honeyProduced = Math.sqrt(totalPollen);
         if (collectedPollen["colorless"] / totalPollen > .45) {
-            playerVariables.inventory.honey["yellow"] += totalPollen;
-        } else if ((collectedPollen["blue"] + collectedPollen["colorless"]) / totalPollen > .8) {
-            playerVariables.inventory.honey["blue"] += totalPollen;
-        } else if ((collectedPollen["purple"] + collectedPollen["colorless"]) / totalPollen > .8) {
-            playerVariables.inventory.honey["purple"] += totalPollen;
-        } else if ((collectedPollen["pink"] + collectedPollen["colorless"]) / totalPollen > .8) {
-            playerVariables.inventory.honey["pink"] += totalPollen;
+            honeyStock["Leftover Yellow"] += honeyProduced;
+            while(honeyStock["Leftover Yellow"] >= 1) {
+                honeyStock["Leftover Yellow"]--;
+                honeyStock["yellow"]++;
+                honeyStock["total"]++;
+            }
+        } else if ((collectedPollen["blue"] + collectedPollen["colorless"]) / totalPollen > .74) {
+            honeyStock["Leftover Blue"] += honeyProduced;
+            while(honeyStock["Leftover Blue"] >= 1) {
+                honeyStock["Leftover Blue"]--;
+                honeyStock["blue"]++;
+                honeyStock["total"]++;
+            }
+        } else if ((collectedPollen["purple"] + collectedPollen["colorless"]) / totalPollen > .74) {
+            honeyStock["Leftover Purple"] += honeyProduced;
+            while(honeyStock["Leftover Purple"] >= 1) {
+                honeyStock["Leftover Purple"]--;
+                honeyStock["purple"]++;
+                honeyStock["total"]++;
+            }
+        } else if ((collectedPollen["pink"] + collectedPollen["colorless"]) / totalPollen > .74) {
+            honeyStock["Leftover Pink"] += honeyProduced;
+            while(honeyStock["Leftover Pink"] >= 1) {
+                honeyStock["Leftover Pink"]--;
+                honeyStock["pink"]++;
+                honeyStock["total"]++;
+            }
         } else {
-            playerVariables.inventory.honey["yellow"] += totalPollen;
+            honeyStock["Leftover Yellow"] += honeyProduced;
+            while(honeyStock["Leftover Yellow"] >= 1) {
+                honeyStock["Leftover Yellow"]--;
+                honeyStock["yellow"]++;
+                honeyStock["total"]++;
+            }
         }
     }
 
