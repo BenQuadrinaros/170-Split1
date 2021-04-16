@@ -97,6 +97,13 @@ class Market extends Phaser.Scene {
 
         if (dialogEnded) {
             dialogEnded = false;
+
+            priceHistory.push({
+               mood:this.mood,
+               type:this.typeToBuy,
+                price:this.exchange/this.npcAmount
+            });
+
             if (this.angry) {
                 dialogActive = false;
                 this.state = "leaving";
@@ -284,7 +291,7 @@ class Market extends Phaser.Scene {
             this.sold = false;
             this.angry = true;
         }
-
+        this.mood = mood;
         this.createMoodPopup(mood);
         dialogSlice = dialogGlobal[dialogueSection];
         dialogGlobal[dialogueSection] = barter.concat(dialogGlobal[dialogueSection]);

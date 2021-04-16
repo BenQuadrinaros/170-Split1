@@ -166,3 +166,4 @@ let moodMap = {
     3:"displeased"
 }
 
+let priceHistory = [];
