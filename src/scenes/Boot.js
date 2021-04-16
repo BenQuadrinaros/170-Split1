@@ -91,6 +91,7 @@ class Boot extends Phaser.Scene {
             this.load.image('pleased', './assets/img/pleased.png');
             this.load.image('sad', './assets/img/sad.png');
             this.load.image('satisfied', './assets/img/satisfied.png');
+            this.load.image('bearbucks','./assets/sprites/UI/bearbucks.png');
             //For mapScene
             this.load.image('TownMap', './assets/sprites/background/WhiteBackground.png');
             this.load.image('PlayerIcon', './assets/sprites/character/playerMapIcon.png');

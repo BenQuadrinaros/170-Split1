@@ -20,6 +20,7 @@ class Market extends Phaser.Scene {
         this.createPriceChanging(); //Creates UI for changing prices
         this.createEvents(); //Creates misc events that occur during the scene
         this.createSellOptions() //Create popup sell dialogue options
+        this.createPriceHistoryIcon() //Create icon for accessing price history.
 
         //background music for the hub
         //CHNAGE SONG FOR MARKET
@@ -189,51 +190,6 @@ class Market extends Phaser.Scene {
                 });
             });
     }
-
-    // priceChange(){ old code here if logic is needed idk
-    //     if (sellChoice === "no"){
-    //         dialogActive = false;
-    //         this.state = "leaving";
-    //         this.time.addEvent({
-    //             delay: 1500,
-    //             callback: () => {
-    //                 this.npc.destroy();
-    //                 this.state = "waiting";
-    //             },
-    //             loop: false,
-    //             callbackScope: this
-    //         });
-    //         sellChoice = undefined;
-    //     } else {
-    //         if (this.sold) {
-    //             dialogActive = false;
-    //             this.state = "leaving";
-    //             playerVariables.money += Math.floor(this.exchange * 100) / 100;
-    //             console.log(this.npcAmount)
-    //             this.reduceStock(this.typeToBuy, this.npcAmount);
-    //             this.time.addEvent({
-    //                 delay: 1500,
-    //                 callback: () => {
-    //                     this.npc.destroy();
-    //                     this.state = "waiting";
-    //                 },
-    //                 loop: false,
-    //                 callbackScope: this
-    //             });
-    //         } else {
-    //             if (sellChoice === "yes") {
-    //                 sellChoice = undefined;
-    //                 this.time.addEvent({
-    //                     delay: 3000,
-    //                     callback: () => {
-    //                         console.log("yes im lowering the price")
-    //                         this.exchange = this.priceRange(this.npcAmount, this.npcPrice);
-    //                     }
-    //                 });
-    //             }
-    //         }
-    //     }
-    // }
 
     reduceStock(type, amount) {
         playerVariables.inventory.honey.total -= amount;
@@ -410,6 +366,20 @@ class Market extends Phaser.Scene {
         keyN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.N);
     }
 
+    createPriceHistoryIcon(){
+    this.priceHistory = this.add.image(7*config.width/8, config.height/5, 'bearbucks', 0)
+        .setDepth(100).setScale(.5,.5).setOrigin(.5, .5).setAlpha(.5).setInteractive()
+        .on('pointerover', () => {
+            this.priceHistory.alpha = 1;
+        })
+        .on('pointerout', () => {
+            this.priceHistory.alpha = .5;
+        })
+        .on('pointerdown', () => {
+            this.scene.pause();
+            this.scene.launch('priceHistory');
+        });
+    }
     createBackground() {
         //REPLACE with actual background
         //this.background = this.add.image(config.width / 2, config.height / 2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5);
@@ -663,6 +633,7 @@ class Market extends Phaser.Scene {
                 "Purple\n" + "\t" + priceMap["purple"] + "$/Jar", this.textConfig)
                 .setOrigin(.5, .5).setDepth(100).setAlpha(.5);
         }
+
     }
 
     createSellOptions() {
