@@ -367,8 +367,8 @@ class Market extends Phaser.Scene {
     }
 
     createPriceHistoryIcon(){
-    this.priceHistory = this.add.image(7*config.width/8, config.height/5, 'bearbucks', 0)
-        .setDepth(100).setScale(.5,.5).setOrigin(.5, .5).setAlpha(.5).setInteractive()
+    this.priceHistory = this.add.image(7*config.width/8, config.height/5, 'noteBook', 0)
+        .setDepth(100).setScale(.125,.125).setOrigin(.5, .5).setAlpha(.5).setInteractive()
         .on('pointerover', () => {
             this.priceHistory.alpha = 1;
         })
@@ -377,7 +377,8 @@ class Market extends Phaser.Scene {
         })
         .on('pointerdown', () => {
             this.scene.pause();
-            this.scene.launch('priceHistory');
+            this.priceHistory.alpha = 0;
+            this.scene.launch('priceHistory',{previousScene: "marketScene"});
         });
     }
     createBackground() {
