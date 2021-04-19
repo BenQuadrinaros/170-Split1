@@ -151,7 +151,7 @@ class Hub extends Phaser.Scene {
         }
 
         //Update all Flowers for the day
-        //Retrieve list of Hives for random collection
+        //Retrieve list of Hives & Weeds for random collection
         let beehives = [];
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
@@ -166,6 +166,9 @@ class Hub extends Phaser.Scene {
                         loc.item = null;
                     }
                     //console.log("found flower at "+col+', '+row);
+                } else if (loc.item instanceof Weed) {
+                    //Mark existing weeds to spread
+                    loc.item.spreader = true;
                 }
             }
         }
@@ -178,6 +181,54 @@ class Hub extends Phaser.Scene {
             //console.log("accessing "+beehives[rand][0]+", "+beehives[rand][1]);
             gardenGrid[beehives[rand][0]][beehives[rand][1]].item.collect();
             beehives.splice(rand, 1);
+        }
+
+        //Spread weeds from existing weeds
+        let growth = [];
+        for (let row = 0; row < gardenGrid.length; row++) {
+            for (let col = 0; col < gardenGrid[0].length; col++) {
+                //console.log("["+col+","+row+"]");
+                let loc = gardenGrid[row][col];
+                if (loc.item instanceof Weed) {
+                    growth = loc.item.spread();
+                    //console.log("received growth for",growth);
+                    for(let coords of growth) {
+                        //console.log("weed spread to",coords);
+                        gardenGrid[coords[0]][coords[1]].item = new Weed(coords[1], coords[0]);
+                    }
+                    //console.log("found beehive at "+col+', '+row);
+                }
+            }
+        }
+        //Spawn new weeds in possible spots
+        growth = [];
+        for (let row = 0; row < gardenGrid.length; row++) {
+            for (let col = 0; col < gardenGrid[0].length; col++) {
+                //console.log("location: "+col+', '+row);
+                let loc = gardenGrid[row][col];
+                //If there is nothing in the plot
+                if(loc.item == null) {
+                    growth.push([row, col]);
+                    //console.log("putting weed at: "+col+', '+row+");
+                }
+            }
+        }
+        //Determine how many to spawn
+        let toSpread = Phaser.Math.Between(1, 3);
+        while(growth.length > toSpread) {
+            growth.splice(Phaser.Math.Between(0, growth.length-1), 1);
+        }
+        for(let coords of growth) {
+            //console.log("creating new weed at",coords);
+            let loc = gardenGrid[coords[0]][coords[1]];
+            loc.item = new Weed(coords[1], coords[0]);
+        }
+
+        //Render all plots
+        for (let row = 0; row < gardenGrid.length; row++) {
+            for (let col = 0; col < gardenGrid[0].length; col++) {
+                gardenGrid[row][col].renderPlot(this, this.gridToCoord(row, col));
+            }
         }
 
         console.log("Honey increases to " + playerVariables.inventory.honey["total"]);

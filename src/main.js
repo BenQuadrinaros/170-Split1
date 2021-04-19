@@ -5,7 +5,7 @@ let config = {
     width: 960,
     height: 540,
     scene: [Boot, Hub, Garden, Map, Market, MarketPriceSetting, Play, Menu, Credits, Talking,
-        OldRhythm,  Shop, ShopUI, BackPackUI, HubPopup, Pause, Settings, Tutorial, Win],
+        OldRhythm,  Shop, ShopUI, BackPackUI, HubPopup, Pause, Settings, Tutorial, Win, PriceHistory],
     volume: .7,
     physics: {
         default: 'arcade',
@@ -170,3 +170,4 @@ let moodMap = {
     3:"displeased"
 }
 
+let priceHistory = [];

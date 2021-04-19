@@ -5,6 +5,20 @@ class Sprinkler {
         this.type = "Sprinkler";
     }
 
+    addToScene(scene, initx, inity) {
+        this.image = scene.add.image(initx, inity + 15, "sprinkler");
+        this.image.setOrigin(.5, .5).setScale(.25, .25);
+        this.image.depth = this.image.y/10 - 3;
+        scene.add.existing(this.image);
+        this.image.setPosition(initx, inity);
+        return this.image;
+    }
+
+    setPos(gridx, gridy) {
+        this.gridx = gridx;
+        this.gridy = gridy;
+    } 
+    
     watering() {
         //console.log("watering");
         if(playerVariables.money >= 1) {
@@ -26,20 +40,6 @@ class Sprinkler {
                 }
             }
         }
-    }
-
-    addToScene(scene, initx, inity) {
-        this.image = scene.add.image(initx, inity + 15, "sprinkler");
-        this.image.setOrigin(.5, .5).setScale(.25, .25);
-        this.image.depth = this.image.y/10 - 3;
-        scene.add.existing(this.image);
-        this.image.setPosition(initx, inity);
-        return this.image;
-    }
-
-    setPos(gridx, gridy) {
-        this.gridx = gridx;
-        this.gridy = gridy;
     }
 
     destroy() {

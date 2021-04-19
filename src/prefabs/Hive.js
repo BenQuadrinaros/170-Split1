@@ -22,17 +22,21 @@ class Hive {
                         let loc = gardenGrid[row][col];
                         if(loc.item instanceof Flower) {
                             let type = loc.item.getPollen();
-                            console.log("collecting from flower at: " + col+', '+row);
+                            console.log("collecting good pollen from flower at: " + col+', '+row);
                             if(type != "none") {
                                 collectedPollen[type] += 1;
                                 totalPollen += 1;
                             }
+                        } else if (loc.item instanceof Weed) {
+                            console.log("collected bad pollen from weed at " + col+', '+row);
+                            totalPollen -= 1;
                         }
                     }
                 }
             }
         }
         //console.log("honey",collectedPollen,"and",totalPollen);
+        totalPollen = Math.max(totalPollen, 0);  //Make sure you cannot lose honey
         let honeyStock = playerVariables.inventory.honey;
         let honeyProduced = Math.sqrt(totalPollen);
         if (collectedPollen["colorless"] / totalPollen > .45) {
