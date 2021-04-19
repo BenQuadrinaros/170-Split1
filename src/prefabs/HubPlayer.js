@@ -13,8 +13,6 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         this.xMoveRate = game.config.width / 400;
         this.yMoveRate = game.config.height / 225;
         this.createAnimations();
-        this.createEvents();
-        this.stillMoving = false;
         this.startedMoving = false;
         this.movingUp = false;
     }
@@ -22,7 +20,6 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
     update(){
         if (keyUP.isDown || keyW.isDown) {
             this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
-            this.anims.play("playerWalkBack", true);
             if (this.y > 0){
                 this.y -= this.yMoveRate;
             }
@@ -32,7 +29,6 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
 
         if (keyLEFT.isDown || keyA.isDown) {
             this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
-            this.anims.play("playerWalkFront", true);
             this.flipX = true;
             if (this.x > 0){
                 this.x -= this.xMoveRate;
@@ -42,7 +38,6 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
 
         if (keyRIGHT.isDown || keyD.isDown) {
             this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
-            this.anims.play("playerWalkFront", true);
             this.flipX = false;
             if (this.x < this.maxWidth){
                 this.x += this.xMoveRate;
@@ -54,12 +49,15 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         if (keyDOWN.isDown || keyS.isDown) {
             this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
             //this.setFrame(2);
-            this.anims.play("playerWalkFront", true);
+            
             if (this.y < this.maxHeight){
                 this.y += this.yMoveRate;
             }
             this.startedMoving = true;
+            this.movingUp = false;
         }
+
+        this.chooseAnimation();
 
     }
 
@@ -67,7 +65,7 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         var deltaX = Math.abs(this.x - clickedX);
         var deltaY = Math.abs(this.y - clickedY);
         var greaterDistance = Math.max(deltaX, deltaY);
-        this.anims.play("playerWalkFront", true);
+        this.startedMoving = true;
         //make the tweens
         this.scene.tweens.killTweensOf(this); //kills other ongoing tweens so no accidental teleportation happens
         this.xAxisMovementTween = this.scene.tweens.add({
@@ -109,16 +107,24 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         });
     }
 
-    createEvents(){
-        /*this.input.keyboard.on('keyup_W', function (event) {
-
-            console.log('Hello from the W Key!');
-    
-        });*/
-    }
-
     chooseAnimation(){
-
+        if(this.startedMoving){
+            if(this.movingUp){
+                this.anims.play("playerWalkBack", true);
+            }
+            else{
+                this.anims.play("playerWalkFront", true);
+            }
+            this.startedMoving = false;
+        }
+        else{
+            if(this.movingUp){
+                this.anims.play("playerBackIdle", true);
+            }
+            else{
+                this.anims.play("playerFrontIdle", true);
+            }
+        }
     }
 
 }
