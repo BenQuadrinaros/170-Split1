@@ -272,20 +272,6 @@ class Hub extends Phaser.Scene {
         //Establish the sprite
         this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 2, this.worldWidth, this.worldHeight);
         this.player.depth = this.player.y / 10;
-
-        //Establish its animations
-        this.anims.create({
-            key: 'playerBackIdle',
-            repeat: -1,
-            frames: this.anims.generateFrameNumbers('player', {start: 0, end: 1}),
-            frameRate: 2
-        });
-        this.anims.create({
-            key: 'playerFrontIdle',
-            repeat: -1,
-            frames: this.anims.generateFrameNumbers('player', {start: 2, end: 3}),
-            frameRate: 2
-        });
     }
 
     createCamera() {
@@ -871,6 +857,8 @@ class Hub extends Phaser.Scene {
         } else if (heldItem instanceof Hive) {
             playerVariables.inventory.items["Beehive"] += 1;
             this.hiveHighlightHold.alpha = 0;
+        } else {
+            return;
         }
 
         heldItem.destroy();
