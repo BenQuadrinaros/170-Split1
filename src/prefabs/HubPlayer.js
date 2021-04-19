@@ -12,46 +12,53 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         this.maxHeight = sceneHeight;
         this.xMoveRate = game.config.width / 400;
         this.yMoveRate = game.config.height / 225;
+        this.createAnimations();
+        this.createEvents();
+        this.stillMoving = false;
+        this.startedMoving = false;
+        this.movingUp = false;
     }
 
     update(){
+        if (keyUP.isDown || keyW.isDown) {
+            this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
+            this.anims.play("playerWalkBack", true);
+            if (this.y > 0){
+                this.y -= this.yMoveRate;
+            }
+            this.startedMoving = true;
+            this.movingUp = true;
+        }
+
         if (keyLEFT.isDown || keyA.isDown) {
             this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
+            this.anims.play("playerWalkFront", true);
             this.flipX = true;
             if (this.x > 0){
                 this.x -= this.xMoveRate;
             }
+            this.startedMoving = true;
         }
 
         if (keyRIGHT.isDown || keyD.isDown) {
             this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
+            this.anims.play("playerWalkFront", true);
             this.flipX = false;
             if (this.x < this.maxWidth){
                 this.x += this.xMoveRate;
             }
-        }
-
-        if (keyUP.isDown || keyW.isDown) {
-            this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
-            //this.setFrame(0);
-            this.anims.play("playerBackIdle", true);
-            if (this.y > 0){
-                this.y -= this.yMoveRate;
-            }
-        }
-        else { //Remove this once we have multiple frames
-            //this.setFrame(2);
-            this.anims.play("playerFrontIdle", true);
+            this.startedMoving = true;
         }
         
 
         if (keyDOWN.isDown || keyS.isDown) {
             this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
             //this.setFrame(2);
-            this.anims.play("playerFrontIdle", true);
+            this.anims.play("playerWalkFront", true);
             if (this.y < this.maxHeight){
                 this.y += this.yMoveRate;
             }
+            this.startedMoving = true;
         }
 
     }
@@ -60,6 +67,7 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         var deltaX = Math.abs(this.x - clickedX);
         var deltaY = Math.abs(this.y - clickedY);
         var greaterDistance = Math.max(deltaX, deltaY);
+        this.anims.play("playerWalkFront", true);
         //make the tweens
         this.scene.tweens.killTweensOf(this); //kills other ongoing tweens so no accidental teleportation happens
         this.xAxisMovementTween = this.scene.tweens.add({
@@ -71,6 +79,46 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
             delay: 0,
             repeat: 0
         });
+    }
+
+    createAnimations(){
+        //Establish its animations
+        this.scene.anims.create({
+            key: 'playerBackIdle',
+            repeat: -1,
+            frames: this.scene.anims.generateFrameNumbers('player', {start: 4, end: 5}),
+            frameRate: 2
+        });
+        this.scene.anims.create({
+            key: 'playerFrontIdle',
+            repeat: -1,
+            frames: this.scene.anims.generateFrameNumbers('player', {start: 2, end: 3}),
+            frameRate: 2
+        });
+        this.scene.anims.create({
+            key: 'playerWalkBack',
+            repeat: -1,
+            frames: this.scene.anims.generateFrameNumbers('player', {start: 0, end: 1}),
+            frameRate: 3
+        });
+        this.scene.anims.create({
+            key: 'playerWalkFront',
+            repeat: -1,
+            frames: this.scene.anims.generateFrameNumbers('player', {start: 6, end: 7}),
+            frameRate: 3
+        });
+    }
+
+    createEvents(){
+        /*this.input.keyboard.on('keyup_W', function (event) {
+
+            console.log('Hello from the W Key!');
+    
+        });*/
+    }
+
+    chooseAnimation(){
+
     }
 
 }
