@@ -21,8 +21,7 @@ class Shop extends Phaser.Scene {
 
         //create the background music manager
         this.music = new BGMManager(this);
-        this.music.playSong("shopMusicFull", false);
-        this.music.queueSong("shopMusicShort", true);
+        this.music.playSong("shopMusicShort", true);
 
         //Initialize images
         this.createBackgroundImages();
