@@ -29,7 +29,12 @@ class Hub extends Phaser.Scene {
 
         //background music for the hub
         this.music = new BGMManager(this);
-        this.music.playSong("hubMusic", true);
+        if(hasSoldForDay){
+            this.music.playSong("ranchMusic", true);
+        }
+        else{
+            this.music.playSong("hubMusic", true);
+        }
         this.music.setVolume(config.volume);
 
         //Initialize Controls
@@ -494,24 +499,7 @@ class Hub extends Phaser.Scene {
 
         //Input to place item in backpack
         if (Phaser.Input.Keyboard.JustDown(keyB)) {
-            console.log(heldItem)
-            if (heldItem instanceof Flower) {
-                console.log(`Storing held flower ${heldItem.type} in inventory.`)
-                console.log(`before storage ${playerVariables.inventory.flowers[heldItem.type]}`)
-                playerVariables.inventory.flowers[heldItem.type] += 1;
-                console.log(`after storage ${playerVariables.inventory.flowers[heldItem.type]}`)
-            } else if (heldItem instanceof Sprinkler) {
-                //If item has highlight, hide that as well
-                playerVariables.inventory.items["Sprinkler"] += 1;
-                this.sprinklerHighlightHold.alpha = 0;
-            } else if (heldItem instanceof Hive) {
-                playerVariables.inventory.items["Beehive"] += 1;
-                this.hiveHighlightHold.alpha = 0;
-            }
-
-            heldItem.destroy();
-            heldItem = undefined;
-            this.heldImg = 0;
+            this.placeHeldItemInBag();
         }
     }
 
@@ -579,7 +567,9 @@ class Hub extends Phaser.Scene {
                 //this.scene.start('mapScene', { arrivingAt: -1 }) //for going to biking map
                 this.time.delayedCall(300, () => {
                     this.music.stop();
+                    this.placeHeldItemInBag();
                     this.scene.start('shopScene');
+                    this.scene.stop();
                 });
 
             }
@@ -865,6 +855,27 @@ class Hub extends Phaser.Scene {
 
     gridToCoord(gridx, gridy) {
         return [(1 + gridx) * game.config.width / 12, (6 + gridy) * game.config.height / 9 + 15];
+    }
+
+    placeHeldItemInBag(){
+        console.log(heldItem)
+        if (heldItem instanceof Flower) {
+            console.log(`Storing held flower ${heldItem.type} in inventory.`)
+            console.log(`before storage ${playerVariables.inventory.flowers[heldItem.type]}`)
+            playerVariables.inventory.flowers[heldItem.type] += 1;
+            console.log(`after storage ${playerVariables.inventory.flowers[heldItem.type]}`)
+        } else if (heldItem instanceof Sprinkler) {
+            //If item has highlight, hide that as well
+            playerVariables.inventory.items["Sprinkler"] += 1;
+            this.sprinklerHighlightHold.alpha = 0;
+        } else if (heldItem instanceof Hive) {
+            playerVariables.inventory.items["Beehive"] += 1;
+            this.hiveHighlightHold.alpha = 0;
+        }
+
+        heldItem.destroy();
+        heldItem = undefined;
+        this.heldImg = 0;
     }
 
     loadData() {

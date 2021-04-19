@@ -30,7 +30,7 @@ class Boot extends Phaser.Scene {
             this.load.image('sprinklerHighlight', './assets/sprites/old/blue.png');
             this.load.image('hiveHighlight', './assets/sprites/old/orange.png');
             this.load.image('water','./assets/sprites/old/drop5.png');
-            this.load.image('weed','./assets/spritesheets/old/Capture.png');
+            this.load.image('weed','./assets/spritesheets/old/Capture.PNG');
             //Flower stages for Garden
             this.load.image("seedling", "./assets/sprites/spritesheetFrames/uni0.png");
             this.load.image("sprout", "./assets/sprites/spritesheetFrames/uni1.png");
@@ -147,6 +147,7 @@ class Boot extends Phaser.Scene {
         //Load Music
             //For hubScene
             this.load.audio("hubMusic", "./assets/audio/music/bear_full.mp3");
+            this.load.audio("ranchMusic", "./assets/audio/music/ranch.mp3");
             //For mapScene
             this.load.audio("mapMusic", "./assets/audio/music/honeybear.wav");
             //For menuScene
