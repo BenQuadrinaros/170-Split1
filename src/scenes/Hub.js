@@ -43,7 +43,7 @@ class Hub extends Phaser.Scene {
         this.createBackgroundImages();
 
         //If coming from the menu or the market, advance to the next day
-        if (this.previousScene === "menuScene" || this.previousScene === "marketScene" || this.previousScene === "hubScene") {
+        if (this.previousScene === "menuScene" || this.previousScene === "marketScene" || this.previousScene === "hubScene" || this.previousScene === "tutorialScene") {
             //Advance to the next day
             this.advanceDay();
         }
@@ -76,12 +76,17 @@ class Hub extends Phaser.Scene {
             this.scene.pause();
             this.music.stop();
             this.scene.start("winScene");
-        } else if ((this.previousScene === "marketScene" || this.previousScene === "hubScene") && !this.popupVisited) {
+        } else if ((this.previousScene === "marketScene" || this.previousScene === "hubScene" || this.previousScene === "tutorialScene") && !this.popupVisited) {
             console.log("Sending to popup");
             //isPaused = true;
             this.popupVisited = true;
             this.scene.pause();
-            this.scene.launch("hubPopupScene", {previousScene: "hubScene", initialHoney: this.startingHoneyForPopup});
+            if(this.previousScene === "tutorialScene"){
+                this.scene.launch("hubPopupScene", {previousScene: "hubScene", initialHoney: this.startingHoneyForPopup, fromTutorial:true});
+            }
+            else{
+                this.scene.launch("hubPopupScene", {previousScene: "hubScene", initialHoney: this.startingHoneyForPopup, fromTutorial:false});
+            }
         }
     }
 
@@ -313,7 +318,7 @@ class Hub extends Phaser.Scene {
 
         //create interactible backpack image
         this.backpack = this.add.image(config.width - config.width / 6, config.height / 6, 'tempBackpackIcon')
-            .setInteractive().setAlpha(.5).setScale(.15)
+            .setInteractive().setAlpha(.5).setScale(.87)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1);
                 this.pointerCurrentlyOver = "backpack";
@@ -327,6 +332,7 @@ class Hub extends Phaser.Scene {
             .on('pointerdown', () => {
                 console.log("clicked backpack");
                 this.music.playSFX("backpackOpen");
+                this.placeHeldItemInBag();
                 this.scene.pause('hubScene');
                 this.scene.launch("backpackUI", {previousScene: "hubScene"});
             });
@@ -354,7 +360,7 @@ class Hub extends Phaser.Scene {
         this.turnText = this.add.text(6 * game.config.width / 7, game.config.height / 4, "Turns Remaining: ", this.textConfig).setOrigin(.5);
         this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
         this.turnText.depth = 100;
-        this.townAccess = this.add.text(config.width / 7, 2.5 * config.height / 5, "Path to Town", this.textConfig).setOrigin(0.5, 0.5);
+        this.townAccess = this.add.text(config.width / 7, 2 * config.height / 5, "Path to Town", this.textConfig).setOrigin(0.5, 0.5);
 
 
         //Text that starts invisible
@@ -369,11 +375,11 @@ class Hub extends Phaser.Scene {
         this.caveText.depth = 100;
         //If the player has already sold for the day, display text openly
         if (hasSoldForDay) {
-            this.caveText.text = "Press SPACE to rest until morning";
+            this.caveText.text = "Press SPACE to rest until next week";
         }
         //If the player has not sold yet, only show the text if they go over it
         else {
-            this.caveText.text = "Press SPACE to end the day early";
+            this.caveText.text = "Press SPACE to end the week early";
             this.caveText.setVisible(false);
         }
 
@@ -389,6 +395,7 @@ class Hub extends Phaser.Scene {
             console.log("ReenableEsc called");
             this.music.setVolume(config.volume);
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+            keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         });
 
         //Have player move towards the mouse on pointer down
@@ -857,7 +864,10 @@ class Hub extends Phaser.Scene {
         } else if (heldItem instanceof Hive) {
             playerVariables.inventory.items["Beehive"] += 1;
             this.hiveHighlightHold.alpha = 0;
-        } else {
+        } else if (heldItem instanceof WateringCan) {
+            //Nothing special to do, but we don't want to reach the normal else case
+        }
+         else {
             return;
         }
 
