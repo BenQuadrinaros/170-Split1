@@ -15,6 +15,7 @@ class Market extends Phaser.Scene {
         this.createBackground(); //Creates backdrop
         this.createPopulatedTable(); //Create table and fill with jars of honey
         this.createPlayer(); //Creates player prefab
+        this.createCustomersInLine();
         this.createPlayerAnims(); //Creates animations associated with player
         this.createText(); //Creates text objects
         this.createPriceChanging(); //Creates UI for changing prices
@@ -30,11 +31,11 @@ class Market extends Phaser.Scene {
 
         //Start the timer for the selling portion
         this.timer = this.time.addEvent({
-            delay: 90000,
+            delay: 9000000,
             callback: () => {
                 this.honeyText.alpha = 0;
                 this.moneyText.alpha = 0;
-                this.timeText.alpha = 0;
+                this.customerText.alpha = 0;
                 this.timeUpText.alpha = 1;
                 this.timeUp = true;
             },
@@ -42,6 +43,19 @@ class Market extends Phaser.Scene {
             callbackScope: this
         });
         this.state = "waiting";
+    }
+
+    createCustomersInLine(){
+        let amt = Math.max(2, playerVariables.reputation/2 + 6);
+        this.customersInLine = [];
+        console.log(`Creating ${amt} customers in line...`);
+        for (let i = 0; i < amt; i++){
+            this.customersInLine.push(this.generateNPC());
+            this.customersInLine[i].setVisible(false);
+            console.log(`creating npc ${i}...`);
+            console.log(this.customersInLine[i]);
+        }
+        console.log(`Done creating ${amt} npcs`);
     }
 
     update() {
@@ -57,11 +71,11 @@ class Market extends Phaser.Scene {
 
             this.updateBearShuffle();
 
-            if (playerVariables.inventory.honey.total > 0 && Phaser.Math.Between(0, 1000) > 985) {
+            if (playerVariables.inventory.honey.total > 0 && Phaser.Math.Between(0, 1000) > 985 && this.customersInLine.length > 0 ) {
                 this.state = "approaching";
 
-
-                this.npc = this.generateNPC(); //Generate the NPC
+                this.npc = this.customersInLine.pop(); //Generate the NPC
+                this.npc.setVisible(true)
                 this.npc.approach();
 
                 this.time.addEvent({
@@ -74,7 +88,7 @@ class Market extends Phaser.Scene {
                     callbackScope: this
                 });
 
-            } else if (playerVariables.inventory.honey.total <= 0) {
+            } else if (playerVariables.inventory.honey.total <= 0 || this.customersInLine.length <= 0) {
                 this.timer.delay = 0;
             }
         } else if (this.state === "approaching") { //NPC approaches the stand
@@ -232,10 +246,16 @@ class Market extends Phaser.Scene {
         console.log("mood after generation is " + mood);
         if (mood === "neutral") {
             //too high
-            console.log("customer wants to barter");
-            dialogueSection = rangeDialogue['high'][0];
-            bartering = true;
-            this.sold = false;
+            if (Math.random()*100 <= this.npc.type.barterChance){
+                console.log("customer wants to barter");
+                dialogueSection = rangeDialogue['high'][0];
+                bartering = true;
+                this.sold = false;
+            } else {
+                dialogueSection = rangeDialogue['mid'][0];
+                bartering = false;
+                this.sold = true;
+            }
         } else if (mood === "happy" || mood === "pleased") {
             dialogueSection = rangeDialogue['mid'][0];
             this.sold = true;
@@ -477,14 +497,15 @@ class Market extends Phaser.Scene {
         this.honeyText.depth = 100;
         this.moneyText = this.add.text(game.config.width / 8, game.config.height / 8, "Money: ", this.textConfig).setOrigin(.5, .5);
         this.moneyText.depth = 100;
-        this.timeText = this.add.text(game.config.width / 8, game.config.height / 8 + 25, "Time Remaining: ", this.textConfig).setOrigin(.5, .5);
-        this.timeText.depth = 100;
+        //this.timeText = this.add.text(game.config.width / 8, game.config.height / 8 + 25, "Time Remaining: ", this.textConfig).setOrigin(.5, .5);
+        //this.timeText.depth = 100;
         this.timeUpText = this.add.text(game.config.width / 8, game.config.height / 8 - 25,
             "TIME'S UP\nPress Down/S to go\nback to town", this.textConfig).setOrigin(.5, .5);
         this.timeUpText.depth = 100;
         this.timeUpText.alpha = 0;
         this.timeUp = false;
-
+        this.customerText = this.add.text(game.config.width / 8, game.config.height / 8 + 25, "Customers Remaining: ", this.textConfig).setOrigin(.5, .5);
+        this.customerText.depth = 100;
         //UI text for transactions
         this.transactionText = this.add.text(6 * game.config.width / 8, game.config.height / 2, "Hi! I want honey.",
             this.textConfig).setOrigin(.5, .5);
@@ -659,8 +680,8 @@ class Market extends Phaser.Scene {
             Math.floor(playerVariables.money * 100) % 10;
         this.honeyText.text = "Honey: " + playerVariables.inventory.honey.total;
         this.currTime = Math.floor((this.timer.delay - this.timer.getElapsed()) / 1000);
-        this.timeText.text = "Time Remaining: " + Math.floor(this.currTime / 60) + ":" + Math.floor((this.currTime % 60) / 10) + this.currTime % 10;
-
+        //this.timeText.text = "Time Remaining: " + Math.floor(this.currTime / 60) + ":" + Math.floor((this.currTime % 60) / 10) + this.currTime % 10;
+        this.customerText.text = "Customers Remaining: " + this.customersInLine.length;
     }
 
     updateCheckPause() {
