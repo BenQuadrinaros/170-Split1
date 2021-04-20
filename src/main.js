@@ -5,7 +5,7 @@ let config = {
     width: 960,
     height: 540,
     scene: [Boot, Hub, Garden, Map, Market, MarketPriceSetting, Play, Menu, Credits, Talking,
-        OldRhythm,  Shop, ShopUI, BackPackUI, HubPopup, Pause, Settings, Tutorial, Win, PriceHistory],
+        OldRhythm,  Shop, ShopUI, Tutorial, BackPackUI, HubPopup, Pause, Settings, Win, PriceHistory],
     volume: .7,
     physics: {
         default: 'arcade',
