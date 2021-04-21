@@ -62,8 +62,16 @@ let gardenGrid = [ // 11 x 11 grid for garden generating
 for(let row = 0; row < gardenGrid.length; row++) {
     for(let col = 0; col < gardenGrid[0].length; col++) {
         let temp = new Plot(col, row);
-        if(gardenGrid[row][col] instanceof Flower || gardenGrid[row][col] instanceof Sprinkler) {
+        let loc = gardenGrid[row][col];
+        if(loc instanceof Flower || loc instanceof Sprinkler) {
             temp.dug = true;
+        }
+        if(loc == null) {
+            //Populate in Brambles with higher denisty towards the bottom
+            let rand = Math.random();
+            if(rand + Math.sqrt((row - 3) / 15) > .85) {
+                gardenGrid[row][col] = new Bramble(col, row);
+            }
         }
         temp.item = gardenGrid[row][col];
         gardenGrid[row][col] = temp;
@@ -98,6 +106,7 @@ let playerVariables = {
         items: {
             "Beehive": 0,
             "Sprinkler": 0,
+            "Clipper": 1,
             "Mulch": 0
         },
         flowers: {
@@ -119,16 +128,17 @@ let playerVariables = {
 }
 let shopInventory = {
     "Seeds": {
-        "Cosmos": {"amount": 2, "img": "bearBee", "cost":2},
-        "Lavender":{"amount": 3, "img": "PlayerIcon", "cost": 3},
-        //"Orchid":{"amount": 3, "img": "PlayerIcon", "cost": 3},
-        "Bluebonnet":{"amount": 3, "img": "PlayerIcon", "cost": 4},
-        "Tulip":{"amount": 3, "img": "PlayerIcon", "cost": 4}
+        "Cosmos": {"amount": 2,"cost":2},
+        "Lavender":{"amount": 3,"cost": 3},
+        //"Orchid":{"amount": 3,"cost": 3},
+        "Bluebonnet":{"amount": 3,"cost": 4},
+        "Tulip":{"amount": 3,"cost": 4}
     },
     "Items":{
-        "Sprinkler":{"amount": 2, "img": "bearBee","cost":15},
-        "Beehive":{"amount": 2, "img": "PlayerIcon","cost":12}
-        //,        "Fertilizer":{"amount": 5, "img": "PlayerIcon", "cost": 4}
+        "Sprinkler":{"amount": 2,"cost":15},
+        "Beehive":{"amount": 2,"cost":12},
+        "Clipper":{"amount":1,"cost":12.5}
+        //,        "Fertilizer":{"amount": 5,"cost": 4}
     }
 }
 
