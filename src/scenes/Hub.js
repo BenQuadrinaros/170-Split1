@@ -27,15 +27,12 @@ class Hub extends Phaser.Scene {
         this.pointerCurrentlyOver = ""; //Tracks which interactable object the cursor is over
         this.popupVisited = false; //Tracks whether the scene was paused for a popup scene
 
-        //background music for the hub
-        this.music = new BGMManager(this);
-        if(hasSoldForDay){
-            this.music.playSong("ranchMusic", true);
+        //If coming from the menu, load data
+        if (this.previousScene === "menuScene") {
+            this.loadData();
+        } else {
+            this.saveData();
         }
-        else{
-            this.music.playSong("hubMusic", true);
-        }
-        this.music.setVolume(config.volume);
 
         //Initialize Controls
         this.createControls();
@@ -48,12 +45,15 @@ class Hub extends Phaser.Scene {
             this.advanceDay();
         }
 
-        //If coming from the menu, load data
-        if (this.previousScene === "menuScene") {
-            this.loadData();
-        } else {
-            this.saveData();
+        //background music for the hub
+        this.music = new BGMManager(this);
+        if(hasSoldForDay){
+            this.music.playSong("ranchMusic", true);
         }
+        else{
+            this.music.playSong("hubMusic", true);
+        }
+        this.music.setVolume(config.volume);
 
         //Initialize Player
         this.createPlayer();
@@ -360,7 +360,7 @@ class Hub extends Phaser.Scene {
         this.turnText = this.add.text(6 * game.config.width / 7, game.config.height / 4, "Turns Remaining: ", this.textConfig).setOrigin(.5);
         this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
         this.turnText.depth = 100;
-        this.townAccess = this.add.text(config.width / 7, 2 * config.height / 5, "Path to Town", this.textConfig).setOrigin(0.5, 0.5);
+        this.townAccess = this.add.text(0, 2 * config.height / 5, "Path to Town", this.textConfig).setOrigin(0, 0);
 
 
         //Text that starts invisible
@@ -548,15 +548,17 @@ class Hub extends Phaser.Scene {
     updateCheckNearLocation() {
         //Check if the player is close enough to the way to town
         if (Math.abs(Phaser.Math.Distance.Between(this.townAccess.x, this.townAccess.y,
-            this.player.x, this.player.y)) < 100) {
-            this.interactText.text = "'SPACE' to go shopping";
+            this.player.x, this.player.y)) < 50) {
+            /*this.interactText.text = "'SPACE' to go shopping";
             this.interactText.x = this.townAccess.x;
             this.interactText.y = this.townAccess.y + 20;
             this.interactText.setVisible(true);
-            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {*/
                 //-1 to indicate that it just left the hub
                 this.music.stop();
                 this.music.playSFX("mapTransition");
+                this.player.x = -100;
+                this.player.y = -100;
                 //this.scene.start('mapScene', { arrivingAt: -1 }) //for going to biking map
                 this.time.delayedCall(300, () => {
                     this.music.stop();
@@ -565,7 +567,7 @@ class Hub extends Phaser.Scene {
                     this.scene.stop();
                 });
 
-            }
+            //}
         }
         //Check if the player is close enough to the cave to rest
         else if (Math.abs(Phaser.Math.Distance.Between(this.caveText.x, this.caveText.y,

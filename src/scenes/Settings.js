@@ -29,6 +29,20 @@ class Settings extends Phaser.Scene {
         let settings = this.add.image(centerX, centerY, 'TempSettingsScreen').setOrigin(0.5);
         let back = this.add.image(centerX / 2, centerY + textSpacer * 2, 'Back').setOrigin(0.5);
 
+        this.textConfig = {
+            fontFamily: font,
+            fontSize: "14px",
+            color: "#ffffff",
+            align: "center",
+            stroke: "#000000",
+            strokeThickness: 4,
+            padding: {
+                top: 5,
+                bottom: 5
+            },
+        };
+
+        let musicText = this.add.text(centerX, centerY/3, "Background Music Volume", this.textConfig).setOrigin(0.5, 0.5);
         this.slider = this.rexUI.add.slider({
             x: centerX,
             y: centerY/3 + textSpacer,
@@ -51,6 +65,7 @@ class Settings extends Phaser.Scene {
             input: 'drag', // 'drag'|'click'
         }).layout();
 
+        let sfxText = this.add.text(centerX, centerY/3 + 2*textSpacer, "Sound Effects Volume", this.textConfig).setOrigin(0.5, 0.5);
         this.sfxSlider = this.rexUI.add.slider({
             x: centerX,
             y: centerY/3 + 3*textSpacer,
@@ -82,6 +97,8 @@ class Settings extends Phaser.Scene {
             this.scene.resume(this.prevScene);
             this.scene.stop();
         });
+
+
 
         console.log(this);
     }
