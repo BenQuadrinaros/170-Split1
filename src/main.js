@@ -158,10 +158,10 @@ let sellChoice = undefined;
 let bartering = false;
 
 let priceMap = {
-    "yellow": 3,
-    "blue": 5,
-    "purple": 5,
-    "pink": 6
+    "yellow": 0,
+    "blue": 0,
+    "purple": 0,
+    "pink": 0
 }
 let moodMap = {
     0:"happy",

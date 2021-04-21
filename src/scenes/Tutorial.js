@@ -420,6 +420,7 @@ class Tutorial extends Phaser.Scene {
             console.log("ReenableEsc called");
             this.music.setVolume(config.volume);
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+            keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
             if(!this.playerHasEquippedFirstSeed && (playerVariables.inventory.seeds["Cosmos"] === 0)){
                 this.playerHasEquippedFirstSeed = true;
             } else if(this.playerHasWateredFirstSeed && !this.playerHasEquippedFullFlower && (playerVariables.inventory.flowers["Cosmos"] === 0)){
@@ -479,7 +480,7 @@ class Tutorial extends Phaser.Scene {
             console.log("Pausing Game");
             //isPaused = true;
             this.scene.pause();
-            this.scene.launch("pauseScene", {previousScene: "hubScene"});
+            this.scene.launch("pauseScene", {previousScene: "tutorialScene"});
         }
     }
 

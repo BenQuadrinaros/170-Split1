@@ -191,6 +191,7 @@ class Menu extends Phaser.Scene {
         }
         //Tutorial is being pressed
         else if(newScene === 2) {
+            this.music.stop();
             this.scene.stop();
             this.scene.launch("tutorialScene", {previousScene: "menuScene"});
         }
