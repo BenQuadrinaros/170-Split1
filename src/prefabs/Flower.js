@@ -4,7 +4,7 @@ class Flower {
         this.water = Math.min(water, this.ref["water"]); //Int between 0 and its max, only produces Honey when fully grown
         this.age = Math.min(age, this.ref["grow"]);     //Int between 0 and its max, only produces Honey above 0
         this.collected = false;                          //Can only produce pollen once a day
-        this.type = type;                                //Cosmo, Lavender, Blue Bonnet, Tulip, Orchid
+        this.type = type;                                //Cosmos, Lavender, Bluebonnet, Tulip, Orchid
     }
 
     addToScene(scene, initx, inity) {

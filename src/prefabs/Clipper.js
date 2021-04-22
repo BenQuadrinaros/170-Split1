@@ -1,8 +1,6 @@
 class Clipper {
     constructor() {
         this.type = "Clipper";
-        this.clipMax = 4;
-        this.clip = this.clipMax;
     }
 
     addToScene(scene, initx, inity) {

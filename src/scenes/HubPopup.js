@@ -8,6 +8,8 @@ class HubPopup extends Phaser.Scene {
         this.prevScene = data.previousScene;
         this.initialHoney = data.initialHoney;
         this.fromTutorial = data.fromTutorial;
+        this.score = data.score;
+        this.money = data.money;
         console.log("From Tutorial: " + this.fromTutorial);
     }
 
@@ -33,41 +35,64 @@ class HubPopup extends Phaser.Scene {
                 bottom: 5
             },
         };
-        var textSpacer = 35;
-        this.mainText = this.add.text(config.width/2, config.height/3, "This week, you collected:", this.textConfig).setOrigin(.5, .5);
+        var textSpacer = 0;
+
+        //Each color of Honey delta
+        this.add.text(config.width/2, config.height/3, "This week, you collected:", 
+            this.textConfig).setOrigin(.5, .5);
         var deltaYellow = playerVariables.inventory.honey["yellow"] - this.initialHoney["yellow"];
-        if(deltaYellow > 0){
-            this.mainText = this.add.text(config.width/2, config.height/3 + textSpacer, "Regular Honey: " + deltaYellow + " jars", this.textConfig).setOrigin(.5, .5);
-            textSpacer += 35;
-        }
-        else {
-            console.log("Delta yellow was " + playerVariables.inventory.honey["yellow"] + " - " + this.initialHoney["yellow"]);
+        if(deltaYellow > 0) {
+            textSpacer += 20;
+            this.add.text(config.width/2, config.height/3 + textSpacer, "Regular Honey: " 
+                + deltaYellow + " jars", this.textConfig).setOrigin(.5, .5);
         }
         var deltaBlue = playerVariables.inventory.honey["blue"] - this.initialHoney["blue"];
-        if(deltaBlue > 0){
-            this.mainText = this.add.text(config.width/2, config.height/3 + textSpacer, "Blue Honey: " + deltaBlue + " jars", this.textConfig).setOrigin(.5, .5);
-            textSpacer += 35;
-        }
-        else {
-            console.log("Delta blue was " + playerVariables.inventory.honey["blue"] + " - " + this.initialHoney["blue"]);
+        if(deltaBlue > 0) {
+            textSpacer += 20;
+            this.add.text(config.width/2, config.height/3 + textSpacer, "Blue Honey: " 
+                + deltaBlue + " jars", this.textConfig).setOrigin(.5, .5);
         }
         var deltaPurple = playerVariables.inventory.honey["purple"] - this.initialHoney["purple"];
-        if(deltaPurple > 0){
-            this.mainText = this.add.text(config.width/2, config.height/3 + textSpacer, "Purple Honey: " + deltaPurple + " jars", this.textConfig).setOrigin(.5, .5);
-            textSpacer += 35;
-        }
-        else {
-            console.log("Delta purple was " + playerVariables.inventory.honey["purple"] + " - " + this.initialHoney["purple"]);
+        if(deltaPurple > 0) {
+            textSpacer += 20;
+            this.add.text(config.width/2, config.height/3 + textSpacer, "Purple Honey: " 
+                + deltaPurple + " jars", this.textConfig).setOrigin(.5, .5);
         }
         var deltaPink = playerVariables.inventory.honey["pink"] - this.initialHoney["pink"];
-        if(deltaPink > 0){
-            this.mainText = this.add.text(config.width/2, config.height/3 + textSpacer, "Pink Honey: " + deltaPink + " jars", this.textConfig).setOrigin(.5, .5);
+        if(deltaPink > 0) {
+            textSpacer += 20;
+            this.add.text(config.width/2, config.height/3 + textSpacer, "Pink Honey: " 
+                + deltaPink + " jars", this.textConfig).setOrigin(.5, .5);
         }
-        else {
-            console.log("Delta pink was " + playerVariables.inventory.honey["pink"] + " - " + this.initialHoney["pink"]);
+        
+        //Money spent on watering
+        var deltaMoney = this.money - playerVariables.money;
+        if(deltaMoney > 0) {
+            textSpacer += 35;
+            this.add.text(config.width/2, config.height/3 + textSpacer, "You spent $" 
+                + deltaMoney + " watering with Sprinklers.", this.textConfig).setOrigin(.5, .5);
         }
 
-        if(this.fromTutorial){
+        //Display ecology score low on card
+        this.add.text(config.width/2 - 95, 4*config.height/5 - 95, "Happy Honey Association Score:", 
+            this.textConfig).setOrigin(.5, .5);
+        for(let i = 0; i < 5; i++) {
+            if(i<this.score) {
+                //Put in a filled star
+                this.add.image(config.width/2 + 35 + (i*35), 4*config.height/5 - 95, "filledStar");
+            } else {
+                //Put in an empty star
+                this.add.image(config.width/2 + 35 + (i*35), 4*config.height/5 - 95, "emptyStar");
+            }
+        }
+
+        //Display a random unused tool tip along the bottom of the card
+        let rand = Phaser.Math.Between(0, toolTips.length-1);
+        this.add.text(config.width/2, 4*config.height/5 - 20, "Gardening Tips #"+(rand+1)+"/"+toolTips.length+":\n"
+            +toolTips[rand], this.textConfig).setOrigin(.5, .5);
+        
+        //If from tutorial, extra text
+        if(this.fromTutorial) {
             this.createFromTutorialText();
         }
     }

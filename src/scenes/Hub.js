@@ -40,7 +40,8 @@ class Hub extends Phaser.Scene {
         this.createBackgroundImages();
 
         //If coming from the menu or the market, advance to the next day
-        if (this.previousScene === "menuScene" || this.previousScene === "marketScene" || this.previousScene === "hubScene" || this.previousScene === "tutorialScene") {
+        if (this.previousScene === "menuScene" || this.previousScene === "marketScene" 
+            || this.previousScene === "hubScene" || this.previousScene === "tutorialScene") {
             //Advance to the next day
             this.advanceDay();
         }
@@ -71,21 +72,25 @@ class Hub extends Phaser.Scene {
         this.createBees();
 
         //Check for special cases
-        if (playerVariables.money >= 100) {
+        this.score = this.calculateEcologyScore();
+        console.log("score is "+this.score)
+        if (this.score >= 5) {
             console.log("here");
             this.scene.pause();
             this.music.stop();
             this.scene.start("winScene");
-        } else if ((this.previousScene === "marketScene" || this.previousScene === "hubScene" || this.previousScene === "tutorialScene") && !this.popupVisited) {
+        } else if ((this.previousScene === "marketScene" || this.previousScene === "hubScene" 
+            || this.previousScene === "tutorialScene") && !this.popupVisited) {
             console.log("Sending to popup");
             //isPaused = true;
             this.popupVisited = true;
             this.scene.pause();
             if(this.previousScene === "tutorialScene"){
-                this.scene.launch("hubPopupScene", {previousScene: "hubScene", initialHoney: this.startingHoneyForPopup, fromTutorial:true});
-            }
-            else{
-                this.scene.launch("hubPopupScene", {previousScene: "hubScene", initialHoney: this.startingHoneyForPopup, fromTutorial:false});
+                this.scene.launch("hubPopupScene", {previousScene: "hubScene", initialHoney: this.startingHoneyForPopup, 
+                    score: this.score, money: this.startingMoneyForPopup, fromTutorial:true});
+            } else {
+                this.scene.launch("hubPopupScene", {previousScene: "hubScene", initialHoney: this.startingHoneyForPopup,
+                    score: this.score, money: this.startingMoneyForPopup, fromTutorial:false});
             }
         }
     }
@@ -142,6 +147,7 @@ class Hub extends Phaser.Scene {
             "purple": playerVariables.inventory.honey["purple"],
             "pink": playerVariables.inventory.honey["pink"]
         };
+        this.startingMoneyForPopup = playerVariables.money;
 
         //Dry out all plots
         for (let row = 0; row < gardenGrid.length; row++) {
@@ -437,7 +443,8 @@ class Hub extends Phaser.Scene {
         this.swarm = [];
         let numBees = 3 + 2 * this.numHives;     //5 seems to be a good base for flower following to look decent
         for (let i = 0; i < numBees; ++i) {
-            let temp = new Bee(this, 'bearBee', 0, game.config.width / 2, 3 * game.config.height / 2);
+            let rand = Phaser.Math.Between(0, this.path.length-1);
+            let temp = new Bee(this, 'bearBee', 0, this.path[rand][0], this.path[rand][1]);
             temp.setOrigin(.5).setScale(.25, .25).setVisible(true);
             temp.depth = 200;
             this.swarm.push(temp);
@@ -471,7 +478,8 @@ class Hub extends Phaser.Scene {
         //Always update location
         heldItem.image.x = this.player.x;
         heldItem.image.y = this.player.y;
-        heldItem.image.depth = this.player.depth + 1;
+        if(this.player.movingUp) { heldItem.image.depth = this.player.depth - 1; }
+        else { heldItem.image.depth = this.player.depth + 1; }
 
         //Also update highlight
         if (heldItem instanceof Sprinkler) {
@@ -636,7 +644,7 @@ class Hub extends Phaser.Scene {
     updateCheckCollisions() {
         //Check if the player is close enough to the way to town
         if (Math.abs(Phaser.Math.Distance.Between(this.townAccess.x, this.townAccess.y,
-            this.player.x, this.player.y)) < 50) {
+            this.player.x, this.player.y)) < 75) {
             this.music.stop();
             this.music.playSFX("mapTransition");
             this.player.x = -100;
@@ -654,14 +662,15 @@ class Hub extends Phaser.Scene {
             if(bramble instanceof Bramble) {
                 bramble = bramble.image;
                 if(this.player.x + this.player.width/4 < bramble.x + 60 
-                    && this.player.x - this.player.width/4 > bramble.x - 60) {
-                    //If aligned on x
-                    if(this.player.y - 50 > bramble.y - 50 || this.player.y - 50 < bramble.y + 50) {
-                        //Overlapping on y
-                        this.player.y -= 100;
-                        this.fadeText("Ow! Those are\nprickly brambles.");
-                    }
+                    && this.player.x - this.player.width/4 > bramble.x - 60
+                    && (this.player.y - 50 > bramble.y - 50 
+                    || this.player.y - 50 < bramble.y + 50)) {
+                    //Overlapping significantly
+                    this.player.slow = true;
+                    this.fadeText("Ow! Those are\nprickly brambles.");
                 }
+            } else {
+                this.player.slow = false;
             }
         }
     }
@@ -741,7 +750,9 @@ class Hub extends Phaser.Scene {
                     let loc = gardenGrid[row][col];
                     let obj = loc.item;
 
-                    if (!obj instanceof Bramble) { loc.item = null; }
+                    if (!(obj instanceof Bramble)) { 
+                        loc.item = null; 
+                    }
                     if (obj instanceof Flower || obj instanceof Hive || obj instanceof Sprinkler) {
                         //If on the bee path, remove it
                         if (obj instanceof Flower || obj instanceof Hive) {
@@ -773,16 +784,11 @@ class Hub extends Phaser.Scene {
         //Set the location's item to a new item
         if(heldItem instanceof Clipper) {
             if(loc.item instanceof Bramble) {
-                heldItem.clip -= 1;
                 loc.item.destroy();
                 loc.item = null;
                 loc.dug = true;
                 loc.renderPlot(this, this.gridToCoord(col, row));
-                if(heldItem.clip <= 0) {
-                    heldItem.image.destroy(); //Clear the ghost image
-                } else {
-                    return;
-                }
+                heldItem.image.destroy(); //Clear the ghost image
             } else {
                 return;
             }
@@ -893,6 +899,8 @@ class Hub extends Phaser.Scene {
         } else if (heldItem instanceof Hive) {
             playerVariables.inventory.items["Beehive"] += 1;
             this.hiveHighlightHold.alpha = 0;
+        } else if(heldItem instanceof Clipper) {
+            playerVariables.inventory.items["Clipper"] += 1;
         } else if (heldItem instanceof WateringCan) {
             //Nothing special to do, but we don't want to reach the normal else case
         }
@@ -903,6 +911,45 @@ class Hub extends Phaser.Scene {
         heldItem.destroy();
         heldItem = undefined;
         this.heldImg = 0;
+    }
+
+    calculateEcologyScore() {
+        // amount of flowers, variety of flowers, number of hives, number of brambles, number of weeds
+        let flowerTotal = 0;
+        let flowerVariety = {
+            "Cosmos": false,
+            "Bluebonnet": false,
+            "Lavender": false,
+            "Tulip": false
+        };
+        let totalHives = 0;
+        let totalBrambles = 0;
+        let totalWeeds = -3;
+        gardenGrid.forEach(row => {
+            row.forEach(plot => {
+                if(plot.item instanceof Flower) {
+                    flowerTotal++;
+                    flowerVariety[plot.item.type] = true;
+                } else if(plot.item instanceof Hive) {
+                    totalHives++;
+                } else if(plot.item instanceof Bramble) {
+                    totalBrambles++;
+                } else if (plot.item instanceof Weed) {
+                    totalWeeds++;
+                }
+            })
+        });
+        let score = 0;
+        if(flowerTotal > 15) { score++; }
+        let variety = 0;
+        for(let flow in flowerVariety) {
+            if(flowerVariety[flow]) { variety++; }
+        };
+        if(variety > 2) { score++; }
+        if(totalHives > 2) { score++; }
+        if(totalBrambles == 0) { score++; }
+        if(totalWeeds <= 0) { score++; }
+        return score;
     }
 
     loadData() {
