@@ -10,7 +10,15 @@ class Market extends Phaser.Scene {
         previousScene = this;
         this.sold = false;
         this.cameras.main.setBackgroundColor(0x000000);
+        this.stage = -1;
 
+        this.imgMap = {
+            yellow:"honeyPlain",
+            blue:"honeyBlue",
+            pink:"honeyPink",
+            purple:"honeyPurple"
+
+        }
         this.createControls(); //Sets the various controls
         this.createBackground(); //Creates backdrop
         this.createPopulatedTable(); //Create table and fill with jars of honey
@@ -45,11 +53,11 @@ class Market extends Phaser.Scene {
         this.state = "waiting";
     }
 
-    createCustomersInLine(){
-        let amt = Math.max(2, playerVariables.reputation/2 + 6);
+    createCustomersInLine() {
+        let amt = Math.max(2, playerVariables.reputation / 2 + 6);
         this.customersInLine = [];
         console.log(`Creating ${amt} customers in line...`);
-        for (let i = 0; i < amt; i++){
+        for (let i = 0; i < amt; i++) {
             this.customersInLine.push(this.generateNPC());
             this.customersInLine[i].setVisible(false);
             console.log(`creating npc ${i}...`);
@@ -71,7 +79,7 @@ class Market extends Phaser.Scene {
 
             this.updateBearShuffle();
 
-            if (playerVariables.inventory.honey.total > 0 && Phaser.Math.Between(0, 1000) > 985 && this.customersInLine.length > 0 ) {
+            if (playerVariables.inventory.honey.total > 0 && Phaser.Math.Between(0, 1000) > 985 && this.customersInLine.length > 0) {
                 this.state = "approaching";
 
                 this.npc = this.customersInLine.pop(); //Generate the NPC
@@ -96,11 +104,14 @@ class Market extends Phaser.Scene {
             this.updateBearShuffle();
 
         } else if (this.state === "bargaining") { //Ask for honey at price
-            if (!dialogActive) {
-                dialogActive = true;
-                dialogGlobal = this.cache.json.get('dialog');
-                this.exchange = this.barter(this.npcAmount, this.npcPrice);
+            if (this.stage === -1) {
+                this.stage = 0;
+                console.log("stage is -1")
+                this.initiateRequest();
 
+            } else if (this.stage === 1) {
+                console.log("stage is 1")
+                this.exchange = this.barter(this.npcAmount, this.npcPrice);
             }
         } else if (this.state === "leaving") {
             //Constant bear wiggle
@@ -114,9 +125,9 @@ class Market extends Phaser.Scene {
             dialogEnded = false;
 
             priceHistory.push({
-               mood:this.mood,
-               type:this.typeToBuy,
-                price:this.exchange/this.npcAmount
+                mood: this.mood,
+                type: this.typeToBuy,
+                price: this.exchange / this.npcAmount
             });
 
             if (this.angry) {
@@ -134,7 +145,7 @@ class Market extends Phaser.Scene {
             } else {
                 this.priceChange();
             }
-            }
+        }
     }
 
     priceChange() {
@@ -230,8 +241,59 @@ class Market extends Phaser.Scene {
         }
     }
 
+    // barter(amt, proposedPrice) {
+    //     this.angry = false;
+    //     console.log(`${amt} at price of ${proposedPrice}`)
+    //     //Prices moved to global
+    //     let setPrice = amt * priceMap[this.typeToBuy]
+    //     console.log("transaction price = " + setPrice);
+    //     let propUnitPrice = proposedPrice / amt;
+    //     let setUnitPrice = setPrice / amt;
+    //     console.log(`prop: ${propUnitPrice} ; set ${setUnitPrice}`)
+    //     let dif = propUnitPrice - setUnitPrice;
+    //     console.log(`${dif} dif between prop price and set price`)
+    //     let barter = this.createGreeting(amt, setUnitPrice);
+    //     let mood = moodMap[this.npcMoodGenerator(propUnitPrice, setUnitPrice)];
+    //     console.log("mood after generation is " + mood);
+    //     if (mood === "neutral") {
+    //         //too high
+    //         if (Math.random() * 100 <= this.npc.type.barterChance) {
+    //             console.log("customer wants to barter");
+    //             dialogueSection = rangeDialogue['high'][0];
+    //             bartering = true;
+    //             this.sold = false;
+    //         } else {
+    //             dialogueSection = rangeDialogue['mid'][0];
+    //             bartering = false;
+    //             this.sold = true;
+    //         }
+    //     } else if (mood === "happy" || mood === "pleased") {
+    //         dialogueSection = rangeDialogue['mid'][0];
+    //         this.sold = true;
+    //         bartering = false;
+    //         playerVariables.reputation += 1;
+    //     } else if (mood === "displeased") {
+    //         playerVariables.reputation -= 1;
+    //         dialogueSection = rangeDialogue['angry'][0];
+    //         this.sold = false;
+    //         this.angry = true;
+    //     }
+    //     this.mood = mood;
+    //     this.createMoodPopup(mood);
+    //     dialogSlice = dialogGlobal[dialogueSection];
+    //     dialogGlobal[dialogueSection] = barter.concat(dialogGlobal[dialogueSection]);
+    //
+    //     if (this.sold) {
+    //         //console.log("pushing farewell")
+    //         dialogGlobal[dialogueSection] = dialogGlobal[dialogueSection].concat(this.createFarewell());
+    //     }
+    //     console.log("launching dialog from bartering")
+    //     this.scene.launch('talkingScene');
+    //
+    //     return setUnitPrice * amt;
+    // }
+
     barter(amt, proposedPrice) {
-        this.angry = false;
         console.log(`${amt} at price of ${proposedPrice}`)
         //Prices moved to global
         let setPrice = amt * priceMap[this.typeToBuy]
@@ -239,122 +301,117 @@ class Market extends Phaser.Scene {
         let propUnitPrice = proposedPrice / amt;
         let setUnitPrice = setPrice / amt;
         console.log(`prop: ${propUnitPrice} ; set ${setUnitPrice}`)
-        let dif = propUnitPrice - setUnitPrice;
-        console.log(`${dif} dif between prop price and set price`)
-        let barter = this.createGreeting(amt, setUnitPrice);
-        let mood = moodMap[this.npcMoodGenerator(propUnitPrice, setUnitPrice)];
-        console.log("mood after generation is " + mood);
-        if (mood === "neutral") {
-            //too high
-            if (Math.random()*100 <= this.npc.type.barterChance){
-                console.log("customer wants to barter");
-                dialogueSection = rangeDialogue['high'][0];
-                bartering = true;
-                this.sold = false;
-            } else {
-                dialogueSection = rangeDialogue['mid'][0];
-                bartering = false;
-                this.sold = true;
-            }
-        } else if (mood === "happy" || mood === "pleased") {
-            dialogueSection = rangeDialogue['mid'][0];
-            this.sold = true;
-            bartering = false;
-            playerVariables.reputation += 1;
-        } else if (mood === "displeased") {
-            playerVariables.reputation -= 1;
-            dialogueSection = rangeDialogue['angry'][0];
-            this.sold = false;
-            this.angry = true;
+        let percent = this.calcPercent(propUnitPrice,setUnitPrice);
+        console.log(`percent for mood is ${percent}`);
+        let mood = undefined;
+        if (percent <= .55){
+            mood =  "ecstatic";
+        } else if (.55 < percent && percent <= .6){
+            mood = "happy";
+        } else if (.6 < percent && percent <= .65){
+            mood = "pleased";
+        } else if (.65 < percent && percent <= .7){
+            mood = "satisfied";
+        } else if (.7 < percent && percent <= .75){
+            mood = "neutral";
+        } else if (.75 < percent && percent <= .8){
+            mood = "sad"
+        } else if (.8 < percent && percent <=.85){
+            mood = "displeased"
+        } else if (.85 < percent && percent <= .95){
+            mood = "angry"
+        } else if (percent > .95){
+            mood = "noBuy"
+        } else {
+            mood = "idk man"
         }
-        this.mood = mood;
-        this.createMoodPopup(mood);
-        dialogSlice = dialogGlobal[dialogueSection];
-        dialogGlobal[dialogueSection] = barter.concat(dialogGlobal[dialogueSection]);
+        console.log(`mood is ${mood}`);
+        this.stage = 2;
+        return mood;
+    }
 
-        if (this.sold) {
-            //console.log("pushing farewell")
-            dialogGlobal[dialogueSection] = dialogGlobal[dialogueSection].concat(this.createFarewell());
+    initiateRequest() {
+        let type = this.typeToBuy;
+        let amt = this.npcAmount;
+        if (this.stage === 0) {
+            console.log("stage is 0");
+            console.log("initiating request.");
+            console.log(`npc wants to buy ${amt} jars of ${type}`);
+
+            this.initiatePrice = this.add.image(this.npc.x - 100, this.npc.y - 200, 'emptyBox')
+                .setDepth(100).setOrigin(.5, .5).setScale(.75, .75);
+            this.honeyIMG = this.add.image(this.initiatePrice.x+10,this.initiatePrice.y, this.imgMap[type])
+                .setDepth(125).setOrigin(.5,.5).setScale(.5,.5);
+            this.honeyAmtText = this.add.text(this.initiatePrice.x-20,this.initiatePrice.y,amt.toString(), this.textConfig)
+                .setDepth(125).setOrigin(.5,.5);
+            this.decline = this.add.image(this.initiatePrice.x - 40, this.initiatePrice.y + 60, 'sellNo',0)
+                .setDepth(100).setOrigin(.5, .5).setScale(.25, .25).setAlpha(.5).setInteractive()
+                .on('pointerover', () => {
+                    this.decline.alpha = 1;
+                })
+                .on('pointerout', () => {
+                    this.decline.alpha = .5;
+                })
+                .on('pointerdown', () => {
+                    this.initiatePrice.destroy();
+                    this.decline.destroy();
+                    this.accept.destroy();
+                    this.honeyAmtText.destroy();
+                    this.honeyIMG.destroy();
+                    this.state = "leaving";
+                    this.time.addEvent({
+                        delay: 1500,
+                        callback: () => {
+                            this.npc.destroy();
+                            this.state = "waiting";
+                            this.stage = -1;
+                        },
+                        loop: false,
+                        callbackScope: this
+                    });
+
+                });
+
+
+            this.accept = this.add.image(this.initiatePrice.x + 40, this.initiatePrice.y + 60, 'sellYes',0)
+                .setDepth(100).setOrigin(.5, .5).setAlpha(.5).setScale(.25, .25).setInteractive()
+                .on('pointerover', () => {
+                    this.accept.alpha = 1;
+                })
+                .on('pointerout', () => {
+                    this.accept.alpha = .5;
+                })
+                .on('pointerdown', () => {
+                    //proceed to price checking
+                    console.log("clicked on yes");
+                    this.initiatePrice.destroy();
+                    this.decline.destroy();
+                    this.accept.destroy();
+                    this.honeyAmtText.destroy();
+                    this.honeyIMG.destroy();
+                    this.stage = 1;
+                });
         }
-        console.log("launching dialog from bartering")
-        this.scene.launch('talkingScene');
 
-        return setUnitPrice * amt;
     }
 
-    createGreeting(amt, setUnitPrice) {
-        let bart = "I would like to buy " + amt + " " + this.typeToBuy + " honey."
-        let response = "Certainly. That would be " + setUnitPrice * amt + "$ for "
-            + amt + " jars of " + this.typeToBuy + " honey.";
-        let greetLine = this.npc.voiceLines[0][Math.floor(2 * Math.random())] + " " + playerVariables.name;
-        return [
-            {
-                "speaker": this.npc.name,
-                "dialog": greetLine,
-                "newSpeaker": "true"
-            },
-            {
-                "speaker": this.npc.name,
-                "dialog": bart,
-                "newSpeaker": "false"
-            },
-            {
-                "speaker": playerVariables.name,
-                "dialog": response,
-                "newSpeaker": "true"
-            }
-        ];
-    }
-
-    createFarewell() {
-        return [
-            {
-                "speaker": this.npc.name,
-                "dialog": this.npc.voiceLines[1][Math.floor(2 * Math.random())],
-                "newSpeaker": "true"
-            },
-            {
-                "speaker": playerVariables.name,
-                "dialog": "Goodbye friend.",
-                "newSpeaker": "true"
-            }
-        ];
-    }
-
-    createAngryResponse() {
-        return;
-    }
-
-    npcMoodGenerator(propUnitPrice, setUnitPrice) {
+    calcPercent(propUnitPrice, setUnitPrice) {
         let npcHigh = this.npc.priceRange[1] * Math.random();
         let npcLow = this.npc.priceRange[0] * Math.random();
-        console.log("**NPC Mood generation***");
-        console.log("price ranges for npc mood");
-        console.log(this.npc.priceRange)
-        console.log(npcHigh + propUnitPrice);
-        console.log(npcLow + propUnitPrice);
-
-
+        // console.log("**NPC Mood generation***");
+        // console.log("price ranges for npc mood");
+        // console.log(this.npc.priceRange)
+        // console.log(npcHigh + propUnitPrice);
+        // console.log(npcLow + propUnitPrice);
         let npcRange = [npcLow + propUnitPrice, npcHigh + propUnitPrice, Math.abs(npcLow) + npcHigh + propUnitPrice];
-        console.log("npc range and set price");
-        console.log(npcRange);
-        console.log(setUnitPrice);
-        if (setUnitPrice <= npcRange[0]) {
-            //happy
-            console.log("hapy price")
-            return 0;
-        } else if (npcRange[0] < setUnitPrice && setUnitPrice <= npcRange[1]) {
-            //neutral
-            console.log(" netural")
-            return 1;
-        } else if (npcRange[1] < setUnitPrice && setUnitPrice <= npcRange[2]) {
-            //barter
-            console.log("barter time")
-            return 2;
-        } else if (npcRange[2] <= setUnitPrice) {
-            console.log("im leaving")
-            return 3;
-        }
+        // console.log("npc range and set price");
+        // console.log(npcRange);
+        // console.log(setUnitPrice);
+        let budget = npcRange[2];
+        let percent = setUnitPrice/budget;
+        //console.log(`percent is ${percent}`)
+        return percent;
+
     }
 
     createMoodPopup(mood) {
@@ -386,21 +443,22 @@ class Market extends Phaser.Scene {
         keyN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.N);
     }
 
-    createPriceHistoryIcon(){
-    this.priceHistory = this.add.image(7*config.width/8, config.height/5, 'noteBook', 0)
-        .setDepth(100).setScale(.125,.125).setOrigin(.5, .5).setAlpha(.5).setInteractive()
-        .on('pointerover', () => {
-            this.priceHistory.alpha = 1;
-        })
-        .on('pointerout', () => {
-            this.priceHistory.alpha = .5;
-        })
-        .on('pointerdown', () => {
-            this.scene.pause();
-            this.priceHistory.alpha = 0;
-            this.scene.launch('priceHistory',{previousScene: "marketScene"});
-        });
+    createPriceHistoryIcon() {
+        this.priceHistory = this.add.image(7 * config.width / 8, config.height / 5, 'noteBook', 0)
+            .setDepth(100).setScale(.125, .125).setOrigin(.5, .5).setAlpha(.5).setInteractive()
+            .on('pointerover', () => {
+                this.priceHistory.alpha = 1;
+            })
+            .on('pointerout', () => {
+                this.priceHistory.alpha = .5;
+            })
+            .on('pointerdown', () => {
+                this.scene.pause();
+                this.priceHistory.alpha = 0;
+                this.scene.launch('priceHistory', {previousScene: "marketScene"});
+            });
     }
+
     createBackground() {
         //REPLACE with actual background
         //this.background = this.add.image(config.width / 2, config.height / 2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5);
