@@ -3,10 +3,19 @@ class Hive {
         this.gridx = gridx;
         this.gridy = gridy;
         this.type = "Beehive";
+        this.stock = {
+            "yellow": 0,
+            "blue": 0,
+            "purple": 0,
+            "pink": 0
+        };
+        this.weeksSinceCollection = 0;
+        this.honeyIndicator = null;
     }
 
     collect() {
         //console.log("hive at ",this.gridx,this.gridy);
+        this.weeksSinceCollection++;
         let collectedPollen = {
             "colorless": 0,
             "blue": 0,
@@ -22,14 +31,11 @@ class Hive {
                         let loc = gardenGrid[row][col];
                         if(loc.item instanceof Flower) {
                             let type = loc.item.getPollen();
-                            console.log("collecting good pollen from flower at: " + col+', '+row);
-                            if(type != "none") {
-                                collectedPollen[type] += 1;
-                                totalPollen += 1;
+                            //console.log("collecting good pollen from flower at: " + col+', '+row);
+                            if(type [0] > 0) {
+                                collectedPollen[type[1]] += type[0];
+                                totalPollen += type[0];
                             }
-                        } else if (loc.item instanceof Weed) {
-                            console.log("collected bad pollen from weed at " + col+', '+row);
-                            totalPollen -= 1;
                         }
                     }
                 }
@@ -37,43 +43,23 @@ class Hive {
         }
         //console.log("honey",collectedPollen,"and",totalPollen);
         totalPollen = Math.max(totalPollen, 0);  //Make sure you cannot lose honey
-        let honeyStock = playerVariables.inventory.honey;
         let honeyProduced = Math.sqrt(totalPollen);
         if (collectedPollen["colorless"] / totalPollen > .45) {
-            honeyStock["Leftover Yellow"] += honeyProduced;
-            while(honeyStock["Leftover Yellow"] >= 1) {
-                honeyStock["Leftover Yellow"]--;
-                honeyStock["yellow"]++;
-                honeyStock["total"]++;
-            }
+            this.stock["yellow"] += honeyProduced;
         } else if ((collectedPollen["blue"] + collectedPollen["colorless"]) / totalPollen > .74) {
-            honeyStock["Leftover Blue"] += honeyProduced;
-            while(honeyStock["Leftover Blue"] >= 1) {
-                honeyStock["Leftover Blue"]--;
-                honeyStock["blue"]++;
-                honeyStock["total"]++;
-            }
+            this.stock["blue"] += honeyProduced;
         } else if ((collectedPollen["purple"] + collectedPollen["colorless"]) / totalPollen > .74) {
-            honeyStock["Leftover Purple"] += honeyProduced;
-            while(honeyStock["Leftover Purple"] >= 1) {
-                honeyStock["Leftover Purple"]--;
-                honeyStock["purple"]++;
-                honeyStock["total"]++;
-            }
+            this.stock["purple"] += honeyProduced;
         } else if ((collectedPollen["pink"] + collectedPollen["colorless"]) / totalPollen > .74) {
-            honeyStock["Leftover Pink"] += honeyProduced;
-            while(honeyStock["Leftover Pink"] >= 1) {
-                honeyStock["Leftover Pink"]--;
-                honeyStock["pink"]++;
-                honeyStock["total"]++;
-            }
+            this.stock["pink"] += honeyProduced;
         } else {
-            honeyStock["Leftover Yellow"] += honeyProduced;
-            while(honeyStock["Leftover Yellow"] >= 1) {
-                honeyStock["Leftover Yellow"]--;
-                honeyStock["yellow"]++;
-                honeyStock["total"]++;
-            }
+            this.stock["yellow"] += honeyProduced;
+        }
+    }
+
+    hasStock() {
+        for(let pollen in this.stock) {
+            if(this.stock[pollen] >= 1) { return true; }
         }
     }
 
@@ -83,6 +69,10 @@ class Hive {
         this.image.depth = this.image.y/10 - 3;
         scene.add.existing(this.image);
         this.image.setPosition(initx, inity);
+        if(this.hasStock()) {
+            this.honeyIndicator = scene.add.ellipse(initx, inity + 40, config.width / 10, config.height / 10, 0xE5A515);
+            this.honeyIndicator.alpha = .75;
+        }
         return this.image;
     }
 

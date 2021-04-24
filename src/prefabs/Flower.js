@@ -34,12 +34,17 @@ class Flower {
         this.collected = false;
     }
 
-    getPollen() {
+    getPollen(row, col) {
         if (!this.collected && this.water > 0 && !(this.age < this.ref["grow"])) {
             this.collected = true;
-            return this.ref["pollen"];
+            let pollen = 1;
+            if(row-1 >= 0 && gardenGrid[row-1][col] instanceof Weed) { pollen -=.25; }
+            if(row+1 < gardenGrid.length && gardenGrid[row+1][col] instanceof Weed) { pollen -=.25; }
+            if(col-1 >= 0 && gardenGrid[row][col-1] instanceof Weed) { pollen -=.25; }
+            if(col+1 < gardenGrid[0].length && gardenGrid[row][col+1] instanceof Weed) { pollen -=.25; }
+            return [pollen, this.ref["pollen"]];
         } else {
-            return "none";
+            return [0, this.ref["pollen"]];
         }
     }
 
