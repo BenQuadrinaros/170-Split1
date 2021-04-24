@@ -91,6 +91,7 @@ let playerVariables = {
     money: 10.00,
     reputation: 0,
     name: "Bearry",
+    score: [false, false, false, false, false],
     inventory: {
         honey: {
             "total": 3,
@@ -138,7 +139,7 @@ let shopInventory = {
         "Sprinkler":{"amount": 2,"cost":15},
         "Beehive":{"amount": 2,"cost":12},
         "Clipper":{"amount":4,"cost":3}
-        //,        "Fertilizer":{"amount": 5,"cost": 4}
+        //"Fertilizer":{"amount": 5,"cost": 4}
     }
 }
 
@@ -181,3 +182,42 @@ let moodMap = {
 }
 
 let priceHistory = [];
+
+function calculateEcologyScore() {
+    // amount of flowers, variety of flowers, number of hives, number of brambles, number of weeds
+    let flowerTotal = 0;
+    let flowerVariety = {
+        "Cosmos": false,
+        "Bluebonnet": false,
+        "Lavender": false,
+        "Tulip": false
+    };
+    let totalHives = 0;
+    let totalBrambles = 0;
+    let totalWeeds = -3;
+    gardenGrid.forEach(row => {
+        row.forEach(plot => {
+            if(plot.item instanceof Flower) {
+                flowerTotal++;
+                flowerVariety[plot.item.type] = true;
+            } else if(plot.item instanceof Hive) {
+                totalHives++;
+            } else if(plot.item instanceof Bramble) {
+                totalBrambles++;
+            } else if (plot.item instanceof Weed) {
+                totalWeeds++;
+            }
+        })
+    });
+    let score = [false, false, false, false, false];
+    if(flowerTotal > 15) { score[0] = true; }
+    let variety = 0;
+    for(let flow in flowerVariety) {
+        if(flowerVariety[flow]) { variety++; }
+    };
+    if(variety > 2) { score[1] = true; }
+    if(totalHives > 2) { score[2] = true; }
+    if(totalBrambles == 0) { score[3] = true; }
+    if(totalWeeds <= 0) { score[4] = true; }
+    return score;
+}

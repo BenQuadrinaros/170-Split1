@@ -72,10 +72,11 @@ class Hub extends Phaser.Scene {
         this.createBees();
 
         //Check for special cases
-        this.score = this.calculateEcologyScore();
-        console.log("score is "+this.score)
-        if (this.score >= 5) {
-            console.log("here");
+        playerVariables.score = calculateEcologyScore();
+        console.log("score is "+playerVariables.score)
+        let hasWon = false;
+        for(let star of playerVariables.score) { if(!star) { hasWon = false; } }
+        if (hasWon) {
             this.scene.pause();
             this.music.stop();
             this.scene.start("winScene");
@@ -87,10 +88,10 @@ class Hub extends Phaser.Scene {
             this.scene.pause();
             if(this.previousScene === "tutorialScene"){
                 this.scene.launch("hubPopupScene", {previousScene: "hubScene", initialHoney: this.startingHoneyForPopup, 
-                    score: this.score, money: this.startingMoneyForPopup, fromTutorial:true});
+                    money: this.startingMoneyForPopup, fromTutorial:true});
             } else {
                 this.scene.launch("hubPopupScene", {previousScene: "hubScene", initialHoney: this.startingHoneyForPopup,
-                    score: this.score, money: this.startingMoneyForPopup, fromTutorial:false});
+                    money: this.startingMoneyForPopup, fromTutorial:false});
             }
         }
     }
@@ -244,7 +245,7 @@ class Hub extends Phaser.Scene {
         //Render all plots
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
-                gardenGrid[row][col].renderPlot(this, this.gridToCoord(row, col));
+                gardenGrid[row][col].renderPlot(this, this.gridToCoord(col, row));
             }
         }
 
@@ -424,7 +425,7 @@ class Hub extends Phaser.Scene {
             for (let col = 0; col < gardenGrid[0].length; col++) {
                 let plot = gardenGrid[row][col];
                 let coords = this.gridToCoord(col, row);
-                plot.renderPlot(this, coords);
+                //plot.renderPlot(this, coords);
                 if (plot.item instanceof Hive || plot.item instanceof Flower) {
                     this.path.push([coords[0], coords[1] - 25]);
                 }
@@ -750,30 +751,52 @@ class Hub extends Phaser.Scene {
                     let loc = gardenGrid[row][col];
                     let obj = loc.item;
 
-                    if (!(obj instanceof Bramble)) { 
+                    if (!(obj instanceof Bramble) && !(obj instanceof Hive && obj.hasStock())) { 
                         loc.item = null; 
                     }
-                    if (obj instanceof Flower || obj instanceof Hive || obj instanceof Sprinkler) {
-                        //If on the bee path, remove it
-                        if (obj instanceof Flower || obj instanceof Hive) {
-                            this.path = this.removeFromPath(obj.image, this.path);
+                    if(obj instanceof Hive && obj.hasStock()) {
+                        //If there is honey to collect from this Hive
+                        let message = "";
+                        for(let honey in obj.stock) {
+                            let jars = Math.floor(obj.stock[honey]);
+                            if(jars > 0) {
+                                playerVariables.inventory.honey[honey] += jars;
+                                playerVariables.inventory.honey["total"] += jars;
+                                obj.stock[honey] -= jars;
+                                message += "You got "+jars+" jar(s) of "+honey+" honey.\n";
+                            }
                         }
-                        heldItem = obj;
-                        this.heldImg = 0;
+                        message += "From "+obj.weeksSinceCollection+" week(s) of production.";
+                        obj.weeksSinceCollection = 0;
+                        if(obj.honeyIndicator) { obj.honeyIndicator.destroy(); }
+                        this.fadeText(message);
+                        this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + 
+                            "\nMoney: " + playerVariables.money;
                     } else {
-                        loc.dug = true;
-                    }
-                    if(heldItem instanceof Hive || heldItem instanceof Sprinkler){
-                        heldType = "items";
-                    } else if (heldItem instanceof Flower) {
-                        if(heldItem.age == 0) {
-                            heldType = "seed";
+                        if (obj instanceof Flower || obj instanceof Hive || obj instanceof Sprinkler) {
+                            //If on the bee path, remove it
+                            if (obj instanceof Flower || obj instanceof Hive) {
+                                this.path = this.removeFromPath(obj.image, this.path);
+                            }
+                            heldItem = obj;
+                            this.heldImg = 0;
+                        } else if(obj == null && loc.dug) {
+                            loc.dug = false;
                         } else {
-                            heldType = "flowers";
+                            loc.dug = true;
                         }
+                        if(heldItem instanceof Hive || heldItem instanceof Sprinkler){
+                            heldType = "items";
+                        } else if (heldItem instanceof Flower) {
+                            if(heldItem.age == 0) {
+                                heldType = "seed";
+                            } else {
+                                heldType = "flowers";
+                            }
+                        }
+                        //recreate the plot
+                        loc.renderPlot(this, this.gridToCoord(col, row));
                     }
-                    //recreate the plot
-                    loc.renderPlot(this, this.gridToCoord(col, row));
                 }
             }
         }
@@ -911,45 +934,6 @@ class Hub extends Phaser.Scene {
         heldItem.destroy();
         heldItem = undefined;
         this.heldImg = 0;
-    }
-
-    calculateEcologyScore() {
-        // amount of flowers, variety of flowers, number of hives, number of brambles, number of weeds
-        let flowerTotal = 0;
-        let flowerVariety = {
-            "Cosmos": false,
-            "Bluebonnet": false,
-            "Lavender": false,
-            "Tulip": false
-        };
-        let totalHives = 0;
-        let totalBrambles = 0;
-        let totalWeeds = -3;
-        gardenGrid.forEach(row => {
-            row.forEach(plot => {
-                if(plot.item instanceof Flower) {
-                    flowerTotal++;
-                    flowerVariety[plot.item.type] = true;
-                } else if(plot.item instanceof Hive) {
-                    totalHives++;
-                } else if(plot.item instanceof Bramble) {
-                    totalBrambles++;
-                } else if (plot.item instanceof Weed) {
-                    totalWeeds++;
-                }
-            })
-        });
-        let score = 0;
-        if(flowerTotal > 15) { score++; }
-        let variety = 0;
-        for(let flow in flowerVariety) {
-            if(flowerVariety[flow]) { variety++; }
-        };
-        if(variety > 2) { score++; }
-        if(totalHives > 2) { score++; }
-        if(totalBrambles == 0) { score++; }
-        if(totalWeeds <= 0) { score++; }
-        return score;
     }
 
     loadData() {

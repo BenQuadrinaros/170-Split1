@@ -8,7 +8,6 @@ class HubPopup extends Phaser.Scene {
         this.prevScene = data.previousScene;
         this.initialHoney = data.initialHoney;
         this.fromTutorial = data.fromTutorial;
-        this.score = data.score;
         this.money = data.money;
         console.log("From Tutorial: " + this.fromTutorial);
     }
@@ -35,10 +34,10 @@ class HubPopup extends Phaser.Scene {
                 bottom: 5
             },
         };
-        var textSpacer = 0;
+        var textSpacer = -20;
 
         //Each color of Honey delta
-        this.add.text(config.width/2, config.height/3, "This week, you collected:", 
+        /*this.add.text(config.width/2, config.height/3, "This week, you collected:", 
             this.textConfig).setOrigin(.5, .5);
         var deltaYellow = playerVariables.inventory.honey["yellow"] - this.initialHoney["yellow"];
         if(deltaYellow > 0) {
@@ -64,27 +63,57 @@ class HubPopup extends Phaser.Scene {
             this.add.text(config.width/2, config.height/3 + textSpacer, "Pink Honey: " 
                 + deltaPink + " jars", this.textConfig).setOrigin(.5, .5);
         }
+        textSpacer += 20;*/
+        this.add.text(config.width/2, config.height/3 + textSpacer, "Visit your hives to collect honey!", 
+            this.textConfig).setOrigin(.5, .5);
         
         //Money spent on watering
         var deltaMoney = this.money - playerVariables.money;
         if(deltaMoney > 0) {
-            textSpacer += 35;
+            textSpacer += 20;
             this.add.text(config.width/2, config.height/3 + textSpacer, "You spent $" 
                 + deltaMoney + " watering with Sprinklers.", this.textConfig).setOrigin(.5, .5);
         }
 
-        //Display ecology score low on card
-        this.add.text(config.width/2 - 95, 4*config.height/5 - 95, "Happy Honey Association Score:", 
+        //Display ecology score below
+        textSpacer += 30;
+        this.add.text(config.width/2, config.height/3 + textSpacer, "Happy Honey Association Score:", 
             this.textConfig).setOrigin(.5, .5);
+        let grades = ["F", "D", "C", "B", "A", "A+"];
+        let grade = 0;
+        let gradeHeight = config.height/3 + textSpacer;
         for(let i = 0; i < 5; i++) {
-            if(i<this.score) {
+            //Checklist of tasks needed to win
+            textSpacer += 35;
+            if(playerVariables.score[i]) {
                 //Put in a filled star
-                this.add.image(config.width/2 + 35 + (i*35), 4*config.height/5 - 95, "filledStar");
+                this.add.image(config.width/3 + 35, config.height/3 + textSpacer, "filledStar");
+                grade++;
             } else {
                 //Put in an empty star
-                this.add.image(config.width/2 + 35 + (i*35), 4*config.height/5 - 95, "emptyStar");
+                this.add.image(config.width/3 + 35, config.height/3 + textSpacer, "emptyStar");
+            }
+            if(i == 0) {
+                this.add.text(config.width/3 + 65, config.height/3 + textSpacer, "Have at least 15 Flowers.", 
+                    this.textConfig).setOrigin(0, .5);
+            } else if (i == 1) {
+                this.add.text(config.width/3 + 65, config.height/3 + textSpacer, "Have at least 3 types of Flowers.", 
+                    this.textConfig).setOrigin(0, .5);
+            } else if (i == 2) {
+                this.add.text(config.width/3 + 65, config.height/3 + textSpacer, "Have at least 3 Beehives.", 
+                    this.textConfig).setOrigin(0, .5);
+            } else if (i == 3) {
+                this.add.text(config.width/3 + 65, config.height/3 + textSpacer, "Clear all Brambles.", 
+                    this.textConfig).setOrigin(0, .5);
+            } else {
+                this.add.text(config.width/3 + 65, config.height/3 + textSpacer, "Have minimal Weeds.", 
+                    this.textConfig).setOrigin(0, .5);
             }
         }
+        //Could replace this with a more stylized stamp image
+        this.textConfig.fontSize = "22px";
+        this.add.text(config.width/2 + 125, gradeHeight, grades[grade], this.textConfig).setOrigin(.5, .5);
+        this.textConfig.fontSize = "14px";
 
         //Display a random unused tool tip along the bottom of the card
         let rand = Phaser.Math.Between(0, toolTips.length-1);
