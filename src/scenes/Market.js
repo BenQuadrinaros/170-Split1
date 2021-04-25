@@ -117,7 +117,7 @@ class Market extends Phaser.Scene {
                 let percent = this.exchange[1];
                 let mood = this.exchange[0];
                 this.createMoodPopup(mood);
-                this.initiateNPCDecision(percent);
+                this.initiateNPCDecision(percent,mood);
 
             }
             //console.log("stage is " + this.stage)
@@ -158,14 +158,19 @@ class Market extends Phaser.Scene {
         }
     }
 
-    makeTransaction(type, amount){
+    makeTransaction(type, amount, mood){
         console.log(`Money made from ${amount} ${type} honey is ${amount*priceMap[type]}`)
+        priceHistory.push({
+            type:type,
+            price:priceMap[type],
+            mood: mood
+        })
         this.reduceStock(type, amount);
         playerVariables.money += amount*priceMap[type];
 
     }
 
-
+    //Check price against npc internal budget and return percent and mood accordingly
     iniatiatePriceCheck(amt, proposedPrice) {
         console.log(`${amt} at price of ${proposedPrice}`)
         //Prices moved to global
@@ -203,6 +208,7 @@ class Market extends Phaser.Scene {
         return [mood, percent];
     }
 
+    //Function to handle creation of npc request ui, honey type, amt, and event handlers.
     initiateRequest() {
         let type = this.typeToBuy;
         let amt = this.npcAmount;
@@ -210,7 +216,7 @@ class Market extends Phaser.Scene {
             console.log("stage is 0");
             console.log("initiating request.");
             console.log(`npc wants to buy ${amt} jars of ${type}`);
-
+            //Create icons for npc asking to make purchase
             this.initiatePrice = this.add.image(this.npc.x, this.npc.y - 200, 'emptyBox')
                 .setDepth(100).setOrigin(.5, .5).setScale(.075, .075);
             this.honeyIMG = this.add.image(this.initiatePrice.x+10,this.initiatePrice.y-5, this.imgMap[type])
@@ -258,8 +264,8 @@ class Market extends Phaser.Scene {
 
     }
 
-    initiateNPCDecision(percent){
-        if (percent > 1){
+    initiateNPCDecision(percent, mood){ //Npc will decide how to act based on the percent of set price/total budget
+        if (percent > 1){ //above 1, "high" price, npc will either leave or haggle
             if (Math.random() <= .5){ //npc just leaves
                 playerVariables.reputation -=1;
                 this.resetStage();
@@ -270,15 +276,24 @@ class Market extends Phaser.Scene {
                 this.initiateHaggle();
             }
 
-        } else if (percent < .80){
+        } else if (percent < .80){ //"Good" price falls below 80%, npc will buy and player's reputation will increase
             playerVariables.reputation+=1;
-            this.makeTransaction(this.typeToBuy, this.npcAmount);
+            this.makeTransaction(this.typeToBuy, this.npcAmount, mood);
             this.resetStage();
+        }else if (.8 <= percent && percent < 1){ //between 80% and 100%, npc will accept or haggle (75/25) respectively
+            if (Math.random() <= .25){
+                this.initiateHaggle();
+            } else {
+                playerVariables.reputation -=1;
+                this.makeTransaction(this.typeToBuy, this.npcAmount, mood);
+                this.resetStage();
+            }
         } else {
             this.resetStage();
         }
     }
 
+    //Function to handle Haggling or lowering the price of honey
     initiateHaggle(){
         this.initiatePrice = this.add.image(this.npc.x - 100, this.npc.y - 200, 'emptyBoxTwo')
             .setDepth(100).setOrigin(.5, .5).setScale(.075, .075);
@@ -316,6 +331,7 @@ class Market extends Phaser.Scene {
             });
     }
 
+    //reset market state to no customers, allowing one to approacj
     resetStage(){
         this.state = "leaving";
         this.time.addEvent({
@@ -330,7 +346,7 @@ class Market extends Phaser.Scene {
         });
     }
 
-
+    //calculate percent of budget set price is for npc
     calcPercent(propUnitPrice, setUnitPrice) {
         let npcHigh = this.npc.priceRange[1] * Math.random();
         let npcLow = this.npc.priceRange[0] * Math.random();
