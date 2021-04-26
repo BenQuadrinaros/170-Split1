@@ -226,6 +226,10 @@ class BackPackUI extends Phaser.Scene {
                                     heldType = "items";
                                     heldItem = new Sprinkler(-1, -1);
                                     playerVariables.inventory[uiScene.selectedTab][item] -= 1;
+                                } else if(item == "Clipper") {
+                                    heldType = "items";
+                                    heldItem = new Clipper();
+                                    playerVariables.inventory[uiScene.selectedTab][item] -= 1;
                                 } else {
                                     console.log("Holding invalid object");
                                 }

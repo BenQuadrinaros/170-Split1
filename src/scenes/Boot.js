@@ -31,6 +31,8 @@ class Boot extends Phaser.Scene {
             this.load.image('hiveHighlight', './assets/sprites/old/orange.png');
             this.load.image('water','./assets/sprites/old/drop5.png');
             this.load.image('weed','./assets/spritesheets/old/Capture.PNG');
+            this.load.image('bramble','./assets/img/bramb.png');
+            this.load.image('clipper','./assets/sprites/old/tools.jpg');
             //Flower stages for Garden
             this.load.image("seedling", "./assets/sprites/spritesheetFrames/uni0.png");
             this.load.image("sprout", "./assets/sprites/spritesheetFrames/uni1.png");
@@ -54,6 +56,8 @@ class Boot extends Phaser.Scene {
             this.load.image('background', './assets/sprites/background/garden_base.png');
             this.load.image('dialogbox', './assets/img/dialogbox.png');
             this.load.image('playerWealthTracker', './assets/sprites/UI/moneyhoney.png');
+            this.load.image('filledStar', './assets/sprites/old/orange.png');
+            this.load.image('emptyStar', './assets/sprites/old/blue.png');
             //For shop
             this.load.image('toadLeckman', './assets/sprites/character/mrleckman_510x300.png');
             //For market price setting
@@ -93,6 +97,9 @@ class Boot extends Phaser.Scene {
             this.load.image('sad', './assets/img/sad.png');
             this.load.image('satisfied', './assets/img/satisfied.png');
             this.load.image('bearbucks','./assets/sprites/UI/bearbucks.png');
+            this.load.image('emptyBox','./assets/sprites/UI/box120x120.png');
+            this.load.image('emptyBoxTwo', './assets/sprites/UI/haggleBox.png')
+            this.load.image('noBuy', './assets/img/noBuy.png');
             //For pricehistory scene
             this.load.image('notebookBG', './assets/sprites/UI/notebookHalfLined.png');
             this.load.image('noteBook','./assets/sprites/UI/notebookIcon.png');

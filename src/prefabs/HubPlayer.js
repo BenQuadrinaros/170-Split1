@@ -15,13 +15,18 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         this.createAnimations();
         this.startedMoving = false;
         this.movingUp = false;
+        this.slow = false;
     }
 
     update(){
         if (keyUP.isDown || keyW.isDown) {
             this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
-            if (this.y > 0){
-                this.y -= this.yMoveRate;
+            if (this.y > 150){
+                if(this.slow) {
+                    this.y -= this.yMoveRate/2;
+                } else {
+                    this.y -= this.yMoveRate;
+                }
             }
             this.startedMoving = true;
             this.movingUp = true;
@@ -31,7 +36,11 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
             this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
             this.flipX = true;
             if (this.x > 0){
-                this.x -= this.xMoveRate;
+                if(this.slow) {
+                    this.x -= this.xMoveRate/2;
+                } else {
+                    this.x -= this.xMoveRate;
+                }
             }
             this.startedMoving = true;
         }
@@ -40,7 +49,11 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
             this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
             this.flipX = false;
             if (this.x < this.maxWidth){
-                this.x += this.xMoveRate;
+                if(this.slow) {
+                    this.x += this.xMoveRate/2;
+                } else {
+                    this.x += this.xMoveRate;
+                }
             }
             this.startedMoving = true;
         }
@@ -51,7 +64,11 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
             //this.setFrame(2);
             
             if (this.y < this.maxHeight){
-                this.y += this.yMoveRate;
+                if(this.slow) {
+                    this.y += this.yMoveRate/2;
+                } else {
+                    this.y += this.yMoveRate;
+                }
             }
             this.startedMoving = true;
             this.movingUp = false;
@@ -61,7 +78,8 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
 
     }
 
-    moveTo(clickedX, clickedY){
+    moveTo(clickedX, clickedY) {
+        /*
         var deltaX = Math.abs(this.x - clickedX);
         var deltaY = Math.abs(this.y - clickedY);
         var greaterDistance = Math.max(deltaX, deltaY);
@@ -76,7 +94,7 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
             duration: greaterDistance*6,
             delay: 0,
             repeat: 0
-        });
+        });*/
     }
 
     createAnimations(){

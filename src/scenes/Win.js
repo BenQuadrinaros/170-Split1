@@ -17,7 +17,7 @@ class Win extends Phaser.Scene {
             },
         };
 
-        let text = this.add.text(config.width / 2, config.height / 2, "You win!\nEnjoy your bear-tirement.\n" +
+        this.add.text(config.width / 2, config.height / 2, "You win!\nEnjoy your bear-tirement.\n" +
             "Press Down to return\nto the main menu.", this.textConfig).setOrigin(.5, .5);
             
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
@@ -27,32 +27,42 @@ class Win extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
             this.scene.start("menuScene");
             //reset the game state
+            //Starting garden state
             let flow0 = new Flower(2, 3, "Cosmos");
             let flow1 = new Flower(2, 3, "Cosmos");
-            let hive = new Hive(2, 5);
-            let sprink = new Sprinkler(3, 5);
+            let hive = new Hive(5, 2);
             //more flowers for testing purposes
-            let gardenGrid = [ // 10 x 8 grid for garden generating
+            gardenGrid = [ // 11 x 11 grid for garden generating
                 //Starting placements for intial garden
-                [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-                [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-                [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-                [null,    null,   null,   null,   null,   null,   null,   null,   null,   null],
-                [null,    null,   null,  flow1,   null,   null,   null,   null,   null,   null],
-                [null,    null,   hive, sprink,   null,   null,   null,   null,   null,   null],
-                [null,   flow0,   null,   null,   null,   null,   null,   null,   null,   null],
-                [null,    null,   null,   null,   null,   null,   null,   null,   null,   null]
+                [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+                [null,    null,   null,   null,  flow0,   null,  flow1,   null,   null,   null,   null],
+                [null,    null,   null,   null,   null,   hive,   null,   null,   null,   null,   null],
+                [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+                [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+                [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+                [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+                [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+                [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+                [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+                [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null]
             ];
-            let mulch = {};
-            for(row = 0; row < gardenGrid.length; row++) {
-                for(col = 0; col < gardenGrid[0].length; col++) {
-                    mulch[[row, col]] = 0;
-                }
-            }
-            let wateredTiles = {};
-            for(row = 0; row < gardenGrid.length; row++) {
-                for(col = 0; col < gardenGrid[0].length; col++) {
-                    wateredTiles[[row, col]] = false;
+            //Assign plots to each spot on the grid
+            for(let row = 0; row < gardenGrid.length; row++) {
+                for(let col = 0; col < gardenGrid[0].length; col++) {
+                    let temp = new Plot(col, row);
+                    let loc = gardenGrid[row][col];
+                    if(loc instanceof Flower || loc instanceof Sprinkler) {
+                        temp.dug = true;
+                    }
+                    if(loc == null) {
+                        //Populate in Brambles with higher denisty towards the bottom
+                        let rand = Math.random();
+                        if(rand + Math.sqrt((row - 3) / 15) > .85) {
+                            gardenGrid[row][col] = new Bramble(col, row);
+                        }
+                    }
+                    temp.item = gardenGrid[row][col];
+                    gardenGrid[row][col] = temp;
                 }
             }
 
@@ -66,11 +76,16 @@ class Win extends Phaser.Scene {
                         "yellow": 3,
                         "blue": 0,
                         "purple": 0,
-                        "pink": 0
+                        "pink": 0,
+                        "Leftover Yellow": 0,
+                        "Leftover Blue": 0,
+                        "Leftover Purple": 0,
+                        "Leftover Pink": 0
                     },
                     items: {
                         "Beehive": 0,
                         "Sprinkler": 0,
+                        "Clipper": 3,
                         "Mulch": 0
                     },
                     flowers: {
