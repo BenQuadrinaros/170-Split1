@@ -34,7 +34,7 @@ class HubPopup extends Phaser.Scene {
                 bottom: 5
             },
         };
-        var textSpacer = -20;
+        var textSpacer = -25;
 
         //Each color of Honey delta
         /*this.add.text(config.width/2, config.height/3, "This week, you collected:", 
@@ -64,8 +64,8 @@ class HubPopup extends Phaser.Scene {
                 + deltaPink + " jars", this.textConfig).setOrigin(.5, .5);
         }
         textSpacer += 20;*/
-        this.add.text(config.width/2, config.height/3 + textSpacer, "Visit your hives to collect honey!", 
-            this.textConfig).setOrigin(.5, .5);
+        this.add.text(config.width/2, config.height/3 + textSpacer, "Results from week " + currentDay + ":\n" + 
+            "Visit your hives to collect honey!", this.textConfig).setOrigin(.5, .5);
         
         //Money spent on watering
         var deltaMoney = this.money - playerVariables.money;
@@ -106,7 +106,7 @@ class HubPopup extends Phaser.Scene {
                 this.add.text(config.width/3 + 65, config.height/3 + textSpacer, "Clear all Brambles.", 
                     this.textConfig).setOrigin(0, .5);
             } else {
-                this.add.text(config.width/3 + 65, config.height/3 + textSpacer, "Have minimal Weeds.", 
+                this.add.text(config.width/3 + 65, config.height/3 + textSpacer, "Have less than 3 Weeds.", 
                     this.textConfig).setOrigin(0, .5);
             }
         }

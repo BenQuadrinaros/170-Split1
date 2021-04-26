@@ -368,7 +368,7 @@ class Hub extends Phaser.Scene {
         this.turnText = this.add.text(6 * game.config.width / 7, game.config.height / 4, "Turns Remaining: ", this.textConfig).setOrigin(.5);
         this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
         this.turnText.depth = 100;
-        this.townAccess = this.add.text(0, 2 * config.height / 5, "Path to Town", this.textConfig).setOrigin(0, 0);
+        this.townAccess = this.add.text(25, 2 * config.height / 5 + 30, "Path to Town", this.textConfig).setOrigin(0, 0);
 
 
         //Text that starts invisible
@@ -425,7 +425,7 @@ class Hub extends Phaser.Scene {
             for (let col = 0; col < gardenGrid[0].length; col++) {
                 let plot = gardenGrid[row][col];
                 let coords = this.gridToCoord(col, row);
-                //plot.renderPlot(this, coords);
+                plot.renderPlot(this, coords);
                 if (plot.item instanceof Hive || plot.item instanceof Flower) {
                     this.path.push([coords[0], coords[1] - 25]);
                 }
@@ -433,8 +433,8 @@ class Hub extends Phaser.Scene {
         }
 
         //create water bucket for manual watering
-        this.waterBucket = this.add.image(.925 * config.width, .525 * config.height, "water");
-        this.waterBucket.setOrigin(.5, .5).setScale(1.5, 1.5);
+        this.waterBucket = this.add.image(.925 * config.width, .525 * config.height, "water4");
+        this.waterBucket.setOrigin(.5, .5).setScale(.75, .75);
         this.waterBucket.depth = this.waterBucket.y / 10;
         this.waterHeld = new WateringCan();
     }
@@ -472,9 +472,6 @@ class Hub extends Phaser.Scene {
         if (this.heldImg < 1) {
             heldItem.addToScene(this, this.player.x, this.player.y);
             this.heldImg = 1;
-            if (!(heldItem instanceof WateringCan)) {
-                heldItem.image.setScale(.2, .2);
-            }
         }
         //Always update location
         heldItem.image.x = this.player.x;
@@ -695,8 +692,8 @@ class Hub extends Phaser.Scene {
                         playerVariables.money -= .25;
                         this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + 
                             "\nMoney: " + playerVariables.money;
-                            heldItem = this.waterHeld;
-                            heldItem.water = heldItem.waterMax;
+                        heldItem = this.waterHeld;
+                        heldItem.water = heldItem.waterMax;
                     } else {
                         this.fadeText("Not enough money!\nCosts $0.25 to water.");
                     }
@@ -725,14 +722,11 @@ class Hub extends Phaser.Scene {
                     }
                     //Then wet the spot and reload
                     spot.water = true;
-                    heldItem.water--;
-                    if(heldItem.water <= 0) {
-                        //clear image of item held
-                        heldItem.image.destroy();
-                        heldItem = undefined;
-                        //set the held image to nothing
-                        this.heldImg = 0;
-                    }
+                    //clear image of item held
+                    heldItem.image.destroy();
+                    if(heldItem.pour()) { heldItem = undefined; }
+                    //set the held image to nothing
+                    this.heldImg = 0;
                     spot.renderPlot(this, this.gridToCoord(col, row));
                     
                 }
@@ -768,7 +762,7 @@ class Hub extends Phaser.Scene {
                         }
                         message += "From "+obj.weeksSinceCollection+" week(s) of production.";
                         obj.weeksSinceCollection = 0;
-                        if(obj.honeyIndicator) { obj.honeyIndicator.destroy(); }
+                        if(obj.honeyIndicator.alpha > 0) { obj.honeyIndicator.destroy(); }
                         this.fadeText(message);
                         this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + 
                             "\nMoney: " + playerVariables.money;
@@ -788,11 +782,7 @@ class Hub extends Phaser.Scene {
                         if(heldItem instanceof Hive || heldItem instanceof Sprinkler){
                             heldType = "items";
                         } else if (heldItem instanceof Flower) {
-                            if(heldItem.age == 0) {
-                                heldType = "seed";
-                            } else {
-                                heldType = "flowers";
-                            }
+                            heldType = "flowers";
                         }
                         //recreate the plot
                         loc.renderPlot(this, this.gridToCoord(col, row));

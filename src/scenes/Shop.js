@@ -18,6 +18,7 @@ class Shop extends Phaser.Scene {
         //Misc Setup
         vars["Cosmo"] = this.add.image(10000,100000,"PlayerIcon").setOrigin(.5,.5);
         this.pointerCurrentlyOver = ""; //Tracks if the cursor is over an interactable object
+        this.leaving = false;           //Makes sure player can't overlap leaving
 
         //create the background music manager
         this.music = new BGMManager(this);
@@ -25,7 +26,7 @@ class Shop extends Phaser.Scene {
 
         //Initialize images
         this.createBackgroundImages();
-        this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 2).setDepth(-1);
+        this.player = new HubPlayer(this, 'player', 0, config.width/2, 3*config.height/4).setDepth(-1);
 
         //Create the text around the scene
         this.createText();
@@ -73,8 +74,11 @@ class Shop extends Phaser.Scene {
     }
 
     createBackgroundImages(){
-        this.background = this.add.image(config.width/2, config.height/2, 'background').setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-10);
-        this.toadLeckman = this.add.image(config.width/2,config.height/4, 'toadLeckman').setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-5);
+        this.background = this.add.image(config.width/2, config.height/2, 'townBackground')
+        this.background.setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-10);
+        this.toadLeckman = this.add.image(2*config.width/3,2*config.height/3, 'toadLeckman')
+        this.toadLeckman.setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-5);
+        this.toadLeckman.alpha = 0;
         if(hasSoldForDay){
             this.sunsetTint = this.add.rectangle(0, 0, 2000, 2000, 0xFD5E53, 0.25);
             this.sunsetTint.depth = 1000;
@@ -97,11 +101,9 @@ class Shop extends Phaser.Scene {
         };
 
         //create shop text
-        this.townExit = this.add.text(4*config.width/5, 2*config.height/3, "Path to Cave", this.textConfig).setOrigin(.5,.5).setVisible(true);
-        this.townExitInteract = this.add.text(4*config.width/5, (2*config.height/3)-20, "Space to go back to the cave", this.textConfig).setOrigin(.5,.5).setVisible(false);
+        this.townExit = this.add.text(5*config.width/6, 9*config.height/10, "Path to Cave", this.textConfig).setOrigin(.5,.5).setVisible(true);
         this.toadTextInteract = this.add.text(this.toadLeckman.x,this.toadLeckman.y, "Space to interact with the shop", this.textConfig).setOrigin(.5,.5).setVisible(false);
-        this.marketEntrance = this.add.text(config.width/5, 2*config.height/3, "Farmer's Market Entrance", this.textConfig).setOrigin(.5,.5).setVisible(true);
-        this.marketEntranceInteract = this.add.text(config.width/5, (2*config.height/3)-20, "Space to set up your stall", this.textConfig).setOrigin(.5,.5).setVisible(false);
+        this.marketEntrance = this.add.text(config.width/6, 9*config.height/10, "Farmer's Market Entrance", this.textConfig).setOrigin(.5,.5).setVisible(true);
         if(hasSoldForDay){
             this.marketEntranceInteract.text = "Come back tomorrow when it is earlier";
         }
@@ -163,9 +165,9 @@ class Shop extends Phaser.Scene {
     }
 
     updateCheckNearLocation(){
-        if (Math.abs(Phaser.Math.Distance.Between(this.townExit.x,this.townExit.y, this.player.x,this.player.y)) < 100){
-            this.townExitInteract.setVisible(true);
-            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+        if (Math.abs(Phaser.Math.Distance.Between(this.townExit.x,this.townExit.y, this.player.x,this.player.y)) < 75) {
+            if(!this.leaving) {
+                this.leaving = true;
                 console.log("returning to hub");
                 this.music.stop();
                 this.music.playSFX("mapTransition");
@@ -174,11 +176,10 @@ class Shop extends Phaser.Scene {
                     this.scene.start("hubScene", {previousScene: "shopScene"});
                 });
             }
-        } else {
-            this.townExitInteract.setVisible(false);
         }
 
-        if (Math.abs(Phaser.Math.Distance.Between(this.toadLeckman.x,this.toadLeckman.y, this.player.x,this.player.y)) < 100){
+        if (!this.leaving && Math.abs(Phaser.Math.Distance.Between(this.toadLeckman.x,this.toadLeckman.y, 
+                this.player.x,this.player.y)) < 100) {
             this.toadTextInteract.setVisible(true);
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 console.log("launching shop ui");
@@ -190,9 +191,9 @@ class Shop extends Phaser.Scene {
         }
 
         //Check if the player is close enough to the bike to head to the world map
-        if (Math.abs(Phaser.Math.Distance.Between(this.marketEntrance.x, this.marketEntrance.y, this.player.x, this.player.y)) < 100) {
-            this.marketEntranceInteract.setVisible(true);
-            if (Phaser.Input.Keyboard.JustDown(keySPACE) && !hasSoldForDay) {
+        if (Math.abs(Phaser.Math.Distance.Between(this.marketEntrance.x, this.marketEntrance.y, this.player.x, this.player.y)) < 75) {
+            if (!hasSoldForDay && !this.leaving) {
+                this.leaving = true;
                 //Play the transition song
                 this.music.transitionSong("hubMarketTransition", false);
                 //Fade to black
@@ -203,9 +204,6 @@ class Shop extends Phaser.Scene {
                     this.scene.start('marketPriceSettingScene');
                 });
             }
-        }
-        else{
-            this.marketEntranceInteract.setVisible(false);
         }
     }
 
@@ -225,7 +223,7 @@ class Shop extends Phaser.Scene {
         //If the player press B open the backpack
         if (Phaser.Input.Keyboard.JustDown(keyB)){
             this.music.playSFX("backpackOpen");
-            this.scene.pause('hubScene');
+            this.scene.pause('shopScene');
             this.scene.launch("backpackUI", {previousScene: "shopScene"});
         }
     }
