@@ -25,6 +25,7 @@ class Boot extends Phaser.Scene {
             this.load.image("dirtWet", "./assets/sprites/spritesheetFrames/plotWet.png");
             this.load.image("hive", "./assets/sprites/background/hive.png");
             this.load.image("bearBee", "./assets/sprites/character/beeTiny.png");
+            this.load.image("largeBee", "./assets/sprites/character/bee.png");
             this.load.image("tempLavender", "./assets/sprites/background/lavTest.png");
             this.load.image('sprinkler', './assets/sprites/background/sprinkler.png');
             this.load.image('sprinklerHighlight', './assets/sprites/old/blue.png');
@@ -134,6 +135,7 @@ class Boot extends Phaser.Scene {
             //For hubScene
             //this.load.spritesheet('player', './assets/spritesheets/bearFrontBack.png', {frameWidth:40, frameHeight:72, startFrame:0, endFrame:1});
             this.load.spritesheet('player', './assets/spritesheets/bearAnims.png', {frameWidth: 140, frameHeight:247, startFrame:0, endFrame:7});
+            this.load.spritesheet('backpackFrames', "./assets/spritesheets/backpackSheet.png", {frameWidth: 120, frameHeight:121, startFrame:0, endFrame:1});
             //For mapScene 
             /*
             this.load.spritesheet('Beehive','./assets/spritesheets/HoneyBearSampleHive.png',{frameWidth: 88, frameHeight: 108, startFrame:0 , endFrame: 1});
@@ -156,7 +158,8 @@ class Boot extends Phaser.Scene {
             this.load.spritesheet('Credits', './assets/spritesheets/TempCreditsCombined.png', {frameWidth: 124, frameHeight: 28, startFrame:0 , endFrame: 1});
             //For settingsScene
             this.load.spritesheet('Back', './assets/spritesheets/BackInitial.png', {frameWidth: 114, frameHeight: 36, startFrame: 0, endFrame: 1});
-
+            //For marketScene
+            this.load.spritesheet('bearBackFrames', './assets/spritesheets/LARGE_anim_idle_back_1000x875.png', {frameWidth: 500, frameHeight: 875, startFrame: 0, endFrame: 1});
 
         //Load Music
             //For hubScene
@@ -177,12 +180,14 @@ class Boot extends Phaser.Scene {
             //For hubScene and marketScene
             this.load.audio("hubMarketTransition", "./assets/audio/sfx/settingupstall.mp3");
             this.load.audio("backpackOpen", "./assets/audio/sfx/backpack_open.mp3");
-            this.load.audio("shopSelect", "./assets/audio/sfx/shopselect.mp3");
+            this.load.audio("shopSelect", "./assets/audio/sfx/shopselect(loud).mp3");
             this.load.audio("shopMistake", "./assets/audio/sfx/mistake.mp3");
-            this.load.audio("waterFlowers", "./assets/audio/sfx/water_flowers.mp3");
+            this.load.audio("waterFlowers", "./assets/audio/sfx/water_flowers(loud).mp3");
             this.load.audio("mapTransition", "./assets/audio/sfx/closemap.mp3");
-            this.load.audio("buyFlowers", "./assets/audio/sfx/buy_flowers.mp3");
+            this.load.audio("buyFlowers", "./assets/audio/sfx/buyflowers(loud).mp3");
             this.load.audio("failtosell", "./assets/audio/sfx/failtosell.mp3");
+            this.load.audio("successfulSell", "./assets/audio/sfx/successful_sell(loud).mp3");
+            this.load.audio("mapFlip", "./assets/audio/sfx/mapflip.mp3");
     
         //Load Fonts
             //For hubScene

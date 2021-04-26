@@ -31,6 +31,9 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
             this.startedMoving = true;
             this.movingUp = true;
         }
+        else{
+            this.movingUp = false;
+        }
 
         if (keyLEFT.isDown || keyA.isDown) {
             this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring

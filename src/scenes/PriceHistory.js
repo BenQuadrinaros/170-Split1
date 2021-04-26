@@ -32,7 +32,10 @@ class PriceHistory extends Phaser.Scene{
                 bottom: 5
             },
         };
+
+        this.music = new BGMManager(this);
     }
+
     init(data){
         this.previousScene = data.previousScene;
     }
@@ -68,6 +71,7 @@ class PriceHistory extends Phaser.Scene{
                 this.priceHistory.alpha = .5;
             })
             .on('pointerdown', () => {
+                this.music.playSFX("flipMap");
                 console.log("resuming market...")
                 console.log(uiScene.previousScene);
                 uiScene.scene.resume(uiScene.previousScene);

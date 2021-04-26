@@ -52,7 +52,9 @@ class BackPackUI extends Phaser.Scene {
         this.selectedItem = undefined;
         this.selectedTab = "seeds";
         //create backpack icon
-        this.backpack = this.add.image(config.width - config.width / 6, config.height / 6, 'tempBackpackIcon')
+        
+        
+        this.backpack = this.add.image(this.cameras.main.scrollX + 4*config.width/5 + 43, this.cameras.main.scrollY + config.height/5 - 25, 'tempBackpackIcon')
             .setInteractive().setAlpha(.5)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1);

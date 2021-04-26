@@ -127,6 +127,11 @@ class Tutorial extends Phaser.Scene {
 
         //Go to the next section of the tutorial
         this.advanceTutorial();
+
+        //Misc updates
+        if(playerInventoryUpdated){
+            this.backpack.setFrame(1);
+        }
     }
 
     advanceDay() {
@@ -306,7 +311,7 @@ class Tutorial extends Phaser.Scene {
     createBackgroundImages() {
         //this.extraGrassBackdrop = this.add.image(0, 0, "extraLargeGrass").setOrigin(0, 0).setScale(0.5);
         this.background = this.add.image(0, 0, 'gardenBackground').setOrigin(0, 0).setScale(0.5);
-        this.talkingBee = this.add.image(config.width, 3*config.height/5, 'bearBee').setOrigin(0.5).setScale(3, 3);
+        this.talkingBee = this.add.image(config.width, 3*config.height/5, 'largeBee').setOrigin(0.5).setScale(1, 1);
         this.talkingBee.alpha = 0;
         this.talkingBee.depth = 120;
     }
@@ -329,7 +334,7 @@ class Tutorial extends Phaser.Scene {
         this.tutorialTextBackdrop.depth = 150;
 
         //create interactible backpack image
-        this.backpack = this.add.image(config.width - config.width / 6, config.height / 6, 'tempBackpackIcon')
+        this.backpack = this.add.image(this.cameras.main.scrollX + 4*config.width/5 + 43, this.cameras.main.scrollY + config.height/5 - 25, 'backpackFrames')
             .setInteractive().setAlpha(.5).setScale(.87)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1);
@@ -349,6 +354,8 @@ class Tutorial extends Phaser.Scene {
                 }
                 this.music.playSFX("backpackOpen");
                 this.placeHeldItemInBag();
+                this.backpack.setFrame(0);
+                playerInventoryUpdated = false;
                 this.scene.pause('tutorialScene');
                 this.scene.launch("backpackUI", {previousScene: "tutorialScene"});
             });
@@ -455,8 +462,8 @@ class Tutorial extends Phaser.Scene {
         }
 
         //create water bucket for manual watering
-        this.waterBucket = this.add.image(.925 * config.width, .525 * config.height, "water");
-        this.waterBucket.setOrigin(.5, .5).setScale(1.5, 1.5);
+        this.waterBucket = this.add.image(.925 * config.width, .525 * config.height, "water4");
+        this.waterBucket.setOrigin(.5, .5);
         this.waterBucket.depth = this.waterBucket.y / 10;
         this.waterHeld = new WateringCan();
 
@@ -921,6 +928,7 @@ class Tutorial extends Phaser.Scene {
             this.advanceTutorialDialog(1);
             this.currDialogMaximum = 2;
             playerVariables.inventory.seeds["Cosmos"] += 1;
+            playerInventoryUpdated = true;
         }
         else if(!this.playerHasPlantedFirstSeed){
             if(this.currDialogMaximum != 2){
@@ -950,6 +958,7 @@ class Tutorial extends Phaser.Scene {
             this.advanceTutorialDialog(6);
             this.currDialogMaximum = 6;
             playerVariables.inventory.flowers["Cosmos"] += 1;
+            playerInventoryUpdated = true;
         }
         else if(!this.playerHasPlacedBeehive){
             if(this.currDialogMaximum != 6){
@@ -958,13 +967,14 @@ class Tutorial extends Phaser.Scene {
             this.advanceTutorialDialog(7);
             this.currDialogMaximum = 7;
             playerVariables.inventory.items["Beehive"] = 1;
+            playerInventoryUpdated = true;
         }
         else if(this.playerHasPlacedBeehive){
             if(this.currDialogMaximum != 7){
                 return;
             }
             this.advanceTutorialDialog(8);
-            this.currDialogMaximum = 9;
+            this.currDialogMaximum = 11;
         }
     }
 
@@ -985,29 +995,30 @@ class Tutorial extends Phaser.Scene {
         switch(num){
             case 1:
                 this.tutorialDialog.text =
-`Hi, I'm Beetholomew, your local honey making helper. Let's
-get you started on setting up that honey business that I
-know you've been wanting to make.`;
+`Hi, I'm Beetholomew, your local honey making helper. Thank you
+for agreeing to help us restore this community park and make it
+beautiful again.`;
                 break;
             case 2:
                 this.tutorialDialog.text =
-`First things first, if you want to make honey, you're going to
-need some flowers. Open your inventory and equip a cosmos.`;
+`First things first, if you want to make honey to fundraise,
+you're going to need some flowers. Open your inventory and
+equip a cosmos seed.`;
                 break;
             case 3:
                 this.tutorialDialog.text =
-`Great. Now find a nice plot of dirt to plant it in.
-Use space when you are near it.`;
+`Great. Now find a nice plot of dirt to plant it in. Use SPACE
+when you are near the spot you want to plant it at.`;
                 break;
             case 4:
                 this.tutorialDialog.text =
-`Of course, to make it grow, it will need some water.
-Go and grab some from the spigot.`;
+`Of course, to make it grow, it will need some water. Go and
+grab the watering can by pressing SPACE near it.`;
                 break;
             case 5:
                 this.tutorialDialog.text =
-`Now go over and water it by pressing SPACE when you
-are near it.`;
+`Now go over and water the seedling by pressing SPACE when
+you are near it.`;
                 break;
             case 6:
                 this.tutorialDialog.text =
@@ -1022,13 +1033,25 @@ to place.`;
                 break;
             case 8:
                 this.tutorialDialog.text =
-`Don't worry, if there isn't quite enough for a jar,
-we will store the extra for you.`;
+`Flowers do have diminishing returns when it comes to the
+amount of honey we can generate from their pollen, so you
+might want to try making multiple types of honey.`;
                 break;
             case 9:
+                this.tutorialDialog.text = 
+`If a type of flower is the majority of the flowers near a beehive,
+that beehive can produce that flower's type of honey.`;
+                break;
+            case 10:
                 this.tutorialDialog.text =
-`Before you go to sleep at your cave, make sure to water
-that new flower. See you next week!`;
+`I know you brought some, but in order to clear this many brambles
+you might need to get some more clippers. Toad Leckman can probably
+help you there.`;
+                break;
+            case 11:
+                this.tutorialDialog.text =
+`That's all for today. Before you go to sleep at your cave, make sure
+to water that new flower. See you next week!`;
                 break;
             default:
                 console.log("Supposedly unreachable tutorial dialog reached");

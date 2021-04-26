@@ -35,7 +35,6 @@ class Market extends Phaser.Scene {
         //CHNAGE SONG FOR MARKET
         this.music = new BGMManager(this);
         this.music.playSong("marketMusic", true);
-        this.music.setVolume(config.volume);
 
         //Start the timer for the selling portion
         this.timer = this.time.addEvent({
@@ -405,6 +404,7 @@ class Market extends Phaser.Scene {
                 this.priceHistory.alpha = .5;
             })
             .on('pointerdown', () => {
+                this.music.playSFX("mapFlip");
                 this.scene.pause();
                 this.priceHistory.alpha = 0;
                 this.scene.launch('priceHistory', {previousScene: "marketScene"});
@@ -471,20 +471,20 @@ class Market extends Phaser.Scene {
 
     createPlayer() {
         //bear in costume selling honey
-        this.bear = this.add.sprite(game.config.width / 2.5, 7 * game.config.height / 10, 'player', 0);
-        this.bear.setOrigin(.5, .5).setScale(2.5, 2.5);
+        this.bear = this.add.sprite(game.config.width / 2.5, 7 * game.config.height / 10, 'bearBackFrames', 0);
+        this.bear.setOrigin(.5, .5).setScale(0.85, 0.85);
         this.bear.depth = 99;
     }
 
     createPlayerAnims() {
         //Create player idle animation
         this.anims.create({
-            key: 'playerBackIdle',
+            key: 'bearBackIdle',
             repeat: -1,
-            frames: this.anims.generateFrameNumbers('player', {start: 0, end: 1}),
-            frameRate: 2
+            frames: this.anims.generateFrameNumbers('bearBackFrames', {start: 0, end: 1}),
+            frameRate: 3
         });
-        this.bear.anims.play('playerBackIdle', true);
+        this.bear.anims.play('bearBackIdle', true);
     }
 
     createText() {

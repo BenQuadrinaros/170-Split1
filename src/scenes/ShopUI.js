@@ -256,6 +256,7 @@ class ShopUI extends Phaser.Scene {
                                 console.log(`after changing inv, ${playerVariables.inventory[tab][item]}`)
                                 playerVariables.money -= cost;
                                 let newStock = parseInt(stock) - 1;
+                                playerInventoryUpdated = true;
                                 music.playSFX("buyFlowers");
                                 //eventDispatcher.dispatch("successfulPurchase");
                                 shopInventory[uiScene.selectedTab][item].amount = newStock;
