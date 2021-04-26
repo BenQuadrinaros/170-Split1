@@ -115,6 +115,9 @@ class Market extends Phaser.Scene {
                 console.log(`exchange is ${this.exchange}`);
                 let percent = this.exchange[1];
                 let mood = this.exchange[0];
+                if (this.moodPopUp !== undefined){
+                    this.moodPopUp.destroy();
+                }
                 this.createMoodPopup(mood);
                 this.initiateNPCDecision(percent,mood);
 
@@ -195,9 +198,9 @@ class Market extends Phaser.Scene {
             mood = "sad"
         } else if (.8 < percent && percent <=.85){
             mood = "displeased"
-        } else if (.85 < percent && percent <= .95){
+        } else if (.85 < percent && percent <= 1){
             mood = "angry"
-        } else if (percent > .95){
+        } else if (percent > 1){
             mood = "noBuy"
         } else {
             mood = "idk man"
@@ -271,7 +274,7 @@ class Market extends Phaser.Scene {
             }
             else { //npc will ask to barter or lower price
                 console.log("npc is asking to lower price");
-                this.stage = 5;
+                //this.stage = 5;
                 this.initiateHaggle();
             }
 
@@ -281,6 +284,7 @@ class Market extends Phaser.Scene {
             this.resetStage();
         }else if (.8 <= percent && percent < 1){ //between 80% and 100%, npc will accept or haggle (75/25) respectively
             if (Math.random() <= .25){
+                //this.stage = 5;
                 this.initiateHaggle();
             } else {
                 playerVariables.reputation -=1;
@@ -294,6 +298,7 @@ class Market extends Phaser.Scene {
 
     //Function to handle Haggling or lowering the price of honey
     initiateHaggle(){
+        this.stage = 999; //lock stage until proceding.
         this.initiatePrice = this.add.image(this.npc.x - 100, this.npc.y - 200, 'emptyBoxTwo')
             .setDepth(100).setOrigin(.5, .5).setScale(.075, .075);
         this.decline = this.add.image(this.initiatePrice.x - 40, this.initiatePrice.y + 60, 'sellNo',0)
