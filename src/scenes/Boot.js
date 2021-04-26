@@ -29,10 +29,13 @@ class Boot extends Phaser.Scene {
             this.load.image('sprinkler', './assets/sprites/background/sprinkler.png');
             this.load.image('sprinklerHighlight', './assets/sprites/old/blue.png');
             this.load.image('hiveHighlight', './assets/sprites/old/orange.png');
-            this.load.image('water','./assets/sprites/old/drop5.png');
+            this.load.image('water1','./assets/img/wateringcan1.png');
+            this.load.image('water2','./assets/img/wateringcan2.png');
+            this.load.image('water3','./assets/img/wateringcan3.png');
+            this.load.image('water4','./assets/img/wateringcan4.png');
             this.load.image('weed','./assets/spritesheets/old/Capture.PNG');
             this.load.image('bramble','./assets/img/bramb.png');
-            this.load.image('clipper','./assets/sprites/old/tools.jpg');
+            this.load.image('clipper','./assets/img/clippers.png');
             //Flower stages for Garden
             this.load.image("seedling", "./assets/sprites/spritesheetFrames/uni0.png");
             this.load.image("sprout", "./assets/sprites/spritesheetFrames/uni1.png");
@@ -60,6 +63,7 @@ class Boot extends Phaser.Scene {
             this.load.image('emptyStar', './assets/sprites/old/blue.png');
             //For shop
             this.load.image('toadLeckman', './assets/sprites/character/mrleckman_510x300.png');
+            this.load.image('townBackground', './assets/img/TOWNTEST.png');
             //For market price setting
             this.load.image('chalkboard', './assets/sprites/UI/chalkboardBlank.png');
             this.load.image('brickFence', './assets/sprites/background/brickFence.png');

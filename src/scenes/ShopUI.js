@@ -9,7 +9,7 @@ let idImages = {
     "Lavender": ["flowerPurple3", .125],
     "Sprinkler": ["sprinkler", .125],
     "Beehive": ["hive", .125],
-    "Clipper": ["clipper", .035],
+    "Clipper": ["clipper", .75],
     "yellow": ["honeyPlain", .5],
     "blue": ["honeyBlue", .5],
     "pink": ["honeyPink", .5],
