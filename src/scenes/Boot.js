@@ -101,6 +101,9 @@ class Boot extends Phaser.Scene {
             this.load.image('sad', './assets/img/sad.png');
             this.load.image('satisfied', './assets/img/satisfied.png');
             this.load.image('bearbucks','./assets/sprites/UI/bearbucks.png');
+            this.load.image('emptyBox','./assets/sprites/UI/box120x120.png');
+            this.load.image('emptyBoxTwo', './assets/sprites/UI/haggleBox.png')
+            this.load.image('noBuy', './assets/img/noBuy.png');
             //For pricehistory scene
             this.load.image('notebookBG', './assets/sprites/UI/notebookHalfLined.png');
             this.load.image('noteBook','./assets/sprites/UI/notebookIcon.png');
