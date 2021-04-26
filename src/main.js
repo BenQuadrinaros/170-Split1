@@ -6,7 +6,7 @@ let config = {
     height: 540,
     scene: [Boot, Hub, Garden, Map, Market, MarketPriceSetting, Play, Menu, Credits, Talking,
         OldRhythm,  Shop, ShopUI, Tutorial, BackPackUI, HubPopup, Pause, Settings, Win, PriceHistory],
-    volume: .7,
+    volume: .5,
     physics: {
         default: 'arcade',
         arcade: {
@@ -19,7 +19,7 @@ let config = {
     }
 };
 
-let sfxVolume = .7;
+let sfxVolume = .5;
 let game = new Phaser.Game(config);
 let previousScene = null;
 const VERSION_NUMBER = "0.3.6";
@@ -29,9 +29,9 @@ let keyP, keyO, keyESCAPE, keyENTER, keyLEFT, keyRIGHT, keyDOWN, keyUP, keySPACE
 
 //colors for ui elements
 let uiScene; // global variable for current active ui scene
-const COLOR_PRIMARY = 0x808ADE;
-const COLOR_LIGHT = 0x684ADE;
-const COLOR_DARK = 0x80DECB;
+const COLOR_PRIMARY = 0x506092;
+const COLOR_LIGHT = 0xf1eeaf;
+const COLOR_DARK = 0xf1b55f;
 const Random = Phaser.Math.Between;
 const font = 'helvetica';
 
@@ -85,6 +85,7 @@ let heldItem = undefined;
 let heldType = undefined;
 let plantingSeeds = false;
 let vars = {};
+let playerInventoryUpdated = false;
 
 //Player variables so we dont have to pass them around forever
 let playerVariables = {

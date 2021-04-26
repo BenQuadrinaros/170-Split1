@@ -133,6 +133,9 @@ class Hub extends Phaser.Scene {
         if (this.counter % 60 === 0) {
             this.bounceFactor = -this.bounceFactor;
         }
+        if(playerInventoryUpdated){
+            this.backpack.setFrame(1);   
+        }
     }
 
     advanceDay() {
@@ -325,7 +328,7 @@ class Hub extends Phaser.Scene {
         this.hiveHighlightHold.alpha = 0;
 
         //create interactible backpack image
-        this.backpack = this.add.image(config.width - config.width / 6, config.height / 6, 'tempBackpackIcon')
+        this.backpack = this.add.image(config.width - config.width / 6, config.height / 6, 'backpackFrames')
             .setInteractive().setAlpha(.5).setScale(.87)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1);
@@ -341,6 +344,8 @@ class Hub extends Phaser.Scene {
                 console.log("clicked backpack");
                 this.music.playSFX("backpackOpen");
                 this.placeHeldItemInBag();
+                this.backpack.setFrame(0);
+                playerInventoryUpdated = false;
                 this.scene.pause('hubScene');
                 this.scene.launch("backpackUI", {previousScene: "hubScene"});
             });
@@ -500,6 +505,7 @@ class Hub extends Phaser.Scene {
         //Input to place item in backpack
         if (Phaser.Input.Keyboard.JustDown(keyB)) {
             this.placeHeldItemInBag();
+            playerInventoryUpdated = true;
         }
     }
 
@@ -714,10 +720,10 @@ class Hub extends Phaser.Scene {
                 let col = plot[1];
                 //If player holding the watering can
                 if (heldItem instanceof WateringCan) {
+                    this.music.playSFX("waterFlowers");
                     let spot = gardenGrid[row][col];
                     if (spot.item instanceof Flower) {
                         //Water flower if present
-                        this.music.playSFX("waterFlowers");
                         spot.item.addWater();
                     }
                     //Then wet the spot and reload

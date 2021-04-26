@@ -34,7 +34,7 @@ class HubPopup extends Phaser.Scene {
                 bottom: 5
             },
         };
-        var textSpacer = -25;
+        var textSpacer = -15;
 
         //Each color of Honey delta
         /*this.add.text(config.width/2, config.height/3, "This week, you collected:", 
@@ -166,7 +166,7 @@ well! See you around!`;
         this.tutorialDialog = this.add.text(20, this.cameras.main.scrollY + 3.25*config.height/5 + 30, "", this.tutorialConfig);
         this.tutorialDialog.setOrigin(0, 0);
         this.tutorialDialog.depth = 200;
-        this.talkingBee = this.add.image(config.width, 3*config.height/5, 'bearBee').setOrigin(0.5).setScale(3, 3);
+        this.talkingBee = this.add.image(config.width, 3*config.height/5, 'largeBee').setOrigin(0.5);
         this.talkingBee.x = this.cameras.main.scrollX + config.width/3;
         this.talkingBee.y = this.cameras.main.scrollY + config.height/3;
         this.talkingBee.depth = 120;

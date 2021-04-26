@@ -56,6 +56,11 @@ class Shop extends Phaser.Scene {
 
         //Check other various keyboard
         this.updateCheckMiscKeyboard();
+
+        //Misc updates
+        if(playerInventoryUpdated){
+            this.backpack.setFrame(1);   
+        }
     }
 
     createControls(){
@@ -105,7 +110,7 @@ class Shop extends Phaser.Scene {
         this.toadTextInteract = this.add.text(this.toadLeckman.x,this.toadLeckman.y, "Space to interact with the shop", this.textConfig).setOrigin(.5,.5).setVisible(false);
         this.marketEntrance = this.add.text(config.width/6, 9*config.height/10, "Farmer's Market Entrance", this.textConfig).setOrigin(.5,.5).setVisible(true);
         if(hasSoldForDay){
-            this.marketEntranceInteract.text = "Come back tomorrow when it is earlier";
+            this.marketEntrance.text = "Come back tomorrow when it is earlier";
         }
     }
 
@@ -132,7 +137,7 @@ class Shop extends Phaser.Scene {
 
     createUI(){
         //create interactible backpack image
-        this.backpack = this.add.image(config.width- config.width/6, config.height/6, 'tempBackpackIcon')
+        this.backpack = this.add.image(this.cameras.main.scrollX + 4*config.width/5 + 43, this.cameras.main.scrollY + config.height/5 - 25, 'backpackFrames')
             .setInteractive().setAlpha(.5)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1);
@@ -147,9 +152,12 @@ class Shop extends Phaser.Scene {
             .on('pointerdown', () =>{
                 console.log("clicked backpack");
                 this.music.playSFX("backpackOpen");
+                this.backpack.setFrame(0);
+                playerInventoryUpdated = false;
                 this.scene.pause('shopScene');
                 this.scene.launch("backpackUI", {previousScene:"shopScene"});
             });
+        this.backpack.setFrame(0);
     }
 
     updateCheckPause(){

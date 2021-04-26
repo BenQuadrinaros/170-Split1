@@ -11,6 +11,9 @@ class MarketPriceSetting extends Phaser.Scene {
         this.createBackgroundImages();
         this.createText();
         this.createPriceChanging();
+
+        this.music = new BGMManager(this);
+        this.music.playSong("marketMusic", true);
     }
 
     update(){
