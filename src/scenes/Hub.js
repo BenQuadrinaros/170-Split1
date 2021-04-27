@@ -261,7 +261,7 @@ class Hub extends Phaser.Scene {
         shopInventory["Seeds"]["Tulip"]["amount"] = 3;
         shopInventory["Items"]["Beehive"]["amount"] = 2;
         shopInventory["Items"]["Sprinkler"]["amount"] = 2;
-        shopInventory["Items"]["Clipper"]["amount"] = 4;
+        shopInventory["Items"]["Clipper"]["amount"] = 4 + Math.floor(currentDay/6);
     }
 
     createControls() {
@@ -287,7 +287,7 @@ class Hub extends Phaser.Scene {
 
     createPlayer() {
         //Establish the sprite
-        this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 2, this.worldWidth, this.worldHeight);
+        this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 2, this.worldWidth, this.worldHeight, [[game.config.width + 50, 115]]);
         this.player.depth = this.player.y / 10;
     }
 
@@ -329,7 +329,7 @@ class Hub extends Phaser.Scene {
         this.hiveHighlightHold.alpha = 0;
 
         //create interactible backpack image
-        this.backpack = this.add.image(config.width - config.width / 6, config.height / 6, 'backpackFrames')
+        this.backpack = this.add.image(this.cameras.main.scrollX + config.width - 122, this.cameras.main.scrollY + config.height/5 - 10, 'backpackFrames')
             .setInteractive().setAlpha(.5).setScale(.87)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1);
@@ -374,7 +374,7 @@ class Hub extends Phaser.Scene {
         this.turnText = this.add.text(6 * game.config.width / 7, game.config.height / 4, "Turns Remaining: ", this.textConfig).setOrigin(.5);
         this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
         this.turnText.depth = 100;
-        this.townAccess = this.add.text(25, 2 * config.height / 5 + 30, "Path to Town", this.textConfig).setOrigin(0, 0);
+        this.townAccess = this.add.text(15, 2 * config.height / 5 + 20, "Path to Town", this.textConfig).setOrigin(0, 0);
 
 
         //Text that starts invisible
@@ -470,8 +470,8 @@ class Hub extends Phaser.Scene {
 
     updateMoveBackpackIcon() {
         //move backpack icon alongside player and camera
-        this.backpack.x = this.cameras.main.scrollX + 4*config.width/5;
-        this.backpack.y = this.cameras.main.scrollY + config.height/5;
+        this.backpack.x = this.cameras.main.scrollX + config.width - 122;
+        this.backpack.y = this.cameras.main.scrollY + config.height/5 - 10;
     }
 
     updateHeldItemBehavior() {
@@ -649,7 +649,7 @@ class Hub extends Phaser.Scene {
     updateCheckCollisions() {
         //Check if the player is close enough to the way to town
         if (Math.abs(Phaser.Math.Distance.Between(this.townAccess.x, this.townAccess.y,
-            this.player.x, this.player.y)) < 75) {
+            this.player.x, this.player.y)) < 55) {
             this.music.stop();
             this.music.playSFX("mapTransition");
             this.player.x = -100;

@@ -30,8 +30,11 @@ let keyP, keyO, keyESCAPE, keyENTER, keyLEFT, keyRIGHT, keyDOWN, keyUP, keySPACE
 //colors for ui elements
 let uiScene; // global variable for current active ui scene
 const COLOR_PRIMARY = 0x506092;
+const SHOP_PRIMARY = 0x543d3d;
 const COLOR_LIGHT = 0xf1eeaf;
+const SHOP_LIGHT = 0x8cb05a;
 const COLOR_DARK = 0xf1b55f;
+const SHOP_DARK = 0x658442;
 const Random = Phaser.Math.Between;
 const font = 'helvetica';
 

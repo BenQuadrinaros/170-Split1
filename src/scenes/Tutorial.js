@@ -293,7 +293,7 @@ class Tutorial extends Phaser.Scene {
 
     createPlayer() {
         //Establish the sprite
-        this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 2, this.worldWidth, this.worldHeight);
+        this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 2, this.worldWidth, this.worldHeight, [[game.config.width+50, 115]]);
         this.player.depth = this.player.y / 10;
     }
 
@@ -335,7 +335,7 @@ class Tutorial extends Phaser.Scene {
         this.tutorialTextBackdrop.depth = 150;
 
         //create interactible backpack image
-        this.backpack = this.add.image(this.cameras.main.scrollX + 4*config.width/5 + 43, this.cameras.main.scrollY + config.height/5 - 25, 'backpackFrames')
+        this.backpack = this.add.image(this.cameras.main.scrollX + config.width - 122, this.cameras.main.scrollY + config.height/5 - 10, 'backpackFrames')
             .setInteractive().setAlpha(.5).setScale(.87)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1);
@@ -403,6 +403,10 @@ class Tutorial extends Phaser.Scene {
         this.fadeMessage = this.add.text(0, 0, "Nada", this.textConfig);
         this.fadeMessage.setOrigin(0.5).setVisible(false);
         this.fadeMessage.depth = 200;
+
+        //Dialog popup metadata
+        this.spaceContinue = this.add.text(0, 0, "SPACE to continue", this.textConfig).setVisible(false);
+        this.spaceContinue.depth = 205;
 
         //Tutorial Dialog
         this.tutorialConfig = {
@@ -494,8 +498,8 @@ class Tutorial extends Phaser.Scene {
 
     updateMoveBackpackIcon() {
         //move backpack icon alongside player and camera
-        this.backpack.x = this.cameras.main.scrollX + 4*config.width/5;
-        this.backpack.y = this.cameras.main.scrollY + config.height/5;
+        this.backpack.x = this.cameras.main.scrollX + config.width - 122;
+        this.backpack.y = this.cameras.main.scrollY + config.height/5 - 10;
     }
 
     updateHeldItemBehavior() {
@@ -769,11 +773,7 @@ class Tutorial extends Phaser.Scene {
                     if(heldItem instanceof Hive || heldItem instanceof Sprinkler){
                         heldType = "items";
                     } else if (heldItem instanceof Flower) {
-                        if(heldItem.age == 0) {
-                            heldType = "seed";
-                        } else {
-                            heldType = "flowers";
-                        }
+                        heldType = "flowers";
                     }
                     //recreate the plot
                     loc.renderPlot(this, this.gridToCoord(col, row));
@@ -987,6 +987,9 @@ class Tutorial extends Phaser.Scene {
         this.tutorialTextBackdrop.x = this.cameras.main.scrollX;
         this.tutorialTextBackdrop.y = this.cameras.main.scrollY + 3.5*config.height/5;
         this.tutorialTextBackdrop.alpha = 1;
+        this.spaceContinue.x = this.cameras.main.scrollX + 4*config.width/5 - 15;
+        this.spaceContinue.y = this.cameras.main.scrollY + 4*config.height/5 + 35;
+        this.spaceContinue.setVisible(true);
         this.tutorialDialog.x = this.cameras.main.scrollX + 75;
         this.tutorialDialog.y = this.cameras.main.scrollY + 3.25*config.height/5 + 30;
         this.tutorialDialog.setVisible(true);
@@ -1049,8 +1052,8 @@ that beehive can produce that flower's type of honey.`;
             case 10:
                 this.tutorialDialog.text =
 `I know you brought some, but in order to clear this many brambles
-you might need to get some more clippers. Toad Leckman can probably
-help you there.`;
+you might need to get some more clippers. Toad Leckman can
+probably help you there.`;
                 break;
             case 11:
                 this.tutorialDialog.text =
@@ -1065,6 +1068,7 @@ to water that new flower. See you next week!`;
     concludeTutorialDialog(){
         this.tutorialTextBackdrop.alpha = 0;
         this.tutorialDialog.setVisible(false);
+        this.spaceContinue.setVisible(false);
         this.talkingBee.alpha = 0;
         this.playerIsInDialog = false;
     }

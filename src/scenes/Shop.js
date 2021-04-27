@@ -26,7 +26,7 @@ class Shop extends Phaser.Scene {
 
         //Initialize images
         this.createBackgroundImages();
-        this.player = new HubPlayer(this, 'player', 0, config.width/2, 3*config.height/4).setDepth(-1);
+        this.player = new HubPlayer(this, 'player', 0, config.width/2, 3*config.height/4, game.config.width, game.config.height, [[135, 305], [380, 270], [game.config.width+50, 335]]).setDepth(-1);
 
         //Create the text around the scene
         this.createText();
@@ -106,12 +106,9 @@ class Shop extends Phaser.Scene {
         };
 
         //create shop text
-        this.townExit = this.add.text(5*config.width/6, 9*config.height/10, "Path to Cave", this.textConfig).setOrigin(.5,.5).setVisible(true);
+        this.townExit = this.add.text(5*config.width/6 + 35, 9*config.height/10 + 25, "Path to Cave", this.textConfig).setOrigin(.5,.5).setVisible(true);
         this.toadTextInteract = this.add.text(this.toadLeckman.x,this.toadLeckman.y, "Space to interact with the shop", this.textConfig).setOrigin(.5,.5).setVisible(false);
-        this.marketEntrance = this.add.text(config.width/6, 9*config.height/10, "Farmer's Market Entrance", this.textConfig).setOrigin(.5,.5).setVisible(true);
-        if(hasSoldForDay){
-            this.marketEntrance.text = "Come back tomorrow when it is earlier";
-        }
+        this.marketEntrance = this.add.text(280, 389, "Farmer's Market Entrance", this.textConfig).setOrigin(.5,.5).setVisible(true);
     }
 
     createEvents(){
@@ -137,7 +134,7 @@ class Shop extends Phaser.Scene {
 
     createUI(){
         //create interactible backpack image
-        this.backpack = this.add.image(this.cameras.main.scrollX + 4*config.width/5 + 43, this.cameras.main.scrollY + config.height/5 - 25, 'backpackFrames')
+        this.backpack = this.add.image(this.cameras.main.scrollX + config.width - 68, this.cameras.main.scrollY + config.height/5 - 36, 'backpackFrames')
             .setInteractive().setAlpha(.5)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1);
@@ -199,18 +196,34 @@ class Shop extends Phaser.Scene {
         }
 
         //Check if the player is close enough to the bike to head to the world map
-        if (Math.abs(Phaser.Math.Distance.Between(this.marketEntrance.x, this.marketEntrance.y, this.player.x, this.player.y)) < 75) {
+        if (Math.abs(Phaser.Math.Distance.Between(this.marketEntrance.x, this.marketEntrance.y, this.player.x, this.player.y)) < 100) {
+            if(!hasSoldForDay){
+                this.marketEntrance.text = "Farmer's Market Entrance\nSPACE to sell for today";
+            }
+            else{
+                this.marketEntrance.text = "Come back tomorrow when it is earlier";
+            }
             if (!hasSoldForDay && !this.leaving) {
-                this.leaving = true;
-                //Play the transition song
-                this.music.transitionSong("hubMarketTransition", false);
-                //Fade to black
-                this.cameras.main.fadeOut(3000, 0, 0, 0);
-                this.time.delayedCall(9500, () => {
-                    //this.scene.start('mapScene', { arrivingAt: -1 }) //for going to biking map
-                    this.music.stop();
-                    this.scene.start('marketPriceSettingScene');
-                });
+                    if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+                    this.leaving = true;
+                    //Play the transition song
+                    this.music.transitionSong("hubMarketTransition", false);
+                    //Fade to black
+                    this.cameras.main.fadeOut(3000, 0, 0, 0);
+                    this.time.delayedCall(9500, () => {
+                        //this.scene.start('mapScene', { arrivingAt: -1 }) //for going to biking map
+                        this.music.stop();
+                        this.scene.start('marketPriceSettingScene');
+                    });
+                }
+            }
+        }
+        else {
+            if(hasSoldForDay){
+                this.marketEntrance.text = "";
+            }
+            else{
+                this.marketEntrance.text = "Farmer's Market Entrance";
             }
         }
     }

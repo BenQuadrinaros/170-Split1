@@ -54,7 +54,7 @@ class BackPackUI extends Phaser.Scene {
         //create backpack icon
         
         
-        this.backpack = this.add.image(this.cameras.main.scrollX + 4*config.width/5 + 43, this.cameras.main.scrollY + config.height/5 - 25, 'tempBackpackIcon')
+        this.backpack = this.add.image(this.cameras.main.scrollX + config.width - 68, this.cameras.main.scrollY + config.height/5 - 36, 'tempBackpackIcon')
             .setInteractive().setAlpha(.5)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1);
