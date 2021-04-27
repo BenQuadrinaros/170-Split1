@@ -206,10 +206,11 @@ class BackPackUI extends Phaser.Scene {
                 let amount = playerVariables.inventory[uiScene.selectedTab][item];
                 //console.log(`amount of item ${item} is ${amount}`)
                 if (amount > 0) {
-                    if (menu === undefined) {
+                    
+                    /*if (menu === undefined) {
                         menu = createMenu(this, 675, 350, itemOptions, function (button) {
 
-                            if (button.text === "Hold") {
+                            if (button.text === "Hold") {*/
                                 //console.log(`holding a flower ${cellContainer.text}`)
                                 if(uiScene.selectedTab == "seeds") {
                                     heldType = "seeds";
@@ -239,7 +240,7 @@ class BackPackUI extends Phaser.Scene {
                                 uiScene.scene.resume(uiScene.previousScene);
                                 uiScene.scene.stop();
 
-                            }
+                            /*}
                             menu.collapse();
                             menu = undefined;
                             itemOptions = [
@@ -258,7 +259,7 @@ class BackPackUI extends Phaser.Scene {
                     } else if (!menu.isInTouching(pointer)) {
                         menu.collapse();
                         menu = undefined;
-                    }
+                    }*/
                 }
             }, this)
             .on('cell.over', function (cellContainer, cellIndex) {
