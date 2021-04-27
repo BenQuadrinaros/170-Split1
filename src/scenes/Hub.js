@@ -769,7 +769,7 @@ class Hub extends Phaser.Scene {
                         }
                         message += "From "+obj.weeksSinceCollection+" week(s) of production.";
                         obj.weeksSinceCollection = 0;
-                        if(obj.honeyIndicator.alpha > 0) { obj.honeyIndicator.destroy(); }
+                        if(loc.honeyIndicator !== null) { /*obj.honeyIndicator.alpha = 0.1;*/ /*obj.honeyIndicator.setFillStyle(0xff0000);*/ loc.honeyIndicator.destroy(); loc.honeyIndicator = null; console.log("honey indicator destroyed", loc.honeyIndicator); }
                         this.fadeText(message);
                         this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + 
                             "\nMoney: " + playerVariables.money;
