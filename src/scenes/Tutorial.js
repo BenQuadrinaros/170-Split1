@@ -263,6 +263,7 @@ class Tutorial extends Phaser.Scene {
         playerVariables.inventory.honey["total"] -= 3;
         playerVariables.inventory.honey["yellow"] -= 3;
         playerVariables.inventory.seeds["Cosmos"] -= 2;
+        playerVariables.inventory.items["Clipper"] -= 3;
         //Destroy the default garden items
         gardenGrid[1][4].item = null;
         gardenGrid[1][6].item = null;
@@ -590,6 +591,9 @@ class Tutorial extends Phaser.Scene {
                 this.music.transitionSong("bedtimeMusic", false);
                 this.cameras.main.fadeOut(3000, 0, 0, 0);
                 this.time.delayedCall(8000, () => {
+                    //Give the player some clippers
+                    playerVariables.inventory.items["Clipper"] += 3;
+                    playerInventoryUpdated = true;
                     this.music.stop();
                     this.scene.stop();
                     this.scene.launch("hubScene", {previousScene: "tutorialScene"});

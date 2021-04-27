@@ -62,7 +62,7 @@ class PriceHistory extends Phaser.Scene{
 
 
     createBackIcon(){
-        this.priceHistory = this.add.image(7*config.width/8, config.height/5, 'noteBook', 0)
+        this.priceHistory = this.add.image(110, 4*config.height / 5 + 15, 'noteBook', 0)
             .setDepth(100).setScale(.125,.125).setOrigin(.5, .5).setAlpha(.5).setInteractive()
             .on('pointerover', () => {
                 this.priceHistory.alpha = 1;
@@ -71,7 +71,7 @@ class PriceHistory extends Phaser.Scene{
                 this.priceHistory.alpha = .5;
             })
             .on('pointerdown', () => {
-                this.music.playSFX("flipMap");
+                this.music.playSFX("mapFlip");
                 console.log("resuming market...")
                 console.log(uiScene.previousScene);
                 uiScene.scene.resume(uiScene.previousScene);

@@ -261,6 +261,7 @@ class Hub extends Phaser.Scene {
         shopInventory["Seeds"]["Tulip"]["amount"] = 3;
         shopInventory["Items"]["Beehive"]["amount"] = 2;
         shopInventory["Items"]["Sprinkler"]["amount"] = 2;
+        shopInventory["Items"]["Clipper"]["amount"] = 4;
     }
 
     createControls() {

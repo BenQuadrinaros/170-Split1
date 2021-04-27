@@ -66,6 +66,7 @@ class MarketPriceSetting extends Phaser.Scene {
             this.continueBackground.alpha = .5;
         })
         .on("pointerdown", () => {
+            this.music.stop();
             this.scene.launch("marketScene", {previousScene: "marketPriceSettingScene"});
             this.scene.stop();
         });
