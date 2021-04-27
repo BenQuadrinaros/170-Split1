@@ -400,7 +400,7 @@ class Market extends Phaser.Scene {
     }
 
     createPriceHistoryIcon() {
-        this.priceHistory = this.add.image(7 * config.width / 8, config.height / 5, 'noteBook', 0)
+        this.priceHistory = this.add.image(110, 4*config.height / 5 + 15, 'noteBook', 0)
             .setDepth(100).setScale(.125, .125).setOrigin(.5, .5).setAlpha(.5).setInteractive()
             .on('pointerover', () => {
                 this.priceHistory.alpha = 1;
@@ -477,7 +477,7 @@ class Market extends Phaser.Scene {
     createPlayer() {
         //bear in costume selling honey
         this.bear = this.add.sprite(game.config.width / 2.5, 7 * game.config.height / 10, 'bearBackFrames', 0);
-        this.bear.setOrigin(.5, .5).setScale(0.85, 0.85);
+        this.bear.setOrigin(.5, .5).setScale(0.75, 0.75);
         this.bear.depth = 99;
     }
 

@@ -1,6 +1,6 @@
 class HubPlayer extends Phaser.GameObjects.Sprite {
 
-    constructor(scene, texture, frame, initX, initY, sceneWidth = game.config.width, sceneHeight = game.config.height) {
+    constructor(scene, texture, frame, initX, initY, sceneWidth = game.config.width, sceneHeight = game.config.height, verticalLimit = [[config.width, 135]]) {
         super(scene, initX, initY, texture, frame);
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -16,12 +16,14 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         this.startedMoving = false;
         this.movingUp = false;
         this.slow = false;
+        //Vertical limit: [(x, y)], x is rightmost bound at the height, y is the height
+        this.verticalLimits = verticalLimit;
     }
 
     update(){
         if (keyUP.isDown || keyW.isDown) {
             this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
-            if (this.y > 150){
+            if (this.withinVerticalLimits()){
                 if(this.slow) {
                     this.y -= this.yMoveRate/2;
                 } else {
@@ -38,7 +40,7 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         if (keyLEFT.isDown || keyA.isDown) {
             this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
             this.flipX = true;
-            if (this.x > 0){
+            if (this.x > 0 && this.notCrossingVerticalSides(true)){
                 if(this.slow) {
                     this.x -= this.xMoveRate/2;
                 } else {
@@ -51,7 +53,7 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         if (keyRIGHT.isDown || keyD.isDown) {
             this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
             this.flipX = false;
-            if (this.x < this.maxWidth){
+            if (this.x < this.maxWidth && this.notCrossingVerticalSides(false)){
                 if(this.slow) {
                     this.x += this.xMoveRate/2;
                 } else {
@@ -146,6 +148,61 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
                 this.anims.play("playerFrontIdle", true);
             }
         }
+    }
+
+    withinVerticalLimits(){
+        let returnVal = true;
+        let foundRightBound = false;
+        for(var elem of this.verticalLimits){
+            //console.log("withinVerticalLimits: checking", elem);
+            //Is this the correct segment
+            if(this.x <= elem[0] && !foundRightBound){
+                foundRightBound = true;
+                //Is this at the vertical bound
+                if(this.y <= elem[1]){
+                    returnVal = false;
+                }
+            }
+        }
+        return returnVal;
+    }
+
+    //Checks that the player isn't crossing from one vertical bound to another
+    notCrossingVerticalSides(checkLeft){
+        let returnVal = true;
+        let foundVerticalSegment = false;
+        for(let i = 0; i < this.verticalLimits.length; ++i){
+            if(this.x <= this.verticalLimits[i][0] && !foundVerticalSegment){
+                foundVerticalSegment = true;
+
+                //Check left side, don't worry if we are already at the left edge of the screen
+                if(i > 0 && checkLeft){
+                    let leftBound = this.verticalLimits[i-1];
+                    //if you are within a move of it, stop if also above vertical limit
+                    if((this.x <= (leftBound[0]+ 3*this.xMoveRate)) &&
+                       (this.y <= leftBound[1])){
+                           console.log("Colliding with left side");
+                        returnVal = false;
+                    }
+                }
+                //Check right side, don't worry if we are at the rightmost edge
+                if(i < (this.verticalLimits.length -1) && !checkLeft){
+                    console.log("checking right side");
+                    let rightBound = this.verticalLimits[i];
+                    //if you are within a move of it, stop if also above vertical limit
+                    if((this.x >= (rightBound[0] - 3*this.xMoveRate)) &&
+                       (this.y <= this.verticalLimits[i+1][1])){
+                           console.log("Colliding with right side");
+                        returnVal = false;
+                    }
+                    else{
+                        console.log("x (" + this.x + ") does not collide with " + (rightBound[0] - 5*this.xMoveRate));
+                    }
+                }
+
+            }
+        }
+        return returnVal;
     }
 
 }
