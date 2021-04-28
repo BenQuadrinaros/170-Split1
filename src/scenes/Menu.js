@@ -20,7 +20,10 @@ class Menu extends Phaser.Scene {
         keyT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.T);
 
         //Setting Background
-        this.menu = this.add.image(centerX, centerY, 'TitleScreen').setOrigin(0.5);
+        this.screen1 = this.add.image(centerX, centerY, 'titleScreen1').setScale(0.5).setDepth(-3);
+        this.screen2 = this.add.image(centerX, centerY, 'titleScreen2').setScale(0.5).setDepth(-2).setAlpha(0);
+        this.screen3 = this.add.image(centerX, centerY, 'titleScreen3').setScale(0.5).setDepth(-1).setAlpha(0);
+        this.createRotatingScreens();
         //Creating interactable images
         this.play = this.add.image(centerX/2, centerY + textSpacer, 'Play').setOrigin(0.5);
         this.tutorial = this.add.image(centerX/2, centerY + textSpacer * 2, 'Tutorial').setOrigin(0.5);
@@ -145,6 +148,8 @@ class Menu extends Phaser.Scene {
                 this.moveToNewScene(this.currSelected);
             }
         }
+
+        console.log('t1A: ' + this.screen1.alpha + ", t2A: " + this.screen2.alpha + ", t3A: " + this.screen3.alpha);
     }
 
     selectionUpdated(){
@@ -209,5 +214,85 @@ class Menu extends Phaser.Scene {
         else{
             console.log("Invalid Scene selected: " + newScene);
         }
+    }
+
+    createRotatingScreens(){
+        //Create tweens for the first screen
+        this.titleScreen1FadeIn = this.tweens.add({
+            targets: this.screen1,
+            alpha: 1,
+            ease: 'Linear',
+            duration: 3000,
+            delay: 42000,
+            loop: -1,
+            loopDelay: 42000
+        });
+        this.titleScreen1FadeOut = this.tweens.add({
+            targets: this.screen1,
+            alpha: 0,
+            ease: 'Linear',
+            duration: 3000,
+            delay: 12000,
+            loop: -1,
+            loopDelay: 42000
+        });
+        //Create tweens for the second screen
+        this.titleScreen2FadeIn = this.tweens.add({
+            targets: this.screen2,
+            alpha: 1,
+            ease: 'Linear',
+            duration: 3000,
+            delay: 12000,
+            loop: -1,
+            loopDelay: 42000
+        });
+        this.titleScreen2FadeOut = this.tweens.add({
+            targets: this.screen2,
+            alpha: 0,
+            ease: 'Linear',
+            duration: 3000,
+            delay: 27000,
+            loop: -1,
+            loopDelay: 42000
+        });
+        //Create tweens for the first screen
+        this.titleScreen3FadeIn = this.tweens.add({
+            targets: this.screen3,
+            alpha: 1,
+            ease: 'Linear',
+            duration: 3000,
+            delay: 27000,
+            loop: -1,
+            loopDelay: 42000
+        });
+        this.titleScreen3FadeOut = this.tweens.add({
+            targets: this.screen3,
+            alpha: 0,
+            ease: 'Linear',
+            duration: 3000,
+            delay: 42000,
+            loop: -1,
+            loopDelay: 42000
+        });
+
+        //Check title 1 alpha
+        /*this.titleScreen1FadeIn.on('onComplete', function () {
+            console.log('t1FI: ' + this.screen1.alpha);
+          });
+          this.titleScreen1FadeOut.on('onComplete', function () {
+            console.log('t1FO: ' + this.screen1.alpha);
+          });
+          this.titleScreen2FadeIn.on('onComplete', function () {
+            console.log('t2FI: ' + this.screen1.alpha);
+          });
+          this.titleScreen2FadeOut.on('onComplete', function () {
+            console.log('t2FO: ' + this.screen1.alpha);
+          });
+          this.titleScreen3FadeIn.on('onComplete', function () {
+            console.log('t3FI: ' + this.screen1.alpha);
+          });
+          this.titleScreen3FadeOut.on('onComplete', function () {
+            console.log('t3FO: ' + this.screen1.alpha);
+          });*/
     }
 }

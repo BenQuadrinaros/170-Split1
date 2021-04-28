@@ -112,7 +112,9 @@ class Boot extends Phaser.Scene {
             this.load.image('TownMap', './assets/sprites/background/WhiteBackground.png');
             this.load.image('PlayerIcon', './assets/sprites/character/playerMapIcon.png');
             //For menuScene
-            this.load.image('TitleScreen', './assets/sprites/background/TempTitle.png');
+            this.load.image('titleScreen1', './assets/sprites/background/title_screen_illust1.png');
+            this.load.image('titleScreen2', './assets/sprites/background/title_screen_illust2.png');
+            this.load.image('titleScreen3', './assets/sprites/background/title_screen_illust3.png');
             //For playScene
             this.load.image("Player", "./assets/sprites/character/bearOnBike.png");
             this.load.image("Road", "./assets/sprites/background/roadFullEX-02.png");
