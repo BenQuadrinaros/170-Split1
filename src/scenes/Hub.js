@@ -124,6 +124,7 @@ class Hub extends Phaser.Scene {
         this.updateSwarm();
 
         //Update player movement and location
+        this.previousPlayerPosition = [this.player.x, this.player.y];
         this.player.update();
         this.player.depth = this.player.y / 10 + 3;
         this.updateCheckCollisions();
@@ -255,13 +256,13 @@ class Hub extends Phaser.Scene {
         console.log("Honey increases to " + playerVariables.inventory.honey["total"]);
 
         //Refresh Shop
-        shopInventory["Seeds"]["Cosmos"]["amount"] = 2;
-        shopInventory["Seeds"]["Bluebonnet"]["amount"] = 3;
+        shopInventory["Seeds"]["Daisy"]["amount"] = 2;
+        shopInventory["Seeds"]["Delphinium"]["amount"] = 3;
         shopInventory["Seeds"]["Lavender"]["amount"] = 3;
         shopInventory["Seeds"]["Tulip"]["amount"] = 3;
         shopInventory["Items"]["Beehive"]["amount"] = 2;
         shopInventory["Items"]["Sprinkler"]["amount"] = 2;
-        shopInventory["Items"]["Clipper"]["amount"] = 4 + Math.floor(currentDay/6);
+        shopInventory["Items"]["Clipper"]["amount"] = 4 + Math.floor(currentDay/4);
     }
 
     createControls() {
@@ -369,8 +370,6 @@ class Hub extends Phaser.Scene {
         };
 
         //Text that starts visible
-        this.moveText = this.add.text(this.player.x, this.player.y - 3*config.height / 9, "Use the arrowkeys to move", this.textConfig).setOrigin(.5, .5);
-        this.moveText.depth = 100;
         this.turnText = this.add.text(6 * game.config.width / 7, game.config.height / 4, "Turns Remaining: ", this.textConfig).setOrigin(.5);
         this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
         this.turnText.depth = 100;
@@ -518,14 +517,6 @@ class Hub extends Phaser.Scene {
             this.scene.launch("backpackUI", {previousScene: "hubScene"});
         }
 
-        //When the player starts to move, get rid of the instructions
-        if (this.moveText != null) {
-            if (keyLEFT.isDown || keyRIGHT.isDown || keyUP.isDown || keyDOWN.isDown) {
-                this.moveText.text = "";
-                this.moveText = null;
-            }
-        }
-
         // -------------------------------------------
         // Quick day advancement for testing purposes
         if (Phaser.Input.Keyboard.JustDown(keyP)) {
@@ -663,16 +654,19 @@ class Hub extends Phaser.Scene {
         }
         let coords = this.closestPlot();
         if(coords) {
-            let bramble = gardenGrid[coords[0]][coords[1]].item;
-            if(bramble instanceof Bramble) {
-                bramble = bramble.image;
-                if(this.player.x + this.player.width/4 < bramble.x + 60 
-                    && this.player.x - this.player.width/4 > bramble.x - 60
-                    && (this.player.y - 50 > bramble.y - 50 
-                    || this.player.y - 50 < bramble.y + 50)) {
+            let obj = gardenGrid[coords[0]][coords[1]].item;
+            if(obj instanceof Bramble || obj instanceof Hive) {
+                obj = obj.image;
+                if(this.player.x + this.player.width/2 < obj.x + 120 
+                    && this.player.x - this.player.width/2 > obj.x - 120
+                    && this.player.y + this.player.height/3 < obj.y + 50) {
                     //Overlapping significantly
-                    this.player.slow = true;
-                    this.fadeText("Ow! Those are\nprickly brambles.");
+                    this.player.x = this.previousPlayerPosition[0];
+                    this.player.y = this.previousPlayerPosition[1];
+                    if(gardenGrid[coords[0]][coords[1]].item instanceof Bramble) {
+                        this.player.slow = true;
+                        this.fadeText("Ow! Those are\nprickly brambles.");
+                    }
                 }
             } else {
                 this.player.slow = false;
@@ -868,13 +862,24 @@ class Hub extends Phaser.Scene {
         // Helper function to find closest plot, if any within 65 units
         let closestXY = [];
         let closestDist = 65;
+        let offsetX = 0;
+        let offsetY = 0;
+        if(this.player.movingDirection == "up") { 
+            offsetY = -15;
+        } else if(this.player.movingDirection == "right") {
+            offsetX = 45;
+        } else if(this.player.movingDirection == "left") {
+            offsetX = -45;
+        } else if(this.player.movingDirection == "down") {
+            offsetY = 20;
+        }
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
                 let coords = this.gridToCoord(col, row);
-                if (Math.sqrt(Math.pow(coords[0] - this.player.x, 2) +
-                    Math.pow(coords[1] - this.player.y - this.player.height / 5, 2)) < closestDist) {
-                    closestDist = Math.sqrt(Math.pow(coords[0] - this.player.x, 2) +
-                        Math.pow(coords[1] - this.player.y - this.player.height / 5, 2));
+                if (Math.sqrt(Math.pow(coords[0] - (this.player.x + offsetX), 2) +
+                    Math.pow(coords[1] - (this.player.y + this.player.height / 4 + offsetY), 2)) < closestDist) {
+                    closestDist = Math.sqrt(Math.pow(coords[0] - (this.player.x + offsetX), 2) +
+                        Math.pow(coords[1] - (this.player.y + this.player.height / 4 + offsetY), 2));
                     closestXY = [row, col];
                 }
             }
