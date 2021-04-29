@@ -16,6 +16,7 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         this.startedMoving = false;
         this.movingUp = false;
         this.slow = false;
+        this.movingDirection = "right";
         //Vertical limit: [(x, y)], x is rightmost bound at the height, y is the height
         this.verticalLimits = verticalLimit;
     }
@@ -32,8 +33,8 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
             }
             this.startedMoving = true;
             this.movingUp = true;
-        }
-        else{
+            this.movingDirection = "up";
+        } else {
             this.movingUp = false;
         }
 
@@ -46,6 +47,7 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
                 } else {
                     this.x -= this.xMoveRate;
                 }
+                this.movingDirection = "left";
             }
             this.startedMoving = true;
         }
@@ -59,6 +61,7 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
                 } else {
                     this.x += this.xMoveRate;
                 }
+                this.movingDirection = "right";
             }
             this.startedMoving = true;
         }
@@ -77,6 +80,7 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
             }
             this.startedMoving = true;
             this.movingUp = false;
+            this.movingDirection = "down";
         }
 
         this.chooseAnimation();
