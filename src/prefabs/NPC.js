@@ -64,10 +64,7 @@ class NPC extends Phaser.GameObjects.Sprite{
         this.name = NPCTable[idNum].name;
         this.personality = NPCTable[idNum].personality;
         this.voiceLines = NPCTable[idNum].voiceLines;
-
-        let npcType = npcTypes.types[Math.floor(npcTypes.amt * Math.random())];
-        this.barterChance = npcType.barterChance;
-        this.priceRange = npcType.priceRange;
+        this.type = npcTypes[this.personality];
 
         return NPCTable[idNum].texture;
     }
@@ -77,87 +74,91 @@ let NPCTable = [
     {
         name: "Bagel",
         texture: "basicDogNPC",
-        personality: "easy",
+        personality: "C",
         voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
     },
     {
         name: "Dolly Mation",
         texture: "dalmationDogNPC",
-        personality: "easy",
+        personality: "C",
         voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
     },
     {
         name: "Dobby",
         texture: "dobermanDogNPC",
-        personality: "easy",
+        personality: "C",
         voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
     },
     {
         name: "Huskgrid",
         texture: "huskyDogNPC",
-        personality: "easy",
+        personality: "B",
         voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
     },
     {
         name: "Spot",
         texture: "spotDogNPC",
-        personality: "easy",
+        personality: "B",
         voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
     },
     {
         name: "Bunderson",
         texture: "basicBunNPC",
-        personality: "easy",
+        personality: "B",
         voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
     },
     {
         name: "Harriet",
         texture: "secondBunNPC",
-        personality: "easy",
+        personality: "B",
         voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
     },
     {
         name: "Bonabell",
         texture: "pinkBunNPC",
-        personality: "easy",
+        personality: "B",
         voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
     },
     {
         name: "Jacob",
         texture: "brownBunNPC",
-        personality: "easy",
+        personality: "B",
         voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
     },
     {
         name: "Robert",
         texture: "bluegreyBunNPC",
-        personality: "easy",
+        personality: "A",
         voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
     },
     {
         name: "Ra Bitcoin",
         texture: "albinoBunNPC",
-        personality: "easy",
+        personality: "A",
         voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
     }
 ];
-
+//Npc types to determine range for each npc
 let npcTypes = {
-    amt: 2,
-    types:[
-        {
-            type:"cheap",
-            priceRange:[-2,1],
-            barterChance:60
+    A:{
+        yellow:[2, 3],
+        purple:[3, 4],
+        blue:[3.5, 4.5],
+        pink:[4, 5]
     },
-        {
-            type:"agreeable",
-            priceRange:[-1.5, 1],
-            barterChance:20
+    B: {
+        yellow: [2.5, 3.5],
+        purple:[3.5, 4.5],
+        blue:[4, 5],
+        pink:[4.5, 5.5]
     },
-    ]
+    C: {
+        yellow: [3,4],
+        purple:[4, 5],
+        blue:[4.5, 5.5],
+        pink:[5, 6]
+    }
 }
-
 function generateNPCSprite(idNum){
     return NPCTable[idNum].texture;
 }
