@@ -55,12 +55,12 @@ class BackPackUI extends Phaser.Scene {
         
         
         this.backpack = this.add.image(this.cameras.main.scrollX + config.width - 68, this.cameras.main.scrollY + config.height/5 - 36, 'tempBackpackIcon')
-            .setInteractive().setAlpha(.5)
+            .setInteractive().setAlpha(.9)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1);
             })
             .on('pointerout', () => {
-                this.backpack.setAlpha(.5);
+                this.backpack.setAlpha(.9);
             })
             .on('pointerdown', () => {
                 console.log("Previous scene key: " + this.previousScene);
