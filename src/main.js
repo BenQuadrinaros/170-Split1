@@ -6,7 +6,7 @@ let config = {
     height: 540,
     scene: [Boot, Hub, Garden, Map, Market, MarketPriceSetting, Play, Menu, Credits, Talking,
         OldRhythm,  Shop, ShopUI, Tutorial, BackPackUI, HubPopup, Pause, Settings, Win, PriceHistory],
-    volume: .5,
+    volume: .25,
     physics: {
         default: 'arcade',
         arcade: {
@@ -30,8 +30,11 @@ let keyP, keyO, keyESCAPE, keyENTER, keyLEFT, keyRIGHT, keyDOWN, keyUP, keySPACE
 //colors for ui elements
 let uiScene; // global variable for current active ui scene
 const COLOR_PRIMARY = 0x506092;
+const SHOP_PRIMARY = 0x543d3d;
 const COLOR_LIGHT = 0xf1eeaf;
+const SHOP_LIGHT = 0x8cb05a;
 const COLOR_DARK = 0xf1b55f;
+const SHOP_DARK = 0x658442;
 const Random = Phaser.Math.Between;
 const font = 'helvetica';
 
@@ -40,8 +43,8 @@ let hasSoldForDay = false;
 
 let upgrades = { "bike": 0 };
 //Starting garden state
-let flow0 = new Flower(2, 3, "Cosmos");
-let flow1 = new Flower(2, 3, "Cosmos");
+let flow0 = new Flower(2, 3, "Daisy");
+let flow1 = new Flower(2, 3, "Daisy");
 let hive = new Hive(5, 2);
 //more flowers for testing purposes
 let gardenGrid = [ // 11 x 11 grid for garden generating
@@ -112,16 +115,16 @@ let playerVariables = {
             "Mulch": 0
         },
         flowers: {
-            "Cosmos": 0,
-            "Bluebonnet": 0,
+            "Daisy": 0,
+            "Delphinium": 0,
             "Lavender": 0,
             "Tulip": 0,
             "Orchid": 0
         },
         seeds: {
             //Daisy, Delphinium, Lavender, Tulip
-            "Cosmos": 2,
-            "Bluebonnet": 0,
+            "Daisy": 2,
+            "Delphinium": 0,
             "Lavender": 0,
             "Tulip": 0,
             "Orchid": 0
@@ -130,10 +133,10 @@ let playerVariables = {
 }
 let shopInventory = {
     "Seeds": {
-        "Cosmos": {"amount": 2,"cost":2},
+        "Daisy": {"amount": 2,"cost":2},
         "Lavender":{"amount": 3,"cost": 3},
         //"Orchid":{"amount": 3,"cost": 3},
-        "Bluebonnet":{"amount": 3,"cost": 4},
+        "Delphinium":{"amount": 3,"cost": 4},
         "Tulip":{"amount": 3,"cost": 4}
     },
     "Items":{
@@ -170,10 +173,10 @@ let sellChoice = undefined;
 let bartering = false;
 
 let priceMap = {
-    "yellow": 0,
-    "blue": 0,
-    "purple": 0,
-    "pink": 0
+    "yellow": 2.75,
+    "blue": 3.75,
+    "purple": 3.75,
+    "pink": 4.5
 }
 let moodMap = {
     0:"happy",
@@ -188,8 +191,8 @@ function calculateEcologyScore() {
     // amount of flowers, variety of flowers, number of hives, number of brambles, number of weeds
     let flowerTotal = 0;
     let flowerVariety = {
-        "Cosmos": false,
-        "Bluebonnet": false,
+        "Daisy": false,
+        "Delphinium": false,
         "Lavender": false,
         "Tulip": false
     };

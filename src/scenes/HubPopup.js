@@ -136,13 +136,14 @@ class HubPopup extends Phaser.Scene {
         if(this.fromTutorial && Phaser.Input.Keyboard.JustDown(keySPACE)){
             if(this.currDialogSelection === 1){
                 this.tutorialDialog.text =
-`We hope your plan to revitalize the area goes
-well! See you around!`;
+`We look forward to working with you as you restore this
+community garden. *B*ee you around!`;
                 this.currDialogSelection = 2;
             }
             else if(this.currDialogSelection === 2){
                 this.tutorialTextBackdrop.alpha = 0;
                 this.tutorialDialog.setVisible(false);
+                this.spaceContinue.setVisible(false);
                 this.talkingBee.alpha = 0;
             }
         }
@@ -171,6 +172,11 @@ well! See you around!`;
         this.talkingBee.y = this.cameras.main.scrollY + config.height/3;
         this.talkingBee.depth = 120;
         this.currDialogSelection = 1;
+        this.spaceContinue = this.add.text(0, 0, "SPACE to continue", this.textConfig);
+        this.spaceContinue.depth = 205
+        this.spaceContinue.x = this.cameras.main.scrollX + 4*config.width/5 - 15;
+        this.spaceContinue.y = this.cameras.main.scrollY + 4*config.height/5 + 65;
+        
 
 
         this.tutorialDialog.text =

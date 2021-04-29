@@ -38,7 +38,25 @@ class Plot {
         if(this.item) {
             //console.log("putting",this.item,"at",spotx," ",spoty);
             this.spot = this.item.addToScene(scene, spotx, spoty);
+            if(this.item instanceof Hive){ 
+                console.log(this.item);
+                console.log(this.honeyIndicator);
+            }
+            if(this.item instanceof Hive  && this.item.hasStock() && !this.honeyIndicator){
+                    console.log("honey indicator added");
+                    this.honeyIndicator = scene.add.ellipse(coords[0], coords[1] + 40, config.width / 10, config.height / 10, 0xE5A515);
+                    this.honeyIndicator.alpha = .75;
+                
+            }
+            else if(!this.honeyIndicator){
+                console.log("Honey indicator null");
+            }
+            else{
+                console.log("Honey indicator not null");
+            }
+            
         } 
+        
     }
 
     destroyImages() {

@@ -54,13 +54,13 @@ class BackPackUI extends Phaser.Scene {
         //create backpack icon
         
         
-        this.backpack = this.add.image(this.cameras.main.scrollX + 4*config.width/5 + 43, this.cameras.main.scrollY + config.height/5 - 25, 'tempBackpackIcon')
-            .setInteractive().setAlpha(.5)
+        this.backpack = this.add.image(this.cameras.main.scrollX + config.width - 68, this.cameras.main.scrollY + config.height/5 - 36, 'tempBackpackIcon')
+            .setInteractive().setAlpha(.9)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1);
             })
             .on('pointerout', () => {
-                this.backpack.setAlpha(.5);
+                this.backpack.setAlpha(.9);
             })
             .on('pointerdown', () => {
                 console.log("Previous scene key: " + this.previousScene);
@@ -206,10 +206,11 @@ class BackPackUI extends Phaser.Scene {
                 let amount = playerVariables.inventory[uiScene.selectedTab][item];
                 //console.log(`amount of item ${item} is ${amount}`)
                 if (amount > 0) {
-                    if (menu === undefined) {
+                    
+                    /*if (menu === undefined) {
                         menu = createMenu(this, 675, 350, itemOptions, function (button) {
 
-                            if (button.text === "Hold") {
+                            if (button.text === "Hold") {*/
                                 //console.log(`holding a flower ${cellContainer.text}`)
                                 if(uiScene.selectedTab == "seeds") {
                                     heldType = "seeds";
@@ -239,7 +240,7 @@ class BackPackUI extends Phaser.Scene {
                                 uiScene.scene.resume(uiScene.previousScene);
                                 uiScene.scene.stop();
 
-                            }
+                            /*}
                             menu.collapse();
                             menu = undefined;
                             itemOptions = [
@@ -258,7 +259,7 @@ class BackPackUI extends Phaser.Scene {
                     } else if (!menu.isInTouching(pointer)) {
                         menu.collapse();
                         menu = undefined;
-                    }
+                    }*/
                 }
             }, this)
             .on('cell.over', function (cellContainer, cellIndex) {

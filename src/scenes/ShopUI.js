@@ -3,8 +3,8 @@ let pointer;
 
 let shopCosts = {};
 let idImages = {
-    "Cosmos": ["flowerWhite3", .125],
-    "Bluebonnet": ["flowerBlue3", .125],
+    "Daisy": ["flowerWhite3", .125],
+    "Delphinium": ["flowerBlue3", .125],
     "Tulip": ["flowerRed3", .125],
     "Lavender": ["flowerPurple3", .125],
     "Sprinkler": ["sprinkler", .125],
@@ -49,7 +49,7 @@ class ShopUI extends Phaser.Scene {
         let music = new BGMManager(this);
         //eventDispacher.add(this.heardEvent ,this);
 
-        this.backpack = this.add.image(16 * config.width / 24, config.height / 6, 'PlayerIcon')
+        this.backpack = this.add.image(this.cameras.main.scrollX + config.width - 68, this.cameras.main.scrollY + config.height/5 - 36, 'PlayerIcon')
             .setInteractive().setAlpha(.5)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1);
@@ -100,7 +100,7 @@ class ShopUI extends Phaser.Scene {
             y: 300,
 
             panel: this.rexUI.add.gridTable({
-                background: this.rexUI.add.roundRectangle(0, 0, 20, 10, 10, COLOR_PRIMARY),
+                background: this.rexUI.add.roundRectangle(0, 0, 20, 10, 10, SHOP_PRIMARY),
 
                 table: {
                     width: 350,
@@ -115,7 +115,7 @@ class ShopUI extends Phaser.Scene {
                 },
 
                 slider: {
-                    track: this.rexUI.add.roundRectangle(0, 0, 20, 10, 10, COLOR_DARK),
+                    track: this.rexUI.add.roundRectangle(0, 0, 20, 10, 10, SHOP_DARK),
                     thumb: uiScene.add.image(0, 0, "PlayerIcon").setScale(.5, .5),
                 },
 
@@ -139,7 +139,7 @@ class ShopUI extends Phaser.Scene {
                         width: width,
                         height: height,
 
-                        background: scene.rexUI.add.roundRectangle(0, 0, 20, 20, 0).setStrokeStyle(2, COLOR_DARK),
+                        background: scene.rexUI.add.roundRectangle(0, 0, 20, 20, 0).setStrokeStyle(2, SHOP_DARK),
                         icon: scene.add.image(0, 0, img).setScale(scale, scale),
                         text: scene.add.text(0, 0, item.id+'\n'+item.cost+"$"),
 
@@ -178,9 +178,9 @@ class ShopUI extends Phaser.Scene {
                     case 'left':
                         // Highlight button
                         if (this._prevTypeButton) {
-                            this._prevTypeButton.getElement('background').setFillStyle(COLOR_DARK)
+                            this._prevTypeButton.getElement('background').setFillStyle(SHOP_DARK)
                         }
-                        button.getElement('background').setFillStyle(COLOR_PRIMARY);
+                        button.getElement('background').setFillStyle(SHOP_PRIMARY);
                         this._prevTypeButton = button;
                         if (this._prevSortButton === undefined) {
                             return;
@@ -193,9 +193,9 @@ class ShopUI extends Phaser.Scene {
                     case 'right':
                         // Highlight button
                         if (this._prevSortButton) {
-                            this._prevSortButton.getElement('background').setFillStyle(COLOR_DARK)
+                            this._prevSortButton.getElement('background').setFillStyle(SHOP_DARK)
                         }
-                        button.getElement('background').setFillStyle(COLOR_PRIMARY);
+                        button.getElement('background').setFillStyle(SHOP_PRIMARY);
                         this._prevSortButton = button;
                         if (this._prevTypeButton === undefined) {
                             return;
@@ -272,7 +272,7 @@ class ShopUI extends Phaser.Scene {
             }, this)
             .on('cell.over', function (cellContainer, cellIndex) {
                 cellContainer.getElement('background')
-                    .setStrokeStyle(2, COLOR_LIGHT)
+                    .setStrokeStyle(2, SHOP_LIGHT)
                     .setDepth(1);
                 let item = cellContainer.text.split("\n")[0];
                 uiScene.selectedItem = item;
@@ -286,7 +286,7 @@ class ShopUI extends Phaser.Scene {
             }, this)
             .on('cell.out', function (cellContainer, cellIndex) {
                 cellContainer.getElement('background')
-                    .setStrokeStyle(2, COLOR_DARK)
+                    .setStrokeStyle(2, SHOP_DARK)
                     .setDepth(0);
                 cellContainer.text = uiScene.prevText;
             }, this);
@@ -351,7 +351,7 @@ var createButton = function (scene, direction, text) {
     return scene.rexUI.add.label({
         width: 50,
         height: 40,
-        background: scene.rexUI.add.roundRectangle(0, 0, 50, 50, radius, COLOR_DARK),
+        background: scene.rexUI.add.roundRectangle(0, 0, 50, 50, radius, SHOP_DARK),
         text: scene.add.text(0, 0, text, {
             fontSize: '18pt'
         }),
@@ -374,11 +374,11 @@ var createMenu = function (scene, x, y, items, onClick) {
         items: items,
         createButtonCallback: function (item, i) {
             return scene.rexUI.add.label({
-                background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 0, COLOR_PRIMARY),
+                background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 0, SHOP_PRIMARY),
                 text: scene.add.text(0, 0, item.name, {
                     fontSize: '20px'
                 }),
-                icon: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_DARK),
+                icon: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, SHOP_DARK),
                 space: {
                     left: 10,
                     right: 10,

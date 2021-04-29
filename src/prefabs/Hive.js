@@ -10,7 +10,8 @@ class Hive {
             "pink": 0
         };
         this.weeksSinceCollection = 0;
-        this.honeyIndicator = null;
+        this.honeyIndicator = null; //scene.add.ellipse(initx, inity + 40, config.width / 10, config.height / 10, 0xE5A515);
+        //this.honeyIndicator.alpha = 0;
     }
 
     collect() {
@@ -55,6 +56,22 @@ class Hive {
         } else {
             this.stock["yellow"] += honeyProduced;
         }
+
+        if(this.hasStock() && (this.honeyIndicator !== null)) {
+            console.log("Setting honey indicator to not be transparent");
+            //this.honeyIndicator = scene.add.ellipse(initx, inity + 40, config.width / 10, config.height / 10, 0xE5A515);
+            this.honeyIndicator.alpha = .75;
+        } else{
+            if(!this.hasStock()){
+                console.log("this.beehive does not have stock or");
+            }
+            else if(!(this.honeyIndicator !== null)){
+                console.log("honey indicator is null");
+            }
+            else{
+                console.log("no fucking clue");
+            }
+        }
     }
 
     hasStock() {
@@ -69,10 +86,10 @@ class Hive {
         this.image.depth = this.image.y/10 - 3;
         scene.add.existing(this.image);
         this.image.setPosition(initx, inity);
-        if(this.hasStock() && !this.honeyIndicator) {
+        /*if(this.hasStock() && !this.honeyIndicator) {
             this.honeyIndicator = scene.add.ellipse(initx, inity + 40, config.width / 10, config.height / 10, 0xE5A515);
             this.honeyIndicator.alpha = .75;
-        }
+        }*/
         return this.image;
     }
 
