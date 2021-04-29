@@ -331,14 +331,14 @@ class Hub extends Phaser.Scene {
 
         //create interactible backpack image
         this.backpack = this.add.image(this.cameras.main.scrollX + config.width - 122, this.cameras.main.scrollY + config.height/5 - 10, 'backpackFrames')
-            .setInteractive().setAlpha(.5).setScale(.87)
+            .setInteractive().setAlpha(.9).setScale(.87)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1);
                 this.pointerCurrentlyOver = "backpack";
                 console.log("Just set pointer as over backpack");
             })
             .on('pointerout', () => {
-                this.backpack.setAlpha(.5);
+                this.backpack.setAlpha(.9);
                 this.pointerCurrentlyOver = "";
                 console.log("Just set pointer as over ''");
             })
@@ -713,6 +713,14 @@ class Hub extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 let row = plot[0];
                 let col = plot[1];
+                //If the space is a weed, remove it
+                if(gardenGrid[row][col].item instanceof Weed){
+                    gardenGrid[row][col].item = null;
+                    //recreate the plot
+                    gardenGrid[row][col].renderPlot(this, this.gridToCoord(col, row));
+
+                    return;
+                }
                 //If player holding the watering can
                 if (heldItem instanceof WateringCan) {
                     this.music.playSFX("waterFlowers");
@@ -940,7 +948,7 @@ class Hub extends Phaser.Scene {
 
     loadData() {
         //TODO:: Load data as needed
-
+        var loadedData = JSON.parse(localStorage.getItem('saveData'));
         //Check Garden Grid
 
         //Check Player Variables
@@ -952,5 +960,21 @@ class Hub extends Phaser.Scene {
 
     saveData() {
         //TODO:: save data when previous scene is not the menu
+        var saveData = {
+            'garden': [],
+            'playerVars': [],
+            'shopInventory': [],
+            'priceMap': []
+        };
+        //Save garden
+
+        //Save player vars
+
+        //Save shop inventory
+
+        //Save priceMap
+
+        //Set data into browser
+        localStorage.setItem('saveData', JSON.stringify(saveData));
     }
 }

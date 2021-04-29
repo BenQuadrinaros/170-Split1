@@ -80,16 +80,17 @@ class Boot extends Phaser.Scene {
             this.load.image('bluegreyBunNPC', './assets/sprites/character/bluegreybunny.png');
             this.load.image('brownBunNPC', './assets/sprites/character/brownbunny.png');
             this.load.image('pinkBunNPC', './assets/sprites/character/pinkbunny.png');
-            this.load.image('boothFull', './assets/sprites/background/boothFull.png');
-            this.load.image('booth', './assets/sprites/background/boothZoom.png');
-            this.load.image('cloth', './assets/sprites/background/clothFull.png');
+            this.load.image('marketSky', './assets/sprites/background/sky.png');
+            this.load.image('marketBackground', './assets/sprites/background/marketbg.png');
+            this.load.image('booth', './assets/sprites/background/boothTall.png');
+            this.load.image('cloth', './assets/sprites/background/boothTallCurtain.png');
             this.load.image('honeyPlain', './assets/sprites/background/honeyPlain.png');
             this.load.image('honeyPink', './assets/sprites/background/honeyPink.png');
             this.load.image('honeyBlue', './assets/sprites/background/honeyBlue.png');
             this.load.image('honeyPurple', './assets/sprites/background/honeyPurple.png');
-            this.load.image('redMinus', './assets/sprites/UI/minusRed_240.png');
+            //this.load.image('redMinus', './assets/sprites/UI/minusRed_240.png');
             this.load.image('greenMinus', './assets/sprites/UI/minusGreen_240.png');
-            this.load.image('greenPlus', './assets/sprites/UI/plusGreen_240.png');
+            //this.load.image('greenPlus', './assets/sprites/UI/plusGreen_240.png');
             this.load.image('plusRed', './assets/sprites/UI/plusRed_240.png');
             this.load.image('sellYes', './assets/sprites/UI/sellYes.png');
             this.load.image('sellNo', './assets/sprites/UI/sellNo.png');
@@ -162,6 +163,8 @@ class Boot extends Phaser.Scene {
             this.load.spritesheet('Back', './assets/spritesheets/BackInitial.png', {frameWidth: 114, frameHeight: 36, startFrame: 0, endFrame: 1});
             //For marketScene
             this.load.spritesheet('bearBackFrames', './assets/spritesheets/LARGE_anim_idle_back_1000x875.png', {frameWidth: 500, frameHeight: 875, startFrame: 0, endFrame: 1});
+            this.load.spritesheet('greenPlus', './assets/spritesheets/plusGreenFrames.png', {frameWidth: 80, frameHeight:80, startFrame: 0, endFrame:1});
+            this.load.spritesheet('redMinus', './assets/spritesheets/minusRedFrames.png', {frameWidth: 80, frameHeight:80, startFrame: 0, endFrame:1});
 
         //Load Music
             //For hubScene

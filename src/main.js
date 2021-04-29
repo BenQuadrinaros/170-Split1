@@ -6,7 +6,7 @@ let config = {
     height: 540,
     scene: [Boot, Hub, Garden, Map, Market, MarketPriceSetting, Play, Menu, Credits, Talking,
         OldRhythm,  Shop, ShopUI, Tutorial, BackPackUI, HubPopup, Pause, Settings, Win, PriceHistory],
-    volume: .5,
+    volume: .25,
     physics: {
         default: 'arcade',
         arcade: {
@@ -173,10 +173,10 @@ let sellChoice = undefined;
 let bartering = false;
 
 let priceMap = {
-    "yellow": 0,
-    "blue": 0,
-    "purple": 0,
-    "pink": 0
+    "yellow": 2.75,
+    "blue": 3.75,
+    "purple": 3.75,
+    "pink": 4.5
 }
 let moodMap = {
     0:"happy",

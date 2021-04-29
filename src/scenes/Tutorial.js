@@ -379,8 +379,6 @@ class Tutorial extends Phaser.Scene {
         };
 
         //Text that starts visible
-        this.moveText = this.add.text(this.player.x, this.player.y - 3*config.height / 9, "Use the arrowkeys to move", this.textConfig).setOrigin(.5, .5);
-        this.moveText.depth = 100;
         this.turnText = this.add.text(6 * game.config.width / 7, game.config.height / 4, "Turns Remaining: ", this.textConfig).setOrigin(.5);
         this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
         this.turnText.depth = 100;
@@ -396,7 +394,7 @@ class Tutorial extends Phaser.Scene {
         //Text of variable visibility
         this.caveText = this.add.text(5 * game.config.width / 7, (game.config.height / 4) + 25, "", this.textConfig).setOrigin(.5);
         this.caveText.depth = 100;
-        this.caveText.text = "Press SPACE to end the day early";
+        this.caveText.text = "Press SPACE to go to sleep";
         this.caveText.setVisible(false);
 
         //UI Text elements
@@ -565,14 +563,6 @@ class Tutorial extends Phaser.Scene {
             this.music.playSFX("backpackOpen");
             this.scene.pause('tutorialScene');
             this.scene.launch("backpackUI", {previousScene: "tutorialScene"});
-        }
-
-        //When the player starts to move, get rid of the instructions
-        if (this.moveText != null) {
-            if (keyLEFT.isDown || keyRIGHT.isDown || keyUP.isDown || keyDOWN.isDown) {
-                this.moveText.text = "";
-                this.moveText = null;
-            }
         }
 
         // -------------------------------------------

@@ -106,7 +106,7 @@ class Shop extends Phaser.Scene {
         };
 
         //create shop text
-        this.townExit = this.add.text(5*config.width/6 + 35, 9*config.height/10 + 25, "Path to Cave", this.textConfig).setOrigin(.5,.5).setVisible(true);
+        this.townExit = this.add.text(5*config.width/6 + 65, 9*config.height/10 + 5, "Path to Cave", this.textConfig).setOrigin(.5,.5).setVisible(true);
         this.toadTextInteract = this.add.text(this.toadLeckman.x,this.toadLeckman.y, "Space to interact with the shop", this.textConfig).setOrigin(.5,.5).setVisible(false);
         this.marketEntrance = this.add.text(280, 389, "Farmer's Market Entrance", this.textConfig).setOrigin(.5,.5).setVisible(true);
     }
@@ -135,14 +135,14 @@ class Shop extends Phaser.Scene {
     createUI(){
         //create interactible backpack image
         this.backpack = this.add.image(this.cameras.main.scrollX + config.width - 68, this.cameras.main.scrollY + config.height/5 - 36, 'backpackFrames')
-            .setInteractive().setAlpha(.5)
+            .setInteractive().setAlpha(.9)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1);
                 this.pointerCurrentlyOver = "backpack";
                 console.log("Just set pointer as over backpack");
             })
             .on('pointerout', () => {
-                this.backpack.setAlpha(.5);
+                this.backpack.setAlpha(.9);
                 this.pointerCurrentlyOver = "";
                 console.log("Just set pointer as over ''");
             })
