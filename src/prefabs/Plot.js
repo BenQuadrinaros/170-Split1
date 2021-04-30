@@ -14,6 +14,7 @@ class Plot {
         this.dirt = null;
         this.mulch = null;
         this.spot = null;
+        this.honeyIndicator = null;
     }
 
     renderPlot(scene, coords) {
@@ -62,12 +63,63 @@ class Plot {
     destroyImages() {
         if(this.dirt) {
             this.dirt.destroy();
+            this.dirt = null;
         }
         if(this.mulch) {
             this.mulch.destroy();
+            this.mulch = null;
         }
         if(this.spot) {
             this.spot.destroy();
+            this.spot = null;
         }
     }
+}
+
+function objToPlot(obj){
+    let plot = new Plot();
+    plot.gridx = obj.gridx;
+    plot.gridy = obj.gridy;
+
+    //States
+    plot.dug = obj.dug;
+    plot.water = obj.water;
+    plot.mulchAmt = obj.mulchAmt;
+
+    //plot.item
+    if(obj.item){
+        console.log("obj.item.type: ", obj.item.type);
+        switch(obj.item.type){
+            case "Daisy":
+            case "Delphinium":
+            case "Lavender":
+            case "Tulip":
+                plot.item = new Flower(obj.item.age, obj.item.water, obj.item.type);
+                break;
+            case "Beehive":
+                plot.item = new Hive(plot.gridx, plot.gridy);
+                break;
+            case "Bramble":
+                plot.item = new Bramble(plot.gridx, plot.gridy);
+                break;
+            case "Sprinkler":
+                plot.item = new Sprinkler(plot.gridx, plot.gridy);
+                break;
+            default:
+                plot.item = null;
+                break;
+        }
+        //plot.spot = this.item.addToScene(scene, spotx, spoty);
+    }
+    else{
+        plot.item = obj.item;
+    }
+
+    //Images
+    plot.dirt = null;
+    plot.mulch = null;
+    //plot.spot = null;
+    plot.honeyIndicator = null;
+
+    return plot;
 }
