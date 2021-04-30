@@ -174,7 +174,24 @@ class Market extends Phaser.Scene {
             type:type,
             price:priceMap[type],
             mood: mood
-        })
+        });
+        let bearBucks = this.add.image(this.npc.x,this.moneyText.y,'bearbucks')
+            .setScale(.5,.5).setDepth(100);
+        this.tweens.add({
+            targets: bearBucks,
+            alpha: {from: 1, to: 0},
+            x: '-=200',
+            ease: 'Sine.easeInOut',
+            duration: 1500,
+            repeat: 0,
+            yoyo: false,
+            hold: 0,
+            onComplete: function () {
+                //console.log("done tweening mood");
+                bearBucks.destroy();
+            },
+            onCompleteScope: this
+        });
         this.reduceStock(type, amount);
         playerVariables.money += amount*priceMap[type];
 
