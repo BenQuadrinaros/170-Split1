@@ -43,6 +43,10 @@ class Tutorial extends Phaser.Scene {
     }*/
 
     create() {
+
+        console.log("Garden Grid:");
+        console.log(gardenGrid);
+
         this.setTutorialGlobalVars();
         this.setTutorialFlags();
 
@@ -250,8 +254,8 @@ class Tutorial extends Phaser.Scene {
         console.log("Honey increases to " + playerVariables.inventory.honey["total"]);
 
         //Refresh Shop
-        shopInventory["Seeds"]["Cosmos"]["amount"] = 2;
-        shopInventory["Seeds"]["Bluebonnet"]["amount"] = 3;
+        shopInventory["Seeds"]["Daisy"]["amount"] = 2;
+        shopInventory["Seeds"]["Delphinium"]["amount"] = 3;
         shopInventory["Seeds"]["Lavender"]["amount"] = 3;
         shopInventory["Seeds"]["Tulip"]["amount"] = 3;
         shopInventory["Items"]["Beehive"]["amount"] = 2;
@@ -260,10 +264,10 @@ class Tutorial extends Phaser.Scene {
 
     setTutorialGlobalVars(){
         //Empty player's honey
-        playerVariables.inventory.honey["total"] -= 3;
-        playerVariables.inventory.honey["yellow"] -= 3;
-        playerVariables.inventory.seeds["Cosmos"] -= 2;
-        playerVariables.inventory.items["Clipper"] -= 3;
+        playerVariables.inventory.honey["total"] = 0;
+        playerVariables.inventory.honey["yellow"] = 0;
+        playerVariables.inventory.seeds["Daisy"] = 0;
+        playerVariables.inventory.items["Clipper"] = 0;
         //Destroy the default garden items
         gardenGrid[1][4].item = null;
         gardenGrid[1][6].item = null;
@@ -431,9 +435,9 @@ class Tutorial extends Phaser.Scene {
             this.music.setVolume(config.volume);
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
             keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-            if(!this.playerHasEquippedFirstSeed && (playerVariables.inventory.seeds["Cosmos"] === 0)){
+            if(!this.playerHasEquippedFirstSeed && (playerVariables.inventory.seeds["Daisy"] === 0)){
                 this.playerHasEquippedFirstSeed = true;
-            } else if(this.playerHasWateredFirstSeed && !this.playerHasEquippedFullFlower && (playerVariables.inventory.flowers["Cosmos"] === 0)){
+            } else if(this.playerHasWateredFirstSeed && !this.playerHasEquippedFullFlower && (playerVariables.inventory.flowers["Daisy"] === 0)){
                 this.playerHasEquippedFullFlower = true;
             }
         });
@@ -921,7 +925,7 @@ class Tutorial extends Phaser.Scene {
             }
             this.advanceTutorialDialog(1);
             this.currDialogMaximum = 2;
-            playerVariables.inventory.seeds["Cosmos"] += 1;
+            playerVariables.inventory.seeds["Daisy"] += 1;
             playerInventoryUpdated = true;
         }
         else if(!this.playerHasPlantedFirstSeed){
@@ -951,7 +955,7 @@ class Tutorial extends Phaser.Scene {
             }
             this.advanceTutorialDialog(6);
             this.currDialogMaximum = 6;
-            playerVariables.inventory.flowers["Cosmos"] += 1;
+            playerVariables.inventory.flowers["Daisy"] += 1;
             playerInventoryUpdated = true;
         }
         else if(!this.playerHasPlacedBeehive){
@@ -1000,7 +1004,7 @@ beautiful again.`;
                 this.tutorialDialog.text =
 `First things first, if you want to make honey to fundraise,
 you're going to need some flowers. Open your inventory and
-equip a cosmos seed.`;
+equip a daisy seed.`;
                 break;
             case 3:
                 this.tutorialDialog.text =

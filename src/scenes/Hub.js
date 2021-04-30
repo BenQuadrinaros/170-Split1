@@ -40,8 +40,8 @@ class Hub extends Phaser.Scene {
         this.createBackgroundImages();
 
         //If coming from the menu or the market, advance to the next day
-        if (this.previousScene === "menuScene" || this.previousScene === "marketScene" 
-            || this.previousScene === "hubScene" || this.previousScene === "tutorialScene") {
+        if (this.previousScene === "hubScene" || this.previousScene === "marketScene" 
+         || this.previousScene === "tutorialScene") {
             //Advance to the next day
             this.advanceDay();
         }
@@ -249,6 +249,7 @@ class Hub extends Phaser.Scene {
         //Render all plots
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
+                console.log("Curr Plot", gardenGrid[row][col]);
                 gardenGrid[row][col].renderPlot(this, this.gridToCoord(col, row));
             }
         }
@@ -949,32 +950,146 @@ class Hub extends Phaser.Scene {
     loadData() {
         //TODO:: Load data as needed
         var loadedData = JSON.parse(localStorage.getItem('saveData'));
+        console.log("Loaded Data:");
+        console.log(loadedData);
+
+        //Check if there is any save data
+        if(!loadedData){
+            console.log("No save data found");
+            return;
+        }
+
+        //Check version number
+        console.log("Save Data Version: " + loadedData.version);
+        if(loadedData.version !== "0.3.15"){
+            console.log("Invalid Version Number");
+            return;
+        }
+
+        gardenGrid = loadedData.garden;
+        console.log("gardenGrid: ", gardenGrid);
+        for (let row = 0; row < gardenGrid.length; row++) {
+            for (let col = 0; col < gardenGrid[0].length; col++) {
+                gardenGrid[row][col] = objToPlot(gardenGrid[row][col])
+                /*let plot = gardenGrid[row][col];
+                let coords = this.gridToCoord(col, row);
+                plot.renderPlot(this, coords);
+                if (plot.item instanceof Hive || plot.item instanceof Flower) {
+                    this.path.push([coords[0], coords[1] - 25]);
+                }*/
+            }
+        }
+        console.log("gardenGrid: ", gardenGrid);
+        currentDay = loadedData.currDay;
+        console.log("currDay: " + currentDay);
+        hasSoldForDay = loadedData.hasSold;
+        console.log("hasSoldForDay: " + hasSoldForDay);
+        playerVariables = loadedData.playerVars;
+        console.log("playerVariables: " + playerVariables);
+        shopInventory = loadedData.shopInv;
+        console.log("shopInventory: " + shopInventory);
+        priceMap = loadedData.bucksMap;
+        console.log("priceMap: " + priceMap);
+        priceHistory = loadedData.bucksHist;
+        console.log("priceHistory: " + priceHistory);       
+        
+        /*
+        var saveData = {
+            version: "0.3.15",
+            garden: gardenGrid,
+            currDay: currentDay,
+            hasSold: hasSoldForDay,
+            playerVals: playerVars,
+            shopInv: shopInventory,
+            bucksMap: priceMap,
+            bucksHist: priceHistory
+        };
+        
         //Check Garden Grid
+        if(loadedData.garden.length !== 0){
+            if(loadedData.garden["gardenGrid"].length === 0){
+                console.log("No saved garden grid");
+            }
+            else{
+                gardenGrid = loadedData.garden["gardenGrid"];
+            }
+        }
 
         //Check Player Variables
-
+        if(loadedData.playerVars.length !== 0){
+            //Get the current day
+            currentDay = loadedData.playerVars["currentDay"];
+            //Get the time of day
+            hasSoldForDay = loadedData.playerVars["hasSoldForDay"];
+            //Get other player variables
+            if(loadedData.playerVars["playerVariables"] === null){
+                console.log("No saved player data");
+            }
+            else{
+                playerVariables = loadedData.playerVars["playerVariables"];
+                console.log("playerVariables" + playerVariables);
+            }
+        }
+        
         //Check Shop Inventory
+        if(loadedData.shopInventory.length !== 0){
+            if(loadedData.shopInventory["shopInventory"].length === 0){
+                console.log("No saved shop data");
+            }
+            else{
+                shopInventory = loadedData.shopInventory["shopInventory"];
+            }
+        }
 
-        //Check Price Map
+        //Check Price Data
+        if(loadedData.priceData.length !== 0){
+            //Check Price Map
+            if(loadedData.priceData["priceMap"].length === 0){
+                console.log("No saved price map");
+            }
+            else{
+                priceMap = loadedData.priceData["priceMap"];
+            }
+            //Check Price History
+            if(loadedData.priceData["priceHistory"].length === 0){
+                console.log("No saved price history");
+            }
+            else{
+                priceHistory = loadedData.priceData["priceHistory"];
+            }
+        }
+        */
     }
 
     saveData() {
         //TODO:: save data when previous scene is not the menu
         var saveData = {
-            'garden': [],
-            'playerVars': [],
-            'shopInventory': [],
-            'priceMap': []
+            version: "0.3.15",
+            garden: gardenGrid,
+            currDay: currentDay,
+            hasSold: hasSoldForDay,
+            playerVars: playerVariables,
+            shopInv: shopInventory,
+            bucksMap: priceMap,
+            bucksHist: priceHistory
         };
-        //Save garden
+        /*//Save garden
+        saveData.playerVars.push({'name': 'gardenGrid', 'value': gardenGrid});
 
         //Save player vars
-
+        saveData.playerVars.push({'name': 'currentDay', 'value': currentDay});
+        saveData.playerVars.push({'name': 'hasSoldForDay', 'value': hasSoldForDay});
+        saveData.playerVars.push({'name': 'playerVariables', 'value': playerVariables});
+        
         //Save shop inventory
+        saveData.shopInventory.push({'name': 'shopInventory', 'value': shopInventory});
 
         //Save priceMap
+        saveData.priceData.push({'name': 'priceMap', 'value': priceMap});
+        saveData.priceData.push({'name': 'priceHistory', 'value': priceHistory});*/
 
         //Set data into browser
         localStorage.setItem('saveData', JSON.stringify(saveData));
+        console.log("Just saved: " + JSON.stringify(saveData));
     }
 }
