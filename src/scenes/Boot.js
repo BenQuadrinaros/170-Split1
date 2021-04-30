@@ -238,7 +238,7 @@ class Boot extends Phaser.Scene {
 
     create(){
         // go to Title scene
-        this.scene.start('menuScene');
+        this.scene.start('marketScene');
     }
 
     takeLocalStorageActions(){

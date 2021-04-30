@@ -113,7 +113,7 @@ class Market extends Phaser.Scene {
         } else if (this.state === "bargaining") { //Ask for honey at price
             if (this.stage === -1) {
                 this.stage = 0;
-                console.log("stage is -1")
+                console.log("stage is 0")
                 this.initiateRequest();
 
             } else if (this.stage === 1) { //Npc will check price to see if it is acceptable
@@ -204,9 +204,9 @@ class Market extends Phaser.Scene {
             mood = "neutral";
         } else if (.75 < percent && percent <= .8){
             mood = "sad"
-        } else if (.8 < percent && percent <=.85){
+        } else if (.8 < percent && percent <=.95){
             mood = "displeased"
-        } else if (.85 < percent && percent <= 1){
+        } else if (.95 < percent && percent <= 1){
             mood = "angry"
         } else if (percent > 1){
             mood = "noBuy"
@@ -360,20 +360,14 @@ class Market extends Phaser.Scene {
 
     //calculate percent of budget set price is for npc
     calcPercent(propUnitPrice, setUnitPrice) {
-        let npcHigh = this.npc.priceRange[1] * Math.random();
-        let npcLow = this.npc.priceRange[0] * Math.random();
-        // console.log("**NPC Mood generation***");
-        // console.log("price ranges for npc mood");
-        // console.log(this.npc.priceRange)
-        // console.log(npcHigh + propUnitPrice);
-        // console.log(npcLow + propUnitPrice);
-        let npcRange = [npcLow + propUnitPrice, npcHigh + propUnitPrice, Math.abs(npcLow) + npcHigh + propUnitPrice];
-        // console.log("npc range and set price");
-        // console.log(npcRange);
-        // console.log(setUnitPrice);
-        let budget = npcRange[2];
+        let npcRange = this.npc.type[this.typeToBuy];
+        console.log(`npc range is ${npcRange}`);
+        let percentOfBudget = Phaser.Math.Between(npcRange[0], npcRange[1]);
+        console.log(`seventy five percent of budget is ${percentOfBudget}`);
+        let budget = percentOfBudget/.75;
+        console.log(`budget is ${budget}`);
         let percent = setUnitPrice/budget;
-        //console.log(`percent is ${percent}`)
+        console.log(`percent is ${percent}`)
         return percent;
 
     }
