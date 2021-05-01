@@ -10,6 +10,7 @@ let idImages = {
     "Sprinkler": ["sprinkler", .125],
     "Beehive": ["hive", .125],
     "Clipper": ["clipper", .75],
+    "Watering Can": ["water1", .375],
     "yellow": ["honeyPlain", .5],
     "blue": ["honeyBlue", .5],
     "pink": ["honeyPink", .5],

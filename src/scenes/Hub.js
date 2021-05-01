@@ -439,10 +439,10 @@ class Hub extends Phaser.Scene {
         }
 
         //create water bucket for manual watering
-        this.waterBucket = this.add.image(.925 * config.width, .525 * config.height, "water4");
-        this.waterBucket.setOrigin(.5, .5).setScale(.75, .75);
-        this.waterBucket.depth = this.waterBucket.y / 10;
-        this.waterHeld = new WateringCan();
+        this.spigot = this.add.image(.925 * config.width, .525 * config.height, "water4");
+        this.spigot.setOrigin(.5, .5).setScale(.75, .75);
+        this.spigot.depth = this.spigot.y / 10;
+        this.waterHeld = null;
     }
 
     createBees() {
@@ -560,9 +560,11 @@ class Hub extends Phaser.Scene {
             }
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 //Go to hub and start next day
+                this.placeHeldItemInBag();
                 this.music.transitionSong("bedtimeMusic", false);
                 this.cameras.main.fadeOut(3000, 0, 0, 0);
                 this.time.delayedCall(8000, () => {
+                    this.placeHeldItemInBag();
                     this.music.stop();
                     this.scene.restart({previousScene: "hubScene"});
                 });
@@ -678,27 +680,53 @@ class Hub extends Phaser.Scene {
     textHover() {
         //find the closest interactable point
         let plot = this.closestPlot();
-        //If close to water bucket
-        if (Math.sqrt(Math.pow(this.waterBucket.x - this.player.x, 2) +
-            Math.pow(this.waterBucket.y - this.player.y - this.player.height/5, 2)) < 65) {
+        //If close to water spigot
+        if (Math.sqrt(Math.pow(this.spigot.x - this.player.x, 2) +
+            Math.pow(this.spigot.y - this.player.y - this.player.height/5, 2)) < 65) {
             //Move display to this spot
             this.plotHighlight.alpha = 1;
-            this.plotHighlight.x = this.waterBucket.x;
-            this.plotHighlight.y = this.waterBucket.y + 25;
-            //Logic for if player presses space near water bucket
+            this.plotHighlight.x = this.spigot.x;
+            this.plotHighlight.y = this.spigot.y + 25;
+            //Logic for if player presses space near water spigot
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
-                //If the player is not holding an item
-                if (heldItem == undefined) {
-                    //Put water in hands
-                    if(playerVariables.money >= .25) {
+                //If the player is holding the can
+                if(heldItem instanceof WateringCan) {
+                    if(playerVariables.water == 4) {
+                        //If the can is already full
+                        this.fadeText("My watering can\nis already full.");
+                    } else if(playerVariables.money >= .25) {
+                        //If the player can afford to buy water
                         playerVariables.money -= .25;
                         this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + 
                             "\nMoney: " + playerVariables.money;
-                        heldItem = this.waterHeld;
-                        heldItem.water = heldItem.waterMax;
+                        //Destory Watering Can and create a new one
+                        playerVariables.water = 4;
+                        heldItem.destroy();
+                        heldItem = new WateringCan();
+                        this.heldImg = 0;
                     } else {
+                        //If player does not have enough money
                         this.fadeText("Not enough money!\nCosts $0.25 to water.");
                     }
+                } else if(heldItem == undefined && playerVariables.inventory.items["Watering Can"]) {
+                    //If player has can in inventory, pull it out
+                    playerVariables.inventory.items["Watering Can"] = 0;
+                    if(playerVariables.money >= .25) {
+                        //If the player can afford to buy water
+                        playerVariables.money -= .25;
+                        this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + 
+                            "\nMoney: " + playerVariables.money;
+                        //Create a new Watering Can and give to them
+                        playerVariables.water = 4;
+                    } else {
+                        //If player does not have enough money
+                        this.fadeText("Not enough money!\nCosts $0.25 to water.");
+                        //Give them an empty can
+                    }
+                    heldItem = new WateringCan();
+                    this.heldImg = 0;
+                } else {
+                    this.fadeText("I need something to\nhold the water.");
                 }
             }
         } else if (plot == null) {
@@ -718,27 +746,27 @@ class Hub extends Phaser.Scene {
                 if(gardenGrid[row][col].item instanceof Weed){
                     gardenGrid[row][col].item = null;
                     //recreate the plot
+                    gardenGrid[row][col].dug = true;
                     gardenGrid[row][col].renderPlot(this, this.gridToCoord(col, row));
 
                     return;
                 }
                 //If player holding the watering can
-                if (heldItem instanceof WateringCan) {
-                    this.music.playSFX("waterFlowers");
+                if (heldItem instanceof WateringCan && gardenGrid[row][col].item instanceof Flower) {
                     let spot = gardenGrid[row][col];
-                    if (spot.item instanceof Flower) {
-                        //Water flower if present
+                    if(playerVariables.water > 0) {
+                        this.music.playSFX("waterFlowers");
                         spot.item.addWater();
+                        //Then wet the spot and reduce water
+                        spot.water = true;
+                        playerVariables.water--;
+                        //clear image of item held so it can be rerendered
+                        heldItem.image.destroy();
+                        this.heldImg = 0;
+                        spot.renderPlot(this, this.gridToCoord(col, row));
+                    } else {
+                        this.fadeText("I need to go refill\nmy watering can.")
                     }
-                    //Then wet the spot and reload
-                    spot.water = true;
-                    //clear image of item held
-                    heldItem.image.destroy();
-                    if(heldItem.pour()) { heldItem = undefined; }
-                    //set the held image to nothing
-                    this.heldImg = 0;
-                    spot.renderPlot(this, this.gridToCoord(col, row));
-                    
                 }
                 //If the player is holding an item, modify garden plots and add image to scene
                 else if (heldItem !== undefined) {
@@ -757,6 +785,7 @@ class Hub extends Phaser.Scene {
 
                     if (!(obj instanceof Bramble) && !(obj instanceof Hive && obj.hasStock())) { 
                         loc.item = null; 
+                        console.log("plot is now",gardenGrid[row][col].item);
                     }
                     if(obj instanceof Hive && obj.hasStock()) {
                         //If there is honey to collect from this Hive
@@ -777,7 +806,8 @@ class Hub extends Phaser.Scene {
                         this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + 
                             "\nMoney: " + playerVariables.money;
                     } else {
-                        if (obj instanceof Flower || obj instanceof Hive || obj instanceof Sprinkler) {
+                        if (obj instanceof Flower || obj instanceof Hive || obj instanceof Sprinkler 
+                            || obj instanceof WateringCan) {
                             //If on the bee path, remove it
                             if (obj instanceof Flower || obj instanceof Hive) {
                                 this.path = this.removeFromPath(obj.image, this.path);
@@ -789,13 +819,14 @@ class Hub extends Phaser.Scene {
                         } else {
                             loc.dug = true;
                         }
-                        if(heldItem instanceof Hive || heldItem instanceof Sprinkler){
+                        if(heldItem instanceof Hive || heldItem instanceof Sprinkler || heldItem instanceof WateringCan) {
                             heldType = "items";
                         } else if (heldItem instanceof Flower) {
                             heldType = "flowers";
                         }
                         //recreate the plot
                         loc.renderPlot(this, this.gridToCoord(col, row));
+                        console.log("plot rendered as",loc);
                     }
                 }
             }
@@ -825,6 +856,8 @@ class Hub extends Phaser.Scene {
                 loc.dug = true;
                 //clear highlight
                 this.sprinklerHighlightHold.alpha = 0;
+            } else if(heldItem instanceof WateringCan){
+                loc.item = new WateringCan();
             } else {
                 loc.item = new Flower(heldItem.age, heldItem.water, heldItem.type);
                 loc.dug = true;
@@ -920,7 +953,7 @@ class Hub extends Phaser.Scene {
     }
 
     placeHeldItemInBag(){
-        console.log(heldItem)
+        console.log(heldItem);
         if (heldItem instanceof Flower) {
             console.log(`Storing held flower ${heldItem.type} in inventory.`)
             console.log(`before storage ${playerVariables.inventory.flowers[heldItem.type]}`)
@@ -936,9 +969,10 @@ class Hub extends Phaser.Scene {
         } else if(heldItem instanceof Clipper) {
             playerVariables.inventory.items["Clipper"] += 1;
         } else if (heldItem instanceof WateringCan) {
-            //Nothing special to do, but we don't want to reach the normal else case
+            playerVariables.inventory.items["Watering Can"] += 1;
         }
          else {
+             //Nothing special to do, but we don't want to reach the normal else case
             return;
         }
 

@@ -233,6 +233,10 @@ class BackPackUI extends Phaser.Scene {
                                     heldType = "items";
                                     heldItem = new Clipper();
                                     playerVariables.inventory[uiScene.selectedTab][item] -= 1;
+                                } else if (item == "Watering Can") {
+                                    heldType = "items";
+                                    heldItem = new WateringCan();
+                                    playerVariables.inventory[uiScene.selectedTab][item] -= 1;
                                 } else {
                                     console.log("Holding invalid object");
                                 }
@@ -309,9 +313,6 @@ var createDataBaseInventory = function (count) {
             //console.log(`${info}`);
             if (info > 0) {
                 if (item !== "total") {
-                    if(item.indexOf("Leftover") > -1) {
-                        info = Math.floor(info*100);
-                    }
                     items.insert({
                         id: item,
                         type: tab,

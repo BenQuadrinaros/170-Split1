@@ -7,8 +7,9 @@ class NPC extends Phaser.GameObjects.Sprite{
         if(name === "Unnamed"){ //If a random npc was requested
             let idNum = Math.floor(11 * Math.random());
             let generatedTexture = generateNPCSprite(idNum);
-            super(scene, initx, inity, generatedTexture, frame);
-            this.setPosition(initx, inity);
+            let variation = Phaser.Math.Between(25, 75);
+            super(scene, initx, inity + variation, generatedTexture, frame);
+            this.setPosition(initx, inity + variation);
             this.generateNPCCharacteristics(idNum);
         }
         else{ //If a specific npc was requested
@@ -31,15 +32,22 @@ class NPC extends Phaser.GameObjects.Sprite{
 
     approach(){
         console.log("NPC has been asked to approach");
-        this.setScale(0, 0);
-        this.approachTween = this.scene.tweens.add({
+        this.scene.tweens.add({
             targets: this,
-            depth: 90,
-            scale: 1,
+            x: this.x + config.width/5,
             ease: 'Sine.easeOut',
             duration: 1500,
             delay: 0,
             repeat: 0
+        });
+        this.scene.tweens.add({
+            targets: this,
+            y: 4 * game.config.height / 7,
+            ease: 'Power2',
+            yoyo: true,
+            duration: 250,
+            delay: 0,
+            repeat: 2
         });
     }
 
