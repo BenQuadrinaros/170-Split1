@@ -46,10 +46,11 @@ let upgrades = { "bike": 0 };
 let flow0 = new Flower(2, 3, "Daisy");
 let flow1 = new Flower(2, 3, "Daisy");
 let hive = new Hive(5, 2);
+let can = new WateringCan();
 //more flowers for testing purposes
 let gardenGrid = [ // 11 x 11 grid for garden generating
     //Starting placements for intial garden
-    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
+    [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,    can],
     [null,    null,   null,   null,  flow0,   null,  flow1,   null,   null,   null,   null],
     [null,    null,   null,   null,   null,   hive,   null,   null,   null,   null,   null],
     [null,    null,   null,   null,   null,   null,   null,   null,   null,   null,   null],
@@ -72,7 +73,9 @@ for(let row = 0; row < gardenGrid.length; row++) {
         if(loc == null) {
             //Populate in Brambles with higher denisty towards the bottom
             let rand = Math.random();
-            if(rand + Math.sqrt((row - 3) / 15) > .85) {
+            //Modifier for chance per plot in each row += 4% per row;
+            //  Starting at -20% (top row), ending at +20% (bottom row)
+            if(rand + ((row - 5) / 25) > .775) {
                 gardenGrid[row][col] = new Bramble(col, row);
             }
         }
@@ -94,6 +97,7 @@ let playerInventoryUpdated = false;
 let playerVariables = {
     money: 10.00,
     reputation: 0,
+    water: 0,
     name: "Bearry",
     score: [false, false, false, false, false],
     inventory: {
@@ -102,17 +106,14 @@ let playerVariables = {
             "yellow": 3,
             "blue": 0,
             "purple": 0,
-            "pink": 0,
-            "Leftover Yellow": 0,
-            "Leftover Blue": 0,
-            "Leftover Purple": 0,
-            "Leftover Pink": 0
+            "pink": 0
         },
         items: {
             "Beehive": 0,
             "Sprinkler": 0,
             "Clipper": 3,
-            "Mulch": 0
+            "Mulch": 0,
+            "Watering Can": 0
         },
         flowers: {
             "Daisy": 0,
