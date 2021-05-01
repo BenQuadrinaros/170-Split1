@@ -63,8 +63,9 @@ class Market extends Phaser.Scene {
         this.customersInLine = [];
         console.log(`Creating ${amt} customers in line...`);
         for (let i = 0; i < amt; i++) {
-            this.customersInLine.push(this.generateNPC());
-            this.customersInLine[i].setVisible(false);
+            this.customersInLine.push(this.generateNPC((2*config.width/3) - ((i + 1) * config.width/5)));
+            this.customersInLine[i].setVisible(true);
+            this.customersInLine[i].depth = 90 - i;
             console.log(`creating npc ${i}...`);
             console.log(this.customersInLine[i]);
         }
@@ -86,11 +87,21 @@ class Market extends Phaser.Scene {
 
             this.updateBearShuffle();
 
-            if (playerVariables.inventory.honey.total > 0 && Phaser.Math.Between(0, 1000) > 985 && this.customersInLine.length > 0) {
+            if (playerVariables.inventory.honey.total > 0 && Phaser.Math.Between(0, 1000) > 985 
+                && this.customersInLine.length > 0) {
                 this.state = "approaching";
 
-                this.npc = this.customersInLine.pop(); //Generate the NPC
-                this.npc.setVisible(true)
+                for(let i = 1; i < this.customersInLine.length; i++) {
+                    this.time.delayedCall(500*(i+1), () => {
+                        this.customersInLine[i].approach();
+                    });
+                    if(i == this.customersInLine.length - 1) {
+                        this.time.delayedCall(500*(i+1) + 50, () => {
+                            this.customersInLine.splice(0, 1);
+                        });
+                    }
+                }
+                this.npc = this.customersInLine[0]; //Get next NPC
                 this.npc.approach();
 
                 this.time.addEvent({
@@ -140,8 +151,6 @@ class Market extends Phaser.Scene {
         }
 
     }
-
-
 
     reduceStock(type, amount) {
         playerVariables.inventory.honey.total -= amount;
@@ -452,37 +461,79 @@ class Market extends Phaser.Scene {
 
         //populate in jars of honey
         this.yellowStock = [];
-        for (let i = 0; i < Math.min(20, playerVariables.inventory.honey["yellow"]); i++) {
-            let temp = this.add.image(game.config.width - ((i % 10 + 1) * game.config.width / 22) +
-                15 * Math.floor(i / 10), 62 * game.config.height / 100 + 15 * Math.floor(i / 10),
-                "honeyPlain");
+        for (let i = 0; i < Math.min(7, playerVariables.inventory.honey["yellow"]); i++) {
+            let temp;
+            if(i < 3) {
+                temp = this.add.image(2*game.config.width/3 - (i * game.config.width / 45), 
+                    72 * game.config.height / 100 - 15 * (i % 2),
+                    "honeyPlain");
+            } else if(i < 5) {
+                temp = this.add.image(2*game.config.width/3 - 10 - ((i-3) * game.config.width / 22),
+                    88 * game.config.height / 100, "honeyPlain");
+            } else {
+                temp = this.add.image(2*game.config.width/3 + 5 - ((i-5) * game.config.width / 22),
+                    87.5 * game.config.height / 100, "honeyPlain");
+            }
             temp.setOrigin(.5, .5).setScale(.675, .675);
-            temp.depth = 97;
+            if(i == 1 || i > 4) { temp.depth = 96; }
+            else { temp.depth = 97; }
             this.yellowStock.push(temp);
         }
         this.blueStock = [];
-        for (let i = 0; i < Math.min(10, playerVariables.inventory.honey["blue"]); i++) {
-            let temp = this.add.image(((i % 5 + 1) * game.config.width / 22) -
-                15 * Math.floor(i / 5), 62 * game.config.height / 100 + 15 * Math.floor(i / 5),
-                "honeyBlue");
+        for (let i = 0; i < Math.min(7, playerVariables.inventory.honey["blue"]); i++) {
+            let temp;
+            if(i < 3) {
+                temp = this.add.image(2*game.config.width/3 + 85 - (i * game.config.width / 45), 
+                    72 * game.config.height / 100 - 15 * (i % 2),
+                    "honeyBlue");
+            } else if(i < 5) {
+                temp = this.add.image(2*game.config.width/3 + 75 - ((i-3) * game.config.width / 22),
+                    88 * game.config.height / 100, "honeyBlue");
+            } else {
+                temp = this.add.image(2*game.config.width/3 + 90 - ((i-5) * game.config.width / 22),
+                    87.5 * game.config.height / 100, "honeyBlue");
+            }
             temp.setOrigin(.5, .5).setScale(.675, .675);
-            temp.depth = 97;
+            if(i == 1 || i > 4) { temp.depth = 96; }
+            else { temp.depth = 97; }
             this.blueStock.push(temp);
         }
         this.purpleStock = [];
         for (let i = 0; i < Math.min(20, playerVariables.inventory.honey["purple"]); i++) {
-            let temp = this.add.image(game.config.width - ((i + 1) * game.config.width / 22),
-                79 * game.config.height / 100, "honeyPurple");
+            let temp;
+            if(i < 3) {
+                temp = this.add.image(2*game.config.width/3 + 170 - (i * game.config.width / 45), 
+                    72 * game.config.height / 100 - 15 * (i % 2),
+                    "honeyPurple");
+            } else if(i < 5) {
+                temp = this.add.image(2*game.config.width/3 + 160 - ((i-3) * game.config.width / 22),
+                    88 * game.config.height / 100, "honeyPurple");
+            } else {
+                temp = this.add.image(2*game.config.width/3 + 175 - ((i-5) * game.config.width / 22),
+                    87.5 * game.config.height / 100, "honeyPurple");
+            }
             temp.setOrigin(.5, .5).setScale(.675, .675);
-            temp.depth = 97;
+            if(i == 1 || i > 4) { temp.depth = 96; }
+            else { temp.depth = 97; }
             this.purpleStock.push(temp);
         }
         this.pinkStock = [];
         for (let i = 0; i < Math.min(20, playerVariables.inventory.honey["pink"]); i++) {
-            let temp = this.add.image(game.config.width - ((i + 1) * game.config.width / 22),
-                93 * game.config.height / 100, "honeyPink");
+            let temp;
+            if(i < 3) {
+                temp = this.add.image(2*game.config.width/3 + 255 - (i * game.config.width / 45), 
+                    72 * game.config.height / 100 - 15 * (i % 2),
+                    "honeyPink");
+            } else if(i < 5) {
+                temp = this.add.image(2*game.config.width/3 + 245 - ((i-3) * game.config.width / 22),
+                    88 * game.config.height / 100, "honeyPink");
+            } else {
+                temp = this.add.image(2*game.config.width/3 + 260 - ((i-5) * game.config.width / 22),
+                    87.5 * game.config.height / 100, "honeyPink");
+            }
             temp.setOrigin(.5, .5).setScale(.675, .675);
-            temp.depth = 97;
+            if(i == 1 || i > 4) { temp.depth = 96; }
+            else { temp.depth = 97; }
             this.pinkStock.push(temp);
         }
     }
@@ -742,8 +793,8 @@ class Market extends Phaser.Scene {
 
     updateText() {
         //update text UIs
-        this.moneyText.text = "Money: $" + Math.floor(playerVariables.money) + "." + Math.floor(playerVariables.money * 10) % 10 +
-            Math.floor(playerVariables.money * 100) % 10;
+        this.moneyText.text = "Money: $" + Math.floor(playerVariables.money) + "." + 
+            Math.floor(playerVariables.money * 10) % 10 + Math.floor(playerVariables.money * 100) % 10;
         this.honeyText.text = "Honey: " + playerVariables.inventory.honey.total;
         this.currTime = Math.floor((this.timer.delay - this.timer.getElapsed()) / 1000);
         //this.timeText.text = "Time Remaining: " + Math.floor(this.currTime / 60) + ":" + Math.floor((this.currTime % 60) / 10) + this.currTime % 10;
@@ -822,17 +873,8 @@ class Market extends Phaser.Scene {
             "\n[Y]es  /   [N]o";
     }
 
-    generateNPC() {
-        var randNPC;
-        var NPCSelection = Math.floor(2 * Math.random());
-        randNPC = new NPC(this);
-        /*if (NPCSelection === 0) {
-            randNPC = new NPC(this, 2 * game.config.width / 3, 4 * game.config.height / 7, 'basicBunNPC',
-                0, "Bagel", "easy", [["Hullo", "Good day"], ["Thanks", "Bye"]]);
-        } else {
-            randNPC = new NPC(this, 2 * game.config.width / 3, 4 * game.config.height / 7, 'basicDogNPC',
-                0, "Bagel", "easy", [["Hullo", "Good day"], ["Thanks", "Bye"]]);
-        }*/
+    generateNPC(placeX) {
+        var randNPC = new NPC(this, placeX);
         return randNPC;
     }
 }

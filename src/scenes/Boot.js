@@ -165,6 +165,7 @@ class Boot extends Phaser.Scene {
             this.load.spritesheet('bearBackFrames', './assets/spritesheets/LARGE_anim_idle_back_1000x875.png', {frameWidth: 500, frameHeight: 875, startFrame: 0, endFrame: 1});
             this.load.spritesheet('greenPlus', './assets/spritesheets/plusGreenFrames.png', {frameWidth: 80, frameHeight:80, startFrame: 0, endFrame:1});
             this.load.spritesheet('redMinus', './assets/spritesheets/minusRedFrames.png', {frameWidth: 80, frameHeight:80, startFrame: 0, endFrame:1});
+            this.load.spritesheet('wateringCanFrames', './assets/spritesheets/wateringCanFrames.png', {frameWidth: 120, frameHeight:120, startFrame: 0, endFrame:3});
 
         //Load Music
             //For hubScene
