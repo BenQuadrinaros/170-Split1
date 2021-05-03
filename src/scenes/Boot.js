@@ -80,6 +80,8 @@ class Boot extends Phaser.Scene {
             this.load.image('bluegreyBunNPC', './assets/sprites/character/bluegreybunny.png');
             this.load.image('brownBunNPC', './assets/sprites/character/brownbunny.png');
             this.load.image('pinkBunNPC', './assets/sprites/character/pinkbunny.png');
+            this.load.image('whiteCatNPC', './assets/sprites/character/catnpcWH_246x456.png');
+            this.load.image('orangeCatNPC', './assets/sprites/character/catnpcOR_246x456.png');
             this.load.image('marketSky', './assets/sprites/background/sky.png');
             this.load.image('marketBackground', './assets/sprites/background/marketbg.png');
             this.load.image('booth', './assets/sprites/background/boothTall.png');
@@ -139,26 +141,11 @@ class Boot extends Phaser.Scene {
             //this.load.spritesheet('player', './assets/spritesheets/bearFrontBack.png', {frameWidth:40, frameHeight:72, startFrame:0, endFrame:1});
             this.load.spritesheet('player', './assets/spritesheets/bearAnims.png', {frameWidth: 140, frameHeight:247, startFrame:0, endFrame:7});
             this.load.spritesheet('backpackFrames', "./assets/spritesheets/backpackSheet.png", {frameWidth: 120, frameHeight:121, startFrame:0, endFrame:1});
-            //For mapScene 
-            /*
-            this.load.spritesheet('Beehive','./assets/spritesheets/HoneyBearSampleHive.png',{frameWidth: 88, frameHeight: 108, startFrame:0 , endFrame: 1});
-            this.load.spritesheet('Work','./assets/spritesheets/HoneyBearSampleWork.png',{frameWidth: 69, frameHeight: 87, startFrame:0 , endFrame: 1});
-            this.load.spritesheet('House','./assets/spritesheets/HoneyBearHouseSample1.png',{frameWidth: 80, frameHeight: 80, startFrame:0 , endFrame: 1});
-            this.load.spritesheet('Path1_2','./assets/spritesheets/Road1_2.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
-            this.load.spritesheet('Path2_5','./assets/spritesheets/Road2_5.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
-            this.load.spritesheet('Path3_4','./assets/spritesheets/Road3_4.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
-            this.load.spritesheet('Path4_5','./assets/spritesheets/Road4_5.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
-            this.load.spritesheet('PathBees_Work','./assets/spritesheets/RoadBees_Work.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
-            this.load.spritesheet('PathWork_1','./assets/spritesheets/RoadWork_1.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
-            this.load.spritesheet('PathWork_2','./assets/spritesheets/RoadWork_2.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
-            this.load.spritesheet('PathWork_3','./assets/spritesheets/RoadWork_3.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
-            this.load.spritesheet('PathWork_4','./assets/spritesheets/RoadWork_4.png',{frameWidth: 641, frameHeight: 479, startFrame:0 , endFrame: 1});
-            */
             //For menuScene
-            this.load.spritesheet('Play','./assets/spritesheets/PlayInitial.png',{frameWidth: 130, frameHeight: 66, startFrame:0 , endFrame: 1});
-            this.load.spritesheet('Settings','./assets/spritesheets/SettingsInitial.png',{frameWidth: 158, frameHeight: 50, startFrame:0 , endFrame: 1});
-            this.load.spritesheet('Tutorial', './assets/spritesheets/TempTutorialCombined.png', {frameWidth: 148, frameHeight: 28, startFrame:0 , endFrame: 1});
-            this.load.spritesheet('Credits', './assets/spritesheets/TempCreditsCombined.png', {frameWidth: 124, frameHeight: 28, startFrame:0 , endFrame: 1});
+            this.load.spritesheet('Play','./assets/spritesheets/title_text_CONT_1730x115.png',{frameWidth: 865, frameHeight: 115, startFrame:0 , endFrame: 1});
+            this.load.spritesheet('Settings','./assets/spritesheets/title_text_SET_1084x175.png',{frameWidth: 542, frameHeight: 175, startFrame:0 , endFrame: 1});
+            this.load.spritesheet('Tutorial', './assets/spritesheets/title_text_NEW_1194x115.png', {frameWidth: 597, frameHeight: 115, startFrame:0 , endFrame: 1});
+            this.load.spritesheet('Credits', './assets/spritesheets/title_text_CRED_936x115.png', {frameWidth: 468, frameHeight: 115, startFrame:0 , endFrame: 1});
             //For settingsScene
             this.load.spritesheet('Back', './assets/spritesheets/BackInitial.png', {frameWidth: 114, frameHeight: 36, startFrame: 0, endFrame: 1});
             //For marketScene
@@ -188,12 +175,18 @@ class Boot extends Phaser.Scene {
             this.load.audio("backpackOpen", "./assets/audio/sfx/backpack_open.mp3");
             this.load.audio("shopSelect", "./assets/audio/sfx/shopselect(loud).mp3");
             this.load.audio("shopMistake", "./assets/audio/sfx/mistake.mp3");
-            this.load.audio("waterFlowers", "./assets/audio/sfx/water_flowers(loud).mp3");
             this.load.audio("mapTransition", "./assets/audio/sfx/closemap.mp3");
             this.load.audio("buyFlowers", "./assets/audio/sfx/buyflowers(loud).mp3");
-            this.load.audio("failtosell", "./assets/audio/sfx/failtosell.mp3");
             this.load.audio("successfulSell", "./assets/audio/sfx/successful_sell(loud).mp3");
             this.load.audio("mapFlip", "./assets/audio/sfx/mapflip.mp3");
+            //New
+            this.load.audio("clipperCut", "./assets/audio/sfx/clipper_cut.mp3");
+            this.load.audio("dig", "./assets/audio/sfx/dig.mp3");
+            this.load.audio("failtosell", "./assets/audio/sfx/failtosellnew.mp3");
+            this.load.audio("waterFlowers", "./assets/audio/sfx/newwaterflowers.mp3");
+            this.load.audio("notebook", "./assets/audio/sfx/notebook.mp3");
+            this.load.audio("placeItem", "./assets/audio/sfx/placeitem.mp3");
+
     
         //Load Fonts
             //For hubScene
