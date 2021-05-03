@@ -87,22 +87,31 @@ class Market extends Phaser.Scene {
 
             this.updateBearShuffle();
 
-            if (playerVariables.inventory.honey.total > 0 && Phaser.Math.Between(0, 1000) > 985 
-                && this.customersInLine.length > 0) {
+            if (playerVariables.inventory.honey.total > 0 && this.customersInLine.length > 0) {
                 this.state = "approaching";
 
-                for(let i = 1; i < this.customersInLine.length; i++) {
-                    this.time.delayedCall(500*(i+1), () => {
-                        this.customersInLine[i].approach();
-                    });
-                    if(i == this.customersInLine.length - 1) {
-                        this.time.delayedCall(500*(i+1) + 50, () => {
-                            this.customersInLine.splice(0, 1);
+                if(this.customersInLine.length > 1){
+
+                    for(let i = 1; i < this.customersInLine.length; i++) {
+                        this.time.delayedCall(500*(i+1), () => {
+                            this.customersInLine[i].approach();
                         });
+                        if(i == this.customersInLine.length - 1) {
+                            this.time.delayedCall(500*(i+1) + 50, () => {
+                                this.customersInLine.splice(0, 1);
+                            });
+                        }
                     }
+                
+                    this.npc = this.customersInLine[0]; //Get next NPC
+                    this.npc.approach();
                 }
-                this.npc = this.customersInLine[0]; //Get next NPC
-                this.npc.approach();
+                //When you get to the last customer, don't break
+                else{
+                    this.npc = this.customersInLine[0]; //Get next NPC
+                    this.npc.approach();
+                    this.customersInLine.splice(0, 1);
+                }
 
                 this.time.addEvent({
                     delay: 1500,
@@ -437,7 +446,7 @@ class Market extends Phaser.Scene {
                 this.priceHistory.alpha = .9;
             })
             .on('pointerdown', () => {
-                this.music.playSFX("mapFlip");
+                this.music.playSFX("notebook");
                 this.scene.pause();
                 this.priceHistory.alpha = 0.9;
                 this.scene.launch('priceHistory', {previousScene: "marketScene"});

@@ -80,7 +80,7 @@ class PriceHistory extends Phaser.Scene{
     }
 
     endScene(){
-        this.music.playSFX("mapFlip");
+        this.music.playSFX("notebook");
         console.log("resuming market...")
         console.log(uiScene.previousScene);
         uiScene.scene.resume(uiScene.previousScene);

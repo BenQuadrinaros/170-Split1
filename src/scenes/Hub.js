@@ -744,6 +744,7 @@ class Hub extends Phaser.Scene {
                 let col = plot[1];
                 //If the space is a weed, remove it
                 if(gardenGrid[row][col].item instanceof Weed){
+                    this.music.playSFX("dig");
                     gardenGrid[row][col].item = null;
                     //recreate the plot
                     gardenGrid[row][col].dug = true;
@@ -815,8 +816,10 @@ class Hub extends Phaser.Scene {
                             heldItem = obj;
                             this.heldImg = 0;
                         } else if(obj == null && loc.dug) {
+                            this.music.playSFX("dig");
                             loc.dug = false;
                         } else {
+                            this.music.playSFX("dig");
                             loc.dug = true;
                         }
                         if(heldItem instanceof Hive || heldItem instanceof Sprinkler || heldItem instanceof WateringCan) {
@@ -838,6 +841,7 @@ class Hub extends Phaser.Scene {
         //Set the location's item to a new item
         if(heldItem instanceof Clipper) {
             if(loc.item instanceof Bramble) {
+                this.music.playSFX("clipperCut");
                 loc.item.destroy();
                 loc.item = null;
                 loc.dug = true;
@@ -848,17 +852,21 @@ class Hub extends Phaser.Scene {
             }
         } else {
             if(heldItem instanceof Hive){
+                this.music.playSFX("placeItem");
                 loc.item = new Hive(col, row);
                 //clear highlight
                 this.hiveHighlightHold.alpha = 0;
             } else if(heldItem instanceof Sprinkler){
+                this.music.playSFX("placeItem");
                 loc.item = new Sprinkler(col, row);
                 loc.dug = true;
                 //clear highlight
                 this.sprinklerHighlightHold.alpha = 0;
             } else if(heldItem instanceof WateringCan){
+                this.music.playSFX("placeItem");
                 loc.item = new WateringCan();
             } else {
+                this.music.playSFX("placeItem");
                 loc.item = new Flower(heldItem.age, heldItem.water, heldItem.type);
                 loc.dug = true;
                 if (loc.water) {
