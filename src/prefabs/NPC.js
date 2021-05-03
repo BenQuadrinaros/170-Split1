@@ -5,7 +5,7 @@ class NPC extends Phaser.GameObjects.Sprite{
         
         
         if(name === "Unnamed"){ //If a random npc was requested
-            let idNum = Math.floor(11 * Math.random());
+            let idNum = Math.floor(12 * Math.random());
             let generatedTexture = generateNPCSprite(idNum);
             let variation = Phaser.Math.Between(25, 75);
             super(scene, initx, inity + variation, generatedTexture, frame);
@@ -143,6 +143,18 @@ let NPCTable = [
         name: "Ra Bitcoin",
         texture: "albinoBunNPC",
         personality: "A",
+        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
+    },
+    {
+        name: "Catlico",
+        texture: "whiteCatNPC",
+        personality: "C",
+        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
+    },
+    {
+        name: "Cougar",
+        texture: "orangeCatNPC",
+        personality: "B",
         voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
     }
 ];

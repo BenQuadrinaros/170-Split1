@@ -97,6 +97,12 @@ function objToPlot(obj){
             case "Sprinkler":
                 plot.item = new Sprinkler(plot.gridx, plot.gridy);
                 break;
+            case "WateringCan":
+                plot.item = new WateringCan();
+                break;
+            case "Weed":
+                plot.item = new Weed(plot.gridx, plot.gridy);
+                break;
             default:
                 plot.item = null;
                 break;

@@ -11,7 +11,7 @@ class Menu extends Phaser.Scene {
 
         let centerX = game.config.width/2;
         let centerY = game.config.height/2;
-        let textSpacer = 44;
+        let textSpacer = 50;
 
         //Setting controls
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -26,10 +26,10 @@ class Menu extends Phaser.Scene {
         this.screen3 = this.add.image(centerX, centerY, 'titleScreen3').setScale(0.5).setDepth(-1).setAlpha(0);
         this.createRotatingScreens();
         //Creating interactable images
-        this.play = this.add.image(centerX/2, centerY + textSpacer, 'Play').setOrigin(0.5);
-        this.tutorial = this.add.image(centerX/2, centerY + textSpacer * 2, 'Tutorial').setOrigin(0.5);
-        this.settings = this.add.image(centerX/2, centerY + textSpacer * 3, 'Settings').setOrigin(0.5);
-        this.credits = this.add.image(centerX/2, centerY + textSpacer * 4, 'Credits').setOrigin(0.5);
+        this.tutorial = this.add.image(centerX/5, centerY/2 + 85 + textSpacer, 'Tutorial').setOrigin(0.0).setScale(0.35);
+        this.play = this.add.image(centerX/5, centerY/2 + 85 + textSpacer*2, 'Play').setOrigin(0.0).setScale(0.35);
+        this.settings = this.add.image(centerX/5, centerY/2 + 85 + textSpacer * 3, 'Settings').setOrigin(0.0).setScale(0.33);
+        this.credits = this.add.image(centerX/5, centerY/2 + 85 + textSpacer * 4 + 5, 'Credits').setOrigin(0.0).setScale(0.35);
         
         //Create selection change event
         this.events.on("selectionChange", this.selectionUpdated, this);
@@ -45,22 +45,10 @@ class Menu extends Phaser.Scene {
             this.music.setVolume(config.volume);
         });
 
-        this.play.on('pointerover', () => {
-            this.currSelected = 1;
-            this.events.emit("selectionChange");
-        });
-        this.play.on("pointerout", () => {
-            this.currSelected = -1;
-            this.events.emit("selectionChange");
-        });
-        this.play.on('pointerup', () => {
-            //this.music.stop();
-            //this.scene.start('hubScene');
-            this.moveToNewScene(1);
-        });
+        
 
         this.tutorial.on('pointerover', () => {
-            this.currSelected = 2;
+            this.currSelected = 1;
             this.events.emit("selectionChange");
         });
         this.tutorial.on("pointerout", () => {
@@ -70,6 +58,20 @@ class Menu extends Phaser.Scene {
         this.tutorial.on('pointerup', () => {
             //this.music.stop();
             //this.scene.start('settingsScene');
+            this.moveToNewScene(1);
+        });
+
+        this.play.on('pointerover', () => {
+            this.currSelected = 2;
+            this.events.emit("selectionChange");
+        });
+        this.play.on("pointerout", () => {
+            this.currSelected = -1;
+            this.events.emit("selectionChange");
+        });
+        this.play.on('pointerup', () => {
+            //this.music.stop();
+            //this.scene.start('hubScene');
             this.moveToNewScene(2);
         });
 
@@ -154,20 +156,21 @@ class Menu extends Phaser.Scene {
     selectionUpdated(){
         //For each option, set the frame properly
         console.log("Selection Updated: " + this.currSelected);
-        //Play
-        if(this.currSelected === 1){
-            this.play.setFrame(1);
-        }
-        else{
-            this.play.setFrame(0);
-        }
-
+        
         //Tutorial
-        if(this.currSelected === 2){
+        if(this.currSelected === 1){
             this.tutorial.setFrame(1);
         }
         else{
             this.tutorial.setFrame(0);
+        }
+        
+        //Play
+        if(this.currSelected === 2){
+            this.play.setFrame(1);
+        }
+        else{
+            this.play.setFrame(0);
         }
 
         //Settings
@@ -191,13 +194,15 @@ class Menu extends Phaser.Scene {
         //Play is being pressed
         if(newScene === 1) {
             this.music.stop();
-            this.scene.start('hubScene', {previousScene: "menuScene"});
+            this.scene.stop();
+            this.scene.launch("tutorialScene", {previousScene: "menuScene"});
+            
         }
         //Tutorial is being pressed
         else if(newScene === 2) {
             this.music.stop();
             this.scene.stop();
-            this.scene.launch("tutorialScene", {previousScene: "menuScene"});
+            this.scene.start('hubScene', {previousScene: "menuScene"});
         }
         //Settings is being pressed
         else if(newScene === 3) {
