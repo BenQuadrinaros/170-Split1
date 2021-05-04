@@ -566,7 +566,7 @@ class Hub extends Phaser.Scene {
                 this.time.delayedCall(8000, () => {
                     this.placeHeldItemInBag();
                     this.music.stop();
-                    this.scene.restart({previousScene: "hubScene"});
+                    this.scene.start('hubScene', {previousScene: "hubScene"});
                 });
             }
         }
@@ -829,7 +829,7 @@ class Hub extends Phaser.Scene {
                         }
                         //recreate the plot
                         loc.renderPlot(this, this.gridToCoord(col, row));
-                        console.log("plot rendered as",loc);
+                        //console.log("plot rendered as",loc);
                     }
                 }
             }
@@ -894,6 +894,8 @@ class Hub extends Phaser.Scene {
                 heldItem = new Sprinkler(-1, -1);
             } else if(heldItem instanceof Clipper) {
                 heldItem = new Clipper();
+            } else if(heldType === "flowers"){
+                heldItem = new Flower(5, 5, heldItem.type);
             } else {
                 heldItem = new Flower(0, 5, heldItem.type);
             }

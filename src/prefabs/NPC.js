@@ -30,14 +30,14 @@ class NPC extends Phaser.GameObjects.Sprite{
 
     }
 
-    approach(){
+    approach(animDelay = 0){
         console.log("NPC has been asked to approach");
         this.scene.tweens.add({
             targets: this,
             x: this.x + config.width/5,
             ease: 'Sine.easeOut',
             duration: 1500,
-            delay: 0,
+            delay: animDelay,
             repeat: 0
         });
         this.scene.tweens.add({
@@ -46,7 +46,7 @@ class NPC extends Phaser.GameObjects.Sprite{
             ease: 'Power2',
             yoyo: true,
             duration: 250,
-            delay: 0,
+            delay: animDelay,
             repeat: 2
         });
     }
