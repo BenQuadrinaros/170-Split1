@@ -40,7 +40,7 @@ class Market extends Phaser.Scene {
         this.timer = this.time.addEvent({
             delay: 9000000,
             callback: () => {
-                this.honeyText.alpha = 0;
+                /*this.honeyText.alpha = 0;
                 this.moneyText.alpha = 0;
                 this.customerText.alpha = 0;
                 if(playerVariables.inventory.honey["total"] === 0){
@@ -50,7 +50,17 @@ class Market extends Phaser.Scene {
                     this.timeUpText.text = "NO MORE CUSTOMERS\nPress Down/S to go\nback to town";
                 }
                 this.timeUpText.alpha = 1;
-                this.timeUp = true;
+                this.timeUp = true;*/
+                //Go to hub and start next day
+                hasSoldForDay = true;
+                this.music.stop();
+                this.music.playSFX("mapTransition");
+                if(playerVariables.inventory.honey["total"] === 0){
+                    this.scene.launch('priceHistory', {previousScene: "marketScene", previousSceneDone:"SOLD OUT"});
+                }
+                else{
+                    this.scene.launch('priceHistory', {previousScene: "marketScene", previousSceneDone:"NO MORE CUSTOMERS"});
+                }
             },
             loop: false,
             callbackScope: this
@@ -93,22 +103,30 @@ class Market extends Phaser.Scene {
                 if(this.customersInLine.length > 1){
 
                     for(let i = 1; i < this.customersInLine.length; i++) {
+                        this.customersInLine[i].approach(500*(i+1));
+                        /*let tempRef = this.createCustomersInLine[i];
                         this.time.delayedCall(500*(i+1), () => {
-                            this.customersInLine[i].approach();
-                        });
-                        if(i == this.customersInLine.length - 1) {
+                            /*console.log("Telling to approach 1:", this.createCustomersInLine[i]);
+                            this.customersInLine[i].approach();*/
+                          //  tempRef.approach();
+                        //}, [tempRef]);*/
+                        /*if(i == this.customersInLine.length - 1) {
                             this.time.delayedCall(500*(i+1) + 50, () => {
                                 this.customersInLine.splice(0, 1);
                             });
-                        }
+                        }*/
                     }
                 
+                    this.npcRef = this.npc;
                     this.npc = this.customersInLine[0]; //Get next NPC
+                    console.log("Telling to approach 2:", this.npc);
                     this.npc.approach();
+                    this.customersInLine.splice(0, 1);
                 }
                 //When you get to the last customer, don't break
                 else{
                     this.npc = this.customersInLine[0]; //Get next NPC
+                    console.log("Telling to approach 3:", this.npc);
                     this.npc.approach();
                     this.customersInLine.splice(0, 1);
                 }
@@ -156,6 +174,7 @@ class Market extends Phaser.Scene {
             this.updateBearShuffle();
 
             this.npc.leave();
+            //this.customersInLine.splice(0, 1);
 
         }
 
@@ -364,10 +383,11 @@ class Market extends Phaser.Scene {
     //reset market state to no customers, allowing one to approacj
     resetStage(){
         this.state = "leaving";
+        this.npcRef = this.npc;
         this.time.addEvent({
             delay: 1500,
             callback: () => {
-                this.npc.destroy();
+                this.npcRef.destroy();
                 this.state = "waiting";
                 this.stage = -1;
             },
@@ -432,7 +452,7 @@ class Market extends Phaser.Scene {
                 this.music.playSFX("notebook");
                 this.scene.pause();
                 this.priceHistory.alpha = 0.9;
-                this.scene.launch('priceHistory', {previousScene: "marketScene"});
+                this.scene.launch('priceHistory', {previousScene: "marketScene", previousSceneDone: "false"});
             });
     }
 
@@ -809,8 +829,13 @@ class Market extends Phaser.Scene {
             hasSoldForDay = true;
             this.music.stop();
             this.music.playSFX("mapTransition");
-            this.scene.start('shopScene', {previousScene: "marketScene"});
-            //});
+            if(playerVariables.inventory.honey["total"] === 0){
+                this.scene.launch('priceHistory', {previousScene: "marketScene", previousSceneDone:"SOLD OUT"});
+            }
+            else{
+                this.scene.launch('priceHistory', {previousScene: "marketScene", previousSceneDone:"NO MORE CUSTOMERS"});
+            }
+            
         }
     }
 

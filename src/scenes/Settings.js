@@ -27,7 +27,21 @@ class Settings extends Phaser.Scene {
         
         //Creating interactable images
         let settings = this.add.image(centerX, centerY, 'TempSettingsScreen').setOrigin(0.5);
-        let back = this.add.image(centerX / 2, centerY + textSpacer * 2, 'Back').setOrigin(0.5);
+        //let back = this.add.image(centerX / 2, centerY + textSpacer * 2, 'Back').setOrigin(0.5);
+        this.continueBackground = this.add.rectangle(config.width - 125, config.height - 50, 150, 75, 0xffffff, .5).setOrigin(0.5, 0.5).setInteractive()
+        .on("pointerover", () => {
+            this.continueText.alpha = 1;
+            this.continueBackground.alpha = 1;
+        })
+        .on("pointerout", () => {
+            this.continueText.alpha = .5;
+            this.continueBackground.alpha = .5;
+        })
+        .on("pointerdown", () => {
+            this.scene.resume(this.prevScene);
+            this.scene.stop();
+        });
+        this.continueText.setAlpha(.5);
 
         this.textConfig = {
             fontFamily: font,
@@ -42,6 +56,7 @@ class Settings extends Phaser.Scene {
             },
         };
 
+        this.continueText = this.add.text(config.width - 125, config.height - 50, "Apply", this.textConfiguration).setOrigin(0.5, 0.5).setDepth(5);
         let musicText = this.add.text(centerX, centerY/3, "Background Music Volume", this.textConfig).setOrigin(0.5, 0.5);
         this.slider = this.rexUI.add.slider({
             x: centerX,
@@ -87,20 +102,6 @@ class Settings extends Phaser.Scene {
             },
             input: 'drag', // 'drag'|'click'
         }).layout();
-
-        //Making images interactable
-        back.setInteractive();
-        //Setting interactive behaviors
-        back.on('pointerover', () => back.setFrame(1));
-        back.on("pointerout", () => back.setFrame(0));
-        back.on('pointerup', () => {
-            this.scene.resume(this.prevScene);
-            this.scene.stop();
-        });
-
-
-
-        console.log(this);
     }
 
     update() {

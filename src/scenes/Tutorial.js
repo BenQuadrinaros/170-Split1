@@ -469,10 +469,10 @@ class Tutorial extends Phaser.Scene {
         }
 
         //create water bucket for manual watering
-        this.waterBucket = this.add.image(.925 * config.width, .525 * config.height, "water4");
-        this.waterBucket.setOrigin(.5, .5);
-        this.waterBucket.depth = this.waterBucket.y / 10;
-        this.waterHeld = new WateringCan();
+        this.spigot = this.add.image(.925 * config.width, .525 * config.height, "water4");
+        this.spigot.setOrigin(.5, .5).setScale(.75, .75);
+        this.spigot.depth = this.spigot.y / 10;
+        this.waterHeld = null;
 
     }
 
@@ -671,31 +671,53 @@ class Tutorial extends Phaser.Scene {
     textHover() {
         //find the closest interactable point
         let plot = this.closestPlot();
-        //If close to water bucket
-        if (Math.sqrt(Math.pow(this.waterBucket.x - this.player.x, 2) +
-            Math.pow(this.waterBucket.y - this.player.y - this.player.height/5, 2)) < 65) {
+        //If close to water spigot
+        if (Math.sqrt(Math.pow(this.spigot.x - this.player.x, 2) +
+            Math.pow(this.spigot.y - this.player.y - this.player.height/5, 2)) < 65) {
             //Move display to this spot
             this.plotHighlight.alpha = 1;
-            this.plotHighlight.x = this.waterBucket.x;
-            this.plotHighlight.y = this.waterBucket.y + 25;
-            //Logic for if player presses space near water bucket
+            this.plotHighlight.x = this.spigot.x;
+            this.plotHighlight.y = this.spigot.y + 25;
+            //Logic for if player presses space near water spigot
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
-                //If the player is not holding an item
-                if (heldItem == undefined) {
-                    //Put water in hands
-                    if(playerVariables.money >= .25) {
+                //If the player is holding the can
+                if(heldItem instanceof WateringCan) {
+                    if(playerVariables.water == 4) {
+                        //If the can is already full
+                        this.fadeText("My watering can\nis already full.");
+                    } else if(playerVariables.money >= .25) {
+                        //If the player can afford to buy water
                         playerVariables.money -= .25;
                         this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + 
                             "\nMoney: " + playerVariables.money;
-                            heldItem = this.waterHeld;
-                            heldItem.water = heldItem.waterMax;
-                            if(!this.playerHasGrabbedWater){
-                                console.log("Player has grabbed water");
-                                this.playerHasGrabbedWater = true;
-                            }
+                        //Destory Watering Can and create a new one
+                        playerVariables.water = 4;
+                        heldItem.destroy();
+                        heldItem = new WateringCan();
+                        this.heldImg = 0;
                     } else {
+                        //If player does not have enough money
                         this.fadeText("Not enough money!\nCosts $0.25 to water.");
                     }
+                } else if(heldItem == undefined && playerVariables.inventory.items["Watering Can"]) {
+                    //If player has can in inventory, pull it out
+                    playerVariables.inventory.items["Watering Can"] = 0;
+                    if(playerVariables.money >= .25) {
+                        //If the player can afford to buy water
+                        playerVariables.money -= .25;
+                        this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + 
+                            "\nMoney: " + playerVariables.money;
+                        //Create a new Watering Can and give to them
+                        playerVariables.water = 4;
+                    } else {
+                        //If player does not have enough money
+                        this.fadeText("Not enough money!\nCosts $0.25 to water.");
+                        //Give them an empty can
+                    }
+                    heldItem = new WateringCan();
+                    this.heldImg = 0;
+                } else {
+                    this.fadeText("I need something to\nhold the water.");
                 }
             }
         } else if (plot == null) {
@@ -711,37 +733,41 @@ class Tutorial extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 let row = plot[0];
                 let col = plot[1];
+                //If the space is a weed, remove it
+                if(gardenGrid[row][col].item instanceof Weed){
+                    this.music.playSFX("dig");
+                    gardenGrid[row][col].item = null;
+                    //recreate the plot
+                    gardenGrid[row][col].dug = true;
+                    gardenGrid[row][col].renderPlot(this, this.gridToCoord(col, row));
+
+                    return;
+                }
                 //If player holding the watering can
-                if (heldItem instanceof WateringCan) {
+                if (heldItem instanceof WateringCan && gardenGrid[row][col].item instanceof Flower) {
                     let spot = gardenGrid[row][col];
-                    if (spot.item instanceof Flower) {
-                        //Water flower if present
+                    if(playerVariables.water > 0) {
                         this.music.playSFX("waterFlowers");
                         spot.item.addWater();
                         if(!this.playerHasWateredFirstSeed){
-                            console.log("Player has watered first seed");
+                            console.log("Player has watered the first seed");
                             this.playerHasWateredFirstSeed = true;
                         }
-                    }
-                    //Then wet the spot and reload
-                    spot.water = true;
-                    if(this.playerHasWateredFirstSeed){
-                        heldItem.water--;
-                    }
-                    if(heldItem.water <= 0) {
-                        //clear image of item held
+                        //Then wet the spot and reduce water
+                        spot.water = true;
+                        playerVariables.water--;
+                        //clear image of item held so it can be rerendered
                         heldItem.image.destroy();
-                        heldItem = undefined;
-                        //set the held image to nothing
                         this.heldImg = 0;
+                        spot.renderPlot(this, this.gridToCoord(col, row));
+                    } else {
+                        this.fadeText("I need to go refill\nmy watering can.")
                     }
-                    spot.renderPlot(this, this.gridToCoord(col, row));
-                    
                 }
                 //If the player is holding an item, modify garden plots and add image to scene
                 else if (heldItem !== undefined) {
                     //If that spot is empty, place item there
-                    if (gardenGrid[row][col].item == null) {
+                    if (gardenGrid[row][col].item == null || heldItem instanceof Clipper) {
                         //console.log(heldItem);
                         //place held object in the spot
                         this.placeItemHandler(row, col);
@@ -753,24 +779,53 @@ class Tutorial extends Phaser.Scene {
                     let loc = gardenGrid[row][col];
                     let obj = loc.item;
 
-                    loc.item = null;
-                    if (obj instanceof Flower || obj instanceof Hive || obj instanceof Sprinkler) {
-                        //If on the bee path, remove it
-                        if (obj instanceof Flower || obj instanceof Hive) {
-                            this.path = this.removeFromPath(obj.image, this.path);
+                    if (!(obj instanceof Bramble) && !(obj instanceof Hive && obj.hasStock())) { 
+                        loc.item = null; 
+                        console.log("plot is now",gardenGrid[row][col].item);
+                    }
+                    if(obj instanceof Hive && obj.hasStock()) {
+                        //If there is honey to collect from this Hive
+                        let message = "";
+                        for(let honey in obj.stock) {
+                            let jars = Math.floor(obj.stock[honey]);
+                            if(jars > 0) {
+                                playerVariables.inventory.honey[honey] += jars;
+                                playerVariables.inventory.honey["total"] += jars;
+                                obj.stock[honey] -= jars;
+                                message += "You got "+jars+" jar(s) of "+honey+" honey.\n";
+                            }
                         }
-                        heldItem = obj;
-                        this.heldImg = 0;
+                        message += "From "+obj.weeksSinceCollection+" week(s) of production.";
+                        obj.weeksSinceCollection = 0;
+                        if(loc.honeyIndicator !== null) {  loc.honeyIndicator.destroy(); loc.honeyIndicator = null; }
+                        this.fadeText(message);
+                        this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + 
+                            "\nMoney: " + playerVariables.money;
                     } else {
-                        loc.dug = true;
+                        if (obj instanceof Flower || obj instanceof Hive || obj instanceof Sprinkler 
+                            || obj instanceof WateringCan) {
+                            //If on the bee path, remove it
+                            if (obj instanceof Flower || obj instanceof Hive) {
+                                this.path = this.removeFromPath(obj.image, this.path);
+                            }
+                            heldItem = obj;
+                            this.heldImg = 0;
+                        } else if(obj == null && loc.dug) {
+                            this.music.playSFX("dig");
+                            loc.dug = false;
+                        } else {
+                            this.music.playSFX("dig");
+                            loc.dug = true;
+                        }
+                        if(heldItem instanceof Hive || heldItem instanceof Sprinkler || heldItem instanceof WateringCan) {
+                            heldType = "items";
+                        } else if (heldItem instanceof Flower) {
+                            heldType = "flowers";
+                        }
+                        //recreate the plot
+                        loc.renderPlot(this, this.gridToCoord(col, row));
+                        console.log("plot rendered as",loc);
                     }
-                    if(heldItem instanceof Hive || heldItem instanceof Sprinkler){
-                        heldType = "items";
-                    } else if (heldItem instanceof Flower) {
-                        heldType = "flowers";
-                    }
-                    //recreate the plot
-                    loc.renderPlot(this, this.gridToCoord(col, row));
                 }
             }
         }
@@ -779,38 +834,53 @@ class Tutorial extends Phaser.Scene {
     placeItemHandler(row, col){
         let loc = gardenGrid[row][col];
         //Set the location's item to a new item
-        if(heldItem instanceof Hive){
-            loc.item = new Hive(col, row);
-            //clear highlight
-            this.hiveHighlightHold.alpha = 0;
-            if(!this.playerHasPlacedBeehive){
-                this.playerHasPlacedBeehive = true;
+        if(heldItem instanceof Clipper) {
+            if(loc.item instanceof Bramble) {
+                this.music.playSFX("clipperCut");
+                loc.item.destroy();
+                loc.item = null;
+                loc.dug = true;
+                loc.renderPlot(this, this.gridToCoord(col, row));
+                heldItem.image.destroy(); //Clear the ghost image
+            } else {
+                return;
             }
-        }
-        else if(heldItem instanceof Sprinkler){
-            loc.item = new Sprinkler(col, row);
-            loc.dug = true;
-            //clear highlight
-            this.sprinklerHighlightHold.alpha = 0;
-        }
-        else{
-            loc.item = new Flower(heldItem.age, heldItem.water, heldItem.type);
-            loc.dug = true;
-            if (loc.water) {
-                loc.item.addWater();
+        } else {
+            if(heldItem instanceof Hive){
+                loc.item = new Hive(col, row);
+                //clear highlight
+                this.hiveHighlightHold.alpha = 0;
+                if(!this.playerHasPlacedBeehive){
+                    this.playerHasPlacedBeehive = true;
+                }
+            } else if(heldItem instanceof Sprinkler){
+                this.music.playSFX("placeItem");
+                loc.item = new Sprinkler(col, row);
+                loc.dug = true;
+                //clear highlight
+                this.sprinklerHighlightHold.alpha = 0;
+            } else if(heldItem instanceof WateringCan){
+                this.music.playSFX("placeItem");
+                loc.item = new WateringCan();
+            } else{
+                loc.item = new Flower(heldItem.age, heldItem.water, heldItem.type);
+                loc.dug = true;
+                if (loc.water) {
+                    loc.item.addWater();
+                }
+                if(!this.playerHasPlantedFirstSeed){
+                    this.playerHasPlantedFirstSeed = true;
+                } else if(!this.playerHasPlantedFirstFlower && this.playerHasEquippedFullFlower){
+                    this.playerHasPlantedFullFlower = true;
+                }
             }
-            if(!this.playerHasPlantedFirstSeed){
-                this.playerHasPlantedFirstSeed = true;
-            } else if(!this.playerHasPlantedFirstFlower && this.playerHasEquippedFullFlower){
-                this.playerHasPlantedFullFlower = true;
-            }
-        }
-        heldItem.image.destroy(); //Clear the ghost image
-        loc.renderPlot(this, this.gridToCoord(col, row));
+            heldItem.image.destroy(); //Clear the ghost image
+            loc.renderPlot(this, this.gridToCoord(col, row));
 
-        //If a flower or hive, add to bee path
-        if (loc.item instanceof Hive || loc.item instanceof Flower) {
-            this.path.push([loc.spot.x, loc.spot.y - 25]);
+            //If a flower or hive, add to bee path
+            if (loc.item instanceof Hive || loc.item instanceof Flower) {
+                this.path.push([loc.spot.x, loc.spot.y - 25]);
+            }
         }
 
         //check to see if holding stack of seeds
@@ -819,13 +889,13 @@ class Tutorial extends Phaser.Scene {
             console.log("holding another " + heldItem.type);
             this.heldImg = 0;
             playerVariables.inventory[heldType][heldItem.type]--;
-            if(heldItem instanceof Hive){
+            if(heldItem instanceof Hive) {
                 heldItem = new Hive(-1, -1);
-            }
-            else if(heldItem instanceof Sprinkler){
+            } else if(heldItem instanceof Sprinkler) {
                 heldItem = new Sprinkler(-1, -1);
-            }
-            else{
+            } else if(heldItem instanceof Clipper) {
+                heldItem = new Clipper();
+            } else {
                 heldItem = new Flower(0, 5, heldItem.type);
             }
             console.log(heldItem);
@@ -894,7 +964,7 @@ class Tutorial extends Phaser.Scene {
             playerVariables.inventory.items["Beehive"] += 1;
             this.hiveHighlightHold.alpha = 0;
         } else if (heldItem instanceof WateringCan) {
-            //Nothing special to do, but we don't want to reach the normal else case
+            playerVariables.inventory.items["Watering Can"] += 1;
         }
          else {
             return;
@@ -908,7 +978,7 @@ class Tutorial extends Phaser.Scene {
     setTutorialFlags(){
         this.playerHasEquippedFirstSeed = false;
         this.playerHasPlantedFirstSeed = false;
-        this.playerHasGrabbedWater = false;
+        //this.playerHasGrabbedWater = false;
         this.playerHasWateredFirstSeed = false;
         this.playerHasEquippedFullFlower = false;
         this.playerHasPlantedFirstFlower = false;
@@ -933,15 +1003,15 @@ class Tutorial extends Phaser.Scene {
                 return;
             }
             this.advanceTutorialDialog(3);
-            this.currDialogMaximum = 3;
+            this.currDialogMaximum = 4;
         }
-        else if(!this.playerHasGrabbedWater){
+        /*else if(!this.playerHasGrabbedWater){
             if(this.currDialogMaximum != 3){
                 return;
             }
             this.advanceTutorialDialog(4);
             this.currDialogMaximum = 4;
-        }
+        }*/
         else if(!this.playerHasWateredFirstSeed){
             if(this.currDialogMaximum != 4){
                 return;
@@ -1008,13 +1078,14 @@ equip a daisy seed.`;
                 break;
             case 3:
                 this.tutorialDialog.text =
-`Great. Now find a nice plot of dirt to plant it in. Use SPACE
-when you are near the spot you want to plant it at.`;
+`Great. Now find a nice plot of dirt to plant it in. You can use
+SPACE to use whatever is in your hands, or to interact with things
+that are nearby.`;
                 break;
             case 4:
                 this.tutorialDialog.text =
-`Of course, to make it grow, it will need some water. Go and
-grab the watering can by pressing SPACE near it.`;
+`Of course, to make it grow, it will need some water. Go and grab
+the watering can and water it.`;
                 break;
             case 5:
                 this.tutorialDialog.text =
