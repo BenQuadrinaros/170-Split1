@@ -269,7 +269,8 @@ class Tutorial extends Phaser.Scene {
         playerVariables.inventory.seeds["Daisy"] = 0;
         playerVariables.inventory.items["Clipper"] = 0;
         //Destroy the default garden items
-        gardenGrid[1][4].item = null;
+        let tempLoc = this.gridToCoord(1, 4);
+        gardenGrid[1][4].item = new Weed(tempLoc[0], tempLoc[1]);
         gardenGrid[1][6].item = null;
         gardenGrid[2][5].item = null;
     }
@@ -340,14 +341,14 @@ class Tutorial extends Phaser.Scene {
 
         //create interactible backpack image
         this.backpack = this.add.image(this.cameras.main.scrollX + config.width - 122, this.cameras.main.scrollY + config.height/5 - 10, 'backpackFrames')
-            .setInteractive().setAlpha(.5).setScale(.87)
+            .setInteractive().setAlpha(.9).setScale(.87)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1);
                 this.pointerCurrentlyOver = "backpack";
                 console.log("Just set pointer as over backpack");
             })
             .on('pointerout', () => {
-                this.backpack.setAlpha(.5);
+                this.backpack.setAlpha(.9);
                 this.pointerCurrentlyOver = "";
                 console.log("Just set pointer as over ''");
             })
@@ -591,6 +592,8 @@ class Tutorial extends Phaser.Scene {
                 this.time.delayedCall(8000, () => {
                     //Give the player some clippers
                     playerVariables.inventory.items["Clipper"] += 3;
+                    playerVariables.inventory.honey["total"] = 3;
+                    playerVariables.inventory.honey["yellow"] = 3;
                     playerInventoryUpdated = true;
                     this.music.stop();
                     this.scene.stop();
@@ -734,13 +737,14 @@ class Tutorial extends Phaser.Scene {
                 let row = plot[0];
                 let col = plot[1];
                 //If the space is a weed, remove it
-                if(gardenGrid[row][col].item instanceof Weed){
+                if(gardenGrid[row][col].item instanceof Weed && this.playerHasPlantedFullFlower){
+                    console.log("Player has planted full flower: " + this.playerHasPlantedFullFlower);
                     this.music.playSFX("dig");
                     gardenGrid[row][col].item = null;
                     //recreate the plot
                     gardenGrid[row][col].dug = true;
                     gardenGrid[row][col].renderPlot(this, this.gridToCoord(col, row));
-
+                    if(!this.playerHasDealtWithWeeds){this.playerHasDealtWithWeeds = true; console.log("Player has dealt with weeds.")}
                     return;
                 }
                 //If player holding the watering can
@@ -779,9 +783,20 @@ class Tutorial extends Phaser.Scene {
                     let loc = gardenGrid[row][col];
                     let obj = loc.item;
 
-                    if (!(obj instanceof Bramble) && !(obj instanceof Hive && obj.hasStock())) { 
-                        loc.item = null; 
-                        console.log("plot is now",gardenGrid[row][col].item);
+                    if (!(obj instanceof Bramble) && !(obj instanceof Hive && obj.hasStock())) {
+                        //Make sure weed can't be removed too early
+                        if(obj instanceof Weed){
+                            if(!this.playerHasDealtWithWeeds && this.playerHasPlantedFullFlower){
+                                loc.item = null; 
+                                console.log("plot is now",gardenGrid[row][col].item);
+                                this.playerHasDealtWithWeeds = true;
+                                console.log("Player has dealt with weeds.");
+                            }
+                        }
+                        else{
+                            loc.item = null; 
+                            console.log("plot is now",gardenGrid[row][col].item);
+                        }
                     }
                     if(obj instanceof Hive && obj.hasStock()) {
                         //If there is honey to collect from this Hive
@@ -851,6 +866,8 @@ class Tutorial extends Phaser.Scene {
                 //clear highlight
                 this.hiveHighlightHold.alpha = 0;
                 if(!this.playerHasPlacedBeehive){
+                    this.music.playSFX("placeItem");
+                    console.log("Player has placed beehive");
                     this.playerHasPlacedBeehive = true;
                 }
             } else if(heldItem instanceof Sprinkler){
@@ -863,6 +880,7 @@ class Tutorial extends Phaser.Scene {
                 this.music.playSFX("placeItem");
                 loc.item = new WateringCan();
             } else{
+                this.music.playSFX("placeItem");
                 loc.item = new Flower(heldItem.age, heldItem.water, heldItem.type);
                 loc.dug = true;
                 if (loc.water) {
@@ -870,7 +888,9 @@ class Tutorial extends Phaser.Scene {
                 }
                 if(!this.playerHasPlantedFirstSeed){
                     this.playerHasPlantedFirstSeed = true;
+                    console.log("Player has placed first seed");
                 } else if(!this.playerHasPlantedFirstFlower && this.playerHasEquippedFullFlower){
+                    console.log("Player has planted full flower");
                     this.playerHasPlantedFullFlower = true;
                 }
             }
@@ -895,6 +915,9 @@ class Tutorial extends Phaser.Scene {
                 heldItem = new Sprinkler(-1, -1);
             } else if(heldItem instanceof Clipper) {
                 heldItem = new Clipper();
+            } else if(heldType === "flowers"){
+                this.playerHasEquippedFullFlower = true;
+                heldItem = new Flower(5, 5, heldItem.type);
             } else {
                 heldItem = new Flower(0, 5, heldItem.type);
             }
@@ -978,10 +1001,10 @@ class Tutorial extends Phaser.Scene {
     setTutorialFlags(){
         this.playerHasEquippedFirstSeed = false;
         this.playerHasPlantedFirstSeed = false;
-        //this.playerHasGrabbedWater = false;
         this.playerHasWateredFirstSeed = false;
         this.playerHasEquippedFullFlower = false;
         this.playerHasPlantedFirstFlower = false;
+        this.playerHasDealtWithWeeds = false;
         this.playerHasPlacedBeehive = false;
         this.currDialogMaximum = -1;
         this.currDialogSection = 1;
@@ -1000,23 +1023,17 @@ class Tutorial extends Phaser.Scene {
         }
         else if(!this.playerHasPlantedFirstSeed){
             if(this.currDialogMaximum != 2){
+                console.log("Not planted first seed, dialog max is" + this.currDialogMaximum);
                 return;
             }
             this.advanceTutorialDialog(3);
-            this.currDialogMaximum = 4;
+            this.currDialogMaximum = 3;
         }
-        /*else if(!this.playerHasGrabbedWater){
+        else if(!this.playerHasWateredFirstSeed){
             if(this.currDialogMaximum != 3){
                 return;
             }
             this.advanceTutorialDialog(4);
-            this.currDialogMaximum = 4;
-        }*/
-        else if(!this.playerHasWateredFirstSeed){
-            if(this.currDialogMaximum != 4){
-                return;
-            }
-            this.advanceTutorialDialog(5);
             this.currDialogMaximum = 5;
         }
         else if(!this.playerHasPlantedFullFlower){
@@ -1025,24 +1042,31 @@ class Tutorial extends Phaser.Scene {
             }
             this.advanceTutorialDialog(6);
             this.currDialogMaximum = 6;
-            playerVariables.inventory.flowers["Daisy"] += 1;
+            playerVariables.inventory.flowers["Daisy"] += 2;
             playerInventoryUpdated = true;
         }
-        else if(!this.playerHasPlacedBeehive){
+        else if(!this.playerHasDealtWithWeeds){
             if(this.currDialogMaximum != 6){
                 return;
             }
             this.advanceTutorialDialog(7);
             this.currDialogMaximum = 7;
-            playerVariables.inventory.items["Beehive"] = 1;
-            playerInventoryUpdated = true;
         }
-        else if(this.playerHasPlacedBeehive){
+        else if(!this.playerHasPlacedBeehive){
             if(this.currDialogMaximum != 7){
                 return;
             }
             this.advanceTutorialDialog(8);
-            this.currDialogMaximum = 11;
+            this.currDialogMaximum = 9;
+            playerVariables.inventory.items["Beehive"] = 1;
+            playerInventoryUpdated = true;
+        }
+        else if(this.playerHasPlacedBeehive){
+            if(this.currDialogMaximum != 9){
+                return;
+            }
+            this.advanceTutorialDialog(10);
+            this.currDialogMaximum = 14;
         }
     }
 
@@ -1052,7 +1076,7 @@ class Tutorial extends Phaser.Scene {
         this.tutorialTextBackdrop.y = this.cameras.main.scrollY + 3.5*config.height/5;
         this.tutorialTextBackdrop.alpha = 1;
         this.spaceContinue.x = this.cameras.main.scrollX + 4*config.width/5 - 15;
-        this.spaceContinue.y = this.cameras.main.scrollY + 4*config.height/5 + 35;
+        this.spaceContinue.y = this.cameras.main.scrollY + 4*config.height/5 + 43;
         this.spaceContinue.setVisible(true);
         this.tutorialDialog.x = this.cameras.main.scrollX + 75;
         this.tutorialDialog.y = this.cameras.main.scrollY + 3.25*config.height/5 + 30;
@@ -1072,9 +1096,9 @@ beautiful again.`;
                 break;
             case 2:
                 this.tutorialDialog.text =
-`First things first, if you want to make honey to fundraise,
-you're going to need some flowers. Open your inventory and
-equip a daisy seed.`;
+`First things first, if you want to make honey to fundraise, you
+are going to need some flowers. Open your inventory and equip a
+daisy seed.`;
                 break;
             case 3:
                 this.tutorialDialog.text =
@@ -1089,38 +1113,56 @@ the watering can and water it.`;
                 break;
             case 5:
                 this.tutorialDialog.text =
-`Now go over and water the seedling by pressing SPACE when
-you are near it.`;
+`It does cost 25 cents to fill the watering can, so you'll need to
+make sure you always save a little extra for the plants.`;
                 break;
             case 6:
                 this.tutorialDialog.text =
-`Of course, this flower won't produce any honey until it has
-finished growing. Here's a fully grown one for you to plant.`;
+`Some flowers are more expensive and take longer to grow, but
+people want their honey more. Here are a few fully grown daisies
+to make sure we can make some honey for you by next week.`;
                 break;
             case 7:
                 this.tutorialDialog.text =
-`Now, to actually make some delicious honey, you are going
-to need a few guys like me to help. Here's a beehive for you
-to place.`;
+`Weeds interfere with the ability of flowers to make honey. Luckily,
+all you have to do to get rid of it is to interact with it. Could
+you deal with the one by the cave?`;
                 break;
             case 8:
                 this.tutorialDialog.text =
-`Flowers do have diminishing returns when it comes to the
-amount of honey we can generate from their pollen, so you
-might want to try making multiple types of honey.`;
+`If you want to cover over that dirt patch with grass, just interact
+with it again.`;
                 break;
             case 9:
-                this.tutorialDialog.text = 
-`If a type of flower is the majority of the flowers near a beehive,
-that beehive can produce that flower's type of honey.`;
+                this.tutorialDialog.text =
+`Now, to actually make some delicious honey, you are going to need
+a few guys like me to help. Here's a beehive for you to place.`;
                 break;
             case 10:
                 this.tutorialDialog.text =
-`I know you brought some, but in order to clear this many brambles
-you might need to get some more clippers. Toad Leckman can
-probably help you there.`;
+`Beehives only collect pollen from nearby flowers, and make honey
+based on what the most populous type around it is. If you want to
+control that, you can pick up and move your flowers and seedlings.`;
                 break;
             case 11:
+                this.tutorialDialog.text =
+`Flowers do have diminishing returns when it comes to the amount
+of honey we can generate from their pollen, so to make more
+honey you are going to need an ever increasing number of flowers.`;
+                break;
+            case 12:
+                this.tutorialDialog.text = 
+`Getting multiple beehives will help with making more honey. If
+a beehive is mostly collecting from one type of flower, it will
+create that type of honey.`;
+                break;
+            case 13:
+                this.tutorialDialog.text =
+`To deal with all of those brambles cluttering up the place, you are
+going to need some clippers. We have some coming for you next
+week, but you can also get more in town if you need.`;
+                break;
+            case 14:
                 this.tutorialDialog.text =
 `That's all for today. Before you go to sleep at your cave, make sure
 to water that new flower. See you next week!`;

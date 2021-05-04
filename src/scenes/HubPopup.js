@@ -136,8 +136,9 @@ class HubPopup extends Phaser.Scene {
         if(this.fromTutorial && Phaser.Input.Keyboard.JustDown(keySPACE)){
             if(this.currDialogSelection === 1){
                 this.tutorialDialog.text =
-`We look forward to working with you as you restore this
-community garden. *B*ee you around!`;
+`We were also able to collect an extra few jars to give
+you a head start. We look forward to working with you
+as you restore this garden. *B*ee you around!`;
                 this.currDialogSelection = 2;
             }
             else if(this.currDialogSelection === 2){
@@ -154,7 +155,7 @@ community garden. *B*ee you around!`;
         this.tutorialTextBackdrop.depth = 150;
         this.tutorialConfig = {
             fontFamily: font,
-            fontSize: "28px",
+            fontSize: "32px",
             color: "#ffffff",
             align: "left",
             stroke: "#000000",
@@ -164,7 +165,7 @@ community garden. *B*ee you around!`;
                 bottom: 5
             },
         };
-        this.tutorialDialog = this.add.text(20, this.cameras.main.scrollY + 3.25*config.height/5 + 30, "", this.tutorialConfig);
+        this.tutorialDialog = this.add.text(17, this.cameras.main.scrollY + 3.25*config.height/5 + 30, "", this.tutorialConfig);
         this.tutorialDialog.setOrigin(0, 0);
         this.tutorialDialog.depth = 200;
         this.talkingBee = this.add.image(config.width, 3*config.height/5, 'largeBee').setOrigin(0.5);
@@ -180,8 +181,8 @@ community garden. *B*ee you around!`;
 
 
         this.tutorialDialog.text =
-`Now that you have your first jar of honey, you should be
-good to go. You can sell jars of honey at the farmer's
-market in town, and buy new stuff from Toad Leckman.`;
+`You can collect your first jar of honey from the hive.
+Otherwise, you should be good to go. You can sell jars
+of honey at the farmer's market in town.`;
     }
 }
