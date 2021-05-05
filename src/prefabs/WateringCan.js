@@ -1,6 +1,6 @@
 class WateringCan {
     constructor() {
-        this.type = "WateringCan";
+        this.type = "Watering Can";
     }
 
     addToScene(scene, initx, inity) {

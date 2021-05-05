@@ -83,7 +83,7 @@ class BGMManager {
             targets: this.musicPlayer,
             volume: 0,
             ease: 'Sine.easeInOut',
-            duration: 2500,
+            duration: 1500,
             delay: 0,
             repeat: 0
         });

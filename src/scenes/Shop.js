@@ -27,6 +27,7 @@ class Shop extends Phaser.Scene {
         //Initialize images
         this.createBackgroundImages();
         this.player = new HubPlayer(this, 'player', 0, config.width/2, 3*config.height/4, game.config.width, game.config.height, [[135, 305], [380, 270], [game.config.width+50, 335]]).setDepth(-1);
+        this.player.setScale(0.75);
 
         //Create the text around the scene
         this.createText();
