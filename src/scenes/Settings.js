@@ -41,7 +41,7 @@ class Settings extends Phaser.Scene {
             this.scene.resume(this.prevScene);
             this.scene.stop();
         });
-        this.continueText.setAlpha(.5);
+
 
         this.textConfig = {
             fontFamily: font,
@@ -56,7 +56,8 @@ class Settings extends Phaser.Scene {
             },
         };
 
-        this.continueText = this.add.text(config.width - 125, config.height - 50, "Apply", this.textConfiguration).setOrigin(0.5, 0.5).setDepth(5);
+        this.continueText = this.add.text(config.width - 125, config.height - 50, "Apply", this.textConfig).setOrigin(0.5, 0.5).setDepth(5);
+        this.continueText.setAlpha(.5);
         let musicText = this.add.text(centerX, centerY/3, "Background Music Volume", this.textConfig).setOrigin(0.5, 0.5);
         this.slider = this.rexUI.add.slider({
             x: centerX,

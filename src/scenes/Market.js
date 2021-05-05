@@ -345,7 +345,7 @@ class Market extends Phaser.Scene {
             this.makeTransaction(this.typeToBuy, this.npcAmount, mood);
             this.resetStage();
         }else if (.8 <= percent && percent < 1){ //between 80% and 100%, npc will accept or haggle (75/25) respectively
-            if (Math.random() <= .25){
+            if (Math.random() <= .75){
                 //this.stage = 5;
                 this.initiateHaggle();
             } else {
