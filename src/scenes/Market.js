@@ -404,7 +404,7 @@ class Market extends Phaser.Scene {
         let offer = this.generateBarterOffer(barterValue);
         let img = offer.img;
         let item = offer.item;
-        let amt = offer.amt;
+        let amt = Math.floor(offer.amt);
         let scale = offer.scale;
         let category = offer.category;
         console.log(`NPC barter value ${barterValue} and are offering ${amt} ${item} `);
@@ -444,11 +444,14 @@ class Market extends Phaser.Scene {
                 accept.alpha = .75;
             })
             .on('pointerdown', () => {
+                console.log("before changing player inv is " + playerVariables.inventory[category][item]);
                 playerVariables.inventory[category][item] +=1;
-                let tempimg = this.add.image(this.npc.x +100, this.npc.y+200,img);
-                let txt = this.text.add(tempimg.x+10,tempimg.y,"+" + amt.toString(), this.textConfig);
+                console.log("after changing player inv is " + playerVariables.inventory[category][item]);
+                this.reduceStock(this.typeToBuy, this.npcAmount);
+                let tempimg = this.add.image(this.npc.x-100, this.npc.y-100, img).setScale(scale, scale);
+                let txt = this.add.text(tempimg.x+10,tempimg.y,"+" + amt.toString(), this.textConfig);
                 this.tweens.add({
-                    targets: [tempimg, text],
+                    targets: [tempimg, txt],
                     alpha: {from: 1, to: 0},
                     y: '-=200',
                     ease: 'Sine.easeInOut',
