@@ -28,8 +28,16 @@ class Market extends Phaser.Scene {
         this.createText(); //Creates text objects
         this.createPriceChanging(); //Creates UI for changing prices
         this.createEvents(); //Creates misc events that occur during the scene
-        this.createSellOptions() //Create popup sell dialogue options
-        this.createPriceHistoryIcon() //Create icon for accessing price history.
+        this.createSellOptions(); //Create popup sell dialogue options
+        this.createPriceHistoryIcon(); //Create icon for accessing price history.
+        this.createBarterPool();
+
+        this.standardPrices = {
+            yellow:3,
+            blue:4,
+            purple:4.5,
+            pink:5
+        }
 
         //background music for the hub
         //CHNAGE SONG FOR MARKET
@@ -68,19 +76,7 @@ class Market extends Phaser.Scene {
         this.state = "waiting";
     }
 
-    createCustomersInLine() {
-        let amt = Math.max(2, playerVariables.reputation / 2 + 6);
-        this.customersInLine = [];
-        console.log(`Creating ${amt} customers in line...`);
-        for (let i = 0; i < amt; i++) {
-            this.customersInLine.push(this.generateNPC((2*config.width/3) - ((i + 1) * config.width/5)));
-            this.customersInLine[i].setVisible(true);
-            this.customersInLine[i].depth = 90 - i;
-            console.log(`creating npc ${i}...`);
-            console.log(this.customersInLine[i]);
-        }
-        console.log(`Done creating ${amt} npcs`);
-    }
+
 
     update() {
         //Scroll clouds
@@ -151,7 +147,8 @@ class Market extends Phaser.Scene {
         } else if (this.state === "bargaining") { //Ask for honey at price
             if (this.stage === -1) {
                 this.stage = 0;
-                console.log("stage is 0")
+                console.log("stage is 0");
+
                 this.initiateRequest();
 
             } else if (this.stage === 1) { //Npc will check price to see if it is acceptable
@@ -329,6 +326,8 @@ class Market extends Phaser.Scene {
     }
 
     initiateNPCDecision(percent, mood){ //Npc will decide how to act based on the percent of set price/total budget
+
+
         if (percent > 1){ //above 1, "high" price, npc will either leave or haggle
             if (Math.random() <= .5){ //npc just leaves
                 playerVariables.reputation -=1;
@@ -337,7 +336,8 @@ class Market extends Phaser.Scene {
             else { //npc will ask to barter or lower price
                 console.log("npc is asking to lower price");
                 //this.stage = 5;
-                this.initiateHaggle();
+                //this.initiateHaggle();
+                this.initiateBarter();
             }
 
         } else if (percent < .80){ //"Good" price falls below 80%, npc will buy and player's reputation will increase
@@ -347,7 +347,8 @@ class Market extends Phaser.Scene {
         }else if (.8 <= percent && percent < 1){ //between 80% and 100%, npc will accept or haggle (75/25) respectively
             if (Math.random() <= .75){
                 //this.stage = 5;
-                this.initiateHaggle();
+                //this.initiateHaggle();
+                this.initiateBarter(); //Swap bartering for haggling for now.
             } else {
                 playerVariables.reputation -=1;
                 this.makeTransaction(this.typeToBuy, this.npcAmount, mood);
@@ -395,6 +396,82 @@ class Market extends Phaser.Scene {
                 this.accept.destroy();
                 this.stage = 1;
             });
+    }
+
+    initiateBarter(){
+        this.stage = 999; //lock stage until proceding
+        let barterValue = this.npcAmount * this.standardPrices[this.typeToBuy];
+        let offer = this.generateBarterOffer(barterValue);
+        let img = offer.img;
+        let item = offer.item;
+        let amt = offer.amt;
+        let scale = offer.scale;
+        let category = offer.category;
+        console.log(`NPC barter value ${barterValue} and are offering ${amt} ${item} `);
+        let barterBox = this.add.image(this.npc.x - 100, this.npc.y - 200,'emptyBox')
+            .setDepth(100).setOrigin(.5, .5).setScale(.075, .075);
+        let offerImg = this.add.image(barterBox.x-20,barterBox.y-10,img)
+            .setOrigin(.5,.5).setDepth(100).setScale(scale,scale);
+        let barterIcon = this.add.image(barterBox.x, barterBox.y+70,'barterIcon')
+            .setScale(.125,.125).setDepth(125).setOrigin(.5,.5);
+        let barterText = this.add.text(barterBox.x+20,barterBox.y-10, amt.toString(), this.textConfig)
+            .setDepth(100).setOrigin(.5,.5);
+        let decline = this.add.image(barterBox.x - 40, barterBox.y + 60, 'sellNo',0)
+            .setDepth(100).setOrigin(.5, .5).setScale(.25, .25).setAlpha(.75).setInteractive()
+            .on('pointerover', () => {
+                decline.alpha = 1;
+            })
+            .on('pointerout', () => {
+                decline.alpha = .75;
+            })
+            .on('pointerdown', () => {
+                barterBox.destroy();
+                decline.destroy();
+                accept.destroy();
+                offerImg.destroy();
+                barterIcon.destroy();
+                barterText.destroy();
+                this.resetStage();
+            });
+
+
+        let accept = this.add.image(barterBox.x + 40, barterBox.y + 60, 'sellYes',0)
+            .setDepth(100).setOrigin(.5, .5).setAlpha(.75).setScale(.25, .25).setInteractive()
+            .on('pointerover', () => {
+                accept.alpha = 1;
+            })
+            .on('pointerout', () => {
+                accept.alpha = .75;
+            })
+            .on('pointerdown', () => {
+                playerVariables.inventory[category][item] +=1;
+                let tempimg = this.add.image(this.npc.x +100, this.npc.y+200,img);
+                let txt = this.text.add(tempimg.x+10,tempimg.y,"+" + amt.toString(), this.textConfig);
+                this.tweens.add({
+                    targets: [tempimg, text],
+                    alpha: {from: 1, to: 0},
+                    y: '-=200',
+                    ease: 'Sine.easeInOut',
+                    duration: 1500,
+                    repeat: 0,
+                    yoyo: false,
+                    hold: 0,
+                    onComplete: function () {
+                        //console.log("done tweening mood");
+                        tempimg.destroy();
+                        txt.destroy();
+                    },
+                    onCompleteScope: this
+                });
+                barterBox.destroy();
+                decline.destroy();
+                accept.destroy();
+                offerImg.destroy();
+                barterIcon.destroy();
+                barterText.destroy();
+                this.resetStage();
+            });
+
     }
 
     //reset market state to no customers, allowing one to approacj
@@ -445,7 +522,66 @@ class Market extends Phaser.Scene {
             onCompleteScope: this
         });
     }
+    createCustomersInLine() {
+        let amt = Math.max(2, playerVariables.reputation / 2 + 6);
+        this.customersInLine = [];
+        console.log(`Creating ${amt} customers in line...`);
+        for (let i = 0; i < amt; i++) {
+            this.customersInLine.push(this.generateNPC((2*config.width/3) - ((i + 1) * config.width/5)));
+            this.customersInLine[i].setVisible(true);
+            this.customersInLine[i].depth = 90 - i;
+            console.log(`creating npc ${i}...`);
+            console.log(this.customersInLine[i]);
+        }
+        console.log(`Done creating ${amt} npcs`);
+    }
 
+    createBarterPool(){
+    this.barterPool = {
+        Daisy:{
+            val:2,
+            img:"flowerWhite3",
+            scale:.125,
+            category:"seeds"
+        },
+        Lavender:{
+            val:2,
+            img:"flowerPurple3",
+            scale:.125,
+            category:"seeds"
+        },
+        Delphinium:{
+            val:2,
+            img:"flowerBlue3",
+            scale:.125,
+            category:"seeds"
+        },
+        Tulip:{
+            val:3,
+            img:"flowerRed3",
+            scale:.125,
+            category:"seeds"
+        },
+        Beehive:{
+            val:8,
+            img:"hive",
+            scale:.75,
+            category:"items"
+        },
+        Clipper:{
+            val:3,
+            img:"clipper",
+            scale:.75,
+            category:"items"
+        },
+        Sprinkler:{
+            val:11,
+            img:"sprinkler",
+            scale:1,
+            category:"items"
+        }
+    }
+    }
 
     createControls() {
         //establish controls for gameplay
@@ -910,5 +1046,27 @@ class Market extends Phaser.Scene {
     generateNPC(placeX) {
         var randNPC = new NPC(this, placeX);
         return randNPC;
+    }
+
+
+    generateBarterOffer(price){
+        let barterOffer = {};
+        let poolOfOptions = [];
+        for (var [obj, info] of Object.entries(this.barterPool)) {
+            //console.log(`obj ${obj} and info ${info}`);
+            if (price >= info.val){
+                //console.log(`obj ${obj} with price ${price} and val ${info.val}`);
+                poolOfOptions.push([obj, info]);
+            }
+        }
+        let item = poolOfOptions[Math.floor(Math.random() * poolOfOptions.length)];
+        let offerAmt = price/item[1].val
+        //console.log(`NPC will offer ${offerAmt} ${item[0]}`);
+        barterOffer.amt = offerAmt;
+        barterOffer.item = item[0];
+        barterOffer.img = item[1].img;
+        barterOffer.scale = item[1].scale;
+        barterOffer.category = item[1].category;
+        return barterOffer;
     }
 }

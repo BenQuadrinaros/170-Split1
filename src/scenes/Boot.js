@@ -108,6 +108,7 @@ class Boot extends Phaser.Scene {
             this.load.image('emptyBox','./assets/sprites/UI/box120x120.png');
             this.load.image('emptyBoxTwo', './assets/sprites/UI/haggleBox.png')
             this.load.image('noBuy', './assets/img/noBuy.png');
+            this.load.image('barterIcon','./assets/sprites/UI/barterIcon.png');
             //For pricehistory scene
             this.load.image('notebookBG', './assets/sprites/UI/notebookHalfLined.png');
             this.load.image('noteBook','./assets/sprites/UI/notebookIcon.png');
@@ -232,7 +233,7 @@ class Boot extends Phaser.Scene {
 
     create(){
         // go to Title scene
-        this.scene.start('menuScene');
+        this.scene.start('marketScene');
     }
 
     takeLocalStorageActions(){
