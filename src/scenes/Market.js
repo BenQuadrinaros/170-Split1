@@ -207,7 +207,8 @@ class Market extends Phaser.Scene {
         priceHistory.push({
             type:type,
             price:priceMap[type],
-            mood: mood
+            mood: mood,
+            mode: "money"
         });
         let bearBucks = this.add.image(this.npc.x,this.moneyText.y,'bearbucks')
             .setScale(.5,.5).setDepth(100);
@@ -326,8 +327,6 @@ class Market extends Phaser.Scene {
     }
 
     initiateNPCDecision(percent, mood){ //Npc will decide how to act based on the percent of set price/total budget
-
-
         if (percent > 1){ //above 1, "high" price, npc will either leave or haggle
             if (Math.random() <= .5){ //npc just leaves
                 playerVariables.reputation -=1;
@@ -408,13 +407,15 @@ class Market extends Phaser.Scene {
         let scale = offer.scale;
         let category = offer.category;
         console.log(`NPC barter value ${barterValue} and are offering ${amt} ${item} `);
-        let barterBox = this.add.image(this.npc.x - 100, this.npc.y - 200,'emptyBox')
-            .setDepth(100).setOrigin(.5, .5).setScale(.075, .075);
-        let offerImg = this.add.image(barterBox.x-20,barterBox.y-10,img)
+        let barterBox = this.add.image(this.npc.x, this.npc.y - 250,'barterBlank')
+            .setDepth(100).setOrigin(.5, .5).setScale(.3,.3);
+        let offerImg = this.add.image(barterBox.x+15,barterBox.y,img)
             .setOrigin(.5,.5).setDepth(100).setScale(scale,scale);
-        let barterIcon = this.add.image(barterBox.x, barterBox.y+70,'barterIcon')
-            .setScale(.125,.125).setDepth(125).setOrigin(.5,.5);
-        let barterText = this.add.text(barterBox.x+20,barterBox.y-10, amt.toString(), this.textConfig)
+        let offerText = this.add.text(offerImg.x+25,offerImg.y, amt.toString(), this.textConfig)
+            .setDepth(100).setOrigin(.5,.5);
+        let honeyImg = this.add.image(barterBox.x-30,barterBox.y-30,this.imgMap[this.typeToBuy])
+            .setOrigin(.5,.5).setDepth(100).setScale(.35,.35);
+        let honeyText = this.add.text(honeyImg.x+20,honeyImg.y,this.npcAmount.toString(),this.textConfig)
             .setDepth(100).setOrigin(.5,.5);
         let decline = this.add.image(barterBox.x - 40, barterBox.y + 60, 'sellNo',0)
             .setDepth(100).setOrigin(.5, .5).setScale(.25, .25).setAlpha(.75).setInteractive()
@@ -429,8 +430,9 @@ class Market extends Phaser.Scene {
                 decline.destroy();
                 accept.destroy();
                 offerImg.destroy();
-                barterIcon.destroy();
-                barterText.destroy();
+                offerText.destroy();
+                honeyImg.destroy();
+                honeyText.destroy();
                 this.resetStage();
             });
 
@@ -445,11 +447,14 @@ class Market extends Phaser.Scene {
             })
             .on('pointerdown', () => {
                 console.log("before changing player inv is " + playerVariables.inventory[category][item]);
-                playerVariables.inventory[category][item] +=1;
+                playerVariables.inventory[category][item] += amt;
                 console.log("after changing player inv is " + playerVariables.inventory[category][item]);
                 this.reduceStock(this.typeToBuy, this.npcAmount);
-                let tempimg = this.add.image(this.npc.x-100, this.npc.y-100, img).setScale(scale, scale);
-                let txt = this.add.text(tempimg.x+10,tempimg.y,"+" + amt.toString(), this.textConfig);
+                let tempimg = this.add.image(this.npc.x-100, this.npc.y-100, img).setScale(scale, scale)
+                    .setDepth(100);
+                let txt = this.add.text(tempimg.x+10,tempimg.y,"+" + amt.toString(), this.textConfig)
+                    .setDepth(100);
+                this.logBarter(offer, this.typeToBuy, this.npcAmount);
                 this.tweens.add({
                     targets: [tempimg, txt],
                     alpha: {from: 1, to: 0},
@@ -470,11 +475,23 @@ class Market extends Phaser.Scene {
                 decline.destroy();
                 accept.destroy();
                 offerImg.destroy();
-                barterIcon.destroy();
-                barterText.destroy();
+                offerText.destroy();
+                honeyImg.destroy();
+                honeyText.destroy();
                 this.resetStage();
             });
 
+    }
+    logBarter(offer, hType, typeBought){
+     priceHistory.push({
+         mode: "barter",
+         type: hType,
+         item: offer.item,
+         amt: Math.floor(offer.amt),
+         scale: offer.scale,
+         img: offer.img,
+         bought: typeBought
+     })
     }
 
     //reset market state to no customers, allowing one to approacj
@@ -543,32 +560,32 @@ class Market extends Phaser.Scene {
     this.barterPool = {
         Daisy:{
             val:2,
-            img:"flowerWhite3",
+            img:"whiteIcon",
             scale:.125,
             category:"seeds"
         },
         Lavender:{
             val:2,
-            img:"flowerPurple3",
+            img:"purpleIcon",
             scale:.125,
             category:"seeds"
         },
         Delphinium:{
             val:2,
-            img:"flowerBlue3",
+            img:"blueIcon",
             scale:.125,
             category:"seeds"
         },
         Tulip:{
             val:3,
-            img:"flowerRed3",
+            img:"redIcon",
             scale:.125,
             category:"seeds"
         },
         Beehive:{
             val:8,
             img:"hive",
-            scale:.75,
+            scale:.075,
             category:"items"
         },
         Clipper:{
