@@ -120,8 +120,10 @@ class Tutorial extends Phaser.Scene {
         this.updateSwarm();
 
         //Update player movement and location
+        this.previousPlayerPosition = [this.player.x, this.player.y];
         this.player.update();
         this.player.depth = this.player.y / 10 + 3;
+        this.updateCheckCollisions();
 
         //Misc Updates
         this.counter++;
@@ -597,6 +599,7 @@ class Tutorial extends Phaser.Scene {
                     playerInventoryUpdated = true;
                     this.music.stop();
                     this.scene.stop();
+                    this.placeHeldItemInBag()
                     this.scene.launch("hubScene", {previousScene: "tutorialScene"});
                 });
             }
@@ -607,6 +610,29 @@ class Tutorial extends Phaser.Scene {
                 this.caveText.setVisible(false);
             }
             this.interactText.setVisible(false);
+        }
+    }
+
+    updateCheckCollisions(){
+        let coords = this.closestPlot();
+        if(coords) {
+            let obj = gardenGrid[coords[0]][coords[1]].item;
+            if(obj instanceof Bramble) {
+                obj = obj.image;
+                if(this.player.x + this.player.width/2 < obj.x + 120 
+                    && this.player.x - this.player.width/2 > obj.x - 120
+                    && this.player.y + this.player.height/3 < obj.y + 50) {
+                    //Overlapping significantly
+                    this.player.x = this.previousPlayerPosition[0];
+                    this.player.y = this.previousPlayerPosition[1];
+                    if(gardenGrid[coords[0]][coords[1]].item instanceof Bramble) {
+                        this.player.slow = true;
+                        this.fadeText("Ow! Those are\nprickly brambles.");
+                    }
+                }
+            } else {
+                this.player.slow = false;
+            }
         }
     }
 
@@ -1146,9 +1172,9 @@ control that, you can pick up and move your flowers and seedlings.`;
                 break;
             case 11:
                 this.tutorialDialog.text =
-`Flowers do have diminishing returns when it comes to the amount
-of honey we can generate from their pollen, so to make more
-honey you are going to need an ever increasing number of flowers.`;
+`As the number of flowers around a beehive increases, the harder it
+becomes for us to turn all of the pollen into honey, so flowers do
+have some diminishing returns.`;
                 break;
             case 12:
                 this.tutorialDialog.text = 

@@ -3,7 +3,22 @@ class PriceHistory extends Phaser.Scene{
         super({
             key:"priceHistory"
         });
+
+        this.textConfiguration = {
+            fontFamily: font,
+            fontSize: "20px",
+            color: "#000000",
+            align: "center",
+            stroke: "#000000",
+            strokeThickness: 1,
+            padding: {
+                top: 5,
+                bottom: 5
+            },
+        };
     }
+
+    
 
     create(){
         console.log(priceHistory);
@@ -71,7 +86,8 @@ class PriceHistory extends Phaser.Scene{
     }
 
     createPriceHistory(){
-        console.log("creating price history;")
+        console.log("creating price history;");
+        console.log("Text Config: ", this.textConfiguration);
         let amt = 8;
         if (priceHistory.length < 8){
             amt = priceHistory.length;
