@@ -73,7 +73,7 @@ class Hub extends Phaser.Scene {
 
         //Check for special cases
         playerVariables.score = calculateEcologyScore();
-        console.log("score is "+playerVariables.score)
+        //console.log("score is "+playerVariables.score)
         let hasWon = false;
         for(let star of playerVariables.score) { if(!star) { hasWon = false; } }
         if (hasWon) {
@@ -82,7 +82,7 @@ class Hub extends Phaser.Scene {
             this.scene.start("winScene");
         } else if ((this.previousScene === "marketScene" || this.previousScene === "hubScene" 
             || this.previousScene === "tutorialScene") && !this.popupVisited) {
-            console.log("Sending to popup");
+            //console.log("Sending to popup");
             //isPaused = true;
             this.popupVisited = true;
             this.scene.pause();
@@ -101,7 +101,7 @@ class Hub extends Phaser.Scene {
         this.updateCheckPause();
 
         //Move the backpack icon to be be relative to the player
-        this.updateMoveBackpackIcon();
+        this.updateMoveUI();
 
         //if the player is holding an object, render it and move it alongside the player
         if (heldItem !== undefined) {
@@ -143,9 +143,9 @@ class Hub extends Phaser.Scene {
         currentDay += 1;
         hasSoldForDay = false;
         this.sunsetTint.alpha = 0;
-        console.log("Advancing to day " + currentDay);
+        //console.log("Advancing to day " + currentDay);
         //If you are returning to the hub
-        console.log("Welcome back. Honey was " + playerVariables.inventory.honey["total"]);
+        //console.log("Welcome back. Honey was " + playerVariables.inventory.honey["total"]);
         this.startingHoneyForPopup = {
             "yellow": playerVariables.inventory.honey["yellow"],
             "blue": playerVariables.inventory.honey["blue"],
@@ -249,12 +249,12 @@ class Hub extends Phaser.Scene {
         //Render all plots
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
-                console.log("Curr Plot", gardenGrid[row][col]);
+                //console.log("Curr Plot", gardenGrid[row][col]);
                 gardenGrid[row][col].renderPlot(this, this.gridToCoord(col, row));
             }
         }
 
-        console.log("Honey increases to " + playerVariables.inventory.honey["total"]);
+        //console.log("Honey increases to " + playerVariables.inventory.honey["total"]);
 
         //Refresh Shop
         shopInventory["Seeds"]["Daisy"]["amount"] = 2;
@@ -263,7 +263,7 @@ class Hub extends Phaser.Scene {
         shopInventory["Seeds"]["Tulip"]["amount"] = 3;
         shopInventory["Items"]["Beehive"]["amount"] = 2;
         shopInventory["Items"]["Sprinkler"]["amount"] = 2;
-        shopInventory["Items"]["Clipper"]["amount"] = 4 + Math.floor(currentDay/4);
+        shopInventory["Items"]["Clipper"]["amount"] = 2;
     }
 
     createControls() {
@@ -397,10 +397,23 @@ class Hub extends Phaser.Scene {
             this.caveText.setVisible(false);
         }
 
-        //UI Text elements
+        //Popups to fade out
         this.fadeMessage = this.add.text(this.player.x, this.player.y, "Nada", this.textConfig);
         this.fadeMessage.setOrigin(0.5).setVisible(false);
         this.fadeMessage.depth = 200;
+        
+        this.popupTimers = {
+            "yellow": null,
+            "blue": null,
+            "purple": null,
+            "pink": null
+        };
+        this.popupImages = {
+            "yellow": new HoneyPopup(this, 0, 0, 0, "Yellow"),
+            "blue": new HoneyPopup(this, 0, 0, 0, "Blue"),
+            "purple": new HoneyPopup(this, 0, 0, 0, "Purple"),
+            "pink": new HoneyPopup(this, 0, 0, 0, "Pink")
+        }
     }
 
     createEvents() {
@@ -438,11 +451,13 @@ class Hub extends Phaser.Scene {
             }
         }
 
-        //create water bucket for manual watering
-        this.spigot = this.add.image(.925 * config.width, .525 * config.height, "water4");
+        //Create water spigot to refill Watering Can
+        this.spigot = this.add.image(.925 * config.width, .475 * config.height, "spigot");
         this.spigot.setOrigin(.5, .5).setScale(.75, .75);
         this.spigot.depth = this.spigot.y / 10;
         this.waterHeld = null;
+
+        this.wateringRotate = null;
     }
 
     createBees() {
@@ -468,10 +483,13 @@ class Hub extends Phaser.Scene {
         }
     }
 
-    updateMoveBackpackIcon() {
+    updateMoveUI() {
         //move backpack icon alongside player and camera
         this.backpack.x = this.cameras.main.scrollX + config.width - 122;
         this.backpack.y = this.cameras.main.scrollY + config.height/5 - 10;
+        for(let honeyType in this.popupImages) {
+            this.popupImages[honeyType].changePosition(this.backpack.x, this.backpack.y + 75);
+        }
     }
 
     updateHeldItemBehavior() {
@@ -482,6 +500,7 @@ class Hub extends Phaser.Scene {
         //Always update location
         heldItem.image.x = this.player.x;
         heldItem.image.y = this.player.y;
+        heldItem.image.flipX = this.player.flipX;
         if(this.player.movingUp) { heldItem.image.depth = this.player.depth - 1; }
         else { heldItem.image.depth = this.player.depth + 1; }
 
@@ -505,8 +524,10 @@ class Hub extends Phaser.Scene {
 
         //Input to place item in backpack
         if (Phaser.Input.Keyboard.JustDown(keyB)) {
-            this.placeHeldItemInBag();
-            playerInventoryUpdated = true;
+            if(this.wateringRotate == null) {
+                this.placeHeldItemInBag();
+                playerInventoryUpdated = true;
+            }
         }
     }
 
@@ -562,8 +583,8 @@ class Hub extends Phaser.Scene {
                 //Go to hub and start next day
                 this.placeHeldItemInBag();
                 this.music.transitionSong("bedtimeMusic", false);
-                this.cameras.main.fadeOut(3000, 0, 0, 0);
-                this.time.delayedCall(8000, () => {
+                this.cameras.main.fadeOut(5500, 0, 0, 0);
+                this.time.delayedCall(6000, () => {
                     this.placeHeldItemInBag();
                     this.music.stop();
                     this.scene.start('hubScene', {previousScene: "hubScene"});
@@ -582,14 +603,14 @@ class Hub extends Phaser.Scene {
     updateSwarm() {
         for (let i = 0; i < this.swarm.length; i++) {
             this.swarm[i].update();
-            this.swarm[i].flock(this.swarm, this.path, this.player);
+            if(this.path.length) { this.swarm[i].flock(this.swarm, this.path, this.player); }
+            else { this.swarm[i].flock(this.swarm, this.player, this.player); }
         }
     }
 
     fadeText(message) {
         if (this.fadeTimer != null) {
-            this.fadeTimer.callback = () => {
-            };
+            this.fadeTimer.callback = () => {};
             this.fadeTimer.delay = 0;
             this.fadeTimer = null;
         }
@@ -602,6 +623,46 @@ class Hub extends Phaser.Scene {
             callback: () => {
                 this.fadeMessage.setVisible(false);
                 this.fadeTimer = null;
+            },
+            loop: false,
+            callbackScope: this
+        });
+    }
+
+    honeyFadePopup(honeyType, amount) {
+        if(this.popupTimers[honeyType] != null) {
+            this.popupTimers[honeyType].callback = () => {};
+            this.popupTimers[honeyType].delay = 0;
+            this.popupTimers[honeyType] = null;
+        }
+        this.popupImages[honeyType].setAmount(amount);
+        this.popupImages[honeyType].visibility(true);
+        this.popupTimers[honeyType] = this.time.addEvent({
+            delay: 1750,
+            callback: () => {
+                //console.log("turning invisible",this.popupTimers[honeyType]);
+                this.popupImages[honeyType].visibility(false);
+                this.popupTimers[honeyType] = null;
+            },
+            loop: false,
+            callbackScope: this
+        });
+    }
+
+    wateringAnimate() {
+        if(this.wateringRotate != null) {
+            this.wateringRotate.callback = () => {};
+            this.wateringRotate.delay = 0;
+            this.wateringRotate = null;
+        }
+        let angle = 45;
+        if(heldItem.image.flipX) { angle *= -1; }
+        heldItem.image.angle = angle;
+        this.wateringRotate = this.time.addEvent({
+            delay: 500,
+            callback: () => {
+                heldItem.image.angle = 0;
+                this.wateringRotate = null;
             },
             loop: false,
             callbackScope: this
@@ -724,6 +785,7 @@ class Hub extends Phaser.Scene {
                         //Give them an empty can
                     }
                     heldItem = new WateringCan();
+                    heldType = "items";
                     this.heldImg = 0;
                 } else {
                     this.fadeText("I need something to\nhold the water.");
@@ -764,6 +826,7 @@ class Hub extends Phaser.Scene {
                         //clear image of item held so it can be rerendered
                         heldItem.image.destroy();
                         this.heldImg = 0;
+                        this.wateringAnimate();
                         spot.renderPlot(this, this.gridToCoord(col, row));
                     } else {
                         this.fadeText("I need to go refill\nmy watering can.")
@@ -786,26 +849,27 @@ class Hub extends Phaser.Scene {
 
                     if (!(obj instanceof Bramble) && !(obj instanceof Hive && obj.hasStock())) { 
                         loc.item = null; 
-                        console.log("plot is now",gardenGrid[row][col].item);
+                        //console.log("plot is now",gardenGrid[row][col].item);
                     }
                     if(obj instanceof Hive && obj.hasStock()) {
                         //If there is honey to collect from this Hive
-                        let message = "";
+                        let i = 0;
                         for(let honey in obj.stock) {
                             let jars = Math.floor(obj.stock[honey]);
                             if(jars > 0) {
                                 playerVariables.inventory.honey[honey] += jars;
                                 playerVariables.inventory.honey["total"] += jars;
                                 obj.stock[honey] -= jars;
-                                message += "You got "+jars+" jar(s) of "+honey+" honey.\n";
+                                this.time.delayedCall(250*(i), () => {
+                                    this.honeyFadePopup(honey, jars);
+                                });
+                                i++;
                             }
                         }
-                        message += "From "+obj.weeksSinceCollection+" week(s) of production.";
                         obj.weeksSinceCollection = 0;
-                        if(loc.honeyIndicator !== null) {  loc.honeyIndicator.destroy(); loc.honeyIndicator = null; }
-                        this.fadeText(message);
                         this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + 
                             "\nMoney: " + playerVariables.money;
+                        loc.renderPlot(this, this.gridToCoord(col, row));
                     } else {
                         if (obj instanceof Flower || obj instanceof Hive || obj instanceof Sprinkler 
                             || obj instanceof WateringCan) {
@@ -829,7 +893,6 @@ class Hub extends Phaser.Scene {
                         }
                         //recreate the plot
                         loc.renderPlot(this, this.gridToCoord(col, row));
-                        //console.log("plot rendered as",loc);
                     }
                 }
             }
@@ -885,7 +948,7 @@ class Hub extends Phaser.Scene {
         //check to see if holding stack of seeds
         if (playerVariables.inventory[heldType][heldItem.type] > 0) {
             //if yes, repopulate hand
-            console.log("holding another " + heldItem.type);
+            //console.log("holding another " + heldItem.type);
             this.heldImg = 0;
             playerVariables.inventory[heldType][heldItem.type]--;
             if(heldItem instanceof Hive) {
@@ -899,10 +962,10 @@ class Hub extends Phaser.Scene {
             } else {
                 heldItem = new Flower(0, 5, heldItem.type);
             }
-            console.log(heldItem);
+            //console.log(heldItem);
         } else {
             //if not, empty hand
-            console.log("No more " + heldItem.type + " to hold")
+            //console.log("No more " + heldItem.type + " to hold")
             //heldItem.image.destroy();
             heldItem = undefined;
             plantingSeeds = false;
@@ -963,12 +1026,12 @@ class Hub extends Phaser.Scene {
     }
 
     placeHeldItemInBag(){
-        console.log(heldItem);
+        //console.log(heldItem);
         if (heldItem instanceof Flower) {
-            console.log(`Storing held flower ${heldItem.type} in inventory.`)
-            console.log(`before storage ${playerVariables.inventory.flowers[heldItem.type]}`)
+            //console.log(`Storing held flower ${heldItem.type} in inventory.`)
+            //console.log(`before storage ${playerVariables.inventory.flowers[heldItem.type]}`)
             playerVariables.inventory.flowers[heldItem.type] += 1;
-            console.log(`after storage ${playerVariables.inventory.flowers[heldItem.type]}`)
+            //console.log(`after storage ${playerVariables.inventory.flowers[heldItem.type]}`)
         } else if (heldItem instanceof Sprinkler) {
             //If item has highlight, hide that as well
             playerVariables.inventory.items["Sprinkler"] += 1;
@@ -1011,7 +1074,7 @@ class Hub extends Phaser.Scene {
         }
 
         gardenGrid = loadedData.garden;
-        console.log("gardenGrid: ", gardenGrid);
+        //console.log("gardenGrid: ", gardenGrid);
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
                 gardenGrid[row][col] = objToPlot(gardenGrid[row][col])

@@ -10,7 +10,7 @@ class PriceHistory extends Phaser.Scene{
         //uiScene = this;
         this.bg = this.add.image(config.width/2,config.height/2,'notebookBG').setScale(.5,.5).setOrigin(.5,.5);
         this.imgMap = {
-            yellow:"honeyPlain",
+            yellow:"honeyYellow",
             blue:"honeyBlue",
             pink:"honeyPink",
             purple:"honeyPurple"

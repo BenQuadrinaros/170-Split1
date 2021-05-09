@@ -13,7 +13,7 @@ class Market extends Phaser.Scene {
         this.stage = -1;
 
         this.imgMap = {
-            yellow:"honeyPlain",
+            yellow:"honeyYellow",
             blue:"honeyBlue",
             pink:"honeyPink",
             purple:"honeyPurple"
@@ -495,13 +495,13 @@ class Market extends Phaser.Scene {
             if(i < 3) {
                 temp = this.add.image(2*game.config.width/3 - (i * game.config.width / 45), 
                     72 * game.config.height / 100 - 15 * (i % 2),
-                    "honeyPlain");
+                    "honeyYellow");
             } else if(i < 5) {
                 temp = this.add.image(2*game.config.width/3 - 10 - ((i-3) * game.config.width / 22),
-                    88 * game.config.height / 100, "honeyPlain");
+                    88 * game.config.height / 100, "honeyYellow");
             } else {
                 temp = this.add.image(2*game.config.width/3 + 5 - ((i-5) * game.config.width / 22),
-                    87.5 * game.config.height / 100, "honeyPlain");
+                    87.5 * game.config.height / 100, "honeyYellow");
             }
             temp.setOrigin(.5, .5).setScale(.675, .675);
             if(i == 1 || i > 4) { temp.depth = 96; }

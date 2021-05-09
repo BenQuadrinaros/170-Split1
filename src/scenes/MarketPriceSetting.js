@@ -130,7 +130,7 @@ class MarketPriceSetting extends Phaser.Scene {
                 .setOrigin(.5, .5).setDepth(100).setAlpha(1);
 
             //Add a yellow honey jar
-            this.yellowHoneyJar = this.add.image(yellowCenter - 95, yellowHeight, "honeyPlain", 0);
+            this.yellowHoneyJar = this.add.image(yellowCenter - 95, yellowHeight, "honeyYellow", 0);
         }
         //Price Setting Blue
         if(playerVariables.inventory.honey["blue"]){

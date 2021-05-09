@@ -44,9 +44,15 @@ class Plot {
                 console.log(this.honeyIndicator);
             }
             if(this.item instanceof Hive && this.item.hasStock() && !this.honeyIndicator){
-                    console.log("honey indicator added");
-                    this.honeyIndicator = scene.add.ellipse(coords[0], coords[1] + 40, config.width / 10, config.height / 10, 0xE5A515);
-                    this.honeyIndicator.alpha = .75;
+                console.log("honey indicator added");
+                let hexColor = 0xE5A515;
+                let stock = this.item.stock;
+                if(stock['blue']>stock['yellow']+stock['pink']+stock['purple']) { hexColor = 0x252595; }
+                if(stock['purple']>stock['yellow']+stock['pink']+stock['blue']) { hexColor = 0x752595; }
+                if(stock['pink']>stock['yellow']+stock['blue']+stock['purple']) { hexColor = 0x952575; }
+                this.honeyIndicator = scene.add.ellipse(coords[0], coords[1] + 40, config.width / 10,
+                    config.height / 10, hexColor);
+                this.honeyIndicator.alpha = .75;
             }
         } 
         
@@ -65,6 +71,10 @@ class Plot {
             this.spot.destroy();
             this.spot = null;
         }
+        if(this.honeyIndicator) {
+            this.honeyIndicator.destroy();
+            this.honeyIndicator = null;
+        }
     }
 }
 
@@ -80,7 +90,7 @@ function objToPlot(obj){
 
     //plot.item
     if(obj.item){
-        console.log("obj.item.type: ", obj.item.type);
+        //console.log("obj.item.type: ", obj.item.type);
         switch(obj.item.type){
             case "Daisy":
             case "Delphinium":

@@ -143,7 +143,7 @@ let shopInventory = {
     "Items":{
         "Sprinkler":{"amount": 2,"cost":15},
         "Beehive":{"amount": 2,"cost":12},
-        "Clipper":{"amount":4,"cost":3}
+        "Clipper":{"amount":2,"cost":10}
         //"Fertilizer":{"amount": 5,"cost": 4}
     }
 }

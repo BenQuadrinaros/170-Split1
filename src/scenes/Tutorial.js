@@ -470,7 +470,7 @@ class Tutorial extends Phaser.Scene {
         }
 
         //create water bucket for manual watering
-        this.spigot = this.add.image(.925 * config.width, .525 * config.height, "water4");
+        this.spigot = this.add.image(.925 * config.width, .525 * config.height, "spigot");
         this.spigot.setOrigin(.5, .5).setScale(.75, .75);
         this.spigot.depth = this.spigot.y / 10;
         this.waterHeld = null;

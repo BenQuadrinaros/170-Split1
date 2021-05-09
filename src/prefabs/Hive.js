@@ -86,10 +86,6 @@ class Hive {
         this.image.depth = this.image.y/10 - 3;
         scene.add.existing(this.image);
         this.image.setPosition(initx, inity);
-        /*if(this.hasStock() && !this.honeyIndicator) {
-            this.honeyIndicator = scene.add.ellipse(initx, inity + 40, config.width / 10, config.height / 10, 0xE5A515);
-            this.honeyIndicator.alpha = .75;
-        }*/
         return this.image;
     }
 
