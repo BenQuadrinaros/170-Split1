@@ -19,6 +19,20 @@ class Menu extends Phaser.Scene {
         this.keyENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         keyT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.T);
 
+        //Check if there is save data
+        this.loadedData = JSON.parse(localStorage.getItem('saveData'));
+        console.log("Loaded Data:");
+        console.log(this.loadedData);
+
+        //Check if there is any save data
+        if(!this.loadedData){
+            console.log("No save data found");
+            this.loadedData = false;
+        }
+        else{
+            this.loadedData = true;
+        }
+
         //Setting Background
         this.coloredBackdrop = this.add.rectangle(0, 0, config.width, config.height, 0xffe298, 1).setOrigin(0, 0).setDepth(-4);
         this.screen1 = this.add.image(centerX, centerY, 'titleScreen1').setScale(0.5).setDepth(-3);
@@ -26,11 +40,16 @@ class Menu extends Phaser.Scene {
         this.screen3 = this.add.image(centerX, centerY, 'titleScreen3').setScale(0.5).setDepth(-1).setAlpha(0);
         this.createRotatingScreens();
         //Creating interactable images
-        this.tutorial = this.add.image(centerX/5, centerY/2 + 85 + textSpacer, 'Tutorial').setOrigin(0.0).setScale(0.35);
-        this.play = this.add.image(centerX/5, centerY/2 + 85 + textSpacer*2, 'Play').setOrigin(0.0).setScale(0.35);
+        //Check if there is any save data
+        this.play = this.add.image(centerX/5, centerY/2 + 85 + textSpacer, 'Play').setOrigin(0.0).setScale(0.35);
+        this.tutorial = this.add.image(centerX/5, centerY/2 + 85 + textSpacer*2, 'Tutorial').setOrigin(0.0).setScale(0.35);
         this.settings = this.add.image(centerX/5, centerY/2 + 85 + textSpacer * 3, 'Settings').setOrigin(0.0).setScale(0.33);
         this.credits = this.add.image(centerX/5, centerY/2 + 85 + textSpacer * 4 + 5, 'Credits').setOrigin(0.0).setScale(0.35);
         
+        //If there is no save data, hide the continue game button
+        if(!this.loadedData){
+            this.play.alpha = 0;
+        }
         //Create selection change event
         this.events.on("selectionChange", this.selectionUpdated, this);
 
@@ -48,7 +67,7 @@ class Menu extends Phaser.Scene {
         
 
         this.tutorial.on('pointerover', () => {
-            this.currSelected = 1;
+            this.currSelected = 2;
             this.events.emit("selectionChange");
         });
         this.tutorial.on("pointerout", () => {
@@ -58,11 +77,11 @@ class Menu extends Phaser.Scene {
         this.tutorial.on('pointerup', () => {
             //this.music.stop();
             //this.scene.start('settingsScene');
-            this.moveToNewScene(1);
+            this.moveToNewScene(2);
         });
 
         this.play.on('pointerover', () => {
-            this.currSelected = 2;
+            this.currSelected = 1;
             this.events.emit("selectionChange");
         });
         this.play.on("pointerout", () => {
@@ -72,7 +91,7 @@ class Menu extends Phaser.Scene {
         this.play.on('pointerup', () => {
             //this.music.stop();
             //this.scene.start('hubScene');
-            this.moveToNewScene(2);
+            this.moveToNewScene(1);
         });
 
         this.settings.on('pointerover', () => {
@@ -117,11 +136,19 @@ class Menu extends Phaser.Scene {
 
         if (Phaser.Input.Keyboard.JustDown(keyUP)) {
             if(this.currSelected === -1){
-                this.currSelected = 1;
+                if(!this.loadedData){
+                    this.currSelected = 2;
+                }
+                else{
+                    this.currSelected = 1;
+                }
                 this.events.emit("selectionChange");
             }
             else{
                 this.currSelected -= 1;
+                if(this.currSelected === 1 && !this.loadedData){
+                    this.currSelected = 4;
+                }
                 if(this.currSelected === 0){
                     this.currSelected = 4;
                 }
@@ -131,13 +158,24 @@ class Menu extends Phaser.Scene {
 
         if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
             if(this.currSelected === -1){
-                this.currSelected = 1;
+                if(!this.loadedData){
+                    this.currSelected = 2;
+                }
+                else{
+                    this.currSelected = 1;
+                }
+                
                 this.events.emit("selectionChange");
             }
             else{
                 this.currSelected += 1;
                 if(this.currSelected === 5){
-                    this.currSelected = 1;
+                    if(!this.loadedData){
+                        this.currSelected = 2;
+                    }
+                    else{
+                        this.currSelected = 1;
+                    }
                 }
                 this.events.emit("selectionChange");
             }
@@ -157,21 +195,24 @@ class Menu extends Phaser.Scene {
         //For each option, set the frame properly
         console.log("Selection Updated: " + this.currSelected);
         
-        //Tutorial
+
+        //Play
         if(this.currSelected === 1){
+            this.play.setFrame(1);
+        }
+        else{
+            this.play.setFrame(0);
+        }
+
+        //Tutorial
+        if(this.currSelected === 2){
             this.tutorial.setFrame(1);
         }
         else{
             this.tutorial.setFrame(0);
         }
         
-        //Play
-        if(this.currSelected === 2){
-            this.play.setFrame(1);
-        }
-        else{
-            this.play.setFrame(0);
-        }
+        
 
         //Settings
         if(this.currSelected === 3){
@@ -191,18 +232,25 @@ class Menu extends Phaser.Scene {
     }
 
     moveToNewScene(newScene){
-        //Play is being pressed
+
+        //Continue is being pressed
         if(newScene === 1) {
             this.music.stop();
             this.scene.stop();
-            this.scene.launch("tutorialScene", {previousScene: "menuScene"});
-            
+            if(!this.loadedData){
+                this.scene.launch("tutorialScene", {previousScene: "menuScene"});
+            }
+            else{
+                this.scene.start('hubScene', {previousScene: "menuScene"});
+            }
         }
+
         //Tutorial is being pressed
         else if(newScene === 2) {
             this.music.stop();
             this.scene.stop();
-            this.scene.start('hubScene', {previousScene: "menuScene"});
+            this.scene.launch("tutorialScene", {previousScene: "menuScene"});
+            
         }
         //Settings is being pressed
         else if(newScene === 3) {

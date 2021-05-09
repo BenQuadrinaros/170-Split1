@@ -148,6 +148,11 @@ as you restore this garden. *B*ee you around!`;
                 this.talkingBee.alpha = 0;
             }
         }
+        else if(Phaser.Input.Keyboard.JustDown(keySPACE)){
+            console.log("Resuming Hub Activities");
+            this.scene.resume(this.prevScene);
+            this.scene.stop();
+        }
     }
 
     createFromTutorialText(){

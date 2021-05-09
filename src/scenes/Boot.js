@@ -93,6 +93,10 @@ class Boot extends Phaser.Scene {
             this.load.image('honeyPink', './assets/sprites/background/honeyPink.png');
             this.load.image('honeyBlue', './assets/sprites/background/honeyBlue.png');
             this.load.image('honeyPurple', './assets/sprites/background/honeyPurple.png');
+            this.load.image('redIcon','./assets/sprites/UI/redIcon.png');
+            this.load.image('blueIcon','./assets/sprites/UI/blueIcon.png');
+            this.load.image('purpleIcon','./assets/sprites/UI/purpleIcon.png');
+            this.load.image('pinkIcon','./assets/sprites/UI/pinkIcon.png');
             //this.load.image('redMinus', './assets/sprites/UI/minusRed_240.png');
             this.load.image('greenMinus', './assets/sprites/UI/minusGreen_240.png');
             //this.load.image('greenPlus', './assets/sprites/UI/plusGreen_240.png');
@@ -111,6 +115,8 @@ class Boot extends Phaser.Scene {
             this.load.image('emptyBox','./assets/sprites/UI/box120x120.png');
             this.load.image('emptyBoxTwo', './assets/sprites/UI/haggleBox.png')
             this.load.image('noBuy', './assets/img/noBuy.png');
+            this.load.image('barterIcon','./assets/sprites/UI/barterIcon.png');
+            this.load.image('barterBlank','./assets/sprites/UI/barterBlank.png');
             //For pricehistory scene
             this.load.image('notebookBG', './assets/sprites/UI/notebookHalfLined.png');
             this.load.image('noteBook','./assets/sprites/UI/notebookIcon.png');

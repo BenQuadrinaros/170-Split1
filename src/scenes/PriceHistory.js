@@ -3,7 +3,22 @@ class PriceHistory extends Phaser.Scene{
         super({
             key:"priceHistory"
         });
+
+        this.textConfiguration = {
+            fontFamily: font,
+            fontSize: "20px",
+            color: "#000000",
+            align: "center",
+            stroke: "#000000",
+            strokeThickness: 1,
+            padding: {
+                top: 5,
+                bottom: 5
+            },
+        };
     }
+
+    
 
     create(){
         console.log(priceHistory);
@@ -71,17 +86,30 @@ class PriceHistory extends Phaser.Scene{
     }
 
     createPriceHistory(){
-        console.log("creating price history;")
+        console.log("creating price history;");
+        console.log("Text Config: ", this.textConfiguration);
         let amt = 8;
         if (priceHistory.length < 8){
             amt = priceHistory.length;
         }
         for (let i = 1; i <= amt; i++){
             let entry = priceHistory[i-1]
-            console.log(this.imgMap[entry.type]);
-            this.add.image((2*config.width/5)+200,(i*(config.height/12 -9))+ 90,entry.mood).setScale(.09,.09).setOrigin(.5,.5);
-            this.add.text((2*config.width/5)+100,(i*(config.height/12 -9))+ 90,entry.price + " $/jar", this.textConfiguration).setOrigin(.5,.5);
-            this.add.image((2*config.width/5),(i*(config.height/12 -9))+ 90,this.imgMap[entry.type]).setOrigin(.5,.5).setScale(.35,.35);
+            if (entry.mode === "money") {
+                console.log(this.imgMap[entry.type]);
+                this.add.image((2 * config.width / 5) + 200, (i * (config.height / 12 - 9)) + 90, entry.mood).setScale(.09, .09).setOrigin(.5, .5);
+                this.add.text((2 * config.width / 5) + 100, (i * (config.height / 12 - 9)) + 90, entry.price + " $/jar", this.textConfiguration).setOrigin(.5, .5);
+                this.add.image((2 * config.width / 5), (i * (config.height / 12 - 9)) + 90, this.imgMap[entry.type]).setOrigin(.5, .5).setScale(.35, .35);
+            } else if (entry.mode === "barter"){
+                console.log("** ** logging barter ** **");
+                console.log(entry);
+                this.add.image((2 * config.width / 5) + 200, (i * (config.height / 12 - 9)) + 90, entry.img)
+                    .setScale(entry.scale, entry.scale).setOrigin(.5, .5);
+                this.add.image((2 * config.width / 5) + 100, (i * (config.height / 12 - 9)) + 90, "barterIcon").setScale(.09, .09).setOrigin(.5, .5);
+                this.add.text((2 * config.width / 5) + 50, (i * (config.height / 12 - 9)) + 90, entry.bought, this.textConfiguration).setOrigin(.5, .5);
+                this.add.text((2 * config.width / 5) + 150, (i * (config.height / 12 - 9)) + 90, entry.amt, this.textConfiguration).setOrigin(.5, .5);
+                this.add.image((2 * config.width / 5), (i * (config.height / 12 - 9)) + 90, this.imgMap[entry.type]).setOrigin(.5, .5).setScale(.35, .35);
+
+            }
         }
     }
 
