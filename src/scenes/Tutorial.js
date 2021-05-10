@@ -44,6 +44,21 @@ class Tutorial extends Phaser.Scene {
 
     create() {
 
+        //Tutorial Dialog
+        this.tutorialConfig = {
+            fontFamily: font,
+            fontSize: "24px",
+            color: "#ffffff",
+            align: "left",
+            stroke: "#000000",
+            strokeThickness: 4,
+            padding: {
+                top: 5,
+                bottom: 5
+            },
+        };
+        this.tempText = this.add.text(-100, -100, "Load the damn font", this.tutorialConfig);
+
         console.log("Garden Grid:");
         console.log(gardenGrid);
 
@@ -373,7 +388,7 @@ class Tutorial extends Phaser.Scene {
     createText() {
         //Text config without a background, which blends better with the background
         this.textConfig = {
-            fontFamily: font,
+            font: font,
             fontSize: "14px",
             color: "#ffffff",
             align: "center",

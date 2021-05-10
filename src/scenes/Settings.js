@@ -25,8 +25,11 @@ class Settings extends Phaser.Scene {
         let centerY = game.config.height / 2;
         let textSpacer = 64;
         
+        //Create general background
+        this.whiteSquare = this.add.rectangle(0, 0, config.width+50, config.height+50, 0xffffff, 1).setOrigin(0, 0);
+
         //Creating interactable images
-        let settings = this.add.image(centerX, centerY, 'TempSettingsScreen').setOrigin(0.5);
+        //let settings = this.add.image(centerX, centerY, 'TempSettingsScreen').setOrigin(0.5);
         //let back = this.add.image(centerX / 2, centerY + textSpacer * 2, 'Back').setOrigin(0.5);
         this.continueBackground = this.add.rectangle(config.width - 125, config.height - 50, 150, 75, 0xffffff, .5).setOrigin(0.5, 0.5).setInteractive()
         .on("pointerover", () => {
@@ -46,10 +49,10 @@ class Settings extends Phaser.Scene {
         this.textConfig = {
             fontFamily: font,
             fontSize: "14px",
-            color: "#ffffff",
+            color: "#000000",
             align: "center",
             stroke: "#000000",
-            strokeThickness: 4,
+            strokeThickness: 0,
             padding: {
                 top: 5,
                 bottom: 5
@@ -103,6 +106,10 @@ class Settings extends Phaser.Scene {
             },
             input: 'drag', // 'drag'|'click'
         }).layout();
+
+
+        this.textConfig.fontSize = "28px";
+        let sceneNameText = this.add.text(centerX, centerY/5, "Settings", this.textConfig).setOrigin(0.5, 0.5);
     }
 
     update() {
