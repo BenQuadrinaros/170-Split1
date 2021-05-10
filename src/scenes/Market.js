@@ -204,7 +204,7 @@ class Market extends Phaser.Scene {
 
     makeTransaction(type, amount, mood){
         console.log(`Money made from ${amount} ${type} honey is ${amount*priceMap[type]}`)
-        priceHistory.push({
+        priceHistory.unshift({
             type:type,
             price:priceMap[type],
             mood: mood,
@@ -279,7 +279,7 @@ class Market extends Phaser.Scene {
             console.log("initiating request.");
             console.log(`npc wants to buy ${amt} jars of ${type}`);
             //Create icons for npc asking to make purchase
-            this.initiatePrice = this.add.image(this.npc.x, this.npc.y - 200, 'emptyBox')
+            this.initiatePrice = this.add.image(this.npc.x+50, this.npc.y - 300, 'emptyBox')
                 .setDepth(100).setOrigin(.5, .5).setScale(.075, .075);
             this.honeyIMG = this.add.image(this.initiatePrice.x+10,this.initiatePrice.y-5, this.imgMap[type])
                 .setDepth(125).setOrigin(.5,.5).setScale(.5,.5);
@@ -407,7 +407,7 @@ class Market extends Phaser.Scene {
         let scale = offer.scale;
         let category = offer.category;
         console.log(`NPC barter value ${barterValue} and are offering ${amt} ${item} `);
-        let barterBox = this.add.image(this.npc.x, this.npc.y - 250,'barterBlank')
+        let barterBox = this.add.image(this.npc.x +50, this.npc.y - 300,'barterBlank')
             .setDepth(100).setOrigin(.5, .5).setScale(.3,.3);
         let offerImg = this.add.image(barterBox.x+15,barterBox.y,img)
             .setOrigin(.5,.5).setDepth(100).setScale(scale,scale);
@@ -483,7 +483,7 @@ class Market extends Phaser.Scene {
 
     }
     logBarter(offer, hType, typeBought){
-     priceHistory.push({
+     priceHistory.unshift({
          mode: "barter",
          type: hType,
          item: offer.item,
