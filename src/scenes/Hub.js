@@ -461,11 +461,11 @@ class Hub extends Phaser.Scene {
         //Timed events for watering animations
         this.wateringRotate = null;
         //Particle emitter
-        this.wateringParticle = this.add.particles('sprinklerHighlight');
+        this.wateringParticle = this.add.particles('droplet');
         this.wateringEmitter = this.wateringParticle.createEmitter();
-        this.wateringEmitter.setLifespan(250);
+        this.wateringEmitter.setLifespan(200);
         this.wateringEmitter.setGravityY(800);
-        this.wateringEmitter.setScale(.25);
+        this.wateringEmitter.setScale(.025);
         this.wateringEmitter.setSpeed({min: 125, max: 350});
         this.wateringEmitter.on = false;
     }
@@ -690,7 +690,8 @@ class Hub extends Phaser.Scene {
                 if(heldItem.image.flipX) { xPos -= 25; }
                 else { xPos += 25; }
                 if(angle != 60) { angle += 180; }
-                this.wateringEmitter.setPosition(xPos, heldItem.image.y + 25);
+                this.wateringEmitter.setPosition({min: xPos-5, max: xPos+5}, 
+                    {min: heldItem.image.y+20, max: heldItem.image.y+30});
                 this.wateringEmitter.setAngle(angle);
                 this.wateringEmitter.on = true;
 
@@ -869,7 +870,8 @@ class Hub extends Phaser.Scene {
                 //If player holding the watering can
                 if (heldItem instanceof WateringCan && gardenGrid[row][col].item instanceof Flower) {
                     let spot = gardenGrid[row][col];
-                    if(playerVariables.water > 0) {
+                    if(this.wateringEmitter.on) {
+                    } else if(playerVariables.water > 0) {
                         this.music.playSFX("waterFlowers");
                         spot.item.addWater();
                         //Then wet the spot and reduce water

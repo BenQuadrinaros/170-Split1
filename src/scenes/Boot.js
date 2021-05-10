@@ -29,6 +29,7 @@ class Boot extends Phaser.Scene {
             this.load.image("tempLavender", "./assets/sprites/background/lavTest.png");
             this.load.image('sprinkler', './assets/sprites/background/sprinkler.png');
             this.load.image('sprinklerHighlight', './assets/sprites/old/blue.png');
+            this.load.image('droplet','./assets/img/droplet.png');
             this.load.image('hiveHighlight', './assets/sprites/old/orange.png');
             this.load.image('water4','./assets/img/wateringcannew1.png');
             this.load.image('water3','./assets/img/wateringcannew2.png');
