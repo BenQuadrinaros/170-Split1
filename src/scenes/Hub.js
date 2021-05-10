@@ -125,7 +125,8 @@ class Hub extends Phaser.Scene {
 
         //Update player movement and location
         this.previousPlayerPosition = [this.player.x, this.player.y];
-        this.player.update();
+        //Make sure the player cannot move while watering
+        if(!(this.wateringEmitter.on)) { this.player.update(); }
         this.player.depth = this.player.y / 10 + 3;
         this.updateCheckCollisions();
 
@@ -457,7 +458,16 @@ class Hub extends Phaser.Scene {
         this.spigot.depth = this.spigot.y / 10;
         this.waterHeld = null;
 
+        //Timed events for watering animations
         this.wateringRotate = null;
+        //Particle emitter
+        this.wateringParticle = this.add.particles('sprinklerHighlight');
+        this.wateringEmitter = this.wateringParticle.createEmitter();
+        this.wateringEmitter.setLifespan(250);
+        this.wateringEmitter.setGravityY(800);
+        this.wateringEmitter.setScale(.25);
+        this.wateringEmitter.setSpeed({min: 125, max: 350});
+        this.wateringEmitter.on = false;
     }
 
     createBees() {
@@ -493,9 +503,16 @@ class Hub extends Phaser.Scene {
     }
 
     updateHeldItemBehavior() {
-        if (this.heldImg < 1) {
+        if (this.heldImg == 0) {
             heldItem.addToScene(this, this.player.x, this.player.y);
             this.heldImg = 1;
+            this.imageFlip = false;
+        } else if (this.heldImg == -1) {
+            heldItem.addToScene(this, this.player.x, this.player.y);
+            heldItem.image.flipX = this.imageFlip;
+            this.heldImg = 1;
+            this.wateringAnimate();
+            this.imageFlip = false;
         }
         //Always update location
         heldItem.image.x = this.player.x;
@@ -651,15 +668,49 @@ class Hub extends Phaser.Scene {
 
     wateringAnimate() {
         if(this.wateringRotate != null) {
+            //Reset rotate
             this.wateringRotate.callback = () => {};
             this.wateringRotate.delay = 0;
             this.wateringRotate = null;
         }
-        let angle = 45;
-        if(heldItem.image.flipX) { angle *= -1; }
+
+        //Set the angle to the proper tilt
+        let angle = 60;
+        if(heldItem.image.flipX) { angle = -60; }
         heldItem.image.angle = angle;
+
+        //Start a particle effect with a slight delay
+        this.time.addEvent({
+            delay: 150,
+            callback: () => {
+                //Set the particles to the apporpriate depth
+                this.wateringParticle.setDepth(heldItem.image.depth+1);
+                //Place emitter and activate it
+                let xPos = heldItem.image.x;
+                if(heldItem.image.flipX) { xPos -= 25; }
+                else { xPos += 25; }
+                if(angle != 60) { angle += 180; }
+                this.wateringEmitter.setPosition(xPos, heldItem.image.y + 25);
+                this.wateringEmitter.setAngle(angle);
+                this.wateringEmitter.on = true;
+
+                //After a short delay, stop the emitter
+                this.time.addEvent({
+                    delay: 500,
+                    callback: () => {
+                        this.wateringEmitter.on = false;
+                    },
+                    loop: false,
+                    callbackScope: this
+                });
+            },
+            loop: false,
+            callbackScope: this
+        });
+
+        //Set a timer to tilt back from angle
         this.wateringRotate = this.time.addEvent({
-            delay: 500,
+            delay: 750,
             callback: () => {
                 heldItem.image.angle = 0;
                 this.wateringRotate = null;
@@ -667,6 +718,7 @@ class Hub extends Phaser.Scene {
             loop: false,
             callbackScope: this
         });
+
     }
 
     reenableEsc() {
@@ -824,9 +876,9 @@ class Hub extends Phaser.Scene {
                         spot.water = true;
                         playerVariables.water--;
                         //clear image of item held so it can be rerendered
+                        this.imageFlip = heldItem.image.flipX;
                         heldItem.image.destroy();
-                        this.heldImg = 0;
-                        this.wateringAnimate();
+                        this.heldImg = -1;
                         spot.renderPlot(this, this.gridToCoord(col, row));
                     } else {
                         this.fadeText("I need to go refill\nmy watering can.")
