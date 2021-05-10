@@ -29,11 +29,14 @@ class Boot extends Phaser.Scene {
             this.load.image("tempLavender", "./assets/sprites/background/lavTest.png");
             this.load.image('sprinkler', './assets/sprites/background/sprinkler.png');
             this.load.image('sprinklerHighlight', './assets/sprites/old/blue.png');
+            this.load.image('droplet','./assets/img/droplet.png');
             this.load.image('hiveHighlight', './assets/sprites/old/orange.png');
-            this.load.image('water1','./assets/img/wateringcan1.png');
-            this.load.image('water2','./assets/img/wateringcan2.png');
-            this.load.image('water3','./assets/img/wateringcan3.png');
-            this.load.image('water4','./assets/img/wateringcan4.png');
+            this.load.image('water4','./assets/img/wateringcannew1.png');
+            this.load.image('water3','./assets/img/wateringcannew2.png');
+            this.load.image('water2','./assets/img/wateringcannew3.png');
+            this.load.image('water1','./assets/img/wateringcannew4.png');
+            this.load.image('water0','./assets/img/wateringcannew5.png');
+            this.load.image('spigot','./assets/img/spigot.png');
             this.load.image('weed','./assets/spritesheets/old/Capture.PNG');
             this.load.image('bramble','./assets/img/bramb.png');
             this.load.image('clipper','./assets/img/clippers.png');
@@ -62,6 +65,7 @@ class Boot extends Phaser.Scene {
             this.load.image('playerWealthTracker', './assets/sprites/UI/moneyhoney.png');
             this.load.image('filledStar', './assets/sprites/old/orange.png');
             this.load.image('emptyStar', './assets/sprites/old/blue.png');
+            this.load.image('simpleBox','./assets/sprites/UI/box_80x80.png');
             //For shop
             this.load.image('toadLeckman', './assets/sprites/character/mrleckman_510x300.png');
             this.load.image('townBackground', './assets/img/TOWNTEST.png');
@@ -86,7 +90,7 @@ class Boot extends Phaser.Scene {
             this.load.image('marketBackground', './assets/sprites/background/marketbg.png');
             this.load.image('booth', './assets/sprites/background/boothTall.png');
             this.load.image('cloth', './assets/sprites/background/boothTallCurtain.png');
-            this.load.image('honeyPlain', './assets/sprites/background/honeyPlain.png');
+            this.load.image('honeyYellow', './assets/sprites/background/honeyPlain.png');
             this.load.image('honeyPink', './assets/sprites/background/honeyPink.png');
             this.load.image('honeyBlue', './assets/sprites/background/honeyBlue.png');
             this.load.image('honeyPurple', './assets/sprites/background/honeyPurple.png');

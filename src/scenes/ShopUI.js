@@ -11,7 +11,7 @@ let idImages = {
     "Beehive": ["hive", .125],
     "Clipper": ["clipper", .75],
     "Watering Can": ["water1", .375],
-    "yellow": ["honeyPlain", .5],
+    "yellow": ["honeyYellow", .5],
     "blue": ["honeyBlue", .5],
     "pink": ["honeyPink", .5],
     "purple": ["honeyPurple", .5]
@@ -253,7 +253,11 @@ class ShopUI extends Phaser.Scene {
                                 console.log("Added cell " + cellIndex + " which contains " + item +
                                     " to player inventory");
                                 console.log(`before changing inv, ${playerVariables.inventory[tab][item]}`)
-                                playerVariables.inventory[tab][item] += 1;
+                                if(item == "Clipper") {
+                                    playerVariables.inventory[tab][item] += 3 + Math.floor(currentDay / 4);
+                                } else {
+                                    playerVariables.inventory[tab][item] += 1;
+                                }
                                 console.log(`after changing inv, ${playerVariables.inventory[tab][item]}`)
                                 playerVariables.money -= cost;
                                 let newStock = parseInt(stock) - 1;

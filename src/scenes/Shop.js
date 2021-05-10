@@ -27,7 +27,7 @@ class Shop extends Phaser.Scene {
         //Initialize images
         this.createBackgroundImages();
         this.player = new HubPlayer(this, 'player', 0, config.width/2, 3*config.height/4, game.config.width, game.config.height, [[135, 305], [380, 270], [game.config.width+50, 335]]).setDepth(-1);
-        this.player.setScale(0.75);
+        this.player.setScale(0.65);
 
         //Create the text around the scene
         this.createText();
@@ -210,8 +210,8 @@ class Shop extends Phaser.Scene {
                     //Play the transition song
                     this.music.transitionSong("hubMarketTransition", false);
                     //Fade to black
-                    this.cameras.main.fadeOut(3000, 0, 0, 0);
-                    this.time.delayedCall(9500, () => {
+                    this.cameras.main.fadeOut(5000, 0, 0, 0);
+                    this.time.delayedCall(7250, () => {
                         //this.scene.start('mapScene', { arrivingAt: -1 }) //for going to biking map
                         this.music.stop();
                         this.scene.start('marketPriceSettingScene');

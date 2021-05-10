@@ -4,8 +4,9 @@ class WateringCan {
     }
 
     addToScene(scene, initx, inity) {
-        this.image = new Phaser.GameObjects.Sprite(scene, initx, inity, "water"+Math.min(playerVariables.water+1, 4), 0);
+        this.image = new Phaser.GameObjects.Sprite(scene, initx, inity, "water"+playerVariables.water);
         this.image.setScale(.75, .75);
+        this.image.depth = this.image.y/10 - 3;
         scene.add.existing(this.image);
         this.image.setPosition(initx, inity);
         return this.image;
