@@ -89,6 +89,7 @@ class Shop extends Phaser.Scene {
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
     }
 
     createBackgroundImages(){
@@ -131,6 +132,7 @@ class Shop extends Phaser.Scene {
             this.music.setVolume(config.volume);
             this.backpack.setAlpha(0.9);
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+            keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
         });
 
         //Have player move towards the mouse on pointer down

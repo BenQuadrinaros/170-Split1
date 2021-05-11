@@ -137,6 +137,15 @@ let playerVariables = {
         }
     }
 }
+
+let inventoryTabsUpdated = {
+    'honey': false,
+    'items': false,
+    'flowers': false,
+    'seeds': false,
+    'decorations': false
+}
+
 let shopInventory = {
     "Seeds": {
         "Daisy": {"amount": 2,"cost":2},

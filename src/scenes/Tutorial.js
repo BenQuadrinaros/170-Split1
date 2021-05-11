@@ -457,6 +457,7 @@ class Tutorial extends Phaser.Scene {
             this.music.setVolume(config.volume);
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
             keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+            keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
             if(!this.playerHasEquippedFirstSeed && (playerVariables.inventory.seeds["Daisy"] === 0)){
                 this.playerHasEquippedFirstSeed = true;
             } else if(this.playerHasWateredFirstSeed && !this.playerHasEquippedFullFlower && (playerVariables.inventory.flowers["Daisy"] === 0)){
@@ -645,6 +646,7 @@ class Tutorial extends Phaser.Scene {
                     playerVariables.inventory.items["Clipper"] += 3;
                     playerVariables.inventory.honey["total"] = 3;
                     playerVariables.inventory.honey["yellow"] = 3;
+                    inventoryTabsUpdated["honey"] = true;
                     playerInventoryUpdated = true;
                     this.music.stop();
                     this.scene.stop();
@@ -773,6 +775,7 @@ class Tutorial extends Phaser.Scene {
     reenableEsc() {
         console.log("ReenableEsc called");
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
     }
 
     updateMoveHighlight() {
@@ -891,6 +894,7 @@ class Tutorial extends Phaser.Scene {
                         //Then wet the spot and reduce water
                         spot.water = true;
                         playerVariables.water--;
+                        this.imageFlip = heldItem.image.flipX;
                         //clear image of item held so it can be rerendered
                         heldItem.image.destroy();
                         this.heldImg = -1;
@@ -1151,6 +1155,7 @@ class Tutorial extends Phaser.Scene {
             this.currDialogMaximum = 2;
             playerVariables.inventory.seeds["Daisy"] += 1;
             playerInventoryUpdated = true;
+            inventoryTabsUpdated["seeds"] = true;
         }
         else if(!this.playerHasPlantedFirstSeed){
             if(this.currDialogMaximum != 2){
@@ -1175,6 +1180,7 @@ class Tutorial extends Phaser.Scene {
             this.currDialogMaximum = 6;
             playerVariables.inventory.flowers["Daisy"] += 2;
             playerInventoryUpdated = true;
+            inventoryTabsUpdated["flowers"] = true;
         }
         else if(!this.playerHasDealtWithWeeds){
             if(this.currDialogMaximum != 6){
@@ -1191,6 +1197,7 @@ class Tutorial extends Phaser.Scene {
             this.currDialogMaximum = 9;
             playerVariables.inventory.items["Beehive"] = 1;
             playerInventoryUpdated = true;
+            inventoryTabsUpdated["items"] = true;
         }
         else if(this.playerHasPlacedBeehive){
             if(this.currDialogMaximum != 9){

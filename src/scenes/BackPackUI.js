@@ -27,6 +27,7 @@ class BackPackUI extends Phaser.Scene {
 
         uiScene = this;
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
         //Text config without a background, which blends better with the background
         this.textConfig = {
             fontFamily: 'realize_my_passionregular',
@@ -52,6 +53,17 @@ class BackPackUI extends Phaser.Scene {
         this.selectedItem = undefined;
         this.selectedTab = "seeds";
         //create backpack icon
+
+        //Create exclamation marks
+        this.updatedMarks = {
+            'honey': null,
+            'items': null,
+            'flowers': null,
+            'seeds': null,
+            'decorations': null
+        };
+        this.createExclamationMarks();
+
         
         
         this.backpack = this.add.image(this.cameras.main.scrollX + config.width - 68, this.cameras.main.scrollY + config.height/5 - 36, 'tempBackpackIcon')
@@ -66,6 +78,7 @@ class BackPackUI extends Phaser.Scene {
                 console.log("Previous scene key: " + this.previousScene);
                 music.playSFX("backpackOpen");
                 this.scene.resume(this.previousScene);
+                inventoryTabsUpdated["seeds"] = false;
                 this.scene.stop();
             });
         this.add.text(this.backpack.x, this.backpack.y, "EXIT").setOrigin(.5, .5);
@@ -166,6 +179,10 @@ class BackPackUI extends Phaser.Scene {
                         }
                         //console.log("selected tab " + button.text);
                         uiScene.selectedTab = button.text;
+                        console.log(uiScene.updatedMarks);
+                        //Remove exclamation mark
+                        uiScene.updatedMarks[uiScene.selectedTab.toString()].setAlpha(0);
+                        inventoryTabsUpdated[uiScene.selectedTab.toString()] = false;
                         break;
 
                     case 'right':
@@ -247,6 +264,7 @@ class BackPackUI extends Phaser.Scene {
                                 }
                                 music.playSFX("backpackOpen");
                                 uiScene.scene.resume(uiScene.previousScene);
+                                inventoryTabsUpdated["seeds"] = false;
                                 uiScene.scene.stop();
 
                             /*}
@@ -295,13 +313,27 @@ class BackPackUI extends Phaser.Scene {
     }
 
     update() {
-        if (Phaser.Input.Keyboard.JustDown(keyESCAPE)) {
+        if (Phaser.Input.Keyboard.JustDown(keyESCAPE) || Phaser.Input.Keyboard.JustDown(keyB)) {
             //console.log("escape")
             music.playSFX("backpackOpen");
             this.scene.resume(this.previousScene);
+            inventoryTabsUpdated["seeds"] = false;
             this.scene.stop();
         }
 
+    }
+
+    createExclamationMarks(){
+        this.updatedMarks['seeds'] = this.add.image(60, 190, "!").setDepth(80).setAngle(350).setAlpha(0);
+        if(inventoryTabsUpdated['seeds']){ this.updatedMarks['seeds'].setAlpha(1); }
+        this.updatedMarks['items'] = this.add.image(60, 233, "!").setDepth(80).setAngle(350).setAlpha(0);
+        if(inventoryTabsUpdated['items']){ this.updatedMarks['items'].setAlpha(1); }
+        this.updatedMarks['honey'] = this.add.image(60, 276, "!").setDepth(80).setAngle(350).setAlpha(0);
+        if(inventoryTabsUpdated['honey']){ this.updatedMarks['honey'].setAlpha(1); }
+        this.updatedMarks['flowers'] = this.add.image(60, 319, "!").setDepth(80).setAngle(350).setAlpha(0);
+        if(inventoryTabsUpdated['flowers']){ this.updatedMarks['flowers'].setAlpha(1); }
+        this.updatedMarks['decorations'] = this.add.image(60, 362, "!").setDepth(80).setAngle(350).setAlpha(0);
+        if(inventoryTabsUpdated['decorations']){ this.updatedMarks['decorations'].setAlpha(1); }
     }
 }
 

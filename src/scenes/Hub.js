@@ -432,6 +432,7 @@ class Hub extends Phaser.Scene {
             this.music.setVolume(config.volume);
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
             keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+            keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
         });
 
         //Have player move towards the mouse on pointer down
@@ -781,6 +782,8 @@ class Hub extends Phaser.Scene {
     reenableEsc() {
         console.log("ReenableEsc called");
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+        keyENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
     }
 
     updateMoveHighlight() {

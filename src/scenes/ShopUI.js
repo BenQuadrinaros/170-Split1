@@ -263,6 +263,7 @@ class ShopUI extends Phaser.Scene {
                                 } else {
                                     playerVariables.inventory[tab][item] += 1;
                                 }
+                                inventoryTabsUpdated[tab.toString()] = true;
                                 console.log(`after changing inv, ${playerVariables.inventory[tab][item]}`)
                                 playerVariables.money -= cost;
                                 let newStock = parseInt(stock) - 1;
