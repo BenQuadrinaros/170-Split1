@@ -842,32 +842,21 @@ class Hub extends Phaser.Scene {
                     }
                 }
             } else if(obj instanceof DecorativeWide){
-                if(this.checkBenchOccupied(coords[0], coords[1])){
-                    let popUpX = this.gridToCoord(coords[1], coords[0])[0] + 20;
-                    if(obj.isLeft){
-                        popUpX += 80
-                    }
-                    if(!this.moodPopUp){
-                        this.moodPopUp = this.add.image(popUpX, this.gridToCoord(coords[1], coords[0])[1] - 35, "happy").setAlpha(0).setDepth(100);
-                        let npcMoodTween = this.tweens.add({
-                            targets: this.moodPopUp,
-                            alpha: {from: .6, to: 1},
-                            scale: {from: .25, to: .2},
-                            ease: 'Sine.easeInOut',
-                            duration: 650,
-                            repeat: 1,
-                            yoyo: true,
-                            hold: 0,
-                            onComplete: function () {
-                                this.moodPopUp.destroy();
-                                this.moodPopUp = null;
-                            },
-                            onCompleteScope: this
+                if(!this.moodPopUp){
+                    if(this.checkBenchOccupied(coords[0], coords[1])){
+                        let popUpX = this.gridToCoord(coords[1], coords[0])[0] + 5;
+                        if(obj.isLeft){
+                            popUpX += 80
+                        }
+                        this.moodPopUp = this.add.image(popUpX, this.gridToCoord(coords[1], coords[0])[1] - 85, "happy").setDepth(100).setScale(.2);
+                        this.time.delayedCall(4750, () => {
+                            this.moodPopUp.destroy();
+                            this.moodPopUp = null;
                         });
                     }
-                }
-                else {
-                    console.log("Bench is empty");
+                    else {
+                        //console.log("Bench is empty");
+                    }
                 }
             } else {
                 this.player.slow = false;
@@ -877,14 +866,15 @@ class Hub extends Phaser.Scene {
 
     checkBenchOccupied(row, col){
         for(let currBench = 0; currBench < this.benchList.length; ++currBench){
+            //console.log("For currBench, comparing [", this.benchList[currBench][1], ", ", this.benchList[currBench][0], "] to [", row, ", ", col, "] and [", row, ", ", (col-1), "]");
             if(this.benchList[currBench][1] == row &&
                 (this.benchList[currBench][0] == col || this.benchList[currBench][0] == (col -1))){
                 if(this.sittingNPCS[currBench] != null){
-                    console.log("There was an npc on the bench: ", this.sittingNPCS[currBench]);
+                    //console.log("There was an npc on the bench: ", this.sittingNPCS[currBench]);
                     return true;
                 }
                 else{
-                    console.log("THere was not an npc on the bench: ",this.sittingNPCS[currBench]);
+                    //console.log("THere was not an npc on the bench: ",this.sittingNPCS[currBench]);
                     return false;
                 }
             }
@@ -1002,7 +992,7 @@ class Hub extends Phaser.Scene {
                     let loc = gardenGrid[row][col];
                     let obj = loc.item;
 
-                    if (!(obj instanceof Bramble) && !(obj instanceof Hive && obj.hasStock())) { 
+                    if (!(obj instanceof Bramble) && !(obj instanceof Hive && obj.hasStock()) && !(obj instanceof DecorativeWide && this.checkBenchOccupied(row, col))) { 
                         loc.item = null; 
                         //console.log("plot is now",gardenGrid[row][col].item);
                     }
@@ -1030,20 +1020,25 @@ class Hub extends Phaser.Scene {
                         if (!(obj == null || obj instanceof Weed || obj instanceof Bramble)) {
                             if(obj instanceof DecorativeWide) {
                                 //Special case, picking up double wide decorative
-                                if(obj.isLeft) {
-                                    //Clear spot to the right
-                                    console.log("picking up left side",obj,gardenGrid[row][col+1].item);
-                                    gardenGrid[row][col+1].item = null;
-                                    heldItem = obj;
-                                    this.heldImg = 0;
-                                } else {
-                                    //Clear spot to the left
-                                    console.log("picking up right side",gardenGrid[row][col-1].item,obj);
-                                    gardenGrid[row][col-1].item = null;
-                                    gardenGrid[row][col-1].renderPlot(this, this.gridToCoord(col-1, row));
-                                    heldItem = obj;
-                                    heldItem.isLeft = true;
-                                    this.heldImg = 0;
+                                if(!this.checkBenchOccupied(row, col)){
+                                    if(obj.isLeft) {
+                                        //Clear spot to the right
+                                        console.log("picking up left side",obj,gardenGrid[row][col+1].item);
+                                        gardenGrid[row][col+1].item = null;
+                                        heldItem = obj;
+                                        this.heldImg = 0;
+                                    } else {
+                                        //Clear spot to the left
+                                        console.log("picking up right side",gardenGrid[row][col-1].item,obj);
+                                        gardenGrid[row][col-1].item = null;
+                                        gardenGrid[row][col-1].renderPlot(this, this.gridToCoord(col-1, row));
+                                        heldItem = obj;
+                                        heldItem.isLeft = true;
+                                        this.heldImg = 0;
+                                    }
+                                }
+                                else{
+                                    console.log("Bench was occupied");
                                 }
                             } else {
                                 //If on the bee path, remove it
@@ -1368,7 +1363,7 @@ class Hub extends Phaser.Scene {
     saveData() {
         //TODO:: save data when previous scene is not the menu
         var saveData = {
-            version: "0.3.15",
+            version: "0.3.19",
             garden: gardenGrid,
             currDay: currentDay,
             hasSold: hasSoldForDay,
