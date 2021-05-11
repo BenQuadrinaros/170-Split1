@@ -36,7 +36,7 @@ const SHOP_LIGHT = 0x8cb05a;
 const COLOR_DARK = 0xf1b55f;
 const SHOP_DARK = 0x658442;
 const Random = Phaser.Math.Between;
-const font = 'helvetica';
+const font =  'realize_my_passionregular';
 
 let currentDay = 0;
 let hasSoldForDay = false;

@@ -621,7 +621,7 @@ class Hub extends Phaser.Scene {
         for (let i = 0; i < this.swarm.length; i++) {
             this.swarm[i].update();
             if(this.path.length) { this.swarm[i].flock(this.swarm, this.path, this.player); }
-            else { this.swarm[i].flock(this.swarm, this.player, this.player); }
+            else { this.swarm[i].flock(this.swarm, [[this.player.x, this.player.y]], this.player); }
         }
     }
 

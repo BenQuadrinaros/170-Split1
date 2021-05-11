@@ -15,6 +15,9 @@ class Flower {
         this.image.depth = this.image.y/10 - 3;
         scene.add.existing(this.image);
         this.image.setPosition(initx, inity);
+        if(this.type === "Tulip" && this.age > 0){
+            this.image.setScale(0.5, 0.5);
+        }
         return this.image;
     }
 

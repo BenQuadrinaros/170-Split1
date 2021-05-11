@@ -204,7 +204,7 @@ class Market extends Phaser.Scene {
 
     makeTransaction(type, amount, mood){
         console.log(`Money made from ${amount} ${type} honey is ${amount*priceMap[type]}`)
-        priceHistory.push({
+        priceHistory.unshift({
             type:type,
             price:priceMap[type],
             mood: mood,
@@ -483,7 +483,7 @@ class Market extends Phaser.Scene {
 
     }
     logBarter(offer, hType, typeBought){
-     priceHistory.push({
+     priceHistory.unshift({
          mode: "barter",
          type: hType,
          item: offer.item,
