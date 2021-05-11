@@ -30,6 +30,8 @@ class Menu extends Phaser.Scene {
         let textSpacer = 50;
 
         //Setting controls
+        keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+        keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         this.keyENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
@@ -45,7 +47,10 @@ class Menu extends Phaser.Scene {
             console.log("No save data found");
             this.loadedData = false;
         }
-        else{
+        else if(this.loadedData.version != "0.3.19"){
+            console.log("Invalid Version Number");
+            this.loadedData = false;
+        } else {
             this.loadedData = true;
         }
 
@@ -150,7 +155,7 @@ class Menu extends Phaser.Scene {
             this.scene.start("shopScene")
         }
 
-        if (Phaser.Input.Keyboard.JustDown(keyUP)) {
+        if (Phaser.Input.Keyboard.JustDown(keyUP) || Phaser.Input.Keyboard.JustDown(keyW)) {
             if(this.currSelected === -1){
                 if(!this.loadedData){
                     this.currSelected = 2;
@@ -172,7 +177,7 @@ class Menu extends Phaser.Scene {
             }
         }
 
-        if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
+        if (Phaser.Input.Keyboard.JustDown(keyDOWN) || Phaser.Input.Keyboard.JustDown(keyS)) {
             if(this.currSelected === -1){
                 if(!this.loadedData){
                     this.currSelected = 2;

@@ -288,7 +288,9 @@ class Tutorial extends Phaser.Scene {
         playerVariables.inventory.items["Clipper"] = 0;
         //Destroy the default garden items
         let tempLoc = this.gridToCoord(1, 4);
-        gardenGrid[1][4].item = new Weed(tempLoc[0], tempLoc[1]);
+        gardenGrid[0][5].item = null; //Make sure the player doesn't spawn in a bramble
+        gardenGrid[0][9].item = new Weed(tempLoc[0], tempLoc[1]);
+        gardenGrid[1][4].item = null;
         gardenGrid[1][6].item = null;
         gardenGrid[2][5].item = null;
     }
@@ -303,6 +305,7 @@ class Tutorial extends Phaser.Scene {
         keyO = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.O);
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        keyENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -468,7 +471,15 @@ class Tutorial extends Phaser.Scene {
                 console.log("Pointer currently over backpack");
             } else {
                 console.log("Pointer currently not over anything interactable");
-                this.player.moveTo(pointer.worldX, pointer.worldY, this.pointerCurrentlyOver);
+                //If they are on the last section of dialog, stop the dialog
+                if(this.currDialogSection === this.currDialogMaximum){
+                    this.concludeTutorialDialog();
+                    ++this.currDialogSection;
+                }
+                else if(this.currDialogSection < this.currDialogMaximum){
+                    ++this.currDialogSection;
+                    this.advanceTutorialDialog(this.currDialogSection);
+                }
             }
         }, this);
     }
@@ -587,7 +598,7 @@ class Tutorial extends Phaser.Scene {
         if(this.playerIsInDialog){
             
             //If the player presses Space to advance dialog
-            if (Phaser.Input.Keyboard.JustDown(keySPACE)){
+            if (Phaser.Input.Keyboard.JustDown(keySPACE) || Phaser.Input.Keyboard.JustDown(keyENTER)){
                 //If they are on the last section of dialog, stop the dialog
                 if(this.currDialogSection === this.currDialogMaximum){
                     this.concludeTutorialDialog();
@@ -1246,7 +1257,7 @@ to make sure we can make some honey for you by next week.`;
                 this.tutorialDialog.text =
 `Weeds interfere with the ability of flowers to make honey. Luckily,
 all you have to do to get rid of it is to interact with it. Could
-you deal with the one by the cave?`;
+you deal with the one by the spigot?`;
                 break;
             case 8:
                 this.tutorialDialog.text =

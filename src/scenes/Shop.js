@@ -5,6 +5,11 @@ class Shop extends Phaser.Scene {
         });
     }
 
+    init(data) {
+        //See where you are returning from
+        this.previousScene = data.previousScene;
+    }
+
     preload(){
         console.log("in ShopUI Scene")
         this.load.scenePlugin({
@@ -26,7 +31,14 @@ class Shop extends Phaser.Scene {
 
         //Initialize images
         this.createBackgroundImages();
-        this.player = new HubPlayer(this, 'player', 0, config.width/2, 3*config.height/4, game.config.width, game.config.height, [[135, 305], [380, 270], [game.config.width+50, 335]]).setDepth(-1);
+        this.player;
+        console.log("Previous scene was :", this.previousScene);
+        if(this.previousScene === "hubScene"){
+            this.player = new HubPlayer(this, 'player', 0, 4*config.width/5, 5*config.height/6, game.config.width, game.config.height, [[135, 305], [380, 270], [game.config.width+50, 335]]).setDepth(-1);
+        }
+        else{
+            this.player = new HubPlayer(this, 'player', 0, config.width/3, 3*config.height/4, game.config.width, game.config.height, [[135, 305], [380, 270], [game.config.width+50, 335]]).setDepth(-1);
+        }
         this.player.setScale(0.65);
 
         //Create the text around the scene
@@ -107,7 +119,7 @@ class Shop extends Phaser.Scene {
         };
 
         //create shop text
-        this.townExit = this.add.text(5*config.width/6 + 65, 9*config.height/10 + 5, "Path to Cave", this.textConfig).setOrigin(.5,.5).setVisible(true);
+        this.townExit = this.add.text(5*config.width/6 + 85, 9*config.height/10 + 5, "Path to Garden", this.textConfig).setOrigin(.5,.5).setVisible(true);
         this.toadTextInteract = this.add.text(this.toadLeckman.x,this.toadLeckman.y, "Space to interact with the shop", this.textConfig).setOrigin(.5,.5).setVisible(false);
         this.marketEntrance = this.add.text(280, 389, "Farmer's Market Entrance", this.textConfig).setOrigin(.5,.5).setVisible(true);
     }

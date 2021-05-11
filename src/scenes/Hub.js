@@ -381,7 +381,7 @@ class Hub extends Phaser.Scene {
 
         //Text that starts visible
         this.turnText = this.add.text(6 * game.config.width / 7, game.config.height / 4, "Turns Remaining: ", this.textConfig).setOrigin(.5);
-        this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
+        this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money.toFixed(2);
         this.turnText.depth = 100;
         this.townAccess = this.add.text(15, 2 * config.height / 5 + 20, "Path to Town", this.textConfig).setOrigin(0, 0);
 
@@ -616,31 +616,31 @@ class Hub extends Phaser.Scene {
         // Quick day advancement for testing purposes
         if (Phaser.Input.Keyboard.JustDown(keyP)) {
             this.advanceDay();
-            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
+            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money.toFixed(2);
         }
         if (Phaser.Input.Keyboard.JustDown(keyO)) {
             playerVariables.money += 10;
-            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
+            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money.toFixed(2);
         }
         if (Phaser.Input.Keyboard.JustDown(keyH)) {
             playerVariables.inventory.honey["yellow"] += 3;
             playerVariables.inventory.honey["total"] += 3;
-            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
+            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money.toFixed(2);
         }
         if (Phaser.Input.Keyboard.JustDown(keyJ)) {
             playerVariables.inventory.honey["blue"] += 3;
             playerVariables.inventory.honey["total"] += 3;
-            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
+            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money.toFixed(2);
         }
         if (Phaser.Input.Keyboard.JustDown(keyK)) {
             playerVariables.inventory.honey["pink"] += 3;
             playerVariables.inventory.honey["total"] += 3;
-            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
+            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money.toFixed(2);
         }
         if (Phaser.Input.Keyboard.JustDown(keyL)) {
             playerVariables.inventory.honey["purple"] += 3;
             playerVariables.inventory.honey["total"] += 3;
-            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money;
+            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money.toFixed(2);
         }
         // -------------------------------------------
     }
@@ -656,8 +656,8 @@ class Hub extends Phaser.Scene {
                 //Go to hub and start next day
                 this.placeHeldItemInBag();
                 this.music.transitionSong("bedtimeMusic", false);
-                this.cameras.main.fadeOut(5500, 0, 0, 0);
-                this.time.delayedCall(6000, () => {
+                this.cameras.main.fadeOut(4500, 0, 0, 0);
+                this.time.delayedCall(4750, () => {
                     this.placeHeldItemInBag();
                     this.music.stop();
                     this.scene.start('hubScene', {previousScene: "hubScene"});
@@ -821,7 +821,7 @@ class Hub extends Phaser.Scene {
             this.time.delayedCall(300, () => {
                 this.music.stop();
                 this.placeHeldItemInBag();
-                this.scene.start('shopScene');
+                this.scene.start('shopScene', {previousScene: "hubScene"});
                 this.scene.stop();
             });
         }
@@ -913,7 +913,7 @@ class Hub extends Phaser.Scene {
                         //If the player can afford to buy water
                         playerVariables.money -= .25;
                         this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + 
-                            "\nMoney: " + playerVariables.money;
+                            "\nMoney: " + playerVariables.money.toFixed(2);
                         //Destory Watering Can and create a new one
                         playerVariables.water = 4;
                         heldItem.destroy();
@@ -930,7 +930,7 @@ class Hub extends Phaser.Scene {
                         //If the player can afford to buy water
                         playerVariables.money -= .25;
                         this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + 
-                            "\nMoney: " + playerVariables.money;
+                            "\nMoney: " + playerVariables.money.toFixed(2);
                         //Create a new Watering Can and give to them
                         playerVariables.water = 4;
                     } else {
@@ -1023,7 +1023,7 @@ class Hub extends Phaser.Scene {
                         }
                         obj.weeksSinceCollection = 0;
                         this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + 
-                            "\nMoney: " + playerVariables.money;
+                            "\nMoney: " + playerVariables.money.toFixed(2);
                         loc.renderPlot(this, this.gridToCoord(col, row));
                     } else {
                         //If able to pick up this item
@@ -1115,7 +1115,6 @@ class Hub extends Phaser.Scene {
                     loc.item = new DecorativeWide(heldItem.type, true);
                     gardenGrid[row][col+1].item = new DecorativeWide(heldItem.type, false);
                 } else {
-                    console.log("get here??");
                     this.fadeText("There is not enough room\nfor this decoration.");
                     playerVariables.inventory.decorations["Bench"] += 1;
                 }
@@ -1266,7 +1265,7 @@ class Hub extends Phaser.Scene {
 
         //Check version number
         console.log("Save Data Version: " + loadedData.version);
-        if(loadedData.version !== "0.3.15"){
+        if(loadedData.version !== "0.3.19"){
             console.log("Invalid Version Number");
             return;
         }
