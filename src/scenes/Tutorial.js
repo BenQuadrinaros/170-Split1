@@ -388,7 +388,7 @@ class Tutorial extends Phaser.Scene {
     createText() {
         //Text config without a background, which blends better with the background
         this.textConfig = {
-            font: font,
+            font: 'realize_my_passionregular',
             fontSize: "14px",
             color: "#ffffff",
             align: "center",
@@ -430,7 +430,7 @@ class Tutorial extends Phaser.Scene {
 
         //Tutorial Dialog
         this.tutorialConfig = {
-            fontFamily: font,
+            fontFamily: 'realize_my_passionregular',
             fontSize: "24px",
             color: "#ffffff",
             align: "left",

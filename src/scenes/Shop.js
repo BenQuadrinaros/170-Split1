@@ -117,6 +117,7 @@ class Shop extends Phaser.Scene {
         this.events.on("resume", () => {
             console.log("ReenableEsc called");
             this.music.setVolume(config.volume);
+            this.backpack.setAlpha(0.9);
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         });
 
@@ -188,6 +189,7 @@ class Shop extends Phaser.Scene {
                 this.player.x,this.player.y)) < 100) {
             this.toadTextInteract.setVisible(true);
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+                this.backpack.setAlpha(0.0);
                 console.log("launching shop ui");
                 this.scene.pause('shopScene');
                 this.scene.launch("shopUIScene", {previousScene:"shopScene"});

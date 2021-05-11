@@ -9,6 +9,22 @@ class Menu extends Phaser.Scene {
     
     create() {
 
+        //Create some temp text to load the font
+        this.textConfig = {
+            fontFamily: font,
+            fontSize: "14px",
+            color: "#ffffff",
+            align: "center",
+            stroke: "#000000",
+            strokeThickness: 4,
+            padding: {
+                top: 5,
+                bottom: 5
+            },
+        };
+
+        var tempText = this.add.text(-100, -100, "This is a test", this.textConfig);
+
         let centerX = game.config.width/2;
         let centerY = game.config.height/2;
         let textSpacer = 50;

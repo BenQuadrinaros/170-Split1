@@ -94,6 +94,12 @@ class Hub extends Phaser.Scene {
                     money: this.startingMoneyForPopup, fromTutorial:false});
             }
         }
+
+        //Check for benches
+        this.benchList = [];
+        this.createListOfBenches();
+
+        //Check to see if an NPC should sit
     }
 
     update() {
@@ -480,6 +486,24 @@ class Hub extends Phaser.Scene {
             temp.setOrigin(.5).setScale(.25, .25).setVisible(true);
             temp.depth = 200;
             this.swarm.push(temp);
+        }
+    }
+
+    createListOfBenches(){
+        let skipNext = false;
+        for(let row = 0; row < gardenGrid.length; row++) {
+            for(let col = 0; col < gardenGrid[0].length; col++) {
+                if(skipNext){
+                    skipNext = false;
+                } else{
+                    let loc = gardenGrid[row][col].item;
+                    if(loc instanceof DecorativeWide && loc.type === "Bench") {
+                        console.log("Found a bench at [", col, ", ", row, "]");
+                        this.benchList.push({col, row});
+                        skipNext = true;
+                    }
+                }
+            }
         }
     }
 

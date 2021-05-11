@@ -29,7 +29,7 @@ class BackPackUI extends Phaser.Scene {
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         //Text config without a background, which blends better with the background
         this.textConfig = {
-            fontFamily: font,
+            fontFamily: 'realize_my_passionregular',
             fontSize: "14px",
             color: "#ffffff",
             align: "center",
@@ -353,6 +353,7 @@ var createButton = function (scene, direction, text) {
         height: 40,
         background: scene.rexUI.add.roundRectangle(0, 0, 50, 50, radius, COLOR_DARK),
         text: scene.add.text(0, 0, text, {
+            fontFamily: 'realize_my_passionregular',
             fontSize: '18pt'
         }),
         space: {
@@ -376,6 +377,7 @@ var createMenu = function (scene, x, y, items, onClick) {
             return scene.rexUI.add.label({
                 background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 0, COLOR_PRIMARY),
                 text: scene.add.text(0, 0, item.name, {
+                    fontFamily: 'realize_my_passionregular',
                     fontSize: '20px'
                 }),
                 icon: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_DARK),
