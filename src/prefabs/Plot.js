@@ -113,6 +113,9 @@ function objToPlot(obj){
             case "Weed":
                 plot.item = new Weed(plot.gridx, plot.gridy);
                 break;
+            case "Bench":
+                plot.item = new DecorativeWide("Bench", obj.item.isLeft);
+                break;
             default:
                 plot.item = null;
                 break;

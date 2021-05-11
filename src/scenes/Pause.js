@@ -15,7 +15,7 @@ class Pause extends Phaser.Scene {
         //Create a pause menu image
         this.pauseMenu = this.add.image(config.width/2, config.height/2, "TempPause").setOrigin(0.5).setScale(0.75);
         //Create a settings menu image
-        let settings = this.add.image(config.width/ 2, config.height/2, 'Settings').setOrigin(0.5);
+        let settings = this.add.image(config.width/ 2, config.height/2, 'Settings').setOrigin(0.5).setScale(0.5);
         //this.tutorial = this.add.image(config.width/2, 3 * config.height / 4, 'Tutorial').setOrigin(0.5);
         //Making images interactable
         settings.setInteractive();

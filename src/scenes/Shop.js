@@ -5,6 +5,11 @@ class Shop extends Phaser.Scene {
         });
     }
 
+    init(data) {
+        //See where you are returning from
+        this.previousScene = data.previousScene;
+    }
+
     preload(){
         console.log("in ShopUI Scene")
         this.load.scenePlugin({
@@ -26,7 +31,14 @@ class Shop extends Phaser.Scene {
 
         //Initialize images
         this.createBackgroundImages();
-        this.player = new HubPlayer(this, 'player', 0, config.width/2, 3*config.height/4, game.config.width, game.config.height, [[135, 305], [380, 270], [game.config.width+50, 335]]).setDepth(-1);
+        this.player;
+        console.log("Previous scene was :", this.previousScene);
+        if(this.previousScene === "hubScene"){
+            this.player = new HubPlayer(this, 'player', 0, 4*config.width/5, 5*config.height/6, game.config.width, game.config.height, [[135, 305], [380, 270], [game.config.width+50, 335]]).setDepth(-1);
+        }
+        else{
+            this.player = new HubPlayer(this, 'player', 0, config.width/3, 3*config.height/4, game.config.width, game.config.height, [[135, 305], [380, 270], [game.config.width+50, 335]]).setDepth(-1);
+        }
         this.player.setScale(0.65);
 
         //Create the text around the scene
@@ -77,6 +89,7 @@ class Shop extends Phaser.Scene {
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
     }
 
     createBackgroundImages(){
@@ -107,7 +120,7 @@ class Shop extends Phaser.Scene {
         };
 
         //create shop text
-        this.townExit = this.add.text(5*config.width/6 + 65, 9*config.height/10 + 5, "Path to Cave", this.textConfig).setOrigin(.5,.5).setVisible(true);
+        this.townExit = this.add.text(5*config.width/6 + 85, 9*config.height/10 + 5, "Path to Garden", this.textConfig).setOrigin(.5,.5).setVisible(true);
         this.toadTextInteract = this.add.text(this.toadLeckman.x,this.toadLeckman.y, "Space to interact with the shop", this.textConfig).setOrigin(.5,.5).setVisible(false);
         this.marketEntrance = this.add.text(280, 389, "Farmer's Market Entrance", this.textConfig).setOrigin(.5,.5).setVisible(true);
     }
@@ -117,7 +130,9 @@ class Shop extends Phaser.Scene {
         this.events.on("resume", () => {
             console.log("ReenableEsc called");
             this.music.setVolume(config.volume);
+            this.backpack.setAlpha(0.9);
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+            keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
         });
 
         //Have player move towards the mouse on pointer down
@@ -188,6 +203,7 @@ class Shop extends Phaser.Scene {
                 this.player.x,this.player.y)) < 100) {
             this.toadTextInteract.setVisible(true);
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+                this.backpack.setAlpha(0.0);
                 console.log("launching shop ui");
                 this.scene.pause('shopScene');
                 this.scene.launch("shopUIScene", {previousScene:"shopScene"});
