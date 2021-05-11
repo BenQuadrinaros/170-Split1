@@ -74,7 +74,7 @@ class Hub extends Phaser.Scene {
         //Check for special cases
         playerVariables.score = calculateEcologyScore();
         //console.log("score is "+playerVariables.score)
-        let hasWon = false;
+        let hasWon = true;
         for(let star of playerVariables.score) { if(!star) { hasWon = false; } }
         if (hasWon) {
             this.scene.pause();
@@ -98,6 +98,8 @@ class Hub extends Phaser.Scene {
         //Check for benches
         this.benchList = [];
         this.createListOfBenches();
+        this.sittingNPCS = this.createSittingNPCS();
+        console.log("Sitting NPCS :", this.sittingNPCS);
 
         //Check to see if an NPC should sit
     }
@@ -452,7 +454,7 @@ class Hub extends Phaser.Scene {
                 let plot = gardenGrid[row][col];
                 let coords = this.gridToCoord(col, row);
                 plot.renderPlot(this, coords);
-                if (plot.item instanceof Hive || plot.item instanceof Flower) {
+                if(plot.item instanceof Hive || plot.item instanceof Flower) {
                     this.path.push([coords[0], coords[1] - 25]);
                 }
             }
@@ -499,12 +501,41 @@ class Hub extends Phaser.Scene {
                     let loc = gardenGrid[row][col].item;
                     if(loc instanceof DecorativeWide && loc.type === "Bench") {
                         console.log("Found a bench at [", col, ", ", row, "]");
-                        this.benchList.push({col, row});
+                        this.benchList.push([col, row]);
                         skipNext = true;
                     }
                 }
             }
         }
+    }
+
+    createSittingNPCS(){
+        let usedNPCs = [];
+        let scoreModifier = 0;
+        for(let elem = 0; elem < 5; ++elem){
+            if(playerVariables.score[elem]){
+                ++scoreModifier;
+            }
+        }
+        for(let i = 0; i < this.benchList.length; ++i){
+            let npcChance = Phaser.Math.Between(0, 12);
+            npcChance += scoreModifier;
+            if(npcChance > 8){
+                console.log("An npc has been selected to sit here");
+                console.log("Getting world pos of [", this.benchList[i][0], ", ", this.benchList[i][1], "]");
+                let leftLoc = this.gridToCoord(this.benchList[i][0], this.benchList[i][1]);
+                let currNPC = new NPC(this, leftLoc[0] + 30, leftLoc[1] - 70);
+                currNPC.setOrigin(0.5, 0.5);
+                currNPC.setScale(0.35, 0.35);
+                currNPC.depth = (leftLoc[1] - 30)/10  + 5;
+                usedNPCs.push(currNPC);
+            }
+            else{
+                usedNPCs.push(null);
+            }
+
+        }
+        return usedNPCs;
     }
 
     updateCheckPause() {
@@ -810,10 +841,55 @@ class Hub extends Phaser.Scene {
                         this.fadeText("Ow! Those are\nprickly brambles.");
                     }
                 }
+            } else if(obj instanceof DecorativeWide){
+                if(this.checkBenchOccupied(coords[0], coords[1])){
+                    let popUpX = this.gridToCoord(coords[1], coords[0])[0] + 20;
+                    if(obj.isLeft){
+                        popUpX += 80
+                    }
+                    if(!this.moodPopUp){
+                        this.moodPopUp = this.add.image(popUpX, this.gridToCoord(coords[1], coords[0])[1] - 35, "happy").setAlpha(0).setDepth(100);
+                        let npcMoodTween = this.tweens.add({
+                            targets: this.moodPopUp,
+                            alpha: {from: .6, to: 1},
+                            scale: {from: .25, to: .2},
+                            ease: 'Sine.easeInOut',
+                            duration: 650,
+                            repeat: 1,
+                            yoyo: true,
+                            hold: 0,
+                            onComplete: function () {
+                                this.moodPopUp.destroy();
+                                this.moodPopUp = null;
+                            },
+                            onCompleteScope: this
+                        });
+                    }
+                }
+                else {
+                    console.log("Bench is empty");
+                }
             } else {
                 this.player.slow = false;
             }
         }
+    }
+
+    checkBenchOccupied(row, col){
+        for(let currBench = 0; currBench < this.benchList.length; ++currBench){
+            if(this.benchList[currBench][1] == row &&
+                (this.benchList[currBench][0] == col || this.benchList[currBench][0] == (col -1))){
+                if(this.sittingNPCS[currBench] != null){
+                    console.log("There was an npc on the bench: ", this.sittingNPCS[currBench]);
+                    return true;
+                }
+                else{
+                    console.log("THere was not an npc on the bench: ",this.sittingNPCS[currBench]);
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 
     textHover() {
