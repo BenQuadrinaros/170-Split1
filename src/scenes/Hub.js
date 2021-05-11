@@ -453,7 +453,7 @@ class Hub extends Phaser.Scene {
         }
 
         //Create water spigot to refill Watering Can
-        this.spigot = this.add.image(.925 * config.width, .475 * config.height, "spigot");
+        this.spigot = this.add.image(.925 * config.width, .525 * config.height, "spigot");
         this.spigot.setOrigin(.5, .5).setScale(.75, .75);
         this.spigot.depth = this.spigot.y / 10;
         this.waterHeld = null;
@@ -504,6 +504,7 @@ class Hub extends Phaser.Scene {
 
     updateHeldItemBehavior() {
         if (this.heldImg == 0) {
+            console.log("setting image for",heldItem);
             heldItem.addToScene(this, this.player.x, this.player.y);
             this.heldImg = 1;
             this.imageFlip = false;
@@ -800,7 +801,7 @@ class Hub extends Phaser.Scene {
             //Move display to this spot
             this.plotHighlight.alpha = 1;
             this.plotHighlight.x = this.spigot.x;
-            this.plotHighlight.y = this.spigot.y + 25;
+            this.plotHighlight.y = this.spigot.y + this.spigot.height/3;
             //Logic for if player presses space near water spigot
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 //If the player is holding the can
@@ -925,14 +926,33 @@ class Hub extends Phaser.Scene {
                             "\nMoney: " + playerVariables.money;
                         loc.renderPlot(this, this.gridToCoord(col, row));
                     } else {
-                        if (obj instanceof Flower || obj instanceof Hive || obj instanceof Sprinkler 
-                            || obj instanceof WateringCan) {
-                            //If on the bee path, remove it
-                            if (obj instanceof Flower || obj instanceof Hive) {
-                                this.path = this.removeFromPath(obj.image, this.path);
+                        //If able to pick up this item
+                        if (!(obj == null || obj instanceof Weed || obj instanceof Bramble)) {
+                            if(obj instanceof DecorativeWide) {
+                                //Special case, picking up double wide decorative
+                                if(obj.isLeft) {
+                                    //Clear spot to the right
+                                    console.log("picking up left side",obj,gardenGrid[row][col+1].item);
+                                    gardenGrid[row][col+1].item = null;
+                                    heldItem = obj;
+                                    this.heldImg = 0;
+                                } else {
+                                    //Clear spot to the left
+                                    console.log("picking up right side",gardenGrid[row][col-1].item,obj);
+                                    gardenGrid[row][col-1].item = null;
+                                    gardenGrid[row][col-1].renderPlot(this, this.gridToCoord(col-1, row));
+                                    heldItem = obj;
+                                    heldItem.isLeft = true;
+                                    this.heldImg = 0;
+                                }
+                            } else {
+                                //If on the bee path, remove it
+                                if (obj instanceof Flower || obj instanceof Hive) {
+                                    this.path = this.removeFromPath(obj.image, this.path);
+                                }
+                                heldItem = obj;
+                                this.heldImg = 0;
                             }
-                            heldItem = obj;
-                            this.heldImg = 0;
                         } else if(obj == null && loc.dug) {
                             this.music.playSFX("dig");
                             loc.dug = false;
@@ -944,6 +964,8 @@ class Hub extends Phaser.Scene {
                             heldType = "items";
                         } else if (heldItem instanceof Flower) {
                             heldType = "flowers";
+                        } else if (heldItem instanceof DecorativeWide || heldItem instanceof Decorative) {
+                            heldType = "decorations";
                         }
                         //recreate the plot
                         loc.renderPlot(this, this.gridToCoord(col, row));
@@ -955,8 +977,8 @@ class Hub extends Phaser.Scene {
 
     placeItemHandler(row, col){
         let loc = gardenGrid[row][col];
-        //Set the location's item to a new item
         if(heldItem instanceof Clipper) {
+            //If you have a Clipper, special case
             if(loc.item instanceof Bramble) {
                 this.music.playSFX("clipperCut");
                 loc.item.destroy();
@@ -968,21 +990,37 @@ class Hub extends Phaser.Scene {
                 return;
             }
         } else {
-            if(heldItem instanceof Hive){
+            //Set the location's item to a new item of the same type
+            console.log("placing a",typeof heldItem);
+            if(heldItem instanceof Hive) {
                 this.music.playSFX("placeItem");
                 loc.item = new Hive(col, row);
                 //clear highlight
                 this.hiveHighlightHold.alpha = 0;
-            } else if(heldItem instanceof Sprinkler){
+            } else if(heldItem instanceof Sprinkler) {
                 this.music.playSFX("placeItem");
                 loc.item = new Sprinkler(col, row);
                 loc.dug = true;
                 //clear highlight
                 this.sprinklerHighlightHold.alpha = 0;
-            } else if(heldItem instanceof WateringCan){
+            } else if(heldItem instanceof WateringCan) {
                 this.music.playSFX("placeItem");
                 loc.item = new WateringCan();
+            } else if(heldItem instanceof Decorative) {
+                this.music.playSFX("placeItem");
+                loc.item = new Decorative(heldItem.type);
+            } else if(heldItem instanceof DecorativeWide) {
+                if(col < gardenGrid[0].length-1 && gardenGrid[row][col+1].item == null) {
+                    this.music.playSFX("placeItem");
+                    loc.item = new DecorativeWide(heldItem.type, true);
+                    gardenGrid[row][col+1].item = new DecorativeWide(heldItem.type, false);
+                } else {
+                    console.log("get here??");
+                    this.fadeText("There is not enough room\nfor this decoration.");
+                    playerVariables.inventory.decorations["Bench"] += 1;
+                }
             } else {
+                console.log("got here");
                 this.music.playSFX("placeItem");
                 loc.item = new Flower(heldItem.age, heldItem.water, heldItem.type);
                 loc.dug = true;
@@ -1013,6 +1051,10 @@ class Hub extends Phaser.Scene {
                 heldItem = new Clipper();
             } else if(heldType === "flowers"){
                 heldItem = new Flower(5, 5, heldItem.type);
+            } else if(heldItem instanceof Decorative) {
+                heldItem = new Decorative(heldItem.type);
+            } else if(heldItem instanceof DecorativeWide) {
+                heldItem = new DecorativeWide(heldItem.type, true);
             } else {
                 heldItem = new Flower(0, 5, heldItem.type);
             }
@@ -1097,6 +1139,8 @@ class Hub extends Phaser.Scene {
             playerVariables.inventory.items["Clipper"] += 1;
         } else if (heldItem instanceof WateringCan) {
             playerVariables.inventory.items["Watering Can"] += 1;
+        } else if (heldItem instanceof Decorative || heldItem instanceof DecorativeWide) {
+            playerVariables.inventory.decorations[heldItem.type] += 1;
         }
          else {
              //Nothing special to do, but we don't want to reach the normal else case

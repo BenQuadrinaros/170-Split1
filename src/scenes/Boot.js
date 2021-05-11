@@ -70,6 +70,7 @@ class Boot extends Phaser.Scene {
             //For shop
             this.load.image('toadLeckman', './assets/sprites/character/mrleckman_510x300.png');
             this.load.image('townBackground', './assets/img/TOWNTEST.png');
+            this.load.image('Bench', './assets/img/bench.png');
             //For market price setting
             this.load.image('chalkboard', './assets/sprites/UI/chalkboardBlank.png');
             this.load.image('brickFence', './assets/sprites/background/brickFence.png');

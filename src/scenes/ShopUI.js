@@ -5,12 +5,13 @@ let shopCosts = {};
 let idImages = {
     "Daisy": ["flowerWhite3", .125],
     "Delphinium": ["flowerBlue3", .125],
-    "Tulip": ["flowerRed3", .125],
+    "Tulip": ["flowerRed3", .25],
     "Lavender": ["flowerPurple3", .125],
     "Sprinkler": ["sprinkler", .125],
     "Beehive": ["hive", .125],
     "Clipper": ["clipper", .75],
     "Watering Can": ["water1", .375],
+    "Bench": ["Bench", .25],
     "yellow": ["honeyYellow", .5],
     "blue": ["honeyBlue", .5],
     "pink": ["honeyPink", .5],
@@ -155,6 +156,7 @@ class ShopUI extends Phaser.Scene {
             leftButtons: [
                 createButton(this, 2, 'Seeds'),
                 createButton(this, 2, 'Items'),
+                createButton(this, 2, 'Decorations'),
             ],
 
             rightButtons: [

@@ -129,6 +129,11 @@ let playerVariables = {
             "Lavender": 0,
             "Tulip": 0,
             "Orchid": 0
+        },
+        decorations: {
+            "Bench": 0,
+            "Bush": 0,
+            "Fence": 0
         }
     }
 }
@@ -145,6 +150,9 @@ let shopInventory = {
         "Beehive":{"amount": 2,"cost":12},
         "Clipper":{"amount":2,"cost":10}
         //"Fertilizer":{"amount": 5,"cost": 4}
+    },
+    "Decorations":{
+        "Bench":{"amount": 4,"cost":7}
     }
 }
 

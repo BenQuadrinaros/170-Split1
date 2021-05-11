@@ -132,6 +132,7 @@ class BackPackUI extends Phaser.Scene {
                 createButton(this, 2, 'items'),
                 createButton(this, 2, 'honey'),
                 createButton(this, 2, 'flowers'),
+                createButton(this, 2, 'decorations'),
             ],
 
             rightButtons: [
@@ -236,6 +237,10 @@ class BackPackUI extends Phaser.Scene {
                                 } else if (item == "Watering Can") {
                                     heldType = "items";
                                     heldItem = new WateringCan();
+                                    playerVariables.inventory[uiScene.selectedTab][item] -= 1;
+                                } else if (item == "Bench") {
+                                    heldType = "decorations";
+                                    heldItem = new DecorativeWide("Bench", true);
                                     playerVariables.inventory[uiScene.selectedTab][item] -= 1;
                                 } else {
                                     console.log("Holding invalid object");
