@@ -88,8 +88,8 @@ class PriceHistory extends Phaser.Scene{
     createPriceHistory(){
         console.log("creating price history;");
         console.log("Text Config: ", this.textConfiguration);
-        let amt = 8;
-        if (priceHistory.length < 8){
+        let amt = 10;
+        if (priceHistory.length < 10){
             amt = priceHistory.length;
         }
         for (let i = 1; i <= amt; i++){
@@ -97,7 +97,7 @@ class PriceHistory extends Phaser.Scene{
             if (entry.mode === "money") {
                 console.log(this.imgMap[entry.type]);
                 this.add.image((2 * config.width / 5) + 200, (i * (config.height / 12 - 9)) + 90, entry.mood).setScale(.09, .09).setOrigin(.5, .5);
-                this.add.text((2 * config.width / 5) + 100, (i * (config.height / 12 - 9)) + 90, entry.price + " $/jar", this.textConfiguration).setOrigin(.5, .5);
+                this.add.text((2 * config.width / 5) + 100, (i * (config.height / 12 - 9)) + 90, "$" + entry.price.toFixed(2) + "/jar", this.textConfiguration).setOrigin(.5, .5);
                 this.add.image((2 * config.width / 5), (i * (config.height / 12 - 9)) + 90, this.imgMap[entry.type]).setOrigin(.5, .5).setScale(.35, .35);
             } else if (entry.mode === "barter"){
                 console.log("** ** logging barter ** **");

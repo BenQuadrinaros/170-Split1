@@ -19,7 +19,7 @@ class NPC extends Phaser.GameObjects.Sprite{
             this.personality = personality;
             this.voiceLines = voiceLines;
         }
-
+        this.setOrigin(1, 0.5);
         //Add to the scene
         scene.add.existing(this);
         this.scene = scene;
@@ -32,22 +32,24 @@ class NPC extends Phaser.GameObjects.Sprite{
 
     approach(animDelay = 0){
         console.log("NPC has been asked to approach");
-        this.scene.tweens.add({
-            targets: this,
-            x: this.x + config.width/5,
-            ease: 'Sine.easeOut',
-            duration: 1500,
-            delay: animDelay,
-            repeat: 0
-        });
-        this.scene.tweens.add({
-            targets: this,
-            y: 4 * game.config.height / 7,
-            ease: 'Power2',
-            yoyo: true,
-            duration: 250,
-            delay: animDelay,
-            repeat: 2
+        this.scene.time.delayedCall(animDelay, () => {
+            this.scene.tweens.add({
+                targets: this,
+                x: this.x + config.width/5,
+                ease: 'Sine.easeOut',
+                duration: 1500,
+                delay: 0,
+                repeat: 0
+            });
+            this.scene.tweens.add({
+                targets: this,
+                y: 4 * game.config.height / 7,
+                ease: 'Power2',
+                yoyo: true,
+                duration: 250,
+                delay: 0,
+                repeat: 2
+            });
         });
     }
 

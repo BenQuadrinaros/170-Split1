@@ -51,10 +51,11 @@ class Boot extends Phaser.Scene {
             this.load.image("flowerBlue3", "./assets/sprites/spritesheetFrames/blue3.png");
             this.load.image("flowerBlue4", "./assets/sprites/spritesheetFrames/blue4.png");
             this.load.image("flowerBlue5", "./assets/sprites/spritesheetFrames/blue5.png");
-            this.load.image("flowerRed2", "./assets/sprites/spritesheetFrames/red2.png");
-            this.load.image("flowerRed3", "./assets/sprites/spritesheetFrames/red3.png");
-            this.load.image("flowerRed4", "./assets/sprites/spritesheetFrames/red4.png");
-            this.load.image("flowerRed5", "./assets/sprites/spritesheetFrames/red5.png");
+            this.load.image("flowerRed1", "./assets/sprites/spritesheetFrames/tulip1.png");
+            this.load.image("flowerRed2", "./assets/sprites/spritesheetFrames/tulip2.png");
+            this.load.image("flowerRed3", "./assets/sprites/spritesheetFrames/tulip3.png");
+            this.load.image("flowerRed4", "./assets/sprites/spritesheetFrames/tulip4.png");
+            this.load.image("flowerRed5", "./assets/sprites/spritesheetFrames/tulip5.png");
             this.load.image("flowerPurple2", "./assets/sprites/spritesheetFrames/purple2.png");
             this.load.image("flowerPurple3", "./assets/sprites/spritesheetFrames/purple3.png");
             this.load.image("flowerPurple4", "./assets/sprites/spritesheetFrames/purple4.png");
@@ -69,6 +70,7 @@ class Boot extends Phaser.Scene {
             //For shop
             this.load.image('toadLeckman', './assets/sprites/character/mrleckman_510x300.png');
             this.load.image('townBackground', './assets/img/TOWNTEST.png');
+            this.load.image('Bench', './assets/img/bench.png');
             //For market price setting
             this.load.image('chalkboard', './assets/sprites/UI/chalkboardBlank.png');
             this.load.image('brickFence', './assets/sprites/background/brickFence.png');
@@ -97,7 +99,7 @@ class Boot extends Phaser.Scene {
             this.load.image('redIcon','./assets/sprites/UI/redIcon.png');
             this.load.image('blueIcon','./assets/sprites/UI/blueIcon.png');
             this.load.image('purpleIcon','./assets/sprites/UI/purpleIcon.png');
-            this.load.image('pinkIcon','./assets/sprites/UI/pinkIcon.png');
+            this.load.image('whiteIcon','./assets/sprites/UI/whiteIcon.png');
             //this.load.image('redMinus', './assets/sprites/UI/minusRed_240.png');
             this.load.image('greenMinus', './assets/sprites/UI/minusGreen_240.png');
             //this.load.image('greenPlus', './assets/sprites/UI/plusGreen_240.png');
@@ -142,7 +144,7 @@ class Boot extends Phaser.Scene {
             this.load.image("TempTutorialScreen", "./assets/img/TempTutorial3_3_21.png");
             //For player Inventory
             this.load.image("tempBackpackIcon", "./assets/sprites/UI/backpack_lightest.png");
-
+            this.load.image("!", "./assets/sprites/UI/exclamationMark.png");
 
         //Load Spritesheets
             //For gardenScene
@@ -152,7 +154,7 @@ class Boot extends Phaser.Scene {
             this.load.spritesheet('player', './assets/spritesheets/bearAnims.png', {frameWidth: 140, frameHeight:247, startFrame:0, endFrame:7});
             this.load.spritesheet('backpackFrames', "./assets/spritesheets/backpackSheet.png", {frameWidth: 120, frameHeight:121, startFrame:0, endFrame:1});
             //For menuScene
-            this.load.spritesheet('Play','./assets/spritesheets/title_text_CONT_1730x115.png',{frameWidth: 865, frameHeight: 115, startFrame:0 , endFrame: 1});
+            this.load.spritesheet('Play','./assets/spritesheets/title_text_CONT_1770x115.png',{frameWidth: 885, frameHeight: 115, startFrame:0 , endFrame: 1});
             this.load.spritesheet('Settings','./assets/spritesheets/title_text_SET_1084x175.png',{frameWidth: 542, frameHeight: 175, startFrame:0 , endFrame: 1});
             this.load.spritesheet('Tutorial', './assets/spritesheets/title_text_NEW_1194x115.png', {frameWidth: 597, frameHeight: 115, startFrame:0 , endFrame: 1});
             this.load.spritesheet('Credits', './assets/spritesheets/title_text_CRED_936x115.png', {frameWidth: 468, frameHeight: 115, startFrame:0 , endFrame: 1});
@@ -218,6 +220,7 @@ class Boot extends Phaser.Scene {
         var progressBox = this.add.graphics();
         progressBox.fillStyle(0x222222, 0.8);
         progressBox.fillRect(config.width/2 -160, 270, 320, 50);
+
         
         //Whenever progress is made
         this.load.on('progress', function (value) {
@@ -241,8 +244,42 @@ class Boot extends Phaser.Scene {
     }
 
     create(){
-        // go to Title scene
-        this.scene.start('menuScene');
+        var realizeMyPassionRegular = new FontFace('realize_my_passionregular',
+                'url(/styles/realize-my-passion.regular-webfont.woff2)',
+                {
+                    style: 'normal',
+                    weight: 'normal'
+                });
+        document.fonts.add(realizeMyPassionRegular);
+        realizeMyPassionRegular.load();
+        realizeMyPassionRegular.loaded.then((fontFace) => {
+            console.log("Font loaded");
+            //Create some temp text to load the font
+            this.textConfig = {
+                fontFamily: font,
+                fontSize: "14px",
+                color: "#ffffff",
+                align: "center",
+                stroke: "#000000",
+                strokeThickness: 4,
+                padding: {
+                    top: 5,
+                    bottom: 5
+                },
+            };
+
+            var tempText = this.add.text(-100, -100, "This is a test", this.textConfig);
+
+            // go to Title scene
+            this.scene.start('menuScene');
+            //font =  'realize_my_passionregular';
+
+        }, (fontFace) => {
+            console.error("Font current status: ", realizeMyPassionRegular.status);
+            // go to Title scene
+            this.scene.start('menuScene');
+        });
+        
     }
 
     takeLocalStorageActions(){

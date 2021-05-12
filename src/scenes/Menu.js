@@ -9,11 +9,29 @@ class Menu extends Phaser.Scene {
     
     create() {
 
+        //Create some temp text to load the font
+        this.textConfig = {
+            fontFamily: font,
+            fontSize: "14px",
+            color: "#ffffff",
+            align: "center",
+            stroke: "#000000",
+            strokeThickness: 4,
+            padding: {
+                top: 5,
+                bottom: 5
+            },
+        };
+
+        var tempText = this.add.text(-100, -100, "This is a test", this.textConfig);
+
         let centerX = game.config.width/2;
         let centerY = game.config.height/2;
         let textSpacer = 50;
 
         //Setting controls
+        keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+        keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         this.keyENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
@@ -29,7 +47,10 @@ class Menu extends Phaser.Scene {
             console.log("No save data found");
             this.loadedData = false;
         }
-        else{
+        else if(this.loadedData.version != "0.3.19"){
+            console.log("Invalid Version Number");
+            this.loadedData = false;
+        } else {
             this.loadedData = true;
         }
 
@@ -134,7 +155,7 @@ class Menu extends Phaser.Scene {
             this.scene.start("shopScene")
         }
 
-        if (Phaser.Input.Keyboard.JustDown(keyUP)) {
+        if (Phaser.Input.Keyboard.JustDown(keyUP) || Phaser.Input.Keyboard.JustDown(keyW)) {
             if(this.currSelected === -1){
                 if(!this.loadedData){
                     this.currSelected = 2;
@@ -156,7 +177,7 @@ class Menu extends Phaser.Scene {
             }
         }
 
-        if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
+        if (Phaser.Input.Keyboard.JustDown(keyDOWN) || Phaser.Input.Keyboard.JustDown(keyS)) {
             if(this.currSelected === -1){
                 if(!this.loadedData){
                     this.currSelected = 2;

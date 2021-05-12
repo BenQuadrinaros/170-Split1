@@ -87,11 +87,11 @@ class HubPopup extends Phaser.Scene {
             textSpacer += 35;
             if(playerVariables.score[i]) {
                 //Put in a filled star
-                this.add.image(config.width/3 + 35, config.height/3 + textSpacer, "filledStar");
+                this.add.image(config.width/3 + 35, config.height/3 + textSpacer, "sellYes").setScale(.45);
                 grade++;
             } else {
                 //Put in an empty star
-                this.add.image(config.width/3 + 35, config.height/3 + textSpacer, "emptyStar");
+                this.add.image(config.width/3 + 35, config.height/3 + textSpacer, "sellNo").setScale(0.45);
             }
             if(i == 0) {
                 this.add.text(config.width/3 + 65, config.height/3 + textSpacer, "Have at least 15 Flowers.", 

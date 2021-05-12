@@ -97,7 +97,11 @@ class Market extends Phaser.Scene {
                 this.state = "approaching";
 
                 if(this.customersInLine.length > 1){
-
+                    /*let previousXPos = 640;
+                    for(let i = 0; i < this.customersInLine.length; ++i){
+                        console.log("Customer ", i, " x is: ", this.customersInLine[i].x, ", difference from prevX is", (previousXPos - this.customersInLine[i].x));
+                        previousXPos = this.customersInLine[i].x;
+                    }*/
                     for(let i = 1; i < this.customersInLine.length; i++) {
                         this.customersInLine[i].approach(500*(i+1));
                         /*let tempRef = this.createCustomersInLine[i];
@@ -525,11 +529,16 @@ class Market extends Phaser.Scene {
     }
 
     createMoodPopup(mood) {
-        this.moodPopUp = this.add.image(this.npc.x + 100, this.npc.y - 150, mood).setAlpha(0).setDepth(100);
+        //Previous x: this.npc.x+100
+        //Previous y: this.npc.y-150
+        //Alpha: from .6
+        //this.npc.x, this.npc.y - 200
+        //Scale from .3 to .25
+        this.moodPopUp = this.add.image(this.npc.x, this.npc.y - 200, mood).setAlpha(0).setDepth(100).setScale(0.235);
         let basicTween = this.tweens.add({
             targets: this.moodPopUp,
             alpha: {from: .6, to: 1},
-            scale: {from: .3, to: .25},
+            scale: {from: 0.235, to: 0.18},
             ease: 'Sine.easeInOut',
             duration: 650,
             repeat: 1,
@@ -547,7 +556,7 @@ class Market extends Phaser.Scene {
         this.customersInLine = [];
         console.log(`Creating ${amt} customers in line...`);
         for (let i = 0; i < amt; i++) {
-            this.customersInLine.push(this.generateNPC((2*config.width/3) - ((i + 1) * config.width/5)));
+            this.customersInLine.push(this.generateNPC((2*config.width/3) - ((i) * config.width/5) - 15));
             this.customersInLine[i].setVisible(true);
             this.customersInLine[i].depth = 90 - i;
             console.log(`creating npc ${i}...`);

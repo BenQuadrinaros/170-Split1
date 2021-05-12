@@ -44,6 +44,21 @@ class Tutorial extends Phaser.Scene {
 
     create() {
 
+        //Tutorial Dialog
+        this.tutorialConfig = {
+            fontFamily: font,
+            fontSize: "24px",
+            color: "#ffffff",
+            align: "left",
+            stroke: "#000000",
+            strokeThickness: 4,
+            padding: {
+                top: 5,
+                bottom: 5
+            },
+        };
+        this.tempText = this.add.text(-100, -100, "Load the damn font", this.tutorialConfig);
+
         console.log("Garden Grid:");
         console.log(gardenGrid);
 
@@ -121,7 +136,8 @@ class Tutorial extends Phaser.Scene {
 
         //Update player movement and location
         this.previousPlayerPosition = [this.player.x, this.player.y];
-        this.player.update();
+        //Make sure the player cannot move while watering
+        if(!(this.wateringEmitter.on)) { this.player.update(); }
         this.player.depth = this.player.y / 10 + 3;
         this.updateCheckCollisions();
 
@@ -271,8 +287,8 @@ class Tutorial extends Phaser.Scene {
         playerVariables.inventory.seeds["Daisy"] = 0;
         playerVariables.inventory.items["Clipper"] = 0;
         //Destroy the default garden items
-        let tempLoc = this.gridToCoord(1, 4);
-        gardenGrid[1][4].item = new Weed(tempLoc[0], tempLoc[1]);
+        gardenGrid[0][5].item = null; //Make sure the player doesn't spawn in a bramble
+        gardenGrid[1][4].item = null;
         gardenGrid[1][6].item = null;
         gardenGrid[2][5].item = null;
     }
@@ -287,7 +303,10 @@ class Tutorial extends Phaser.Scene {
         keyO = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.O);
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        keyENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+        keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+        keyI = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.I);
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
@@ -373,7 +392,7 @@ class Tutorial extends Phaser.Scene {
     createText() {
         //Text config without a background, which blends better with the background
         this.textConfig = {
-            fontFamily: font,
+            font: 'realize_my_passionregular',
             fontSize: "14px",
             color: "#ffffff",
             align: "center",
@@ -415,7 +434,7 @@ class Tutorial extends Phaser.Scene {
 
         //Tutorial Dialog
         this.tutorialConfig = {
-            fontFamily: font,
+            fontFamily: 'realize_my_passionregular',
             fontSize: "24px",
             color: "#ffffff",
             align: "left",
@@ -438,6 +457,9 @@ class Tutorial extends Phaser.Scene {
             this.music.setVolume(config.volume);
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
             keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+            keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+            keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+            keyI = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.I);
             if(!this.playerHasEquippedFirstSeed && (playerVariables.inventory.seeds["Daisy"] === 0)){
                 this.playerHasEquippedFirstSeed = true;
             } else if(this.playerHasWateredFirstSeed && !this.playerHasEquippedFullFlower && (playerVariables.inventory.flowers["Daisy"] === 0)){
@@ -452,7 +474,15 @@ class Tutorial extends Phaser.Scene {
                 console.log("Pointer currently over backpack");
             } else {
                 console.log("Pointer currently not over anything interactable");
-                this.player.moveTo(pointer.worldX, pointer.worldY, this.pointerCurrentlyOver);
+                //If they are on the last section of dialog, stop the dialog
+                if(this.currDialogSection === this.currDialogMaximum){
+                    this.concludeTutorialDialog();
+                    ++this.currDialogSection;
+                }
+                else if(this.currDialogSection < this.currDialogMaximum){
+                    ++this.currDialogSection;
+                    this.advanceTutorialDialog(this.currDialogSection);
+                }
             }
         }, this);
     }
@@ -476,6 +506,18 @@ class Tutorial extends Phaser.Scene {
         this.spigot.setOrigin(.5, .5).setScale(.75, .75);
         this.spigot.depth = this.spigot.y / 10;
         this.waterHeld = null;
+
+
+        //Timed events for watering animations
+        this.wateringRotate = null;
+        //Particle emitter
+        this.wateringParticle = this.add.particles('droplet');
+        this.wateringEmitter = this.wateringParticle.createEmitter();
+        this.wateringEmitter.setLifespan(200);
+        this.wateringEmitter.setGravityY(800);
+        this.wateringEmitter.setScale(.025);
+        this.wateringEmitter.setSpeed({min: 125, max: 350});
+        this.wateringEmitter.on = false;
 
     }
 
@@ -508,17 +550,24 @@ class Tutorial extends Phaser.Scene {
     }
 
     updateHeldItemBehavior() {
-        if (this.heldImg < 1) {
+        if (this.heldImg == 0) {
+            console.log("setting image for",heldItem);
             heldItem.addToScene(this, this.player.x, this.player.y);
             this.heldImg = 1;
-            if (!(heldItem instanceof WateringCan)) {
-                heldItem.image.setScale(.2, .2);
-            }
+            this.imageFlip = false;
+        } else if (this.heldImg == -1) {
+            heldItem.addToScene(this, this.player.x, this.player.y);
+            heldItem.image.flipX = this.imageFlip;
+            this.heldImg = 1;
+            this.wateringAnimate();
+            this.imageFlip = false;
         }
         //Always update location
         heldItem.image.x = this.player.x;
         heldItem.image.y = this.player.y;
-        heldItem.image.depth = this.player.depth + 1;
+        heldItem.image.flipX = this.player.flipX;
+        if(this.player.movingUp) { heldItem.image.depth = this.player.depth - 1; }
+        else { heldItem.image.depth = this.player.depth + 1; }
 
         //Also update highlight
         if (heldItem instanceof Sprinkler) {
@@ -539,8 +588,11 @@ class Tutorial extends Phaser.Scene {
         }
 
         //Input to place item in backpack
-        if (Phaser.Input.Keyboard.JustDown(keyB)) {
-            this.placeHeldItemInBag();
+        if (Phaser.Input.Keyboard.JustDown(keyB)  || Phaser.Input.Keyboard.JustDown(keyE) || Phaser.Input.Keyboard.JustDown(keyI)) {
+            if(this.wateringRotate == null) {
+                this.placeHeldItemInBag();
+                playerInventoryUpdated = true;
+            }
         }
     }
 
@@ -549,7 +601,7 @@ class Tutorial extends Phaser.Scene {
         if(this.playerIsInDialog){
             
             //If the player presses Space to advance dialog
-            if (Phaser.Input.Keyboard.JustDown(keySPACE)){
+            if (Phaser.Input.Keyboard.JustDown(keySPACE) || Phaser.Input.Keyboard.JustDown(keyENTER)){
                 //If they are on the last section of dialog, stop the dialog
                 if(this.currDialogSection === this.currDialogMaximum){
                     this.concludeTutorialDialog();
@@ -565,7 +617,7 @@ class Tutorial extends Phaser.Scene {
         
 
         //If the player press B open the backpack
-        if (Phaser.Input.Keyboard.JustDown(keyB)) {
+        if (Phaser.Input.Keyboard.JustDown(keyB) || Phaser.Input.Keyboard.JustDown(keyE) || Phaser.Input.Keyboard.JustDown(keyI)) {
             console.log("Pressing B");
             this.music.playSFX("backpackOpen");
             this.scene.pause('tutorialScene');
@@ -596,6 +648,7 @@ class Tutorial extends Phaser.Scene {
                     playerVariables.inventory.items["Clipper"] += 3;
                     playerVariables.inventory.honey["total"] = 3;
                     playerVariables.inventory.honey["yellow"] = 3;
+                    inventoryTabsUpdated["honey"] = true;
                     playerInventoryUpdated = true;
                     this.music.stop();
                     this.scene.stop();
@@ -665,9 +718,68 @@ class Tutorial extends Phaser.Scene {
         });
     }
 
+    wateringAnimate() {
+        if(this.wateringRotate != null) {
+            //Reset rotate
+            this.wateringRotate.callback = () => {};
+            this.wateringRotate.delay = 0;
+            this.wateringRotate = null;
+        }
+
+        //Set the angle to the proper tilt
+        let angle = 60;
+        if(heldItem.image.flipX) { angle = -60; }
+        heldItem.image.angle = angle;
+
+        //Start a particle effect with a slight delay
+        this.time.addEvent({
+            delay: 150,
+            callback: () => {
+                //Set the particles to the apporpriate depth
+                this.wateringParticle.setDepth(heldItem.image.depth+1);
+                //Place emitter and activate it
+                let xPos = heldItem.image.x;
+                if(heldItem.image.flipX) { xPos -= 25; }
+                else { xPos += 25; }
+                if(angle != 60) { angle += 180; }
+                this.wateringEmitter.setPosition({min: xPos-5, max: xPos+5}, 
+                    {min: heldItem.image.y+20, max: heldItem.image.y+30});
+                this.wateringEmitter.setAngle(angle);
+                this.wateringEmitter.on = true;
+
+                //After a short delay, stop the emitter
+                this.time.addEvent({
+                    delay: 500,
+                    callback: () => {
+                        this.wateringEmitter.on = false;
+                    },
+                    loop: false,
+                    callbackScope: this
+                });
+            },
+            loop: false,
+            callbackScope: this
+        });
+
+        //Set a timer to tilt back from angle
+        this.wateringRotate = this.time.addEvent({
+            delay: 750,
+            callback: () => {
+                heldItem.image.angle = 0;
+                this.wateringRotate = null;
+            },
+            loop: false,
+            callbackScope: this
+        });
+
+    }
+
     reenableEsc() {
         console.log("ReenableEsc called");
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+        keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+        keyI = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.I);
     }
 
     updateMoveHighlight() {
@@ -786,9 +898,10 @@ class Tutorial extends Phaser.Scene {
                         //Then wet the spot and reduce water
                         spot.water = true;
                         playerVariables.water--;
+                        this.imageFlip = heldItem.image.flipX;
                         //clear image of item held so it can be rerendered
                         heldItem.image.destroy();
-                        this.heldImg = 0;
+                        this.heldImg = -1;
                         spot.renderPlot(this, this.gridToCoord(col, row));
                     } else {
                         this.fadeText("I need to go refill\nmy watering can.")
@@ -1001,10 +1114,11 @@ class Tutorial extends Phaser.Scene {
     placeHeldItemInBag(){
         console.log(heldItem)
         if (heldItem instanceof Flower) {
-            console.log(`Storing held flower ${heldItem.type} in inventory.`)
-            console.log(`before storage ${playerVariables.inventory.flowers[heldItem.type]}`)
-            playerVariables.inventory.flowers[heldItem.type] += 1;
-            console.log(`after storage ${playerVariables.inventory.flowers[heldItem.type]}`)
+            if(heldItem.age <= 1){
+                playerVariables.inventory.seeds[heldItem.type] += 1;
+            } else{
+                playerVariables.inventory.flowers[heldItem.type] += 1;
+            }
         } else if (heldItem instanceof Sprinkler) {
             //If item has highlight, hide that as well
             playerVariables.inventory.items["Sprinkler"] += 1;
@@ -1035,6 +1149,7 @@ class Tutorial extends Phaser.Scene {
         this.currDialogMaximum = -1;
         this.currDialogSection = 1;
         this.playerIsInDialog = false;
+        this.tutorialWeedCreated = false;
     }
 
     advanceTutorial(){
@@ -1046,6 +1161,7 @@ class Tutorial extends Phaser.Scene {
             this.currDialogMaximum = 2;
             playerVariables.inventory.seeds["Daisy"] += 1;
             playerInventoryUpdated = true;
+            inventoryTabsUpdated["seeds"] = true;
         }
         else if(!this.playerHasPlantedFirstSeed){
             if(this.currDialogMaximum != 2){
@@ -1070,8 +1186,36 @@ class Tutorial extends Phaser.Scene {
             this.currDialogMaximum = 6;
             playerVariables.inventory.flowers["Daisy"] += 2;
             playerInventoryUpdated = true;
+            inventoryTabsUpdated["flowers"] = true;
         }
         else if(!this.playerHasDealtWithWeeds){
+            if(!this.tutorialWeedCreated){
+                let idealRow = 0;
+                let idealCol = 10;
+                console.log("About to look at grid [", idealRow, ", ", idealCol, "], which has ", gardenGrid[idealRow][idealCol].item);
+                if(gardenGrid[idealRow][idealCol].item != null){
+                    let colOffset = 0;
+                    let rowOffset = 0;
+                    let satisfied = false;
+                    while(!satisfied){
+                        colOffset += 1;
+                        console.log("About to look at grid [", idealRow, ", ", idealCol, "], which has ", gardenGrid[idealRow][idealCol].item);
+                        if(gardenGrid[idealRow + rowOffset][idealCol - colOffset].item == null){
+                            satisfied = true;
+                            idealRow += rowOffset;
+                            idealCol -= colOffset;
+                        }
+                        else if(colOffset %3 == 0 && colOffset != 0){
+                            colOffset = -1;
+                            rowOffset += 1;
+                        }
+                    }
+                }
+                let tempWeedLoc = this.gridToCoord(idealCol, idealRow);
+                gardenGrid[idealRow][idealCol].item = new Weed(tempWeedLoc[0], tempWeedLoc[1]);
+                gardenGrid[idealRow][idealCol].renderPlot(this, tempWeedLoc);
+                this.tutorialWeedCreated = true;
+            }
             if(this.currDialogMaximum != 6){
                 return;
             }
@@ -1086,6 +1230,7 @@ class Tutorial extends Phaser.Scene {
             this.currDialogMaximum = 9;
             playerVariables.inventory.items["Beehive"] = 1;
             playerInventoryUpdated = true;
+            inventoryTabsUpdated["items"] = true;
         }
         else if(this.playerHasPlacedBeehive){
             if(this.currDialogMaximum != 9){
@@ -1152,7 +1297,7 @@ to make sure we can make some honey for you by next week.`;
                 this.tutorialDialog.text =
 `Weeds interfere with the ability of flowers to make honey. Luckily,
 all you have to do to get rid of it is to interact with it. Could
-you deal with the one by the cave?`;
+you deal with the one by the spigot?`;
                 break;
             case 8:
                 this.tutorialDialog.text =

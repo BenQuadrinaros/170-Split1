@@ -25,16 +25,19 @@ class Settings extends Phaser.Scene {
         let centerY = game.config.height / 2;
         let textSpacer = 64;
         
+        //Create general background
+        this.whiteSquare = this.add.rectangle(0, 0, config.width+50, config.height+50, 0xffffff, 1).setOrigin(0, 0);
+
         //Creating interactable images
-        let settings = this.add.image(centerX, centerY, 'TempSettingsScreen').setOrigin(0.5);
+        //let settings = this.add.image(centerX, centerY, 'TempSettingsScreen').setOrigin(0.5);
         //let back = this.add.image(centerX / 2, centerY + textSpacer * 2, 'Back').setOrigin(0.5);
-        this.continueBackground = this.add.rectangle(config.width - 125, config.height - 50, 150, 75, 0xffffff, .5).setOrigin(0.5, 0.5).setInteractive()
+        this.continueBackground = this.add.rectangle(config.width - 250, config.height - 100, 250, 100, 0xffffff, .5).setOrigin(0.5, 0.5).setInteractive()
         .on("pointerover", () => {
             this.continueText.alpha = 1;
             this.continueBackground.alpha = 1;
         })
         .on("pointerout", () => {
-            this.continueText.alpha = .5;
+            this.continueText.alpha = .75;
             this.continueBackground.alpha = .5;
         })
         .on("pointerdown", () => {
@@ -45,20 +48,23 @@ class Settings extends Phaser.Scene {
 
         this.textConfig = {
             fontFamily: font,
-            fontSize: "14px",
-            color: "#ffffff",
+            fontSize: "48px",
+            color: "#000000",
             align: "center",
             stroke: "#000000",
-            strokeThickness: 4,
+            strokeThickness: 0,
             padding: {
                 top: 5,
                 bottom: 5
             },
         };
 
-        this.continueText = this.add.text(config.width - 125, config.height - 50, "Apply", this.textConfig).setOrigin(0.5, 0.5).setDepth(5);
-        this.continueText.setAlpha(.5);
-        let musicText = this.add.text(centerX, centerY/3, "Background Music Volume", this.textConfig).setOrigin(0.5, 0.5);
+        this.continueText = this.add.text(config.width - 250, config.height - 100, "Apply", this.textConfig).setOrigin(0.5, 0.5).setDepth(5);
+        this.continueText.setAlpha(.75);
+
+        this.textConfig.fontSize = "24px";
+
+        let musicText = this.add.text(centerX, centerY/3 + textSpacer/2, "Background Music Volume", this.textConfig).setOrigin(0.5, 0.5);
         this.slider = this.rexUI.add.slider({
             x: centerX,
             y: centerY/3 + textSpacer,
@@ -81,7 +87,7 @@ class Settings extends Phaser.Scene {
             input: 'drag', // 'drag'|'click'
         }).layout();
 
-        let sfxText = this.add.text(centerX, centerY/3 + 2*textSpacer, "Sound Effects Volume", this.textConfig).setOrigin(0.5, 0.5);
+        let sfxText = this.add.text(centerX, centerY/3 + 5*textSpacer/2, "Sound Effects Volume", this.textConfig).setOrigin(0.5, 0.5);
         this.sfxSlider = this.rexUI.add.slider({
             x: centerX,
             y: centerY/3 + 3*textSpacer,
@@ -103,6 +109,10 @@ class Settings extends Phaser.Scene {
             },
             input: 'drag', // 'drag'|'click'
         }).layout();
+
+
+        this.textConfig.fontSize = "28px";
+        let sceneNameText = this.add.text(centerX, centerY/5, "Settings", this.textConfig).setOrigin(0.5, 0.5);
     }
 
     update() {

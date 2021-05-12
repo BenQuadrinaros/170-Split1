@@ -25,7 +25,7 @@ let previousScene = null;
 const VERSION_NUMBER = "0.3.6";
 //reserve some keyboard variables
 let keyP, keyO, keyESCAPE, keyENTER, keyLEFT, keyRIGHT, keyDOWN, keyUP, keySPACE,
-    keyY, keyN, keyT, keyB, keyW, keyA, keyS, keyD, keyH, keyJ, keyK, keyL;
+    keyY, keyN, keyT, keyB, keyW, keyA, keyS, keyD, keyH, keyJ, keyK, keyL, keyE, keyI;
 
 //colors for ui elements
 let uiScene; // global variable for current active ui scene
@@ -36,7 +36,7 @@ const SHOP_LIGHT = 0x8cb05a;
 const COLOR_DARK = 0xf1b55f;
 const SHOP_DARK = 0x658442;
 const Random = Phaser.Math.Between;
-const font = 'helvetica';
+const font =  'realize_my_passionregular';
 
 let currentDay = 0;
 let hasSoldForDay = false;
@@ -129,9 +129,23 @@ let playerVariables = {
             "Lavender": 0,
             "Tulip": 0,
             "Orchid": 0
+        },
+        decorations: {
+            "Bench": 0,
+            "Bush": 0,
+            "Fence": 0
         }
     }
 }
+
+let inventoryTabsUpdated = {
+    'honey': false,
+    'items': false,
+    'flowers': false,
+    'seeds': false,
+    'decorations': false
+}
+
 let shopInventory = {
     "Seeds": {
         "Daisy": {"amount": 2,"cost":2},
@@ -145,6 +159,9 @@ let shopInventory = {
         "Beehive":{"amount": 2,"cost":12},
         "Clipper":{"amount":2,"cost":10}
         //"Fertilizer":{"amount": 5,"cost": 4}
+    },
+    "Decorations":{
+        "Bench":{"amount": 4,"cost":7}
     }
 }
 
