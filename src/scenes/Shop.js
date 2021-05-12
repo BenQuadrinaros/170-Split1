@@ -34,10 +34,10 @@ class Shop extends Phaser.Scene {
         this.player;
         console.log("Previous scene was :", this.previousScene);
         if(this.previousScene === "hubScene"){
-            this.player = new HubPlayer(this, 'player', 0, 4*config.width/5, 5*config.height/6, game.config.width, game.config.height, [[135, 305], [380, 270], [game.config.width+50, 335]]).setDepth(-1);
+            this.player = new HubPlayer(this, 'player', 0, 4*config.width/5, 5*config.height/6, game.config.width, game.config.height, [[135, 330], [380, 295], [game.config.width+50, 350]]).setDepth(-1);
         }
         else{
-            this.player = new HubPlayer(this, 'player', 0, config.width/3, 3*config.height/4, game.config.width, game.config.height, [[135, 305], [380, 270], [game.config.width+50, 335]]).setDepth(-1);
+            this.player = new HubPlayer(this, 'player', 0, config.width/3, 3*config.height/4, game.config.width, game.config.height, [[135, 330], [380, 295], [game.config.width+50, 350]]).setDepth(-1);
         }
         this.player.setScale(0.65);
 
@@ -90,6 +90,8 @@ class Shop extends Phaser.Scene {
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+        keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+        keyI = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.I);
     }
 
     createBackgroundImages(){
@@ -133,6 +135,8 @@ class Shop extends Phaser.Scene {
             this.backpack.setAlpha(0.9);
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
             keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+            keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+            keyI = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.I);
         });
 
         //Have player move towards the mouse on pointer down
@@ -259,7 +263,7 @@ class Shop extends Phaser.Scene {
 
     updateCheckMiscKeyboard(){
         //If the player press B open the backpack
-        if (Phaser.Input.Keyboard.JustDown(keyB)){
+        if (Phaser.Input.Keyboard.JustDown(keyB)  || Phaser.Input.Keyboard.JustDown(keyE) || Phaser.Input.Keyboard.JustDown(keyI)){
             this.music.playSFX("backpackOpen");
             this.scene.pause('shopScene');
             this.scene.launch("backpackUI", {previousScene: "shopScene"});

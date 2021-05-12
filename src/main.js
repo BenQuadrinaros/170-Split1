@@ -25,7 +25,7 @@ let previousScene = null;
 const VERSION_NUMBER = "0.3.6";
 //reserve some keyboard variables
 let keyP, keyO, keyESCAPE, keyENTER, keyLEFT, keyRIGHT, keyDOWN, keyUP, keySPACE,
-    keyY, keyN, keyT, keyB, keyW, keyA, keyS, keyD, keyH, keyJ, keyK, keyL;
+    keyY, keyN, keyT, keyB, keyW, keyA, keyS, keyD, keyH, keyJ, keyK, keyL, keyE, keyI;
 
 //colors for ui elements
 let uiScene; // global variable for current active ui scene

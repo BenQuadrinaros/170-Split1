@@ -286,6 +286,8 @@ class Hub extends Phaser.Scene {
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+        keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+        keyI = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.I);
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
@@ -433,6 +435,8 @@ class Hub extends Phaser.Scene {
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
             keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
             keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+            keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+            keyI = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.I);
         });
 
         //Have player move towards the mouse on pointer down
@@ -597,7 +601,7 @@ class Hub extends Phaser.Scene {
         }
 
         //Input to place item in backpack
-        if (Phaser.Input.Keyboard.JustDown(keyB)) {
+        if (Phaser.Input.Keyboard.JustDown(keyB) || Phaser.Input.Keyboard.JustDown(keyE) || Phaser.Input.Keyboard.JustDown(keyI)) {
             if(this.wateringRotate == null) {
                 this.placeHeldItemInBag();
                 playerInventoryUpdated = true;
@@ -607,7 +611,7 @@ class Hub extends Phaser.Scene {
 
     updateCheckMiscKeyboard() {
         //If the player press B open the backpack
-        if (Phaser.Input.Keyboard.JustDown(keyB)) {
+        if (Phaser.Input.Keyboard.JustDown(keyB) || Phaser.Input.Keyboard.JustDown(keyE) || Phaser.Input.Keyboard.JustDown(keyI)) {
             this.music.playSFX("backpackOpen");
             this.scene.pause('hubScene');
             this.scene.launch("backpackUI", {previousScene: "hubScene"});
@@ -783,6 +787,8 @@ class Hub extends Phaser.Scene {
         console.log("ReenableEsc called");
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+        keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+        keyI = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.I);
         keyENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
     }
 
@@ -1223,7 +1229,11 @@ class Hub extends Phaser.Scene {
         if (heldItem instanceof Flower) {
             //console.log(`Storing held flower ${heldItem.type} in inventory.`)
             //console.log(`before storage ${playerVariables.inventory.flowers[heldItem.type]}`)
-            playerVariables.inventory.flowers[heldItem.type] += 1;
+            if(heldItem.age <= 1){
+                playerVariables.inventory.seeds[heldItem.type] += 1;
+            } else{
+                playerVariables.inventory.flowers[heldItem.type] += 1;
+            }
             //console.log(`after storage ${playerVariables.inventory.flowers[heldItem.type]}`)
         } else if (heldItem instanceof Sprinkler) {
             //If item has highlight, hide that as well

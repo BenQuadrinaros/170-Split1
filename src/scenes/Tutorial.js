@@ -287,9 +287,7 @@ class Tutorial extends Phaser.Scene {
         playerVariables.inventory.seeds["Daisy"] = 0;
         playerVariables.inventory.items["Clipper"] = 0;
         //Destroy the default garden items
-        let tempLoc = this.gridToCoord(1, 4);
         gardenGrid[0][5].item = null; //Make sure the player doesn't spawn in a bramble
-        gardenGrid[0][9].item = new Weed(tempLoc[0], tempLoc[1]);
         gardenGrid[1][4].item = null;
         gardenGrid[1][6].item = null;
         gardenGrid[2][5].item = null;
@@ -307,6 +305,8 @@ class Tutorial extends Phaser.Scene {
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+        keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+        keyI = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.I);
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
@@ -458,6 +458,8 @@ class Tutorial extends Phaser.Scene {
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
             keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
             keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+            keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+            keyI = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.I);
             if(!this.playerHasEquippedFirstSeed && (playerVariables.inventory.seeds["Daisy"] === 0)){
                 this.playerHasEquippedFirstSeed = true;
             } else if(this.playerHasWateredFirstSeed && !this.playerHasEquippedFullFlower && (playerVariables.inventory.flowers["Daisy"] === 0)){
@@ -586,7 +588,7 @@ class Tutorial extends Phaser.Scene {
         }
 
         //Input to place item in backpack
-        if (Phaser.Input.Keyboard.JustDown(keyB)) {
+        if (Phaser.Input.Keyboard.JustDown(keyB)  || Phaser.Input.Keyboard.JustDown(keyE) || Phaser.Input.Keyboard.JustDown(keyI)) {
             if(this.wateringRotate == null) {
                 this.placeHeldItemInBag();
                 playerInventoryUpdated = true;
@@ -615,7 +617,7 @@ class Tutorial extends Phaser.Scene {
         
 
         //If the player press B open the backpack
-        if (Phaser.Input.Keyboard.JustDown(keyB)) {
+        if (Phaser.Input.Keyboard.JustDown(keyB) || Phaser.Input.Keyboard.JustDown(keyE) || Phaser.Input.Keyboard.JustDown(keyI)) {
             console.log("Pressing B");
             this.music.playSFX("backpackOpen");
             this.scene.pause('tutorialScene');
@@ -776,6 +778,8 @@ class Tutorial extends Phaser.Scene {
         console.log("ReenableEsc called");
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+        keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+        keyI = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.I);
     }
 
     updateMoveHighlight() {
@@ -1110,10 +1114,11 @@ class Tutorial extends Phaser.Scene {
     placeHeldItemInBag(){
         console.log(heldItem)
         if (heldItem instanceof Flower) {
-            console.log(`Storing held flower ${heldItem.type} in inventory.`)
-            console.log(`before storage ${playerVariables.inventory.flowers[heldItem.type]}`)
-            playerVariables.inventory.flowers[heldItem.type] += 1;
-            console.log(`after storage ${playerVariables.inventory.flowers[heldItem.type]}`)
+            if(heldItem.age <= 1){
+                playerVariables.inventory.seeds[heldItem.type] += 1;
+            } else{
+                playerVariables.inventory.flowers[heldItem.type] += 1;
+            }
         } else if (heldItem instanceof Sprinkler) {
             //If item has highlight, hide that as well
             playerVariables.inventory.items["Sprinkler"] += 1;
@@ -1144,6 +1149,7 @@ class Tutorial extends Phaser.Scene {
         this.currDialogMaximum = -1;
         this.currDialogSection = 1;
         this.playerIsInDialog = false;
+        this.tutorialWeedCreated = false;
     }
 
     advanceTutorial(){
@@ -1183,6 +1189,33 @@ class Tutorial extends Phaser.Scene {
             inventoryTabsUpdated["flowers"] = true;
         }
         else if(!this.playerHasDealtWithWeeds){
+            if(!this.tutorialWeedCreated){
+                let idealRow = 0;
+                let idealCol = 10;
+                console.log("About to look at grid [", idealRow, ", ", idealCol, "], which has ", gardenGrid[idealRow][idealCol].item);
+                if(gardenGrid[idealRow][idealCol].item != null){
+                    let colOffset = 0;
+                    let rowOffset = 0;
+                    let satisfied = false;
+                    while(!satisfied){
+                        colOffset += 1;
+                        console.log("About to look at grid [", idealRow, ", ", idealCol, "], which has ", gardenGrid[idealRow][idealCol].item);
+                        if(gardenGrid[idealRow + rowOffset][idealCol - colOffset].item == null){
+                            satisfied = true;
+                            idealRow += rowOffset;
+                            idealCol -= colOffset;
+                        }
+                        else if(colOffset %3 == 0 && colOffset != 0){
+                            colOffset = -1;
+                            rowOffset += 1;
+                        }
+                    }
+                }
+                let tempWeedLoc = this.gridToCoord(idealCol, idealRow);
+                gardenGrid[idealRow][idealCol].item = new Weed(tempWeedLoc[0], tempWeedLoc[1]);
+                gardenGrid[idealRow][idealCol].renderPlot(this, tempWeedLoc);
+                this.tutorialWeedCreated = true;
+            }
             if(this.currDialogMaximum != 6){
                 return;
             }
