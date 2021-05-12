@@ -88,8 +88,8 @@ class PriceHistory extends Phaser.Scene{
     createPriceHistory(){
         console.log("creating price history;");
         console.log("Text Config: ", this.textConfiguration);
-        let amt = 8;
-        if (priceHistory.length < 8){
+        let amt = 10;
+        if (priceHistory.length < 10){
             amt = priceHistory.length;
         }
         for (let i = 1; i <= amt; i++){

@@ -47,7 +47,7 @@ class ShopUI extends Phaser.Scene {
 
     create() {
         //Background Toad
-        this.backgroundToad = this.add.image(config.width/2, config.height/10 + 15, 'toadLeckman').setScale(0.4).setDepth(100);
+        this.backgroundToad = this.add.image(config.width/2, config.height/10 + 18, 'toadLeckman').setScale(0.4).setDepth(100);
 
         uiScene = this;
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);

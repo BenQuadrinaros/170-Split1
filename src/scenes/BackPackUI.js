@@ -28,6 +28,8 @@ class BackPackUI extends Phaser.Scene {
         uiScene = this;
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+        keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+        keyI = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.I);
         //Text config without a background, which blends better with the background
         this.textConfig = {
             fontFamily: 'realize_my_passionregular',
@@ -313,7 +315,7 @@ class BackPackUI extends Phaser.Scene {
     }
 
     update() {
-        if (Phaser.Input.Keyboard.JustDown(keyESCAPE) || Phaser.Input.Keyboard.JustDown(keyB)) {
+        if (Phaser.Input.Keyboard.JustDown(keyESCAPE) || Phaser.Input.Keyboard.JustDown(keyB) || Phaser.Input.Keyboard.JustDown(keyE) || Phaser.Input.Keyboard.JustDown(keyI)) {
             //console.log("escape")
             music.playSFX("backpackOpen");
             this.scene.resume(this.previousScene);
