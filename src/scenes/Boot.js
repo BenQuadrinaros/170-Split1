@@ -21,8 +21,8 @@ class Boot extends Phaser.Scene {
             this.load.image("extraLargeGrass", "./assets/sprites/background/massiveGrassbackdrop.png")
             this.load.image("gardenBackground", "./assets/sprites/background/3xEmpty.png");
             this.load.image("exit", "./assets/sprites/background/LeftArrowGREEN.png");
-            this.load.image("dirtDry", "./assets/sprites/spritesheetFrames/plotDry.png");
-            this.load.image("dirtWet", "./assets/sprites/spritesheetFrames/plotWet.png");
+            this.load.image("dirtDry", "./assets/img/dirtDry.png");
+            this.load.image("dirtWet", "./assets/img/dirtWet.png");
             this.load.image("hive", "./assets/sprites/background/hive.png");
             this.load.image("bearBee", "./assets/sprites/character/beeTiny.png");
             this.load.image("largeBee", "./assets/sprites/character/bee.png");
@@ -67,6 +67,7 @@ class Boot extends Phaser.Scene {
             this.load.image('filledStar', './assets/sprites/old/orange.png');
             this.load.image('emptyStar', './assets/sprites/old/blue.png');
             this.load.image('simpleBox','./assets/sprites/UI/box_80x80.png');
+            this.load.image('infoBox','./assets/sprites/UI/moneyhoney.png');
             //For shop
             this.load.image('toadLeckman', './assets/sprites/character/mrleckman_510x300.png');
             this.load.image('townBackground', './assets/img/TOWNTEST.png');
@@ -100,9 +101,7 @@ class Boot extends Phaser.Scene {
             this.load.image('blueIcon','./assets/sprites/UI/blueIcon.png');
             this.load.image('purpleIcon','./assets/sprites/UI/purpleIcon.png');
             this.load.image('whiteIcon','./assets/sprites/UI/whiteIcon.png');
-            //this.load.image('redMinus', './assets/sprites/UI/minusRed_240.png');
             this.load.image('greenMinus', './assets/sprites/UI/minusGreen_240.png');
-            //this.load.image('greenPlus', './assets/sprites/UI/plusGreen_240.png');
             this.load.image('plusRed', './assets/sprites/UI/plusRed_240.png');
             this.load.image('sellYes', './assets/sprites/UI/sellYes.png');
             this.load.image('sellNo', './assets/sprites/UI/sellNo.png');

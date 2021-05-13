@@ -21,8 +21,8 @@ class Sprinkler {
     
     watering() {
         //console.log("watering");
-        if(playerVariables.money >= 1) {
-            playerVariables.money -= 1;
+        if(playerVariables.money >= .5) {
+            playerVariables.money -= .5;
             let range = 1;
             for (let row = this.gridy - range; row <= this.gridy + range; row++) {
                 if (row > -1 && row < gardenGrid.length) {

@@ -69,22 +69,9 @@ class ShopUI extends Phaser.Scene {
                 this.scene.stop("shopUIScene");
             });
         this.add.text(this.backpack.x, this.backpack.y, "EXIT").setOrigin(.5, .5);
-
-
-        //Add text showing how much money the player has
-        this.textConfig = {
-            fontFamily: 'realize_my_passionregular',
-            fontSize: "14px",
-            color: "#ffffff",
-            align: "center",
-            stroke: "#000000",
-            strokeThickness: 4,
-            padding: {
-                top: 5,
-                bottom: 5
-            },
-        };
-        this.currPlayerMoney = this.add.text(config.width / 4, config.height / 6 - 20, "Current Money: " + playerVariables.money, this.textConfig);
+        
+        //Tracker for Money and total Honey
+        this.infoDisplay = new InfoDisplay(this, "infoBox", 0, "Shop");
 
         this.selectedTab = "Seeds";
 
@@ -312,9 +299,11 @@ class ShopUI extends Phaser.Scene {
             menu = undefined;
             this.scene.resume(this.previousScene);
             this.scene.stop("shopUIScene");
-        } else {
-            this.currPlayerMoney.text = "Current Money: " + playerVariables.money;
         }
+        
+        //Update infor tracker
+        this.infoDisplay.update(this.backpack.x - 125, this.backpack.y, playerVariables.money, 
+            playerVariables.inventory.honey["total"]);
     }
 }
 

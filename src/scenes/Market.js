@@ -97,24 +97,8 @@ class Market extends Phaser.Scene {
                 this.state = "approaching";
 
                 if(this.customersInLine.length > 1){
-                    /*let previousXPos = 640;
-                    for(let i = 0; i < this.customersInLine.length; ++i){
-                        console.log("Customer ", i, " x is: ", this.customersInLine[i].x, ", difference from prevX is", (previousXPos - this.customersInLine[i].x));
-                        previousXPos = this.customersInLine[i].x;
-                    }*/
                     for(let i = 1; i < this.customersInLine.length; i++) {
                         this.customersInLine[i].approach(500*(i+1));
-                        /*let tempRef = this.createCustomersInLine[i];
-                        this.time.delayedCall(500*(i+1), () => {
-                            /*console.log("Telling to approach 1:", this.createCustomersInLine[i]);
-                            this.customersInLine[i].approach();*/
-                          //  tempRef.approach();
-                        //}, [tempRef]);*/
-                        /*if(i == this.customersInLine.length - 1) {
-                            this.time.delayedCall(500*(i+1) + 50, () => {
-                                this.customersInLine.splice(0, 1);
-                            });
-                        }*/
                     }
                 
                     this.npcRef = this.npc;
@@ -789,6 +773,8 @@ class Market extends Phaser.Scene {
     createPriceChanging() {
         //Create a spacer for different types
         let typesUsed = 0;
+        //this.add.image(config.width / 5, config.height / 2, "simpleBox").setScale(2, 4.5).setDepth(99);
+
         //Price Setting Yellow
         if (playerVariables.inventory.honey["yellow"]) {
             typesUsed += 1;
