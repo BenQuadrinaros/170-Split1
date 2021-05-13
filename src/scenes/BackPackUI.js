@@ -33,7 +33,7 @@ class BackPackUI extends Phaser.Scene {
         //Text config without a background, which blends better with the background
         this.textConfig = {
             fontFamily: 'realize_my_passionregular',
-            fontSize: "14px",
+            fontSize: "16px",
             color: "#ffffff",
             align: "center",
             stroke: "#000000",
@@ -83,7 +83,9 @@ class BackPackUI extends Phaser.Scene {
                 inventoryTabsUpdated["seeds"] = false;
                 this.scene.stop();
             });
-        this.add.text(this.backpack.x, this.backpack.y, "EXIT").setOrigin(.5, .5);
+        this.textConfig.fontSize = "24px";
+        this.add.text(this.backpack.x, this.backpack.y, "EXIT", this.textConfig).setOrigin(.5, .5);
+        this.textConfig.fontSize = "16px";
         var db = createDataBaseInventory(5);
 
 
@@ -132,7 +134,7 @@ class BackPackUI extends Phaser.Scene {
                         height: height,
                         background: scene.rexUI.add.roundRectangle(0, 0, 20, 20, 0).setStrokeStyle(lineWidth, COLOR_DARK),
                         icon: scene.add.image(0, 0, img).setScale(scale, scale),
-                        text: scene.add.text(0, 0, item.id + ": " + item.amt),
+                        text: scene.add.text(0, 0, item.id + ": " + item.amt, uiScene.textConfig),
 
                         space: {
                             icon: 10,

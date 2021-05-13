@@ -244,7 +244,7 @@ class Boot extends Phaser.Scene {
 
     create(){
         var realizeMyPassionRegular = new FontFace('realize_my_passionregular',
-                'url(/styles/realize-my-passion.regular-webfont.woff2)',
+                'url(/styles/RealizeMyPassion.ttf)',
                 {
                     style: 'normal',
                     weight: 'normal'

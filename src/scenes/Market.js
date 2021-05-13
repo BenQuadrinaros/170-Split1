@@ -790,7 +790,7 @@ class Market extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["yellow"] += .25;
-                    this.yellowPriceText.text = "\tYellow\n" + "\t" + priceMap["yellow"].toFixed(2) + "$/Jar";
+                    this.yellowPriceText.text = "\tYellow\n" + "\t$" + priceMap["yellow"].toFixed(2) + "/Jar";
                     this.yellowPlus.setFrame(1);
                 })
                 .on("pointerup", () => {
@@ -811,14 +811,14 @@ class Market extends Phaser.Scene {
                     if(priceMap["yellow"] > 0){
                         priceMap["yellow"] -= .25;
                     }
-                    this.yellowPriceText.text = "\tYellow\n" + "\t" + priceMap["yellow"].toFixed(2) + "$/Jar";
+                    this.yellowPriceText.text = "\tYellow\n" + "\t$" + priceMap["yellow"].toFixed(2) + "/Jar";
                     this.yellowMinus.setFrame(1);
                 })
                 .on("pointerup", () => {
                     this.yellowMinus.setFrame(0);
                 });
             this.yellowPriceText = this.add.text((config.width / 5) - 75, (0.75 + 0.5*typesUsed) * config.height / 5,
-                "\tYellow\n" + "\t" + priceMap["yellow"].toFixed(2) + "$/Jar", this.textConfig)
+                "\tYellow\n" + "\t$" + priceMap["yellow"].toFixed(2) + "/Jar", this.textConfig)
                 .setOrigin(.5, .5).setDepth(100).setAlpha(.75);
         }
         //Price Setting Blue
@@ -836,7 +836,7 @@ class Market extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["blue"] += .25;
-                    this.bluePriceText.text = "\tBlue\n" + "\t" + priceMap["blue"].toFixed(2) + "$/Jar";
+                    this.bluePriceText.text = "\tBlue\n" + "\t$" + priceMap["blue"].toFixed(2) + "/Jar";
                     this.bluePlus.setFrame(1);
                 })
                 .on("pointerup", () => {
@@ -856,14 +856,14 @@ class Market extends Phaser.Scene {
                     if(priceMap["blue"] > 0){
                         priceMap["blue"] -= .25;
                     }
-                    this.bluePriceText.text = "\tBlue\n" + "\t" + priceMap["blue"].toFixed(2) + "$/Jar";
+                    this.bluePriceText.text = "\tBlue\n" + "\t$" + priceMap["blue"].toFixed(2) + "/Jar";
                     this.blueMinus.setFrame(1);
                 })
                 .on("pointerup", () => {
                     this.blueMinus.setFrame(0);
                 });
             this.bluePriceText = this.add.text((config.width / 5) - 75, (0.75 + 0.5*typesUsed) * config.height / 5,
-                "Blue\n" + "\t" + priceMap["blue"].toFixed(2) + "$/Jar", this.textConfig)
+                "Blue\n" + "\t$" + priceMap["blue"].toFixed(2) + "/Jar", this.textConfig)
                 .setOrigin(.5, .5).setDepth(100).setAlpha(.75);
         }
         //Price Setting Pink
@@ -882,7 +882,7 @@ class Market extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["pink"] += .25;
-                    this.pinkPriceText.text = "\tPink\n" + "\t" + priceMap["pink"].toFixed(2) + "$/Jar";
+                    this.pinkPriceText.text = "\tPink\n" + "\t$" + priceMap["pink"].toFixed(2) + "/Jar";
                     this.pinkPlus.setFrame(1);
                 })
                 .on("pointerup", () => {
@@ -903,14 +903,14 @@ class Market extends Phaser.Scene {
                     if(priceMap["pink"] > 0){
                         priceMap["pink"] -= .25;
                     }
-                    this.pinkPriceText.text = "\tPink\n" + "\t" + priceMap["pink"].toFixed(2) + "$/Jar";
+                    this.pinkPriceText.text = "\tPink\n" + "\t$" + priceMap["pink"].toFixed(2) + "/Jar";
                     this.pinkMinus.setFrame(1);
                 })
                 .on("pointerup", () => {
                     this.pinkMinus.setFrame(0);
                 });
             this.pinkPriceText = this.add.text((config.width / 5) - 75, (0.75 + 0.5*typesUsed) * config.height / 5,
-                "Pink\n" + "\t" + priceMap["pink"].toFixed(2) + "$/Jar", this.textConfig)
+                "Pink\n" + "\t$" + priceMap["pink"].toFixed(2) + "/Jar", this.textConfig)
                 .setOrigin(.5, .5).setDepth(100).setAlpha(.75);
         }
         //Price Setting Purple
@@ -928,7 +928,7 @@ class Market extends Phaser.Scene {
                 })
                 .on("pointerdown", () => {
                     priceMap["purple"] += .25;
-                    this.purplePriceText.text = "\tPurple\n" + "\t" + priceMap["purple"].toFixed(2) + "$/Jar";
+                    this.purplePriceText.text = "\tPurple\n" + "\t$" + priceMap["purple"].toFixed(2) + "/Jar";
                     this.purplePlus.setFrame(1);
                 })
                 .on("pointerup", () => {
@@ -949,7 +949,7 @@ class Market extends Phaser.Scene {
                     if(priceMap["purple"] > 0){
                         priceMap["purple"] -= .25;
                     }
-                    this.purplePriceText.text = "\tPurple\n" + "\t" + priceMap["purple"].toFixed(2) + "$/Jar";
+                    this.purplePriceText.text = "\tPurple\n" + "\t$" + priceMap["purple"].toFixed(2) + "/Jar";
                     this.purpleMinus.setFrame(1);
                 })
                 .on("pointerup", () => {
@@ -957,7 +957,7 @@ class Market extends Phaser.Scene {
                 });
             //default purple price
             this.purplePriceText = this.add.text((config.width / 5) - 75, (0.75 + 0.5*typesUsed) * config.height / 5,
-                "Purple\n" + "\t" + priceMap["purple"].toFixed(2) + "$/Jar", this.textConfig)
+                "Purple\n" + "\t$" + priceMap["purple"].toFixed(2) + "/Jar", this.textConfig)
                 .setOrigin(.5, .5).setDepth(100).setAlpha(.75);
         }
 
