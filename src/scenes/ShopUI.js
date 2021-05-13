@@ -47,7 +47,7 @@ class ShopUI extends Phaser.Scene {
 
     create() {
         //Background Toad
-        this.backgroundToad = this.add.image(config.width/2, config.height/10 + 18, 'toadLeckman').setScale(0.4).setDepth(100);
+        this.backgroundToad = this.add.image(config.width/2, config.height/10 + 21, 'toadLeckman').setScale(0.4).setDepth(100);
 
         uiScene = this;
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
@@ -68,8 +68,24 @@ class ShopUI extends Phaser.Scene {
                 this.scene.resume(this.previousScene);
                 this.scene.stop("shopUIScene");
             });
+
+        //Text config without a background, which blends better with the background
+        this.textConfig = {
+            fontFamily: 'realize_my_passionregular',
+            fontSize: "24px",
+            color: "#ffffff",
+            align: "center",
+            stroke: "#000000",
+            strokeThickness: 4,
+            padding: {
+                top: 5,
+                bottom: 5
+            },
+        };
+
         this.add.text(this.backpack.x, this.backpack.y, "EXIT").setOrigin(.5, .5);
-        
+        this.textConfig.fontSize = "16px";
+
         //Tracker for Money and total Honey
         this.infoDisplay = new InfoDisplay(this, "infoBox", 0, "Shop");
 
@@ -133,7 +149,7 @@ class ShopUI extends Phaser.Scene {
 
                         background: scene.rexUI.add.roundRectangle(0, 0, 20, 20, 0).setStrokeStyle(2, SHOP_DARK),
                         icon: scene.add.image(0, 0, img).setScale(scale, scale),
-                        text: scene.add.text(0, 0, item.id+'\n'+item.cost+"$"),
+                        text: scene.add.text(0, 0, item.id+'\n'+"$"+item.cost, uiScene.textConfig),
 
                         space: {
                             icon: 10,
