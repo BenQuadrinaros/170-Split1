@@ -110,6 +110,20 @@ class Settings extends Phaser.Scene {
             input: 'drag', // 'drag'|'click'
         }).layout();
 
+        let beeBumpText = this.add.text(centerX, centerY/3 + 9*textSpacer/2, "Bee Bump Collisions:\n"
+            + playerVariables.beeBump, this.textConfig).setOrigin(.5, .5).setAlpha(.75);
+        beeBumpText.setInteractive();
+        beeBumpText.on('pointerover', () => {
+            beeBumpText.setAlpha(1);
+        });
+        beeBumpText.on("pointerout", () => {
+            beeBumpText.setAlpha(.75);
+        });
+        beeBumpText.on('pointerup', () => {
+            playerVariables.beeBump = !(playerVariables.beeBump);
+            beeBumpText.text = "Bee Bump Collisions:\n" + playerVariables.beeBump;
+            console.log("bee bump?", playerVariables.beeBump);
+        })
 
         this.textConfig.fontSize = "28px";
         let sceneNameText = this.add.text(centerX, centerY/5, "Settings", this.textConfig).setOrigin(0.5, 0.5);

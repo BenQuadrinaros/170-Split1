@@ -87,7 +87,7 @@ class ShopUI extends Phaser.Scene {
         this.textConfig.fontSize = "16px";
 
         //Tracker for Money and total Honey
-        this.infoDisplay = new InfoDisplay(this, "infoBox", 0, "Shop");
+        this.infoDisplay = new InfoDisplay(this, "infoBox", 0, "ShopUI");
 
         this.selectedTab = "Seeds";
 
@@ -318,8 +318,9 @@ class ShopUI extends Phaser.Scene {
         }
         
         //Update infor tracker
-        this.infoDisplay.update(this.backpack.x - 125, this.backpack.y, playerVariables.money, 
-            playerVariables.inventory.honey["total"]);
+        this.infoDisplay.update(this.cameras.main.scrollX + config.width * .1, 
+            this.cameras.main.scrollY + config.height * .15, 
+            playerVariables.money, playerVariables.inventory.honey["total"]);
     }
 }
 

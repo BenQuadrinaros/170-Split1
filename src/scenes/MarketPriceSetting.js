@@ -19,6 +19,11 @@ class MarketPriceSetting extends Phaser.Scene {
     update(){
         this.updateCheckPause();
         this.updateCheckContinue();
+
+        //Update info tracker
+        this.infoDisplay.update(this.cameras.main.scrollX + config.width * .1, 
+            this.cameras.main.scrollY + config.height * .15, 
+            playerVariables.money, playerVariables.inventory.honey["total"]);
     }
 
     createControls(){
@@ -71,6 +76,9 @@ class MarketPriceSetting extends Phaser.Scene {
             this.scene.stop();
         });
         this.continueText.setAlpha(.5);
+        
+        //Tracker for Money and total Honey
+        this.infoDisplay = new InfoDisplay(this, "infoBox", 0, "MarketPriceSetting");
     }
 
 

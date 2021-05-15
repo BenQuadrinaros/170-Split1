@@ -41,7 +41,6 @@ const font =  'realize_my_passionregular';
 let currentDay = 0;
 let hasSoldForDay = false;
 
-let upgrades = { "bike": 0 };
 //Starting garden state
 let flow0 = new Flower(2, 3, "Daisy");
 let flow1 = new Flower(2, 3, "Daisy");
@@ -98,6 +97,8 @@ let playerVariables = {
     money: 10.00,
     reputation: 0,
     water: 0,
+    beeBump: false,
+    hasWon: false,
     name: "Bearry",
     score: [false, false, false, false, false],
     inventory: {

@@ -78,7 +78,8 @@ class Hub extends Phaser.Scene {
         //console.log("score is "+playerVariables.score)
         let hasWon = true;
         for(let star of playerVariables.score) { if(!star) { hasWon = false; } }
-        if (hasWon) {
+        if (!(playerVariables.hasWon) && hasWon) {
+            playerVariables.hasWon = true;
             this.scene.pause();
             this.music.stop();
             this.scene.start("winScene");
@@ -576,8 +577,9 @@ class Hub extends Phaser.Scene {
         for(let honeyType in this.popupImages) {
             this.popupImages[honeyType].changePosition(this.backpack.x, this.backpack.y + 75);
         }
-        this.infoDisplay.update(this.backpack.x - 125, this.backpack.y, playerVariables.money, 
-            playerVariables.inventory.honey["total"]);
+        this.infoDisplay.update(this.cameras.main.scrollX + config.width * .145, 
+            this.cameras.main.scrollY + config.height * .185, 
+            playerVariables.money, playerVariables.inventory.honey["total"]);
     }
 
     updateHeldItemBehavior() {
@@ -797,7 +799,7 @@ class Hub extends Phaser.Scene {
 
     spigotAnimate() {
         if(this.tempCan) { this.tempCan.destroy(); }
-        this.tempCan = this.add.image(this.spigot.x - 20, this.spigot.y + this.spigot.height/4, "water"+playerVariables.water);
+        this.tempCan = this.add.image(this.spigot.x - 25, this.spigot.y + this.spigot.height/4, "water"+playerVariables.water);
         this.tempCan.flipX = true;
         this.tempCan.depth = this.spigot.depth+1;
         this.tempCan.setScale(.75, .75);
@@ -805,7 +807,7 @@ class Hub extends Phaser.Scene {
         //Set the particles to the appropriate depth
         this.wateringParticle.setDepth(this.spigot.depth+1);
         //Place emitter and activate it
-        this.spigotEmitter.setPosition(this.spigot.x-15, this.spigot.y-20);
+        this.spigotEmitter.setPosition(this.spigot.x-20, this.spigot.y-20);
         this.spigotEmitter.setAngle({min: 75, max: 105});
         this.spigotEmitter.on = true;
 
