@@ -76,8 +76,9 @@ class Shop extends Phaser.Scene {
         }
 
         //Update info tracker
-        this.infoDisplay.update(this.backpack.x - 125, this.backpack.y, playerVariables.money, 
-            playerVariables.inventory.honey["total"]);
+        this.infoDisplay.update(this.cameras.main.scrollX + config.width * .1, 
+            this.cameras.main.scrollY + config.height * .15, 
+            playerVariables.money, playerVariables.inventory.honey["total"]);
     }
 
     createControls(){

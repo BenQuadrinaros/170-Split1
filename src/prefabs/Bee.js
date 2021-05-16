@@ -166,8 +166,9 @@ class Bee extends Phaser.GameObjects.Sprite {
 		                    swarmAvg.add(fellowBoids[i].position);
 		                }
 		            }
-		            // If there are enough fellow bees around, try to engage with the player
-		            if (nearbySwarm.length >= 3) {
+		            // If player has enabled bee collision and
+					// there are enough fellow bees around, try to engage with the player
+		            if (playerVariables.beeBump && nearbySwarm.length >= 3) {
 		                // Find average position of nearby swarm
 		                swarmAvg.x /= nearbySwarm.length;
 		                swarmAvg.y /= nearbySwarm.length;
@@ -175,8 +176,8 @@ class Bee extends Phaser.GameObjects.Sprite {
 		                let pushDirection = playerLocation.subtract(swarmAvg);
 		                pushDirection.normalize();
 		                //console.log(pushDirection);
-		                player.x += pushDirection.x/10;
-		                player.y += pushDirection.y/10;
+		                player.x += pushDirection.x/6;
+		                player.y += pushDirection.y/6;
 	            	}	
 	        	}
 
