@@ -63,11 +63,11 @@ class Boot extends Phaser.Scene {
             //For hubScene
             this.load.image('background', './assets/sprites/background/garden_base.png');
             this.load.image('dialogbox', './assets/img/dialogbox.png');
-            this.load.image('playerWealthTracker', './assets/sprites/UI/moneyhoney.png');
             this.load.image('filledStar', './assets/sprites/old/orange.png');
             this.load.image('emptyStar', './assets/sprites/old/blue.png');
             this.load.image('simpleBox','./assets/sprites/UI/box_80x80.png');
             this.load.image('infoBox','./assets/sprites/UI/moneyhoney.png');
+            this.load.image('snapshot','./assets/sprites/UI/camera.png');
             //For shop
             this.load.image('toadLeckman', './assets/sprites/character/mrleckman_510x300.png');
             this.load.image('townBackground', './assets/img/TOWNTEST.png');
