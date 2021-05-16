@@ -74,6 +74,10 @@ class Shop extends Phaser.Scene {
         if(playerInventoryUpdated){
             this.backpack.setFrame(1);   
         }
+
+        //Update info tracker
+        this.infoDisplay.update(this.backpack.x - 125, this.backpack.y, playerVariables.money, 
+            playerVariables.inventory.honey["total"]);
     }
 
     createControls(){
@@ -175,6 +179,9 @@ class Shop extends Phaser.Scene {
                 this.scene.launch("backpackUI", {previousScene:"shopScene"});
             });
         this.backpack.setFrame(0);
+
+        //Tracker for Money and total Honey
+        this.infoDisplay = new InfoDisplay(this, "infoBox", 0, "Shop");
     }
 
     updateCheckPause(){

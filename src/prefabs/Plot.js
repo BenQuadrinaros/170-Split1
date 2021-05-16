@@ -14,7 +14,10 @@ class Plot {
         this.dirt = null;
         this.mulch = null;
         this.spot = null;
+
+        //Interaction Markers
         this.honeyIndicator = null;
+        this.exclamation = null;
     }
 
     renderPlot(scene, coords) {
@@ -26,7 +29,7 @@ class Plot {
             img = "dirtDry";
             if(this.water) { img = "dirtWet"}
             this.dirt = scene.add.image(spotx, spoty, img);
-            this.dirt.setOrigin(.5, .5).setScale(.25, .25);
+            this.dirt.setOrigin(.5, .5).setScale(.45, .45);
             scene.add.existing(this.dirt);
             this.dirt.depth = this.dirt.y/10 - 20;
         }
@@ -39,20 +42,17 @@ class Plot {
         if(this.item) {
             //console.log("putting",this.item,"at",spotx," ",spoty);
             this.spot = this.item.addToScene(scene, spotx, spoty);
-            if(this.item instanceof Hive){ 
-                console.log(this.item);
-                console.log(this.honeyIndicator);
-            }
-            if(this.item instanceof Hive && this.item.hasStock() && !this.honeyIndicator){
-                console.log("honey indicator added");
-                let hexColor = 0xE5A515;
+            if(this.item instanceof Hive && this.item.hasStock() && !this.honeyIndicator) {
+                let hexColor = 0xF9D55C;
                 let stock = this.item.stock;
-                if(stock['blue']>stock['yellow']+stock['pink']+stock['purple']) { hexColor = 0x252595; }
-                if(stock['purple']>stock['yellow']+stock['pink']+stock['blue']) { hexColor = 0x752595; }
-                if(stock['pink']>stock['yellow']+stock['blue']+stock['purple']) { hexColor = 0x952575; }
+                if(stock['blue']>stock['yellow']+stock['pink']+stock['purple']) { hexColor = 0x4E6FD3; }
+                if(stock['purple']>stock['yellow']+stock['pink']+stock['blue']) { hexColor = 0xB58FC2; }
+                if(stock['pink']>stock['yellow']+stock['blue']+stock['purple']) { hexColor = 0xDC715D; }
                 this.honeyIndicator = scene.add.ellipse(coords[0], coords[1] + 40, config.width / 10,
                     config.height / 10, hexColor);
-                this.honeyIndicator.alpha = .75;
+                this.honeyIndicator.depth = this.spot.depth - 1;
+                this.exclamation = scene.add.image(coords[0] + 25, coords[1] - 45, "!");
+                this.exclamation.depth = this.spot.depth + 1;
             }
         } 
         
@@ -74,6 +74,8 @@ class Plot {
         if(this.honeyIndicator) {
             this.honeyIndicator.destroy();
             this.honeyIndicator = null;
+            this.exclamation.destroy();
+            this.exclamation = null;
         }
     }
 }

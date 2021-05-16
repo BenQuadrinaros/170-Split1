@@ -70,6 +70,8 @@ class Hub extends Phaser.Scene {
         this.createGarden();
         //Initialize Bee Swarms
         this.createBees();
+        //Initialize Animations
+        this.createAnimations();
 
         //Check for special cases
         playerVariables.score = calculateEcologyScore();
@@ -134,7 +136,7 @@ class Hub extends Phaser.Scene {
         //Update player movement and location
         this.previousPlayerPosition = [this.player.x, this.player.y];
         //Make sure the player cannot move while watering
-        if(!(this.wateringEmitter.on)) { this.player.update(); }
+        if(!(this.wateringEmitter.on || this.tempCan)) { this.player.update(); }
         this.player.depth = this.player.y / 10 + 3;
         this.updateCheckCollisions();
 
@@ -175,6 +177,7 @@ class Hub extends Phaser.Scene {
             for (let col = 0; col < gardenGrid[0].length; col++) {
                 let loc = gardenGrid[row][col];
                 if (loc.item instanceof Sprinkler) {
+                    loc.item.watering();
                     loc.item.watering();
                     //console.log("found sprinkler at "+col+', '+row);
                 }
@@ -342,7 +345,8 @@ class Hub extends Phaser.Scene {
         this.hiveHighlightHold.alpha = 0;
 
         //create interactible backpack image
-        this.backpack = this.add.image(this.cameras.main.scrollX + config.width - 122, this.cameras.main.scrollY + config.height/5 - 10, 'backpackFrames')
+        this.backpack = this.add.image(this.cameras.main.scrollX + config.width - 122, 
+            this.cameras.main.scrollY + config.height/5 - 10, 'backpackFrames')
             .setInteractive().setAlpha(.9).setScale(.87)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1);
@@ -364,6 +368,23 @@ class Hub extends Phaser.Scene {
                 this.scene.launch("backpackUI", {previousScene: "hubScene"});
             });
         this.backpack.depth = 200;
+
+        //Tracker for Money and total Honey
+        this.infoDisplay = new InfoDisplay(this, "infoBox", 0, "Hub");
+
+        //Popups under the backpack for collecting Honey
+        this.popupTimers = {
+            "yellow": null,
+            "blue": null,
+            "purple": null,
+            "pink": null
+        };
+        this.popupImages = {
+            "yellow": new HoneyPopup(this, 0, 0, 0, "Yellow"),
+            "blue": new HoneyPopup(this, 0, 0, 0, "Blue"),
+            "purple": new HoneyPopup(this, 0, 0, 0, "Purple"),
+            "pink": new HoneyPopup(this, 0, 0, 0, "Pink")
+        };
     }
 
     createText() {
@@ -382,11 +403,7 @@ class Hub extends Phaser.Scene {
         };
 
         //Text that starts visible
-        this.turnText = this.add.text(6 * game.config.width / 7, game.config.height / 4, "Turns Remaining: ", this.textConfig).setOrigin(.5);
-        this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money.toFixed(2);
-        this.turnText.depth = 100;
         this.townAccess = this.add.text(15, 2 * config.height / 5 + 20, "Path to Town", this.textConfig).setOrigin(0, 0);
-
 
         //Text that starts invisible
         this.interactText = this.add.text(this.player.x, this.player.y, "'SPACE' to interact", this.textConfig).setOrigin(.5, .5).setVisible(false);
@@ -412,19 +429,6 @@ class Hub extends Phaser.Scene {
         this.fadeMessage = this.add.text(this.player.x, this.player.y, "Nada", this.textConfig);
         this.fadeMessage.setOrigin(0.5).setVisible(false);
         this.fadeMessage.depth = 200;
-        
-        this.popupTimers = {
-            "yellow": null,
-            "blue": null,
-            "purple": null,
-            "pink": null
-        };
-        this.popupImages = {
-            "yellow": new HoneyPopup(this, 0, 0, 0, "Yellow"),
-            "blue": new HoneyPopup(this, 0, 0, 0, "Blue"),
-            "purple": new HoneyPopup(this, 0, 0, 0, "Purple"),
-            "pink": new HoneyPopup(this, 0, 0, 0, "Pink")
-        }
     }
 
     createEvents() {
@@ -459,7 +463,7 @@ class Hub extends Phaser.Scene {
                 let plot = gardenGrid[row][col];
                 let coords = this.gridToCoord(col, row);
                 plot.renderPlot(this, coords);
-                if(plot.item instanceof Hive || plot.item instanceof Flower) {
+                if(plot.item instanceof Hive || (plot.item instanceof Flower && plot.item.age > 2)) {
                     this.path.push([coords[0], coords[1] - 25]);
                 }
             }
@@ -470,17 +474,6 @@ class Hub extends Phaser.Scene {
         this.spigot.setOrigin(.5, .5).setScale(.75, .75);
         this.spigot.depth = this.spigot.y / 10;
         this.waterHeld = null;
-
-        //Timed events for watering animations
-        this.wateringRotate = null;
-        //Particle emitter
-        this.wateringParticle = this.add.particles('droplet');
-        this.wateringEmitter = this.wateringParticle.createEmitter();
-        this.wateringEmitter.setLifespan(200);
-        this.wateringEmitter.setGravityY(800);
-        this.wateringEmitter.setScale(.025);
-        this.wateringEmitter.setSpeed({min: 125, max: 350});
-        this.wateringEmitter.on = false;
     }
 
     createBees() {
@@ -491,7 +484,7 @@ class Hub extends Phaser.Scene {
             let rand = Phaser.Math.Between(0, this.path.length-1);
             let temp = new Bee(this, 'bearBee', 0, this.path[rand][0], this.path[rand][1]);
             temp.setOrigin(.5).setScale(.25, .25).setVisible(true);
-            temp.depth = 200;
+            temp.depth = 101;
             this.swarm.push(temp);
         }
     }
@@ -543,6 +536,29 @@ class Hub extends Phaser.Scene {
         return usedNPCs;
     }
 
+    createAnimations() {
+        //Timed events for watering animations
+        this.wateringRotate = null;
+        this.tempCan = null;
+
+        //Particle emitter for Watering Can
+        this.wateringParticle = this.add.particles('droplet');
+        this.wateringEmitter = this.wateringParticle.createEmitter();
+        this.wateringEmitter.setLifespan(200);
+        this.wateringEmitter.setGravityY(800);
+        this.wateringEmitter.setScale(.025);
+        this.wateringEmitter.setSpeed({min: 125, max: 350});
+        this.wateringEmitter.on = false;
+
+        //Particle emitter for Spigot
+        this.spigotEmitter = this.wateringParticle.createEmitter();
+        this.spigotEmitter.setLifespan(120);
+        this.spigotEmitter.setGravityY(800);
+        this.spigotEmitter.setScale(.025);
+        this.spigotEmitter.setSpeed({min: 125, max: 350});
+        this.spigotEmitter.on = false;
+    }
+
     updateCheckPause() {
         //Pause Game
         if (Phaser.Input.Keyboard.JustDown(keyESCAPE)) {
@@ -560,6 +576,8 @@ class Hub extends Phaser.Scene {
         for(let honeyType in this.popupImages) {
             this.popupImages[honeyType].changePosition(this.backpack.x, this.backpack.y + 75);
         }
+        this.infoDisplay.update(this.backpack.x - 125, this.backpack.y, playerVariables.money, 
+            playerVariables.inventory.honey["total"]);
     }
 
     updateHeldItemBehavior() {
@@ -621,31 +639,25 @@ class Hub extends Phaser.Scene {
         // Quick day advancement for testing purposes
         if (Phaser.Input.Keyboard.JustDown(keyP)) {
             this.advanceDay();
-            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money.toFixed(2);
         }
         if (Phaser.Input.Keyboard.JustDown(keyO)) {
             playerVariables.money += 10;
-            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money.toFixed(2);
         }
         if (Phaser.Input.Keyboard.JustDown(keyH)) {
             playerVariables.inventory.honey["yellow"] += 3;
             playerVariables.inventory.honey["total"] += 3;
-            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money.toFixed(2);
         }
         if (Phaser.Input.Keyboard.JustDown(keyJ)) {
             playerVariables.inventory.honey["blue"] += 3;
             playerVariables.inventory.honey["total"] += 3;
-            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money.toFixed(2);
         }
         if (Phaser.Input.Keyboard.JustDown(keyK)) {
             playerVariables.inventory.honey["pink"] += 3;
             playerVariables.inventory.honey["total"] += 3;
-            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money.toFixed(2);
         }
         if (Phaser.Input.Keyboard.JustDown(keyL)) {
             playerVariables.inventory.honey["purple"] += 3;
             playerVariables.inventory.honey["total"] += 3;
-            this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + "\nMoney: " + playerVariables.money.toFixed(2);
         }
         // -------------------------------------------
     }
@@ -744,7 +756,7 @@ class Hub extends Phaser.Scene {
         this.time.addEvent({
             delay: 150,
             callback: () => {
-                //Set the particles to the apporpriate depth
+                //Set the particles to the appropriate depth
                 this.wateringParticle.setDepth(heldItem.image.depth+1);
                 //Place emitter and activate it
                 let xPos = heldItem.image.x;
@@ -781,6 +793,40 @@ class Hub extends Phaser.Scene {
             callbackScope: this
         });
 
+    }
+
+    spigotAnimate() {
+        if(this.tempCan) { this.tempCan.destroy(); }
+        this.tempCan = this.add.image(this.spigot.x - 20, this.spigot.y + this.spigot.height/4, "water"+playerVariables.water);
+        this.tempCan.flipX = true;
+        this.tempCan.depth = this.spigot.depth+1;
+        this.tempCan.setScale(.75, .75);
+
+        //Set the particles to the appropriate depth
+        this.wateringParticle.setDepth(this.spigot.depth+1);
+        //Place emitter and activate it
+        this.spigotEmitter.setPosition(this.spigot.x-15, this.spigot.y-20);
+        this.spigotEmitter.setAngle({min: 75, max: 105});
+        this.spigotEmitter.on = true;
+
+        //After a short delay, stop the emitter
+        this.time.addEvent({
+            delay: 1000 - playerVariables.water * 250,
+            callback: () => {
+                this.time.addEvent({
+                    delay: 250,
+                    callback: () => {
+                        this.tempCan.destroy();
+                        this.tempCan = null;
+                    },
+                    loop: false,
+                    callbackScope: this
+                });
+                this.spigotEmitter.on = false;
+            },
+            loop: false,
+            callbackScope: this
+        });
     }
 
     reenableEsc() {
@@ -841,7 +887,7 @@ class Hub extends Phaser.Scene {
                 obj = obj.image;
                 if(this.player.x + this.player.width/2 < obj.x + 120 
                     && this.player.x - this.player.width/2 > obj.x - 120
-                    && this.player.y + this.player.height/3 < obj.y + 50) {
+                    && this.player.y + this.player.height/3 > obj.y) {
                     //Overlapping significantly
                     this.player.x = this.previousPlayerPosition[0];
                     this.player.y = this.previousPlayerPosition[1];
@@ -903,21 +949,33 @@ class Hub extends Phaser.Scene {
             this.plotHighlight.y = this.spigot.y + this.spigot.height/3;
             //Logic for if player presses space near water spigot
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
-                //If the player is holding the can
-                if(heldItem instanceof WateringCan) {
+                if(this.tempCan) {
+                    //Spigot animation is currently happening
+                    //Do nothing
+                }
+                else if(heldItem instanceof WateringCan) {
+                    //If the player is holding the can
                     if(playerVariables.water == 4) {
                         //If the can is already full
                         this.fadeText("My watering can\nis already full.");
                     } else if(playerVariables.money >= .25) {
                         //If the player can afford to buy water
                         playerVariables.money -= .25;
-                        this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + 
-                            "\nMoney: " + playerVariables.money.toFixed(2);
-                        //Destory Watering Can and create a new one
-                        playerVariables.water = 4;
+                        //Play fill animation
                         heldItem.destroy();
-                        heldItem = new WateringCan();
-                        this.heldImg = 0;
+                        this.spigotAnimate();
+                        //Create a new Watering Can
+                        this.time.addEvent({
+                            delay: 1250 - playerVariables.water * 250,
+                            callback: () => {
+                                playerVariables.water = 4;
+                                heldItem = new WateringCan();
+                                heldType = "items";
+                                this.heldImg = 0;
+                            },
+                            loop: false,
+                            callbackScope: this
+                        });
                     } else {
                         //If player does not have enough money
                         this.fadeText("Not enough money!\nCosts $0.25 to water.");
@@ -928,18 +986,28 @@ class Hub extends Phaser.Scene {
                     if(playerVariables.money >= .25) {
                         //If the player can afford to buy water
                         playerVariables.money -= .25;
-                        this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + 
-                            "\nMoney: " + playerVariables.money.toFixed(2);
-                        //Create a new Watering Can and give to them
-                        playerVariables.water = 4;
+                        //Play fill animation
+                        this.spigotAnimate();
+                        //Create a new Watering Can
+                        this.time.addEvent({
+                            delay: 1250 - playerVariables.water * 250,
+                            callback: () => {
+                                playerVariables.water = 4;
+                                heldItem = new WateringCan();
+                                heldType = "items";
+                                this.heldImg = 0;
+                            },
+                            loop: false,
+                            callbackScope: this
+                        });
                     } else {
                         //If player does not have enough money
                         this.fadeText("Not enough money!\nCosts $0.25 to water.");
                         //Give them an empty can
+                        heldItem = new WateringCan();
+                        heldType = "items";
+                        this.heldImg = 0;
                     }
-                    heldItem = new WateringCan();
-                    heldType = "items";
-                    this.heldImg = 0;
                 } else {
                     this.fadeText("I need something to\nhold the water.");
                 }
@@ -971,6 +1039,8 @@ class Hub extends Phaser.Scene {
                 if (heldItem instanceof WateringCan && gardenGrid[row][col].item instanceof Flower) {
                     let spot = gardenGrid[row][col];
                     if(this.wateringEmitter.on) {
+                        //Watering animation is currently happening
+                        //Do nothing
                     } else if(playerVariables.water > 0) {
                         this.music.playSFX("waterFlowers");
                         spot.item.addWater();
@@ -1001,7 +1071,8 @@ class Hub extends Phaser.Scene {
                     let loc = gardenGrid[row][col];
                     let obj = loc.item;
 
-                    if (!(obj instanceof Bramble) && !(obj instanceof Hive && obj.hasStock()) && !(obj instanceof DecorativeWide && this.checkBenchOccupied(row, col))) { 
+                    if (!(obj instanceof Bramble) && !(obj instanceof Hive && obj.hasStock()) 
+                        && !(obj instanceof DecorativeWide && this.checkBenchOccupied(row, col))) { 
                         loc.item = null; 
                         //console.log("plot is now",gardenGrid[row][col].item);
                     }
@@ -1021,8 +1092,6 @@ class Hub extends Phaser.Scene {
                             }
                         }
                         obj.weeksSinceCollection = 0;
-                        this.turnText.text = "Honey: " + playerVariables.inventory.honey["total"] + 
-                            "\nMoney: " + playerVariables.money.toFixed(2);
                         loc.renderPlot(this, this.gridToCoord(col, row));
                     } else {
                         //If able to pick up this item
@@ -1051,7 +1120,7 @@ class Hub extends Phaser.Scene {
                                 }
                             } else {
                                 //If on the bee path, remove it
-                                if (obj instanceof Flower || obj instanceof Hive) {
+                                if ((obj instanceof Flower && obj.age > 2) || obj instanceof Hive) {
                                     this.path = this.removeFromPath(obj.image, this.path);
                                 }
                                 heldItem = obj;
@@ -1060,7 +1129,7 @@ class Hub extends Phaser.Scene {
                         } else if(obj == null && loc.dug) {
                             this.music.playSFX("dig");
                             loc.dug = false;
-                        } else {
+                        } else if(!(obj instanceof Bramble)) {
                             this.music.playSFX("dig");
                             loc.dug = true;
                         }
@@ -1135,12 +1204,14 @@ class Hub extends Phaser.Scene {
             loc.renderPlot(this, this.gridToCoord(col, row));
 
             //If a flower or hive, add to bee path
-            if (loc.item instanceof Hive || loc.item instanceof Flower) {
+            if (loc.item instanceof Hive || (loc.item instanceof Flower && loc.item.age > 2)) {
                 this.path.push([loc.spot.x, loc.spot.y - 25]);
             }
         }
 
         //check to see if holding stack of seeds
+        console.log(playerVariables.inventory[heldType]);
+        console.log(heldItem.type);
         if (playerVariables.inventory[heldType][heldItem.type] > 0) {
             //if yes, repopulate hand
             //console.log("holding another " + heldItem.type);
@@ -1282,13 +1353,7 @@ class Hub extends Phaser.Scene {
         //console.log("gardenGrid: ", gardenGrid);
         for (let row = 0; row < gardenGrid.length; row++) {
             for (let col = 0; col < gardenGrid[0].length; col++) {
-                gardenGrid[row][col] = objToPlot(gardenGrid[row][col])
-                /*let plot = gardenGrid[row][col];
-                let coords = this.gridToCoord(col, row);
-                plot.renderPlot(this, coords);
-                if (plot.item instanceof Hive || plot.item instanceof Flower) {
-                    this.path.push([coords[0], coords[1] - 25]);
-                }*/
+                gardenGrid[row][col] = objToPlot(gardenGrid[row][col]);
             }
         }
         console.log("gardenGrid: ", gardenGrid);
