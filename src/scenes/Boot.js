@@ -119,6 +119,10 @@ class Boot extends Phaser.Scene {
             this.load.image('noBuy', './assets/img/noBuy.png');
             this.load.image('barterIcon','./assets/sprites/UI/barterIcon.png');
             this.load.image('barterBlank','./assets/sprites/UI/barterBlank.png');
+            this.load.image('marketBubble','./assets/sprites/UI/marketBubble.png');
+            this.load.image('barterArrows','./assets/sprites/UI/barterArrows.png');
+            this.load.image('plus','./assets/sprites/UI/plus.png');
+            this.load.image('minus','./assets/sprites/UI/minus.png');
             //For pricehistory scene
             this.load.image('notebookBG', './assets/sprites/UI/notebookHalfLined.png');
             this.load.image('noteBook','./assets/sprites/UI/notebookIcon.png');
