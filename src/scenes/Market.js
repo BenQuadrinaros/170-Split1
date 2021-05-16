@@ -338,6 +338,12 @@ class Market extends Phaser.Scene {
             }
 
         } else if (percent < .80){ //"Good" price falls below 80%, npc will buy and player's reputation will increase
+            if (percent < .4){
+                if (Math.random() < .5){
+                    this.initiateBarter();
+                    return ;
+                }
+            }
             playerVariables.reputation+=1;
             this.makeTransaction(this.typeToBuy, this.npcAmount, mood);
             this.resetStage();
@@ -405,17 +411,17 @@ class Market extends Phaser.Scene {
         let scale = offer.scale;
         let category = offer.category;
         console.log(`NPC barter value ${barterValue} and are offering ${amt} ${item} `);
-        let barterBox = this.add.image(this.npc.x + 50, this.npc.y - 150,'barterBlank')
+        let barterBox = this.add.image(this.npc.x + 50, this.npc.y - 150,'marketBubble')
             .setDepth(100).setOrigin(.5, .5).setScale(.3,.3);
-        let offerImg = this.add.image(barterBox.x+15,barterBox.y,img)
+        let offerImg = this.add.image(barterBox.x+25,barterBox.y+20,img)
             .setOrigin(.5,.5).setDepth(100).setScale(scale,scale);
-        // let barterArrows = this.add.image(barterBox.x,barterBox.y,"barterArrows")
-        //     .setDepth(100).setOrigin(.5,.5).setScale(.3,.3);
-        let offerText = this.add.text(offerImg.x+25,offerImg.y, amt.toString(), this.textConfig)
+        let barterArrows = this.add.image(barterBox.x,barterBox.y,"barterArrows")
+             .setDepth(100).setOrigin(.5,.5).setScale(.3,.3);
+        let offerText = this.add.text(offerImg.x+30,offerImg.y, amt.toString(), this.textConfig)
             .setDepth(100).setOrigin(.5,.5);
-        let honeyImg = this.add.image(barterBox.x-30,barterBox.y-30,this.imgMap[this.typeToBuy])
-            .setOrigin(.5,.5).setDepth(100).setScale(.35,.35);
-        let honeyText = this.add.text(honeyImg.x+20,honeyImg.y,this.npcAmount.toString(),this.textConfig)
+        let honeyImg = this.add.image(barterBox.x-40,barterBox.y-30,this.imgMap[this.typeToBuy])
+            .setOrigin(.5,.5).setDepth(100).setScale(.5,.5);
+        let honeyText = this.add.text(honeyImg.x+25,honeyImg.y,this.npcAmount.toString(),this.textConfig)
             .setDepth(100).setOrigin(.5,.5);
         let decline = this.add.image(barterBox.x - 40, barterBox.y + 80, 'sellNo',0)
             .setDepth(100).setOrigin(.5, .5).setScale(.25, .25).setAlpha(.75).setInteractive()
@@ -433,6 +439,7 @@ class Market extends Phaser.Scene {
                 offerText.destroy();
                 honeyImg.destroy();
                 honeyText.destroy();
+                barterArrows.destroy();
                 this.resetStage();
             });
 
@@ -478,6 +485,7 @@ class Market extends Phaser.Scene {
                 offerText.destroy();
                 honeyImg.destroy();
                 honeyText.destroy();
+                barterArrows.destroy();
                 this.resetStage();
             });
 
@@ -566,25 +574,25 @@ class Market extends Phaser.Scene {
         Daisy:{
             val:2,
             img:"whiteIcon",
-            scale:.125,
+            scale:.2,
             category:"seeds"
         },
         Lavender:{
             val:2,
             img:"purpleIcon",
-            scale:.125,
+            scale:.2,
             category:"seeds"
         },
         Delphinium:{
             val:2,
             img:"blueIcon",
-            scale:.125,
+            scale:.2,
             category:"seeds"
         },
         Tulip:{
             val:3,
             img:"redIcon",
-            scale:.125,
+            scale:.2,
             category:"seeds"
         },
         Beehive:{
@@ -602,7 +610,7 @@ class Market extends Phaser.Scene {
         Sprinkler:{
             val:11,
             img:"sprinkler",
-            scale:1,
+            scale:.075,
             category:"items"
         }
     }
