@@ -22,10 +22,10 @@ class HubPopup extends Phaser.Scene {
         //Create a pause menu image
         var deltaMoney = this.money - playerVariables.money;
         if(deltaMoney > 0) {
-            this.pauseMenu = this.add.image(scrollX + config.width/2, scrollY + config.height/2, "pauseBilled").setOrigin(0.5).setScale(0.5);
+            this.pauseMenu = this.add.image(scrollX + config.width/2, scrollY + config.height/2, "pauseBilled").setOrigin(0.5);
         }
         else{
-            this.pauseMenu = this.add.image(scrollX + config.width/2, scrollY + config.height/2, "pauseEmpty").setOrigin(0.5).setScale(0.5);
+            this.pauseMenu = this.add.image(scrollX + config.width/2, scrollY + config.height/2, "pauseEmpty").setOrigin(0.5);
         }
 
         //Create the text with the info
@@ -45,7 +45,7 @@ class HubPopup extends Phaser.Scene {
         var textSpacer = -15;
 
         //Current Week
-        this.add.text(scrollX + 3*config.width/5 + 50, scrollY + config.height/5 - 10, currentDay, this.textConfig).setOrigin(.5, .5).setAngle(-5);
+        this.add.text(scrollX + 3*config.width/5 + 50, scrollY + config.height/5 , currentDay, this.textConfig).setOrigin(.5, .5).setAngle(-5);
 
         //Display ecology score below
         textSpacer += 58.5;
@@ -56,26 +56,26 @@ class HubPopup extends Phaser.Scene {
             textSpacer += 40.5;
             if(playerVariables.score[i]) {
                 //Put in a filled star
-                this.add.image(scrollX + config.width/2  - 54 + 3*i, scrollY + config.height/3 - 72 + textSpacer, "pauseCheckmark").setScale(.5).setAngle(-5);
+                this.add.image(scrollX + config.width/2  - 54 + 3*i, scrollY + config.height/3 - 60 + textSpacer, "pauseCheckmark").setScale(.5).setAngle(-5);
                 grade++;
             }
         }
         //Could replace this with a more stylized stamp image
         this.textConfig.fontSize = "20px";
-        this.add.text(this.cameras.main.scrollX + config.width/2 + 77, this.cameras.main.scrollY + config.height/5 + 34, grades[grade], this.textConfig).setOrigin(.5, .5).setAngle(-5);
+        this.add.text(this.cameras.main.scrollX + config.width/2 + 77, this.cameras.main.scrollY + config.height/5 + 45, grades[grade], this.textConfig).setOrigin(.5, .5).setAngle(-5);
         
 
         //Money spent on watering
         if(deltaMoney > 0) {
             textSpacer += 20;
-            this.add.text(scrollX + config.width/2 - 85, scrollY + config.height/3- 28, deltaMoney, this.textConfig).setOrigin(.5, .5).setAngle(5);
+            this.add.text(scrollX + config.width/2 - 85, scrollY + config.height/3- 22, deltaMoney, this.textConfig).setOrigin(.5, .5).setAngle(5);
         }
 
         //Display a random unused tool tip along the bottom of the card
         let rand = Phaser.Math.Between(0, toolTips.length-1);
-        this.add.text(scrollX + 2*config.width/3 + 10, scrollY + 4*config.height/5 - 33,(rand+1)+"/"+toolTips.length, this.textConfig).setOrigin(.5, .5).setAngle(-5);
+        this.add.text(scrollX + 2*config.width/3 + 10, scrollY + 4*config.height/5 - 23,(rand+1)+"/"+toolTips.length, this.textConfig).setOrigin(.5, .5).setAngle(-5);
         this.textConfig.fontSize = "12px";
-        this.add.text(scrollX + config.width/2 + 95, scrollY + 4*config.height/5, "\n" + toolTips[rand], this.textConfig).setOrigin(.5, .5).setAngle(-5);
+        this.add.text(scrollX + config.width/2 + 95, scrollY + 4*config.height/5 + 15, "\n" + toolTips[rand], this.textConfig).setOrigin(.5, .5).setAngle(-5);
         //If from tutorial, extra text
         if(this.fromTutorial) {
             this.createFromTutorialText();
