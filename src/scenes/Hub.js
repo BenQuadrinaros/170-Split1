@@ -364,6 +364,7 @@ class Hub extends Phaser.Scene {
                 this.music.playSFX("backpackOpen");
                 this.placeHeldItemInBag();
                 this.backpack.setFrame(0);
+                this.backpack.setAlpha(0);
                 playerInventoryUpdated = false;
                 this.scene.pause('hubScene');
                 this.scene.launch("backpackUI", {previousScene: "hubScene"});
@@ -472,6 +473,7 @@ class Hub extends Phaser.Scene {
             keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
             keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
             keyI = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.I);
+            this.backpack.setAlpha(.9);
         });
 
         //Have player move towards the mouse on pointer down
@@ -494,7 +496,7 @@ class Hub extends Phaser.Scene {
                 let plot = gardenGrid[row][col];
                 let coords = this.gridToCoord(col, row);
                 plot.renderPlot(this, coords);
-                if(plot.item instanceof Hive || (plot.item instanceof Flower && plot.item.age > 2)) {
+                if(plot.item instanceof Hive || (plot.item instanceof Flower && plot.item.isFullyGrown())) {
                     this.path.push([coords[0], coords[1] - 25]);
                 }
             }
@@ -1154,7 +1156,7 @@ class Hub extends Phaser.Scene {
                                 }
                             } else {
                                 //If on the bee path, remove it
-                                if ((obj instanceof Flower && obj.age > 2) || obj instanceof Hive) {
+                                if ((obj instanceof Flower && obj.isFullyGrown()) || obj instanceof Hive) {
                                     this.path = this.removeFromPath(obj.image, this.path);
                                 }
                                 heldItem = obj;
@@ -1238,7 +1240,7 @@ class Hub extends Phaser.Scene {
             loc.renderPlot(this, this.gridToCoord(col, row));
 
             //If a flower or hive, add to bee path
-            if (loc.item instanceof Hive || (loc.item instanceof Flower && loc.item.age > 2)) {
+            if (loc.item instanceof Hive || (loc.item instanceof Flower && loc.item.isFullyGrown())) {
                 this.path.push([loc.spot.x, loc.spot.y - 25]);
             }
         }

@@ -65,10 +65,9 @@ class BackPackUI extends Phaser.Scene {
             'decorations': null
         };
         this.createExclamationMarks();
-
         
-        
-        this.backpack = this.add.image(this.cameras.main.scrollX + config.width - 68, this.cameras.main.scrollY + config.height/5 - 36, 'tempBackpackIcon')
+        this.backpack = this.add.image(this.cameras.main.scrollX + config.width - 68,
+            this.cameras.main.scrollY + config.height/5 - 36, 'openBackpack')
             .setInteractive().setAlpha(.9)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1);

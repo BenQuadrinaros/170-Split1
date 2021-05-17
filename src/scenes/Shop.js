@@ -75,40 +75,14 @@ class Shop extends Phaser.Scene {
             this.backpack.setFrame(1);   
         }
 
-        //Update info tracker
+        //Update UI
         this.infoDisplay.update(this.cameras.main.scrollX + config.width * .1, 
             this.cameras.main.scrollY + config.height * .15, 
             playerVariables.money, playerVariables.inventory.honey["total"]);
 
-        //Camera button for snapshots
-        this.snapshot = this.add.image(this.infoDisplay.x + 125, this.infoDisplay.y, "snapshot");
-        this.snapshot.setAlpha(.9).setDepth(200).setScale(.275, .275).setInteractive();
-        this.snapshot.on('pointerover', () => {
-                console.log("over camera");
-                this.snapshot.setAlpha(1);
-                this.pointerCurrentlyOver = "snapshot";
-            })
-            .on('pointerout', () => {
-                this.snapshot.setAlpha(.9);
-                this.pointerCurrentlyOver = "";
-            })
-            .on('pointerdown', () => {
-                //Take snapshot
-                game.renderer.snapshotArea(this.cameras.main.scrollX, this.cameras.main.scrollY,
-                    config.width, config.height, function (image) {
-                    //Code taken from https://phaser.discourse.group/t/save-canvas-using-phaser3/2786
-                    var MIME_TYPE = "image/png";
-                    var imgURL = image.src;
-                    var dlLink = document.createElement('a');
-                    dlLink.download = "HoneybearSnapshot";
-                    dlLink.href = imgURL;
-                    dlLink.dataset.downloadurl = [MIME_TYPE, dlLink.download, dlLink.href].join(':');
-                    document.body.appendChild(dlLink);
-                    dlLink.click();
-                    document.body.removeChild(dlLink);
-                });
-            }
-        );
+        this.snapshot.x = this.infoDisplay.x + 125;
+        this.snapshot.y = this.infoDisplay.y;
+
     }
 
     createControls(){
@@ -205,6 +179,7 @@ class Shop extends Phaser.Scene {
                 console.log("clicked backpack");
                 this.music.playSFX("backpackOpen");
                 this.backpack.setFrame(0);
+                this.backpack.setAlpha(0);
                 playerInventoryUpdated = false;
                 this.scene.pause('shopScene');
                 this.scene.launch("backpackUI", {previousScene:"shopScene"});
@@ -213,6 +188,36 @@ class Shop extends Phaser.Scene {
 
         //Tracker for Money and total Honey
         this.infoDisplay = new InfoDisplay(this, "infoBox", 0, "Shop");
+
+        //Camera button for snapshots
+        this.snapshot = this.add.image(this.infoDisplay.x + 125, this.infoDisplay.y, "snapshot");
+        this.snapshot.setAlpha(.9).setDepth(200).setScale(.275, .275).setInteractive();
+        this.snapshot.on('pointerover', () => {
+                console.log("over camera");
+                this.snapshot.setAlpha(1);
+                this.pointerCurrentlyOver = "snapshot";
+            })
+            .on('pointerout', () => {
+                this.snapshot.setAlpha(.9);
+                this.pointerCurrentlyOver = "";
+            })
+            .on('pointerdown', () => {
+                //Take snapshot
+                game.renderer.snapshotArea(this.cameras.main.scrollX, this.cameras.main.scrollY,
+                    config.width, config.height, function (image) {
+                    //Code taken from https://phaser.discourse.group/t/save-canvas-using-phaser3/2786
+                    var MIME_TYPE = "image/png";
+                    var imgURL = image.src;
+                    var dlLink = document.createElement('a');
+                    dlLink.download = "HoneybearSnapshot";
+                    dlLink.href = imgURL;
+                    dlLink.dataset.downloadurl = [MIME_TYPE, dlLink.download, dlLink.href].join(':');
+                    document.body.appendChild(dlLink);
+                    dlLink.click();
+                    document.body.removeChild(dlLink);
+                });
+            }
+        );
     }
 
     updateCheckPause(){
