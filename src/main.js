@@ -233,14 +233,15 @@ function calculateEcologyScore() {
         })
     });
     let score = [false, false, false, false, false];
-    if(flowerTotal > 15) { score[0] = true; }
+    if(totalWeeds <= 0) { score[0] = true; }
     let variety = 0;
     for(let flow in flowerVariety) {
         if(flowerVariety[flow]) { variety++; }
     };
     if(variety > 2) { score[1] = true; }
     if(totalHives > 2) { score[2] = true; }
-    if(totalBrambles == 0) { score[3] = true; }
-    if(totalWeeds <= 0) { score[4] = true; }
+    if(flowerTotal > 15) { score[3] = true; }
+    if(totalBrambles == 0) { score[4] = true; }
+    
     return score;
 }
