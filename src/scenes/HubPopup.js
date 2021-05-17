@@ -13,22 +13,30 @@ class HubPopup extends Phaser.Scene {
     }
 
     create(){
+        let scrollX = this.cameras.main.scrollX;
+        let scrollY = this.cameras.main.scrollY;
         //Enable escape key
         this.keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         //Create a pause menu image
-        this.pauseMenu = this.add.image(config.width/2, config.height/2, "TempPause").setOrigin(0.5).setScale(0.75);
+        var deltaMoney = this.money - playerVariables.money;
+        if(deltaMoney > 0) {
+            this.pauseMenu = this.add.image(scrollX + config.width/2, scrollY + config.height/2, "pauseBilled").setOrigin(0.5).setScale(0.5);
+        }
+        else{
+            this.pauseMenu = this.add.image(scrollX + config.width/2, scrollY + config.height/2, "pauseEmpty").setOrigin(0.5).setScale(0.5);
+        }
 
         //Create the text with the info
         //Text config without a background, which blends better with the background
         this.textConfig = {
             fontFamily: font,
-            fontSize: "14px",
-            color: "#ffffff",
+            fontSize: "30px",
+            color: "#000000",
             align: "center",
             stroke: "#000000",
-            strokeThickness: 4,
+            strokeThickness: 0.5,
             padding: {
                 top: 5,
                 bottom: 5
@@ -36,90 +44,38 @@ class HubPopup extends Phaser.Scene {
         };
         var textSpacer = -15;
 
-        //Each color of Honey delta
-        /*this.add.text(config.width/2, config.height/3, "This week, you collected:", 
-            this.textConfig).setOrigin(.5, .5);
-        var deltaYellow = playerVariables.inventory.honey["yellow"] - this.initialHoney["yellow"];
-        if(deltaYellow > 0) {
-            textSpacer += 20;
-            this.add.text(config.width/2, config.height/3 + textSpacer, "Regular Honey: " 
-                + deltaYellow + " jars", this.textConfig).setOrigin(.5, .5);
-        }
-        var deltaBlue = playerVariables.inventory.honey["blue"] - this.initialHoney["blue"];
-        if(deltaBlue > 0) {
-            textSpacer += 20;
-            this.add.text(config.width/2, config.height/3 + textSpacer, "Blue Honey: " 
-                + deltaBlue + " jars", this.textConfig).setOrigin(.5, .5);
-        }
-        var deltaPurple = playerVariables.inventory.honey["purple"] - this.initialHoney["purple"];
-        if(deltaPurple > 0) {
-            textSpacer += 20;
-            this.add.text(config.width/2, config.height/3 + textSpacer, "Purple Honey: " 
-                + deltaPurple + " jars", this.textConfig).setOrigin(.5, .5);
-        }
-        var deltaPink = playerVariables.inventory.honey["pink"] - this.initialHoney["pink"];
-        if(deltaPink > 0) {
-            textSpacer += 20;
-            this.add.text(config.width/2, config.height/3 + textSpacer, "Pink Honey: " 
-                + deltaPink + " jars", this.textConfig).setOrigin(.5, .5);
-        }
-        textSpacer += 20;*/
-        this.add.text(config.width/2, config.height/3 + textSpacer, "Results from week " + currentDay + ":\n" + 
-            "Visit your hives to collect honey!", this.textConfig).setOrigin(.5, .5);
-        
-        //Money spent on watering
-        var deltaMoney = this.money - playerVariables.money;
-        if(deltaMoney > 0) {
-            textSpacer += 20;
-            this.add.text(config.width/2, config.height/3 + textSpacer, "You spent $" 
-                + deltaMoney + " watering with Sprinklers.", this.textConfig).setOrigin(.5, .5);
-        }
+        //Current Week
+        this.add.text(scrollX + 3*config.width/5 + 50, scrollY + config.height/5 - 10, currentDay, this.textConfig).setOrigin(.5, .5).setAngle(-5);
 
         //Display ecology score below
-        textSpacer += 30;
-        this.add.text(config.width/2, config.height/3 + textSpacer, "Happy Honey Association Score:", 
-            this.textConfig).setOrigin(.5, .5);
+        textSpacer += 58.5;
         let grades = ["F", "D", "C", "B", "A", "A+"];
         let grade = 0;
-        let gradeHeight = config.height/3 + textSpacer;
         for(let i = 0; i < 5; i++) {
             //Checklist of tasks needed to win
-            textSpacer += 35;
+            textSpacer += 40.5;
             if(playerVariables.score[i]) {
                 //Put in a filled star
-                this.add.image(config.width/3 + 35, config.height/3 + textSpacer, "sellYes").setScale(.45);
+                this.add.image(scrollX + config.width/2  - 54 + 3*i, scrollY + config.height/3 - 72 + textSpacer, "pauseCheckmark").setScale(.5).setAngle(-5);
                 grade++;
-            } else {
-                //Put in an empty star
-                this.add.image(config.width/3 + 35, config.height/3 + textSpacer, "sellNo").setScale(0.45);
-            }
-            if(i == 0) {
-                this.add.text(config.width/3 + 65, config.height/3 + textSpacer, "Have at least 15 Flowers.", 
-                    this.textConfig).setOrigin(0, .5);
-            } else if (i == 1) {
-                this.add.text(config.width/3 + 65, config.height/3 + textSpacer, "Have at least 3 types of Flowers.", 
-                    this.textConfig).setOrigin(0, .5);
-            } else if (i == 2) {
-                this.add.text(config.width/3 + 65, config.height/3 + textSpacer, "Have at least 3 Beehives.", 
-                    this.textConfig).setOrigin(0, .5);
-            } else if (i == 3) {
-                this.add.text(config.width/3 + 65, config.height/3 + textSpacer, "Clear all Brambles.", 
-                    this.textConfig).setOrigin(0, .5);
-            } else {
-                this.add.text(config.width/3 + 65, config.height/3 + textSpacer, "Have less than 3 Weeds.", 
-                    this.textConfig).setOrigin(0, .5);
             }
         }
         //Could replace this with a more stylized stamp image
-        this.textConfig.fontSize = "22px";
-        this.add.text(config.width/2 + 125, gradeHeight, grades[grade], this.textConfig).setOrigin(.5, .5);
-        this.textConfig.fontSize = "14px";
+        this.textConfig.fontSize = "20px";
+        this.add.text(this.cameras.main.scrollX + config.width/2 + 77, this.cameras.main.scrollY + config.height/5 + 34, grades[grade], this.textConfig).setOrigin(.5, .5).setAngle(-5);
+        
+
+        //Money spent on watering
+        if(deltaMoney > 0) {
+            textSpacer += 20;
+            this.add.text(scrollX + config.width/2 - 85, scrollY + config.height/3- 28, deltaMoney, this.textConfig).setOrigin(.5, .5).setAngle(5);
+        }
 
         //Display a random unused tool tip along the bottom of the card
         let rand = Phaser.Math.Between(0, toolTips.length-1);
-        this.add.text(config.width/2, 4*config.height/5 - 20, "Gardening Tips #"+(rand+1)+"/"+toolTips.length+":\n"
-            +toolTips[rand], this.textConfig).setOrigin(.5, .5);
-        
+        this.add.text(scrollX + 2*config.width/3 + 10, scrollY + 4*config.height/5 - 33,(rand+1)+"/"+toolTips.length, this.textConfig).setOrigin(.5, .5).setAngle(-5);
+        this.textConfig.fontSize = "12px";
+        this.add.text(scrollX + config.width/2 + 95, scrollY + 4*config.height/5, "\n" + toolTips[rand], this.textConfig).setOrigin(.5, .5).setAngle(-5);
         //If from tutorial, extra text
         if(this.fromTutorial) {
             this.createFromTutorialText();
