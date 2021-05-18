@@ -59,6 +59,8 @@ class Market extends Phaser.Scene {
             callbackScope: this
         });
         this.state = "waiting";
+
+        this.npcToldToLeave = false;
     }
 
 
@@ -140,10 +142,10 @@ class Market extends Phaser.Scene {
             }
             //console.log("stage is " + this.stage)
         } else if (this.state === "leaving") {
-
-            this.npc.leave();
-            //this.customersInLine.splice(0, 1);
-
+            if(!this.npcToldToLeave){
+                this.npc.leave();
+                this.npcToldToLeave = true;
+            }
         }
 
     }
@@ -485,6 +487,7 @@ class Market extends Phaser.Scene {
                 this.npcRef.destroy();
                 this.state = "waiting";
                 this.stage = -1;
+                this.npcToldToLeave = false;
             },
             loop: false,
             callbackScope: this
@@ -533,7 +536,7 @@ class Market extends Phaser.Scene {
         this.customersInLine = [];
         console.log(`Creating ${amt} customers in line...`);
         for (let i = 0; i < amt; i++) {
-            this.customersInLine.push(this.generateNPC((2*config.width/3) - ((i) * config.width/5) - 15));
+            this.customersInLine.push(this.generateNPC((2*config.width/3) - ((i) * (config.width/5 + 30)) - 15));
             this.customersInLine[i].setVisible(true);
             this.customersInLine[i].depth = 90 - i;
             console.log(`creating npc ${i}...`);
@@ -592,6 +595,7 @@ class Market extends Phaser.Scene {
     createControls() {
         //establish controls for gameplay
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         keyY = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Y);
@@ -994,6 +998,7 @@ class Market extends Phaser.Scene {
             console.log("ReenableEsc called");
             this.music.setVolume(config.volume);
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+            keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         });
     }
 
@@ -1003,7 +1008,9 @@ class Market extends Phaser.Scene {
             console.log("Pausing Game");
             //isPaused = true;
             this.scene.pause();
-            this.scene.launch("pauseScene", {previousScene: "marketScene"});
+            //this.scene.launch("pauseScene", {previousScene: "marketScene"});
+            this.scene.launch("hubPopupScene", {previousScene: "marketScene",
+                                                    fromTutorial:false});
         }
     }
 

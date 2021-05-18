@@ -6,9 +6,7 @@ class HubPopup extends Phaser.Scene {
     init(data){
         console.log("Previous Scene: " + data.previousScene);
         this.prevScene = data.previousScene;
-        this.initialHoney = data.initialHoney;
         this.fromTutorial = data.fromTutorial;
-        this.money = data.money;
         console.log("From Tutorial: " + this.fromTutorial);
     }
 
@@ -20,13 +18,23 @@ class HubPopup extends Phaser.Scene {
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         //Create a pause menu image
-        var deltaMoney = this.money - playerVariables.money;
+        var deltaMoney = dailySprinklerCost;
         if(deltaMoney > 0) {
             this.pauseMenu = this.add.image(scrollX + config.width/2, scrollY + config.height/2, "pauseBilled").setOrigin(0.5);
         }
         else{
             this.pauseMenu = this.add.image(scrollX + config.width/2, scrollY + config.height/2, "pauseEmpty").setOrigin(0.5);
         }
+
+        //Create settings frames
+        this.settings = this.add.image(scrollX + config.width/2 - 160, scrollY + config.height/3- 75, "settingsPause")
+                        .setOrigin(.5, .5).setAngle(8).setInteractive().setScale(0.55);
+        this.settings.on('pointerover', () => this.settings.setFrame(1));
+        this.settings.on("pointerout", () => this.settings.setFrame(0));
+        this.settings.on('pointerup', () => {
+            this.scene.pause();
+            this.scene.launch("settingsScene", {previousScene: "hubPopupScene"});
+        });
 
         //Create the text with the info
         //Text config without a background, which blends better with the background
@@ -68,7 +76,7 @@ class HubPopup extends Phaser.Scene {
         //Money spent on watering
         if(deltaMoney > 0) {
             textSpacer += 20;
-            this.add.text(scrollX + config.width/2 - 85, scrollY + config.height/3- 22, deltaMoney, this.textConfig).setOrigin(.5, .5).setAngle(5);
+            this.add.text(scrollX + config.width/2 - 88, scrollY + config.height/3- 22, deltaMoney, this.textConfig).setOrigin(.5, .5).setAngle(8);
         }
 
         //Display a random unused tool tip along the bottom of the card
@@ -101,7 +109,12 @@ as you restore this garden. *B*ee you around!`;
                 this.tutorialTextBackdrop.alpha = 0;
                 this.tutorialDialog.setVisible(false);
                 this.spaceContinue.setVisible(false);
-                this.talkingBee.alpha = 0;
+                this.currDialogSelection = 3;
+            }
+            else{
+                console.log("Resuming Hub Activities");
+                this.scene.resume(this.prevScene);
+                this.scene.stop();
             }
         }
         else if(Phaser.Input.Keyboard.JustDown(keySPACE)){
@@ -112,32 +125,32 @@ as you restore this garden. *B*ee you around!`;
     }
 
     createFromTutorialText(){
-        this.tutorialTextBackdrop = this.add.rectangle(0, this.cameras.main.scrollY + 3.5*config.height/5, config.width, config.height/2, 0x000000).setOrigin(0, 0);
+        this.tutorialTextBackdrop = this.add.image(0, 0, 'tutorialDialogBox')
+                                            .setOrigin(0, 0).setScale(0.5);
         this.tutorialTextBackdrop.depth = 150;
         this.tutorialConfig = {
             fontFamily: font,
-            fontSize: "32px",
-            color: "#ffffff",
+            fontSize: "27.5px",
+            color: "#000000",
             align: "left",
             stroke: "#000000",
-            strokeThickness: 4,
+            strokeThickness: 1,
             padding: {
                 top: 5,
                 bottom: 5
             },
         };
-        this.tutorialDialog = this.add.text(17, this.cameras.main.scrollY + 3.25*config.height/5 + 30, "", this.tutorialConfig);
+        this.tutorialDialog = this.add.text(0,0, "", this.tutorialConfig);
         this.tutorialDialog.setOrigin(0, 0);
         this.tutorialDialog.depth = 200;
-        this.talkingBee = this.add.image(config.width, 3*config.height/5, 'largeBee').setOrigin(0.5);
-        this.talkingBee.x = this.cameras.main.scrollX + config.width/3;
-        this.talkingBee.y = this.cameras.main.scrollY + config.height/3;
-        this.talkingBee.depth = 120;
+        this.tutorialDialog.x = this.cameras.main.scrollX + 185;
+        this.tutorialDialog.y = this.cameras.main.scrollY + 3.25*config.height/5 - 25;
         this.currDialogSelection = 1;
-        this.spaceContinue = this.add.text(0, 0, "SPACE to continue", this.textConfig);
-        this.spaceContinue.depth = 205
+        this.tutorialConfig.fontSize = "16px";
+        this.spaceContinue = this.add.text(0, 0, "SPACE to continue", this.tutorialConfig);
+        this.spaceContinue.depth = 205;
         this.spaceContinue.x = this.cameras.main.scrollX + 4*config.width/5 - 15;
-        this.spaceContinue.y = this.cameras.main.scrollY + 4*config.height/5 + 65;
+        this.spaceContinue.y = this.cameras.main.scrollY + 4*config.height/5 + 35;
         
 
 

@@ -43,10 +43,10 @@ class Boot extends Phaser.Scene {
             //Flower stages for Garden
             this.load.image("seedling", "./assets/sprites/spritesheetFrames/uni0.png");
             this.load.image("sprout", "./assets/sprites/spritesheetFrames/uni1.png");
-            this.load.image("flowerWhite2", "./assets/sprites/spritesheetFrames/white2.png");
-            this.load.image("flowerWhite3", "./assets/sprites/spritesheetFrames/white3.png");
-            this.load.image("flowerWhite4", "./assets/sprites/spritesheetFrames/white4.png");
-            this.load.image("flowerWhite5", "./assets/sprites/spritesheetFrames/white5.png");
+            this.load.image("flowerWhite2", "./assets/sprites/spritesheetFrames/daisy2.png");
+            this.load.image("flowerWhite3", "./assets/sprites/spritesheetFrames/daisy3.png");
+            this.load.image("flowerWhite4", "./assets/sprites/spritesheetFrames/daisy4.png");
+            this.load.image("flowerWhite5", "./assets/sprites/spritesheetFrames/daisy5.png");
             this.load.image("flowerBlue2", "./assets/sprites/spritesheetFrames/blue2.png");
             this.load.image("flowerBlue3", "./assets/sprites/spritesheetFrames/blue3.png");
             this.load.image("flowerBlue4", "./assets/sprites/spritesheetFrames/blue4.png");
@@ -63,6 +63,7 @@ class Boot extends Phaser.Scene {
             //For hubScene
             this.load.image('background', './assets/sprites/background/garden_base.png');
             this.load.image('dialogbox', './assets/img/dialogbox.png');
+            this.load.image('tutorialDialogBox', './assets/sprites/UI/beeboxTut.png');
             this.load.image('filledStar', './assets/sprites/old/orange.png');
             this.load.image('emptyStar', './assets/sprites/old/blue.png');
             this.load.image('simpleBox','./assets/sprites/UI/box_80x80.png');
@@ -146,7 +147,7 @@ class Boot extends Phaser.Scene {
             //For settingsScene
             this.load.image("TempSettingsScreen", "./assets/img/TempSettings3_3_21.png");
             //For creditsScene
-            this.load.image("TempCreditsScreen", "./assets/img/TempCredits3_3_21.png");
+            this.load.image("TempCreditsScreen", "./assets/img/TempCredits5_17_21.png");
             //For tutorialScene
             this.load.image("TempTutorialScreen", "./assets/img/TempTutorial3_3_21.png");
             //For player Inventory

@@ -11,6 +11,7 @@ class MarketPriceSetting extends Phaser.Scene {
         this.createBackgroundImages();
         this.createText();
         this.createPriceChanging();
+        this.createEvents();
 
         this.music = new BGMManager(this);
         this.music.playSong("marketMusic", true);
@@ -30,12 +31,23 @@ class MarketPriceSetting extends Phaser.Scene {
         //establish controls for gameplay
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         keyENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+        keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
 
     createBackgroundImages(){
         this.brickFenceBackground = this.add.image(config.width/2, config.height/2, "brickFence").setScale(0.5);
         this.backgroundChalkboard = this.add.image(config.width/2, config.height/2, "chalkboard").setScale(.65);
         //this.playerWealthTracker = this.add.image(config.width/2, config.height/3.5, "playerWealthTracker").setOrigin(0.5, .5);
+    }
+    
+    createEvents() {
+        //Rebinds escape
+        this.events.on("resume", () => {
+            console.log("ReenableEsc called");
+            this.music.setVolume(config.volume);
+            keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+            keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        });
     }
 
     createText(){
@@ -291,7 +303,9 @@ class MarketPriceSetting extends Phaser.Scene {
             console.log("Pausing Game");
             //isPaused = true;
             this.scene.pause();
-            this.scene.launch("pauseScene", {previousScene: "marketPriceSettingScene"});
+            //this.scene.launch("pauseScene", {previousScene: "marketPriceSettingScene"});
+            this.scene.launch("hubPopupScene", {previousScene: "marketPriceSettingScene",
+                                                    fromTutorial:false});
         }
     }
 

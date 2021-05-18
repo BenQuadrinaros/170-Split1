@@ -102,6 +102,12 @@ function objToPlot(obj){
                 break;
             case "Beehive":
                 plot.item = new Hive(plot.gridx, plot.gridy);
+                plot.item.stock = {
+                    "yellow": obj.item.stock["yellow"],
+                    "blue": obj.item.stock["blue"],
+                    "purple": obj.item.stock["purple"],
+                    "pink": obj.item.stock["pink"]
+                };
                 break;
             case "Bramble":
                 plot.item = new Bramble(plot.gridx, plot.gridy);

@@ -89,12 +89,13 @@ class Hub extends Phaser.Scene {
             //isPaused = true;
             this.popupVisited = true;
             this.scene.pause();
+            dailySprinklerCost = this.startingMoneyForPopup - playerVariables.money;
             if(this.previousScene === "tutorialScene"){
-                this.scene.launch("hubPopupScene", {previousScene: "hubScene", initialHoney: this.startingHoneyForPopup, 
-                    money: this.startingMoneyForPopup, fromTutorial:true});
+                this.scene.launch("hubPopupScene", {previousScene: "hubScene",
+                                                    fromTutorial:true});
             } else {
-                this.scene.launch("hubPopupScene", {previousScene: "hubScene", initialHoney: this.startingHoneyForPopup,
-                    money: this.startingMoneyForPopup, fromTutorial:false});
+                this.scene.launch("hubPopupScene", {previousScene: "hubScene",
+                                                    fromTutorial:false});
             }
         }
 
@@ -598,7 +599,9 @@ class Hub extends Phaser.Scene {
             console.log("Pausing Game");
             //isPaused = true;
             this.scene.pause();
-            this.scene.launch("pauseScene", {previousScene: "hubScene"});
+            this.scene.launch("hubPopupScene", {previousScene: "hubScene",
+                                                    fromTutorial:false});
+            //this.scene.launch("pauseScene", {previousScene: "hubScene"});
         }
     }
 
