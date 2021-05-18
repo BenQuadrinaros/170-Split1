@@ -143,6 +143,7 @@ class Shop extends Phaser.Scene {
             this.music.setVolume(config.volume);
             this.backpack.setAlpha(0.9);
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+            keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
             keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
             keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
             keyI = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.I);
@@ -225,7 +226,9 @@ class Shop extends Phaser.Scene {
             console.log("Pausing Game");
             //isPaused = true;
             this.scene.pause();
-            this.scene.launch("pauseScene", { previousScene: "shopScene" });
+            //this.scene.launch("pauseScene", { previousScene: "shopScene" });
+            this.scene.launch("hubPopupScene", {previousScene: "shopScene",
+                                                    fromTutorial:false});
         }
         else{
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);

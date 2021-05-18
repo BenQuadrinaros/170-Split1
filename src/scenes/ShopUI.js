@@ -3,7 +3,7 @@ let pointer;
 
 let shopCosts = {};
 let idImages = {
-    "Daisy": ["flowerWhite3", .125],
+    "Daisy": ["flowerWhite3", .095],
     "Delphinium": ["flowerBlue3", .125],
     "Tulip": ["flowerRed3", .25],
     "Lavender": ["flowerPurple3", .125],

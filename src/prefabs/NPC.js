@@ -19,6 +19,12 @@ class NPC extends Phaser.GameObjects.Sprite{
             this.personality = personality;
             this.voiceLines = voiceLines;
         }
+
+        //Flip the cats
+        if(this.name === "Catlico" || this.name === "Cougar"){
+            this.flipX = true;
+        }
+
         this.setOrigin(1, 0.5);
         //Add to the scene
         scene.add.existing(this);
@@ -35,7 +41,7 @@ class NPC extends Phaser.GameObjects.Sprite{
         this.scene.time.delayedCall(animDelay, () => {
             this.scene.tweens.add({
                 targets: this,
-                x: this.x + config.width/5,
+                x: this.x + config.width/5 + 30,
                 ease: 'Sine.easeOut',
                 duration: 1500,
                 delay: 0,
@@ -55,17 +61,22 @@ class NPC extends Phaser.GameObjects.Sprite{
 
     leave(){
         console.log("NPC has been asked to leave");
-        this.leaveTween = this.scene.tweens.add({
+        this.scene.tweens.add({
             targets: this,
-            depth: 1,
-            scale: 0,
+            x: this.x + 1.5*config.width/5,
             ease: 'Sine.easeOut',
             duration: 1500,
             delay: 0,
-            repeat: 0,
-            onComplete:function (){
-                console.log("done leaving")
-            }
+            repeat: 0
+        });
+        this.scene.tweens.add({
+            targets: this,
+            y: 4 * game.config.height / 7,
+            ease: 'Power2',
+            yoyo: true,
+            duration: 250,
+            delay: 0,
+            repeat: 2
         });
     }
 

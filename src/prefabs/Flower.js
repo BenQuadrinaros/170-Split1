@@ -16,7 +16,10 @@ class Flower {
         scene.add.existing(this.image);
         this.image.setPosition(initx, inity);
         if(this.type === "Tulip" && this.age > 0){
-            this.image.setScale(0.5, 0.5);
+            this.image.setScale(0.45, 0.45);
+        }
+        else if(this.type === "Daisy" && this.age > 0){
+            this.image.setScale(0.18, 0.18);
         }
         return this.image;
     }
