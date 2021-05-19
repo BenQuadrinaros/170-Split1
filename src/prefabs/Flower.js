@@ -21,6 +21,9 @@ class Flower {
         else if(this.type === "Daisy" && this.age > 0){
             this.image.setScale(0.18, 0.18);
         }
+        else if(this.type === "Lavender" && this.age > 0){
+            this.image.setScale(0.45, 0.45);
+        }
         return this.image;
     }
 

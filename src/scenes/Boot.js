@@ -56,10 +56,11 @@ class Boot extends Phaser.Scene {
             this.load.image("flowerRed3", "./assets/sprites/spritesheetFrames/tulip3.png");
             this.load.image("flowerRed4", "./assets/sprites/spritesheetFrames/tulip4.png");
             this.load.image("flowerRed5", "./assets/sprites/spritesheetFrames/tulip5.png");
-            this.load.image("flowerPurple2", "./assets/sprites/spritesheetFrames/purple2.png");
-            this.load.image("flowerPurple3", "./assets/sprites/spritesheetFrames/purple3.png");
-            this.load.image("flowerPurple4", "./assets/sprites/spritesheetFrames/purple4.png");
-            this.load.image("flowerPurple5", "./assets/sprites/spritesheetFrames/purple5.png");
+            this.load.image("flowerPurple1", "./assets/sprites/spritesheetFrames/lavender1.png");
+            this.load.image("flowerPurple2", "./assets/sprites/spritesheetFrames/lavender2.png");
+            this.load.image("flowerPurple3", "./assets/sprites/spritesheetFrames/lavender3.png");
+            this.load.image("flowerPurple4", "./assets/sprites/spritesheetFrames/lavender4.png");
+            this.load.image("flowerPurple5", "./assets/sprites/spritesheetFrames/lavender5.png");
             //For hubScene
             this.load.image('background', './assets/sprites/background/garden_base.png');
             this.load.image('dialogbox', './assets/img/dialogbox.png');

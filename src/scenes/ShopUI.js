@@ -6,7 +6,7 @@ let idImages = {
     "Daisy": ["flowerWhite3", .095],
     "Delphinium": ["flowerBlue3", .125],
     "Tulip": ["flowerRed3", .25],
-    "Lavender": ["flowerPurple3", .125],
+    "Lavender": ["flowerPurple3", .25],
     "Sprinkler": ["sprinkler", .125],
     "Beehive": ["hive", .125],
     "Clipper": ["clipper", .75],
