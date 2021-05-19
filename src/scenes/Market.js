@@ -176,13 +176,27 @@ class Market extends Phaser.Scene {
     }
 
     makeTransaction(type, amount, mood){
-        console.log(`Money made from ${amount} ${type} honey is ${amount*priceMap[type]}`)
-        priceHistory.unshift({
-            type:type,
-            price:priceMap[type],
-            mood: mood,
-            mode: "money"
-        });
+        console.log(`Money made from ${amount} ${type} honey is ${amount*priceMap[type]}`);
+        if (pHistory[currentDay]) {
+            console.log("1")
+            pHistory[currentDay].unshift({
+                type: type,
+                price: priceMap[type],
+                mood: mood,
+                mode: "money",
+                week: currentDay
+            });
+        } else {
+            console.log("2")
+            pHistory[currentDay] = [];
+            pHistory[currentDay].unshift({
+                type: type,
+                price: priceMap[type],
+                mood: mood,
+                mode: "money",
+                week: currentDay
+            });
+        }
         let bearBucks = this.add.image(this.npc.x,this.infoDisplay.y,'bearbucks')
             .setScale(.5,.5).setDepth(100);
         this.tweens.add({
@@ -466,15 +480,32 @@ class Market extends Phaser.Scene {
 
     }
     logBarter(offer, hType, typeBought){
-     priceHistory.unshift({
-         mode: "barter",
-         type: hType,
-         item: offer.item,
-         amt: Math.floor(offer.amt),
-         scale: offer.scale,
-         img: offer.img,
-         bought: typeBought
-     })
+        if (pHistory[currentDay]) {
+            pHistory[currentDay].unshift({
+                mode: "barter",
+                type: hType,
+                item: offer.item,
+                amt: Math.floor(offer.amt),
+                scale: offer.scale,
+                img: offer.img,
+                bought: typeBought,
+                week: currentDay
+            });
+        } else {
+            console.log("No history for week " + currentDay + " creating one");
+            pHistory[currentDay] = [];
+            pHistory[currentDay].unshift({
+                mode: "barter",
+                type: hType,
+                item: offer.item,
+                amt: Math.floor(offer.amt),
+                scale: offer.scale,
+                img: offer.img,
+                bought: typeBought,
+                week: currentDay
+            });
+        }
+        //console.log(pHistory);
     }
 
     //reset market state to no customers, allowing one to approacj

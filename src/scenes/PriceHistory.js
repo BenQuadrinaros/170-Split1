@@ -21,9 +21,10 @@ class PriceHistory extends Phaser.Scene{
     
 
     create(){
-        console.log(priceHistory);
+        //console.log(priceHistory);
         //uiScene = this;
         this.bg = this.add.image(config.width/2,config.height/2,'notebookBG').setScale(.5,.5).setOrigin(.5,.5);
+        this.currentPage = currentDay;
         this.imgMap = {
             yellow:"honeyYellow",
             blue:"honeyBlue",
@@ -31,8 +32,10 @@ class PriceHistory extends Phaser.Scene{
             purple:"honeyPurple"
 
         }
-        this.createPriceHistory();
+        this.entries = [];
+        this.createPriceHistory(currentDay);
         this.createBackIcon();
+        this.createPageTurningIcons();
         //this.createTicks(1,1);
 
         this.textConfiguration = {
@@ -85,34 +88,78 @@ class PriceHistory extends Phaser.Scene{
         }
     }
 
-    createPriceHistory(){
+    createPageTurningIcons(){
+        this.weekText = this.add.text(this.bg.x-90,this.bg.y-175,"Week : " + currentDay,this.textConfiguration).setOrigin(.5,.5);
+
+        this.add.image(this.bg.x-110,this.bg.y-200,'minus')
+            .setOrigin(.5,.5).setScale(.25,.25).setInteractive()
+            .on('pointerdown', () => {
+                console.log("clicked minus")
+                if (this.currentPage <= 0){
+                    return ;
+                } else {
+                    this.currentPage -=1;
+                    this.clearPage();
+                    this.createPriceHistory(this.currentPage);
+                    this.weekText.text = "Week : " + this.currentPage;
+                }
+            });
+
+        this.add.image(this.bg.x-70,this.bg.y-200,'plus')
+            .setOrigin(.5,.5).setScale(.25,.25).setInteractive()
+            .on('pointerdown', () => {
+                console.log("clicked plus")
+                if (this.currentPage >= currentDay){
+                    return ;
+                } else {
+                    this.currentPage +=1;
+                    this.clearPage();
+                    this.createPriceHistory(this.currentPage);
+                    this.weekText.text = "Week : " + this.currentPage;
+                }
+            });;
+    }
+    createPriceHistory(week){
         console.log("creating price history;");
         console.log("Text Config: ", this.textConfiguration);
         let amt = 10;
-        if (priceHistory.length < 10){
-            amt = priceHistory.length;
+        let pArr = pHistory[week];
+        if (!pArr){
+            amt = 0;
+        } else {
+            if (pArr.length < 10) {
+                amt = pArr.length;
+            }
         }
         for (let i = 1; i <= amt; i++){
-            let entry = priceHistory[i-1]
+            let entry = pArr[i-1]
             if (entry.mode === "money") {
                 console.log(this.imgMap[entry.type]);
-                this.add.image((2 * config.width / 5) + 200, (i * (config.height / 12 - 9)) + 90, entry.mood).setScale(.09, .09).setOrigin(.5, .5);
-                this.add.text((2 * config.width / 5) + 100, (i * (config.height / 12 - 9)) + 90, "$" + entry.price.toFixed(2) + "/jar", this.textConfiguration).setOrigin(.5, .5);
-                this.add.image((2 * config.width / 5), (i * (config.height / 12 - 9)) + 90, this.imgMap[entry.type]).setOrigin(.5, .5).setScale(.35, .35);
+                this.entries.push(this.add.image((2 * config.width / 5) + 200, (i * (config.height / 12 - 9)) + 90, entry.mood,).setScale(.09, .09).setOrigin(.5, .5));
+                this.entries.push(this.add.text((2 * config.width / 5) + 100, (i * (config.height / 12 - 9)) + 90, "$" + entry.price.toFixed(2) + "/jar", this.textConfiguration)
+                    .setOrigin(.5, .5));
+                this.entries.push(this.add.image((2 * config.width / 5), (i * (config.height / 12 - 9)) + 90, this.imgMap[entry.type]).setOrigin(.5, .5).setScale(.35, .35));
+
             } else if (entry.mode === "barter"){
                 console.log("** ** logging barter ** **");
                 console.log(entry);
-                this.add.image((2 * config.width / 5) + 200, (i * (config.height / 12 - 9)) + 90, entry.img)
-                    .setScale(entry.scale, entry.scale).setOrigin(.5, .5);
-                this.add.image((2 * config.width / 5) + 100, (i * (config.height / 12 - 9)) + 90, "barterIcon").setScale(.09, .09).setOrigin(.5, .5);
-                this.add.text((2 * config.width / 5) + 50, (i * (config.height / 12 - 9)) + 90, entry.bought, this.textConfiguration).setOrigin(.5, .5);
-                this.add.text((2 * config.width / 5) + 150, (i * (config.height / 12 - 9)) + 90, entry.amt, this.textConfiguration).setOrigin(.5, .5);
-                this.add.image((2 * config.width / 5), (i * (config.height / 12 - 9)) + 90, this.imgMap[entry.type]).setOrigin(.5, .5).setScale(.35, .35);
+                this.entries.push(this.add.image((2 * config.width / 5) + 200, (i * (config.height / 12 - 9)) + 90, entry.img)
+                    .setScale(entry.scale, entry.scale).setOrigin(.5, .5));
+                this.entries.push(this.add.image((2 * config.width / 5) + 100, (i * (config.height / 12 - 9)) + 90, "barterIcon").setScale(.09, .09).setOrigin(.5, .5));
+                this.entries.push(this.add.text((2 * config.width / 5) + 50, (i * (config.height / 12 - 9)) + 90, entry.bought, this.textConfiguration).setOrigin(.5, .5));
+                this.entries.push(this.add.text((2 * config.width / 5) + 150, (i * (config.height / 12 - 9)) + 90, entry.amt, this.textConfiguration).setOrigin(.5, .5));
+                this.entries.push(this.add.image((2 * config.width / 5), (i * (config.height / 12 - 9)) + 90, this.imgMap[entry.type]).setOrigin(.5, .5).setScale(.35, .35));
 
             }
+            console.log("entries")
+            console.log(this.entries);
         }
     }
-
+    clearPage(){
+        for (let i = 0; i < this.entries.length; i ++){
+            this.entries[i].destroy();
+        }
+    }
 
 
     createBackIcon(){

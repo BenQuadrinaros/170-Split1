@@ -206,6 +206,7 @@ let moodMap = {
 }
 
 let priceHistory = [];
+let pHistory = {};
 
 function calculateEcologyScore() {
     // amount of flowers, variety of flowers, number of hives, number of brambles, number of weeds
