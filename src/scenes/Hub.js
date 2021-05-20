@@ -310,7 +310,12 @@ class Hub extends Phaser.Scene {
 
     createPlayer() {
         //Establish the sprite
-        this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 2, this.worldWidth, this.worldHeight, [[game.config.width + 50, 115]]);
+        if(this.previousScene === "shopScene"){
+            this.player = new HubPlayer(this, 'player', 0, config.width / 5, config.height / 3, this.worldWidth, this.worldHeight, [[game.config.width + 50, 115]]);
+        }
+        else{
+            this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 3, this.worldWidth, this.worldHeight, [[game.config.width + 50, 115]]);
+        }
         this.player.depth = this.player.y / 10;
     }
 
@@ -1442,8 +1447,8 @@ class Hub extends Phaser.Scene {
         console.log("shopInventory: " + shopInventory);
         priceMap = loadedData.bucksMap;
         console.log("priceMap: " + priceMap);
-        priceHistory = loadedData.bucksHist;
-        console.log("priceHistory: " + priceHistory);       
+        pHistory = loadedData.bucksHist;
+        console.log("priceHistory: " + pHistory);       
         
         /*
         var saveData = {
@@ -1523,7 +1528,7 @@ class Hub extends Phaser.Scene {
             playerVars: playerVariables,
             shopInv: shopInventory,
             bucksMap: priceMap,
-            bucksHist: priceHistory
+            bucksHist: pHistory
         };
         /*//Save garden
         saveData.playerVars.push({'name': 'gardenGrid', 'value': gardenGrid});

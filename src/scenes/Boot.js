@@ -32,7 +32,7 @@ class Boot extends Phaser.Scene {
             this.load.image('droplet','./assets/img/droplet.png');
             this.load.image('hiveHighlight', './assets/sprites/old/orange.png');
             this.load.image('spigot','./assets/img/spigot.png');
-            this.load.image('weed','./assets/spritesheets/old/Capture.PNG');
+            this.load.image('weed','./assets/sprites/spritesheetFrames/weed.png');
             this.load.image('bramble','./assets/img/bramb.png');
             this.load.image('clipper','./assets/img/clippers.png');
             //All the different Watering Can frames
