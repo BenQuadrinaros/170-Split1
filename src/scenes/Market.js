@@ -580,26 +580,26 @@ class Market extends Phaser.Scene {
     this.barterPool = {
         Daisy:{
             val:2,
-            img:"whiteIcon",
-            scale:.2,
+            img:"DaisySeeds",
+            scale:.35,
             category:"seeds"
         },
         Lavender:{
             val:2,
-            img:"purpleIcon",
-            scale:.2,
+            img:"LavenderSeeds",
+            scale:.35,
             category:"seeds"
         },
         Delphinium:{
             val:2,
-            img:"blueIcon",
-            scale:.2,
+            img:"DelphiniumSeeds",
+            scale:.35,
             category:"seeds"
         },
         Tulip:{
             val:3,
-            img:"redIcon",
-            scale:.2,
+            img:"TulipSeeds",
+            scale:.35,
             category:"seeds"
         },
         Beehive:{

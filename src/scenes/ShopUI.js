@@ -3,14 +3,16 @@ let pointer;
 
 let shopCosts = {};
 let idImages = {
-    "Daisy": ["flowerWhite3", .095],
-    "Delphinium": ["flowerBlue3", .125],
-    "Tulip": ["flowerRed3", .25],
-    "Lavender": ["flowerPurple3", .25],
+    "Daisy": ["DaisySeeds", .35],
+    "Delphinium": ["DelphiniumSeeds", .35],
+    "Tulip": ["TulipSeeds", .35],
+    "Lavender": ["LavenderSeeds", .35],
     "Sprinkler": ["sprinkler", .125],
     "Beehive": ["hive", .125],
     "Clipper": ["clipper", .75],
-    "Watering Can": ["water1", .375],
+    "Watering Can": ["redwater0", .45],
+    "Blue Can": ["bluewater5", .45],
+    "Purple Can": ["purplewater6", .45],
     "Bench": ["Bench", .25],
     "yellow": ["honeyYellow", .5],
     "blue": ["honeyBlue", .5],
@@ -261,8 +263,12 @@ class ShopUI extends Phaser.Scene {
                                 console.log("Added cell " + cellIndex + " which contains " + item +
                                     " to player inventory");
                                 console.log(`before changing inv, ${playerVariables.inventory[tab][item]}`)
-                                if(item == "Clipper") {
-                                    playerVariables.inventory[tab][item] += 3 + Math.floor(currentDay / 4);
+                                if(item == "Blue Can") {
+                                    playerVariables.waterLvl += 1;
+                                    idImages["Watering Can"][0] = "bluewater0";
+                                } else if (item == "Purple Can") {
+                                    playerVariables.waterLvl += 1;
+                                    idImages["Watering Can"][0] = "purplewater0";
                                 } else {
                                     playerVariables.inventory[tab][item] += 1;
                                 }

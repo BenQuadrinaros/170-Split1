@@ -98,6 +98,7 @@ let playerVariables = {
     money: 10.00,
     reputation: 0,
     water: 0,
+    waterLvl: 0,
     beeBump: false,
     hasWon: false,
     name: "Bearry",
@@ -114,23 +115,19 @@ let playerVariables = {
             "Beehive": 0,
             "Sprinkler": 0,
             "Clipper": 3,
-            "Mulch": 0,
             "Watering Can": 0
         },
         flowers: {
             "Daisy": 0,
             "Delphinium": 0,
             "Lavender": 0,
-            "Tulip": 0,
-            "Orchid": 0
+            "Tulip": 0
         },
         seeds: {
-            //Daisy, Delphinium, Lavender, Tulip
             "Daisy": 2,
             "Delphinium": 0,
             "Lavender": 0,
-            "Tulip": 0,
-            "Orchid": 0
+            "Tulip": 0
         },
         decorations: {
             "Bench": 0,
@@ -152,15 +149,15 @@ let shopInventory = {
     "Seeds": {
         "Daisy": {"amount": 2,"cost":2},
         "Lavender":{"amount": 3,"cost": 3},
-        //"Orchid":{"amount": 3,"cost": 3},
         "Delphinium":{"amount": 3,"cost": 4},
         "Tulip":{"amount": 3,"cost": 4}
     },
     "Items":{
-        "Sprinkler":{"amount": 2,"cost":15},
+        "Sprinkler":{"amount": 2,"cost":11},
         "Beehive":{"amount": 2,"cost":12},
-        "Clipper":{"amount":2,"cost":10}
-        //"Fertilizer":{"amount": 5,"cost": 4}
+        "Clipper":{"amount":2,"cost":3},
+        "Blue Can":{"amount":1,"cost":7.50},
+        "Purple Can":{"amount":0,"cost":12.75}
     },
     "Decorations":{
         "Bench":{"amount": 4,"cost":7}

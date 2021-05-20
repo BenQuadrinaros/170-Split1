@@ -110,8 +110,8 @@ class Settings extends Phaser.Scene {
             input: 'drag', // 'drag'|'click'
         }).layout();
 
-        let beeBumpText = this.add.text(centerX, centerY/3 + 9*textSpacer/2, "Bee Bump Collisions:\n"
-            + playerVariables.beeBump, this.textConfig).setOrigin(.5, .5).setAlpha(.75);
+        let beeBumpText = this.add.text(centerX, centerY/3 + 9*textSpacer/2, "Bee Bump Collisions:\nOFF", 
+            this.textConfig).setOrigin(.5, .5).setAlpha(.75);
         beeBumpText.setInteractive();
         beeBumpText.on('pointerover', () => {
             beeBumpText.setAlpha(1);
@@ -121,8 +121,8 @@ class Settings extends Phaser.Scene {
         });
         beeBumpText.on('pointerup', () => {
             playerVariables.beeBump = !(playerVariables.beeBump);
-            beeBumpText.text = "Bee Bump Collisions:\n" + playerVariables.beeBump;
-            console.log("bee bump?", playerVariables.beeBump);
+            if(playerVariables.beeBump) { beeBumpText.text = "Bee Bump Collisions:\nON"; }
+            else { beeBumpText.text = "Bee Bump Collisions:\nON"; }
         })
 
         this.textConfig.fontSize = "28px";

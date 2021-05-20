@@ -7,12 +7,10 @@ class Plot {
         //States
         this.dug = false;
         this.water = false;
-        this.mulchAmt = 0;
         this.item = null;
 
         //Images
         this.dirt = null;
-        this.mulch = null;
         this.spot = null;
 
         //Interaction Markers
@@ -33,12 +31,6 @@ class Plot {
             scene.add.existing(this.dirt);
             this.dirt.depth = this.dirt.y/10 - 20;
         }
-        /*if(this.mulchAmt > 0) {
-            this.mulch = scene.add.image(spotx, spoty, "mulch");
-            this.mulch.setOrigin(.5, .5).setScale(.35, .35);
-            scene.add.existing(this.mulch);
-            this.mulch.depth = this.mulch.y/10 - 18;
-        }*/
         if(this.item) {
             //console.log("putting",this.item,"at",spotx," ",spoty);
             this.spot = this.item.addToScene(scene, spotx, spoty);
@@ -58,14 +50,16 @@ class Plot {
         
     }
 
+    setTransparency(alpha) {
+        if(this.spot) {
+            this.spot.setAlpha(alpha);
+        }
+    }
+
     destroyImages() {
         if(this.dirt) {
             this.dirt.destroy();
             this.dirt = null;
-        }
-        if(this.mulch) {
-            this.mulch.destroy();
-            this.mulch = null;
         }
         if(this.spot) {
             this.spot.destroy();

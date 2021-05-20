@@ -74,17 +74,20 @@ class Hub extends Phaser.Scene {
         this.createAnimations();
 
         //Check for special cases
-        playerVariables.score = calculateEcologyScore();
-        //console.log("score is "+playerVariables.score)
-        let hasWon = true;
-        for(let star of playerVariables.score) { if(!star) { hasWon = false; } }
-        if (!(playerVariables.hasWon) && hasWon) {
-            playerVariables.hasWon = true;
-            this.scene.pause();
-            this.music.stop();
-            this.scene.start("winScene");
-        } else if ((this.previousScene === "marketScene" || this.previousScene === "hubScene" 
+        if ((this.previousScene === "marketScene" || this.previousScene === "hubScene" 
             || this.previousScene === "tutorialScene") && !this.popupVisited) {
+            if(this.previousScene === "hubScene" || this.previousScene === "tutorialScene") {
+                playerVariables.score = calculateEcologyScore();
+                //console.log("score is "+playerVariables.score)
+                let hasWon = true;
+                for(let star of playerVariables.score) { if(!star) { hasWon = false; break; } }
+                if (!(playerVariables.hasWon) && hasWon) {
+                    playerVariables.hasWon = true;
+                    this.scene.pause();
+                    this.music.stop();
+                    this.scene.start("winScene");
+                }
+            }
             //console.log("Sending to popup");
             //isPaused = true;
             this.popupVisited = true;
@@ -97,7 +100,7 @@ class Hub extends Phaser.Scene {
                 this.scene.launch("hubPopupScene", {previousScene: "hubScene",
                                                     fromTutorial:false});
             }
-        }
+        } 
 
         //Check for benches
         this.benchList = [];
@@ -250,7 +253,7 @@ class Hub extends Phaser.Scene {
             }
         }
         //Determine how many to spawn
-        let toSpread = Phaser.Math.Between(1, 3);
+        let toSpread = Phaser.Math.Between(0, 2);
         while(growth.length > toSpread) {
             growth.splice(Phaser.Math.Between(0, growth.length-1), 1);
         }
@@ -277,7 +280,9 @@ class Hub extends Phaser.Scene {
         shopInventory["Seeds"]["Tulip"]["amount"] = 3;
         shopInventory["Items"]["Beehive"]["amount"] = 2;
         shopInventory["Items"]["Sprinkler"]["amount"] = 2;
-        shopInventory["Items"]["Clipper"]["amount"] = 2;
+        shopInventory["Items"]["Clipper"]["amount"] = 4 + Math.floor(currentDay/4);
+        shopInventory["Items"]["Clipper"]["cost"] = Math.max(2, 3 - .25* Math.floor(currentDay/6));
+        if(playerVariables.waterLvl == 1) { shopInventory["Items"]["Purple Can"]["amount"] = 1; }
     }
 
     createControls() {
@@ -623,6 +628,12 @@ class Hub extends Phaser.Scene {
         if (this.heldImg == 0) {
             console.log("setting image for",heldItem);
             heldItem.addToScene(this, this.player.x, this.player.y);
+            if(heldItem instanceof Flower && heldItem.age == 0) {
+                heldItem.image.destroy();
+                heldItem.image = null;
+                heldItem.image = this.add.image(this.player.x, this.player.y, heldItem.type+"Seeds");
+                heldItem.image.setScale(.35, .35);
+            } 
             this.heldImg = 1;
             this.imageFlip = false;
         } else if (this.heldImg == -1) {
@@ -712,8 +723,8 @@ class Hub extends Phaser.Scene {
                 //Go to hub and start next day
                 this.placeHeldItemInBag();
                 this.music.transitionSong("bedtimeMusic", false);
-                this.cameras.main.fadeOut(4500, 0, 0, 0);
-                this.time.delayedCall(4750, () => {
+                this.cameras.main.fadeOut(5000, 0, 0, 0);
+                this.time.delayedCall(5250, () => {
                     this.placeHeldItemInBag();
                     this.music.stop();
                     this.scene.start('hubScene', {previousScene: "hubScene"});
@@ -836,7 +847,10 @@ class Hub extends Phaser.Scene {
 
     spigotAnimate() {
         if(this.tempCan) { this.tempCan.destroy(); }
-        this.tempCan = this.add.image(this.spigot.x - 25, this.spigot.y + this.spigot.height/4, "water"+playerVariables.water);
+        let color = "red";
+        if(playerVariables.waterLvl == 1) { color = "blue"; }
+        else if(playerVariables.waterLvl == 2) { color = "purple"; }
+        this.tempCan = this.add.image(this.spigot.x - 25, this.spigot.y + this.spigot.height/4, color+"water"+playerVariables.water);
         this.tempCan.flipX = true;
         this.tempCan.depth = this.spigot.depth+1;
         this.tempCan.setScale(.75, .75);
@@ -848,9 +862,9 @@ class Hub extends Phaser.Scene {
         this.spigotEmitter.setAngle({min: 75, max: 105});
         this.spigotEmitter.on = true;
 
-        //After a short delay, stop the emitter
+        //After a scaling delay, stop the emitter
         this.time.addEvent({
-            delay: 1000 - playerVariables.water * 250,
+            delay: 250 + (250 * (4 + playerVariables.waterLvl)) - (playerVariables.water * 250),
             callback: () => {
                 this.time.addEvent({
                     delay: 250,
@@ -898,9 +912,31 @@ class Hub extends Phaser.Scene {
                 this.hiveHighlight.alpha = 0;
                 this.sprinklerHighlight.alpha = 0;
             }
+            for(let row = loc[0]; row <= loc[0] + 2; row++) {
+                if(row >= 0 && row < gardenGrid.length) {
+                    for(let col = loc[1] - 2; col <= loc[1] + 2; col++) {
+                        if(col >= 0 && col < gardenGrid[0].length) {
+                            gardenGrid[row][col].setTransparency(1);
+                        }
+                    }
+                }
+            }
+            if(loc[0] + 1 > 0 && loc[0] + 1 < gardenGrid.length) {
+                for(let col = loc[1] - 1; col <= loc[1] + 1; col++) {
+                    if(col >= 0 && col < gardenGrid[0].length) {
+                        gardenGrid[loc[0]+1][col].setTransparency(.3);
+                    }
+                }
+            }
         } else {
             this.hiveHighlight.alpha = 0;
             this.sprinklerHighlight.alpha = 0;
+            for(let i = 0; i < gardenGrid[0].length; i++) {
+                for(let j = 0; j < gardenGrid.length; j++) {
+                    gardenGrid[j][i].setTransparency(1);
+                    gardenGrid[j][i].setTransparency(1);
+                }
+            }
         }
     }
 
@@ -994,7 +1030,7 @@ class Hub extends Phaser.Scene {
                 }
                 else if(heldItem instanceof WateringCan) {
                     //If the player is holding the can
-                    if(playerVariables.water == 4) {
+                    if(playerVariables.water == 4 + playerVariables.waterLvl) {
                         //If the can is already full
                         this.fadeText("My watering can\nis already full.");
                     } else if(playerVariables.money >= .25) {
@@ -1005,9 +1041,9 @@ class Hub extends Phaser.Scene {
                         this.spigotAnimate();
                         //Create a new Watering Can
                         this.time.addEvent({
-                            delay: 1250 - playerVariables.water * 250,
+                            delay: 500 + (250 * (4 + playerVariables.waterLvl)) - (playerVariables.water * 250),
                             callback: () => {
-                                playerVariables.water = 4;
+                                playerVariables.water = 4 + playerVariables.waterLvl;
                                 heldItem = new WateringCan();
                                 heldType = "items";
                                 this.heldImg = 0;
@@ -1029,9 +1065,9 @@ class Hub extends Phaser.Scene {
                         this.spigotAnimate();
                         //Create a new Watering Can
                         this.time.addEvent({
-                            delay: 1250 - playerVariables.water * 250,
+                            delay: 500 + (250 * (4 + playerVariables.waterLvl)) - (playerVariables.water * 250),
                             callback: () => {
-                                playerVariables.water = 4;
+                                playerVariables.water = 4 + playerVariables.waterLvl;
                                 heldItem = new WateringCan();
                                 heldType = "items";
                                 this.heldImg = 0;
