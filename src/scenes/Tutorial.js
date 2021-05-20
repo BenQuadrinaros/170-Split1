@@ -582,6 +582,12 @@ class Tutorial extends Phaser.Scene {
         if (this.heldImg == 0) {
             console.log("setting image for",heldItem);
             heldItem.addToScene(this, this.player.x, this.player.y);
+            if(heldItem instanceof Flower && heldItem.age == 0) {
+                heldItem.image.destroy();
+                heldItem.image = null;
+                heldItem.image = this.add.image(this.player.x, this.player.y, heldItem.type+"Seeds");
+                heldItem.image.setScale(.35, .35);
+            } 
             this.heldImg = 1;
             this.imageFlip = false;
         } else if (this.heldImg == -1) {
@@ -681,8 +687,8 @@ class Tutorial extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 //Go to hub and start next day
                 this.music.transitionSong("bedtimeMusic", false);
-                this.cameras.main.fadeOut(3000, 0, 0, 0);
-                this.time.delayedCall(8000, () => {
+                this.cameras.main.fadeOut(5000, 0, 0, 0);
+                this.time.delayedCall(5250, () => {
                     //Give the player some clippers
                     playerVariables.inventory.items["Clipper"] += 3;
                     playerVariables.inventory.honey["total"] = 3;
@@ -815,7 +821,7 @@ class Tutorial extends Phaser.Scene {
 
     spigotAnimate() {
         if(this.tempCan) { this.tempCan.destroy(); }
-        this.tempCan = this.add.image(this.spigot.x - 25, this.spigot.y + this.spigot.height/4, "water"+playerVariables.water);
+        this.tempCan = this.add.image(this.spigot.x - 25, this.spigot.y + this.spigot.height/4, "redwater"+playerVariables.water);
         this.tempCan.flipX = true;
         this.tempCan.depth = this.spigot.depth+1;
         this.tempCan.setScale(.75, .75);
@@ -1285,7 +1291,7 @@ class Tutorial extends Phaser.Scene {
                 return;
             }
             this.advanceTutorialDialog(7);
-            this.currDialogMaximum = 7;
+            this.currDialogMaximum = 8;
             playerVariables.inventory.flowers["Daisy"] += 2;
             playerInventoryUpdated = true;
             inventoryTabsUpdated["flowers"] = true;
@@ -1318,17 +1324,17 @@ class Tutorial extends Phaser.Scene {
                 gardenGrid[idealRow][idealCol].renderPlot(this, tempWeedLoc);
                 this.tutorialWeedCreated = true;
             }
-            if(this.currDialogMaximum != 7){
-                return;
-            }
-            this.advanceTutorialDialog(8);
-            this.currDialogMaximum = 8;
-        }
-        else if(!this.playerHasPlacedBeehive){
             if(this.currDialogMaximum != 8){
                 return;
             }
             this.advanceTutorialDialog(9);
+            this.currDialogMaximum = 9;
+        }
+        else if(!this.playerHasPlacedBeehive){
+            if(this.currDialogMaximum != 9){
+                return;
+            }
+            this.advanceTutorialDialog(10);
             this.currDialogMaximum = 10;
             playerVariables.inventory.items["Beehive"] = 1;
             playerInventoryUpdated = true;
@@ -1404,15 +1410,16 @@ by next week.`;
                 break;
             case 8:
                 this.tutorialDialog.text =
+`If you want to dig up a patch of dirt, or cover one with
+grass, all you have to do is interact with it.`;
+                break;
+            case 9:
+                this.tutorialDialog.text =
 `Weeds interfere with the ability of nearby flowers to make
 pollen. Luckily, all you have to do to get rid of a weed is to
 interact with it. Could you deal with the one by the spigot?`;
                 break;
-            case 9:
-                this.tutorialDialog.text =
-`If you want to cover over that dirt patch with grass, just
-interact with it again.`;
-                break;
+            
             case 10:
                 this.tutorialDialog.text =
 `Now, to actually make some delicious honey, you are going to

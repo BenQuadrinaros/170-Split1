@@ -13,6 +13,10 @@ class MarketPriceSetting extends Phaser.Scene {
         this.createPriceChanging();
         this.createEvents();
 
+        if(!playerVariables.completedMarketTutorial){
+            this.createTutorialDialogText();
+        }    
+
         this.music = new BGMManager(this);
         this.music.playSong("marketMusic", true);
     }
@@ -25,6 +29,19 @@ class MarketPriceSetting extends Phaser.Scene {
         this.infoDisplay.update(this.cameras.main.scrollX + config.width * .1, 
             this.cameras.main.scrollY + config.height * .15, 
             playerVariables.money, playerVariables.inventory.honey["total"]);
+
+        if(!playerVariables.completedMarketTutorial && Phaser.Input.Keyboard.JustDown(keySPACE)){
+            if(this.currDialogSelection < 3){
+                ++this.currDialogSelection;
+                this.tutorialDialog.text = this.getNextDialogSection(this.currDialogSelection);
+            }
+            else {
+                playerVariables.completedMarketTutorial = true;
+                this.tutorialTextBackdrop.alpha = 0;
+                this.tutorialDialog.setVisible(false);
+                this.spaceContinue.setVisible(false);
+            }
+        }
     }
 
     createControls(){
@@ -315,5 +332,88 @@ class MarketPriceSetting extends Phaser.Scene {
             this.scene.launch("marketScene", {previousScene: "marketPriceSettingScene"});
             this.scene.stop();
         }
+    }
+
+    createTutorialDialogText(){
+        this.tutorialTextBackdrop = this.add.image(0, 0, 'tutorialDialogBox')
+                                            .setOrigin(0, 0).setScale(0.5);
+        this.tutorialTextBackdrop.depth = 150;
+        this.tutorialConfig = {
+            fontFamily: font,
+            fontSize: "27.5px",
+            color: "#000000",
+            align: "left",
+            stroke: "#000000",
+            strokeThickness: 1,
+            padding: {
+                top: 5,
+                bottom: 5
+            },
+        };
+        this.tutorialDialog = this.add.text(0,0, "", this.tutorialConfig);
+        this.tutorialDialog.setOrigin(0, 0);
+        this.tutorialDialog.depth = 200;
+        this.tutorialDialog.x = this.cameras.main.scrollX + 185;
+        this.tutorialDialog.y = this.cameras.main.scrollY + 3.25*config.height/5 - 25;
+        this.currDialogSelection = 0;
+        this.tutorialConfig.fontSize = "16px";
+        this.spaceContinue = this.add.text(0, 0, "SPACE to continue", this.tutorialConfig);
+        this.spaceContinue.depth = 205;
+        this.spaceContinue.x = this.cameras.main.scrollX + 4*config.width/5 - 15;
+        this.spaceContinue.y = this.cameras.main.scrollY + 4*config.height/5 + 35;
+        
+        this.tutorialDialog.text = this.getNextDialogSection(this.currDialogSelection);
+
+
+
+        this.input.on('pointerdown', function (pointer) {
+            if(this.currDialogSelection < 3){
+                ++this.currDialogSelection;
+                this.tutorialDialog.text = this.getNextDialogSection(this.currDialogSelection);
+            }
+            else {
+                this.tutorialTextBackdrop.alpha = 0;
+                this.tutorialDialog.setVisible(false);
+                this.spaceContinue.setVisible(false);
+                playerVariables.completedMarketTutorial = true;
+            }
+        }, this);
+    }
+
+    getNextDialogSection(num){
+        let text = ""
+        switch(num){
+            case 0:
+                text =
+`Welcome to the Farmer's Market. This is where you can sell
+the honey we've been producing. On the chalkboard right now
+is a relatively standard price for a jar of regular honey.
+When you bring other types of honey here, we can start you
+off with regular prices for those as well.`;
+                break;
+            case 1:
+                text = 
+`When a customer approaches, this is the price you are asking
+them to pay. If you realize that your price isn't quite working,
+feel free to change it up. Your customers will understand
+that you are new to this.`;
+                break;
+            case 2:
+                text = 
+`If a customer isn't satisfied with your price, but doesn't think
+that it was too much, they might try to barter with you
+instead, which can get you some nice deals on various items.`;
+                break;
+            case 3:
+                text =
+`Each customer has their own budget, so don't get too
+discouraged if some people aren't big fans of your prices.
+Good luck!`;
+                break;
+            default:
+                console.log("No dialog of matching section");
+        }
+
+        return text;
     }
 }

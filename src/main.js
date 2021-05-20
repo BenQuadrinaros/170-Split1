@@ -100,6 +100,7 @@ let playerVariables = {
     water: 0,
     waterLvl: 0,
     beeBump: false,
+    completedMarketTutorial: false,
     hasWon: false,
     name: "Bearry",
     score: [false, false, false, false, false],

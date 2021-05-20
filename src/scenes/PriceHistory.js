@@ -40,7 +40,7 @@ class PriceHistory extends Phaser.Scene{
 
         this.textConfiguration = {
             fontFamily: font,
-            fontSize: "20px",
+            fontSize: "16px",
             color: "#000000",
             align: "center",
             stroke: "#000000",
@@ -56,7 +56,7 @@ class PriceHistory extends Phaser.Scene{
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
         if(this.previousSceneDone !== "false"){
-            this.priceTitle = this.add.text(game.config.width/2, game.config.height/6, this.previousSceneDone, this.textConfiguration).setOrigin(.5, .5);
+            this.priceTitle = this.add.text(game.config.width/2 + 60, game.config.height/6 + 5, this.previousSceneDone, this.textConfiguration).setOrigin(.5, .5);
         }
         this.textConfiguration.fontSize = "28px";
         this.continueText = this.add.text(config.width - 125, config.height - 50, "Continue", this.textConfiguration).setOrigin(0.5, 0.5).setDepth(5);

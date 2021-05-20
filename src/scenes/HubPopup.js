@@ -88,6 +88,8 @@ class HubPopup extends Phaser.Scene {
         if(this.fromTutorial) {
             this.createFromTutorialText();
         }
+
+        this.createEvents();
     }
 
     update(){
@@ -124,6 +126,18 @@ as you restore this garden. *B*ee you around!`;
         }
     }
 
+    createEvents(){
+        //When leaving the settings page, just leave
+        this.events.on("resume", () => {
+            console.log("ReenableEsc called");
+            if(!this.fromTutorial || this.currDialogSelection === 3){
+                console.log("Resuming Hub Activities");
+                this.scene.resume(this.prevScene);
+                this.scene.stop();
+            }
+        });
+    }
+
     createFromTutorialText(){
         this.tutorialTextBackdrop = this.add.image(0, 0, 'tutorialDialogBox')
                                             .setOrigin(0, 0).setScale(0.5);
@@ -158,5 +172,23 @@ as you restore this garden. *B*ee you around!`;
 `You can collect your first jar of honey from the hive.
 Otherwise, you should be good to go. You can sell jars
 of honey at the farmer's market in town.`;
+
+
+
+        this.input.on('pointerdown', function (pointer) {
+            if(this.currDialogSelection === 1){
+                this.tutorialDialog.text =
+`We were also able to collect an extra few jars to give
+you a head start. We look forward to working with you
+as you restore this garden. *B*ee you around!`;
+                this.currDialogSelection = 2;
+            }
+            else if(this.currDialogSelection === 2){
+                this.tutorialTextBackdrop.alpha = 0;
+                this.tutorialDialog.setVisible(false);
+                this.spaceContinue.setVisible(false);
+                this.currDialogSelection = 3;
+            }
+        }, this);
     }
 }

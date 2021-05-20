@@ -8,7 +8,7 @@ class Weed {
 
     addToScene(scene, initx, inity) {
         this.image = scene.add.image(initx, inity+15, "weed");
-        this.image.setOrigin(.5, .5).setScale(.55, .55);
+        this.image.setOrigin(.5, .5).setScale(.5, .5);
         this.image.depth = this.image.y/10 - 3;
         scene.add.existing(this.image);
         this.image.setPosition(initx, inity);

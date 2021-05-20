@@ -126,7 +126,7 @@ class ShopUI extends Phaser.Scene {
 
                 slider: {
                     track: this.rexUI.add.roundRectangle(0, 0, 20, 10, 10, SHOP_DARK),
-                    thumb: uiScene.add.image(0, 0, "PlayerIcon").setScale(.5, .5),
+                    thumb: uiScene.add.image(0, 0, "bearBee").setScale(.75, .75).setFlipX(true),
                 },
 
                 // scroller: true,

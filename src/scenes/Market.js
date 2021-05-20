@@ -399,10 +399,11 @@ class Market extends Phaser.Scene {
         let amt = Math.floor(offer.amt);
         let scale = offer.scale;
         let category = offer.category;
+        let yOffset = offer.yOffset;
         console.log(`NPC barter value ${barterValue} and are offering ${amt} ${item} `);
         let barterBox = this.add.image(this.npc.x + 50, this.npc.y - 150,'marketBubble')
             .setDepth(100).setOrigin(.5, .5).setScale(.3,.3);
-        let offerImg = this.add.image(barterBox.x+25,barterBox.y+20,img)
+        let offerImg = this.add.image(barterBox.x+25,barterBox.y+20 - yOffset,img)
             .setOrigin(.5,.5).setDepth(100).setScale(scale,scale);
         let barterArrows = this.add.image(barterBox.x,barterBox.y,"barterArrows")
              .setDepth(100).setOrigin(.5,.5).setScale(.3,.3);
@@ -582,43 +583,50 @@ class Market extends Phaser.Scene {
             val:2,
             img:"DaisySeeds",
             scale:.35,
-            category:"seeds"
+            category:"seeds",
+            yOffset: - 3
         },
         Lavender:{
             val:2,
             img:"LavenderSeeds",
             scale:.35,
-            category:"seeds"
+            category:"seeds",
+            yOffset: - 3
         },
         Delphinium:{
             val:2,
             img:"DelphiniumSeeds",
             scale:.35,
-            category:"seeds"
+            category:"seeds",
+            yOffset: - 3
         },
         Tulip:{
             val:3,
             img:"TulipSeeds",
             scale:.35,
-            category:"seeds"
+            category:"seeds",
+            yOffset: - 3
         },
         Beehive:{
             val:8,
             img:"hive",
             scale:.075,
-            category:"items"
+            category:"items",
+            yOffset: 0
         },
         Clipper:{
             val:3,
             img:"clipper",
             scale:.75,
-            category:"items"
+            category:"items",
+            yOffset: 0
         },
         Sprinkler:{
             val:11,
             img:"sprinkler",
             scale:.075,
-            category:"items"
+            category:"items",
+            yOffset: 0
         }
     }
     }
@@ -1130,6 +1138,7 @@ class Market extends Phaser.Scene {
         barterOffer.img = item[1].img;
         barterOffer.scale = item[1].scale;
         barterOffer.category = item[1].category;
+        barterOffer.yOffset = item[1].yOffset;
         return barterOffer;
     }
 }
