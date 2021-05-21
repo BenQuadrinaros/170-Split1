@@ -101,6 +101,9 @@ class ShopUI extends Phaser.Scene {
                 name: 'Buy for ',
             },
             {
+                name: 'Buy ALL for'
+            },
+            {
                 name: 'Cancel',
             },
         ];
@@ -238,9 +241,11 @@ class ShopUI extends Phaser.Scene {
                 let tab = uiScene.selectedTab.toLowerCase();
                 let stock = shopInventory[uiScene.selectedTab][uiScene.selectedItem].amount;
                 let cost = shopInventory[uiScene.selectedTab][uiScene.selectedItem].cost;
-                let costText = "Buy for " + cost + "$ ?"
+                let costText = "Buy for " + cost + "$ ?";
+                let allText = "Buy ALL for " + cost*stock + "$ ?"
 
-                confirmBuy[0] = {name: costText}
+                confirmBuy[0] = {name: costText};
+                confirmBuy[1] = {name: allText};
                 console.log("Before buying item text is " + cellContainer.text)
                 if (stock <= 0) {
                     console.log("Out of stock");
@@ -251,7 +256,7 @@ class ShopUI extends Phaser.Scene {
                         " which has stock " + shopInventory[uiScene.selectedTab][uiScene.selectedItem].amount);
                     music.playSFX("shopSelect");
                     menu = createMenu(this, 600, 350, confirmBuy, function (button) {
-                        if (button.text === costText) {
+                        if (button.text === costText || button.text === allText) {
                             if (cost > playerVariables.money) {
                                 console.log("Not enough money...");
                                 music.playSFX("failtosell");
@@ -259,6 +264,11 @@ class ShopUI extends Phaser.Scene {
                             } else {
                                 if (shopInventory[uiScene.selectedTab][item] === undefined) {
                                     return;
+                                }
+                                let amtToBuy = 1;
+                                if (button.text === allText){
+                                    cost = cost*stock;
+                                    amtToBuy = stock;
                                 }
                                 console.log("Added cell " + cellIndex + " which contains " + item +
                                     " to player inventory");
@@ -270,12 +280,12 @@ class ShopUI extends Phaser.Scene {
                                     playerVariables.waterLvl += 1;
                                     idImages["Watering Can"][0] = "purplewater0";
                                 } else {
-                                    playerVariables.inventory[tab][item] += 1;
+                                    playerVariables.inventory[tab][item] += amtToBuy;
                                 }
                                 inventoryTabsUpdated[tab.toString()] = true;
                                 console.log(`after changing inv, ${playerVariables.inventory[tab][item]}`)
                                 playerVariables.money -= cost;
-                                let newStock = parseInt(stock) - 1;
+                                let newStock = parseInt(stock) - amtToBuy;
                                 playerInventoryUpdated = true;
                                 music.playSFX("buyFlowers");
                                 //eventDispatcher.dispatch("successfulPurchase");
