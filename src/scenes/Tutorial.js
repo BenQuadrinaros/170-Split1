@@ -139,7 +139,7 @@ class Tutorial extends Phaser.Scene {
         //Update player movement and location
         this.previousPlayerPosition = [this.player.x, this.player.y];
         //Make sure the player cannot move while watering
-        if(!(this.wateringEmitter.on)) { this.player.update(); }
+        if(!(this.wateringEmitter.on || this.spigotEmitter.on)) { this.player.update(); }
         this.player.depth = this.player.y / 10 + 3;
         this.updateCheckCollisions();
 
@@ -274,10 +274,10 @@ class Tutorial extends Phaser.Scene {
         console.log("Honey increases to " + playerVariables.inventory.honey["total"]);
 
         //Refresh Shop
-        shopInventory["Seeds"]["Daisy"]["amount"] = 2;
-        shopInventory["Seeds"]["Delphinium"]["amount"] = 3;
-        shopInventory["Seeds"]["Lavender"]["amount"] = 3;
-        shopInventory["Seeds"]["Tulip"]["amount"] = 3;
+        shopInventory["Seeds"]["Daisy\nSeeds"]["amount"] = 2;
+        shopInventory["Seeds"]["Delphinium\nSeeds"]["amount"] = 3;
+        shopInventory["Seeds"]["Lavender\nSeeds"]["amount"] = 3;
+        shopInventory["Seeds"]["Tulip\nSeeds"]["amount"] = 3;
         shopInventory["Items"]["Beehive"]["amount"] = 2;
         shopInventory["Items"]["Sprinkler"]["amount"] = 2;
     }
@@ -286,7 +286,7 @@ class Tutorial extends Phaser.Scene {
         //Empty player's honey
         playerVariables.inventory.honey["total"] = 0;
         playerVariables.inventory.honey["yellow"] = 0;
-        playerVariables.inventory.seeds["Daisy"] = 0;
+        playerVariables.inventory.seeds["Daisy\nSeeds"] = 0;
         playerVariables.inventory.items["Clipper"] = 0;
         //Destroy the default garden items
         gardenGrid[0][5].item = null; //Make sure the player doesn't spawn in a bramble
@@ -460,7 +460,7 @@ class Tutorial extends Phaser.Scene {
             keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
             keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
             keyI = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.I);
-            if(!this.playerHasEquippedFirstSeed && (playerVariables.inventory.seeds["Daisy"] === 0)){
+            if(!this.playerHasEquippedFirstSeed && (playerVariables.inventory.seeds["Daisy\nSeeds"] === 0)){
                 this.playerHasEquippedFirstSeed = true;
             } else if(this.playerHasWateredFirstSeed && !this.playerHasEquippedFullFlower && (playerVariables.inventory.flowers["Daisy"] === 0)){
                 this.playerHasEquippedFullFlower = true;
@@ -606,16 +606,30 @@ class Tutorial extends Phaser.Scene {
 
         //Also update highlight
         if (heldItem instanceof Sprinkler) {
+            let loc = this.closestPlot();
             this.sprinklerHighlightHold.alpha = this.highlightOpacity;
-            this.sprinklerHighlightHold.x = this.player.x;
-            this.sprinklerHighlightHold.y = this.player.y + 35;
-            this.sprinklerHighlightHold.depth = this.sprinklerHighlightHold.y / 10 - 5;
+            if(loc != null) {
+                let coords = this.gridToCoord(loc[1], loc[0]);
+                this.sprinklerHighlightHold.x = coords[0];
+                this.sprinklerHighlightHold.y = coords[1] + 35;
+            } else {
+                this.sprinklerHighlightHold.x = this.player.x;
+                this.sprinklerHighlightHold.y = this.player.y + 35;
+            }
+            this.sprinklerHighlightHold.depth = this.sprinklerHighlightHold.y / 10 + 5;
             this.hiveHighlightHold.alpha = 0;
         } else if (heldItem instanceof Hive) {
+            let loc = this.closestPlot();
             this.hiveHighlightHold.alpha = this.highlightOpacity;
-            this.hiveHighlightHold.x = this.player.x;
-            this.hiveHighlightHold.y = this.player.y + 35;
-            this.hiveHighlightHold.depth = this.hiveHighlightHold.y / 10 - 5;
+            if(loc != null) {
+                let coords = this.gridToCoord(loc[1], loc[0]);
+                this.hiveHighlightHold.x = coords[0];
+                this.hiveHighlightHold.y = coords[1] + 35;
+            } else {
+                this.hiveHighlightHold.x = this.player.x;
+                this.hiveHighlightHold.y = this.player.y + 35;
+            }
+            this.hiveHighlightHold.depth = this.hiveHighlightHold.y / 10 + 5;
             this.sprinklerHighlightHold.alpha = 0;
         } else {
             this.sprinklerHighlightHold.alpha = 0;
@@ -1223,7 +1237,7 @@ class Tutorial extends Phaser.Scene {
         console.log(heldItem)
         if (heldItem instanceof Flower) {
             if(heldItem.age <= 1){
-                playerVariables.inventory.seeds[heldItem.type] += 1;
+                playerVariables.inventory.seeds[heldItem.type+"\nSeeds"] += 1;
             } else{
                 playerVariables.inventory.flowers[heldItem.type] += 1;
             }
@@ -1267,7 +1281,7 @@ class Tutorial extends Phaser.Scene {
             }
             this.advanceTutorialDialog(1);
             this.currDialogMaximum = 3;
-            playerVariables.inventory.seeds["Daisy"] += 1;
+            playerVariables.inventory.seeds["Daisy\nSeeds"] += 1;
             playerInventoryUpdated = true;
             inventoryTabsUpdated["seeds"] = true;
         }

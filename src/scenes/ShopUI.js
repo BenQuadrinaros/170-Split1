@@ -3,16 +3,20 @@ let pointer;
 
 let shopCosts = {};
 let idImages = {
-    "Daisy": ["DaisySeeds", .35],
-    "Delphinium": ["DelphiniumSeeds", .35],
-    "Tulip": ["TulipSeeds", .35],
-    "Lavender": ["LavenderSeeds", .35],
-    "Sprinkler": ["sprinkler", .125],
-    "Beehive": ["hive", .125],
+    "Daisy\nSeeds": ["DaisySeeds", .45],
+    "Delphinium\nSeeds": ["DelphiniumSeeds", .45],
+    "Tulip\nSeeds": ["TulipSeeds", .45],
+    "Lavender\nSeeds": ["LavenderSeeds", .45],
+    "Daisy": ["flowerWhite3", .15],
+    "Delphinium": ["flowerBlue3", .35],
+    "Tulip": ["flowerRed3", .35],
+    "Lavender": ["flowerPurple3", .35],
+    "Sprinkler": ["sprinkler", .15],
+    "Beehive": ["hive", .15],
     "Clipper": ["clipper", .75],
     "Watering Can": ["redwater0", .45],
-    "Blue Can": ["bluewater5", .45],
-    "Purple Can": ["purplewater6", .45],
+    "Blue Can": ["bluewater5", .55],
+    "Purple Can": ["purplewater6", .55],
     "Bench": ["Bench", .25],
     "yellow": ["honeyYellow", .5],
     "blue": ["honeyBlue", .5],
@@ -304,9 +308,10 @@ class ShopUI extends Phaser.Scene {
                 cellContainer.getElement('background')
                     .setStrokeStyle(2, SHOP_LIGHT)
                     .setDepth(1);
-                let item = cellContainer.text.split("\n")[0];
-                uiScene.selectedItem = item;
+                let item = cellContainer.text.split("$")[0];
+                uiScene.selectedItem = item.substring(0,item.length-1);
                 uiScene.prevText = cellContainer.text;
+                console.log("tab",uiScene.selectedTab,"item",uiScene.selectedItem,"amount");
                 let available = shopInventory[uiScene.selectedTab][uiScene.selectedItem].amount;
                 if (available <= 0) {
                     cellContainer.text = "OUT OF \nSTOCK";

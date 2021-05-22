@@ -1,6 +1,7 @@
 class HubPlayer extends Phaser.GameObjects.Sprite {
 
-    constructor(scene, texture, frame, initX, initY, sceneWidth = game.config.width, sceneHeight = game.config.height, verticalLimit = [[config.width, 135]]) {
+    constructor(scene, texture, frame, initX, initY, sceneWidth = game.config.width, sceneHeight = game.config.height, 
+            verticalLimit = [[config.width, 135]]) {
         super(scene, initX, initY, texture, frame);
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -19,6 +20,10 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         this.movingDirection = "right";
         //Vertical limit: [(x, y)], x is rightmost bound at the height, y is the height
         this.verticalLimits = verticalLimit;
+
+        //Add shadow under player
+        this.shadow = scene.add.image(this.x, this.y + this.height/3, "bearShadow");
+        this.shadow.setOrigin(.5, .5).setScale(.75, .75);
     }
 
     update(){
@@ -84,6 +89,11 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         }
 
         this.chooseAnimation();
+
+        //Update shadow
+        this.shadow.x = this.x;
+        this.shadow.y = this.y + this.height/2.5;
+        this.shadow.depth = this.depth - 1;
 
     }
 

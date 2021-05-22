@@ -180,6 +180,7 @@ class Boot extends Phaser.Scene {
             //For hubScene
             //this.load.spritesheet('player', './assets/spritesheets/bearFrontBack.png', {frameWidth:40, frameHeight:72, startFrame:0, endFrame:1});
             this.load.spritesheet('player', './assets/spritesheets/bearAnims.png', {frameWidth: 140, frameHeight:247, startFrame:0, endFrame:7});
+            this.load.image("bearShadow", "./assets/img/bearShadow.png");
             this.load.spritesheet('backpackFrames', "./assets/spritesheets/backpackSheet.png", {frameWidth: 120, frameHeight:121, startFrame:0, endFrame:1});
             //For start of day
             this.load.spritesheet("settingsPause", './assets/spritesheets/settingsPAUSE_342x51.png', {frameWidth:171, frameHeight: 51, startFrame: 0, endFrame: 1});

@@ -236,7 +236,7 @@ class BackPackUI extends Phaser.Scene {
                                 if(uiScene.selectedTab == "seeds") {
                                     heldType = "seeds";
                                     plantingSeeds = true;
-                                    heldItem = new Flower(0, 5, item);
+                                    heldItem = new Flower(0, 5, item.substring(0,item.length-6));
                                     playerVariables.inventory[uiScene.selectedTab][item] -= 1;
                                 } else if(uiScene.selectedTab == "flowers") {
                                     heldType = "flowers";

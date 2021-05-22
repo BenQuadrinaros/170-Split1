@@ -141,7 +141,10 @@ class Hub extends Phaser.Scene {
         //Update player movement and location
         this.previousPlayerPosition = [this.player.x, this.player.y];
         //Make sure the player cannot move while watering
-        if(!(this.wateringEmitter.on || this.tempCan)) { this.player.update(); }
+        if(!(this.wateringEmitter.on || this.tempCan)) { 
+            this.player.update();
+            if(hasSoldForDay) { this.player.shadow.x = this.player.x - 35; }
+        }
         this.player.depth = this.player.y / 10 + 3;
         this.updateCheckCollisions();
 
@@ -274,10 +277,10 @@ class Hub extends Phaser.Scene {
         //console.log("Honey increases to " + playerVariables.inventory.honey["total"]);
 
         //Refresh Shop
-        shopInventory["Seeds"]["Daisy"]["amount"] = 2;
-        shopInventory["Seeds"]["Delphinium"]["amount"] = 3;
-        shopInventory["Seeds"]["Lavender"]["amount"] = 3;
-        shopInventory["Seeds"]["Tulip"]["amount"] = 3;
+        shopInventory["Seeds"]["Daisy\nSeeds"]["amount"] = 2;
+        shopInventory["Seeds"]["Delphinium\nSeeds"]["amount"] = 3;
+        shopInventory["Seeds"]["Lavender\nSeeds"]["amount"] = 3;
+        shopInventory["Seeds"]["Tulip\nSeeds"]["amount"] = 3;
         shopInventory["Items"]["Beehive"]["amount"] = 2;
         shopInventory["Items"]["Sprinkler"]["amount"] = 2;
         shopInventory["Items"]["Clipper"]["amount"] = 4 + Math.floor(currentDay/4);
@@ -317,6 +320,11 @@ class Hub extends Phaser.Scene {
             this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 3, this.worldWidth, this.worldHeight, [[game.config.width + 50, 115]]);
         }
         this.player.depth = this.player.y / 10;
+        
+        if(hasSoldForDay) { 
+            this.player.shadow.alpha = .35;
+            this.player.shadow.setScale(1.25, .5);
+         }
     }
 
     createCamera() {
@@ -655,18 +663,33 @@ class Hub extends Phaser.Scene {
         if(this.player.movingUp) { heldItem.image.depth = this.player.depth - 1; }
         else { heldItem.image.depth = this.player.depth + 1; }
 
+
         //Also update highlight
         if (heldItem instanceof Sprinkler) {
+            let loc = this.closestPlot();
             this.sprinklerHighlightHold.alpha = this.highlightOpacity;
-            this.sprinklerHighlightHold.x = this.player.x;
-            this.sprinklerHighlightHold.y = this.player.y + 35;
-            this.sprinklerHighlightHold.depth = this.sprinklerHighlightHold.y / 10 - 5;
+            if(loc != null) {
+                let coords = this.gridToCoord(loc[1], loc[0]);
+                this.sprinklerHighlightHold.x = coords[0];
+                this.sprinklerHighlightHold.y = coords[1] + 35;
+            } else {
+                this.sprinklerHighlightHold.x = this.player.x;
+                this.sprinklerHighlightHold.y = this.player.y + 35;
+            }
+            this.sprinklerHighlightHold.depth = this.sprinklerHighlightHold.y / 10 + 5;
             this.hiveHighlightHold.alpha = 0;
         } else if (heldItem instanceof Hive) {
+            let loc = this.closestPlot();
             this.hiveHighlightHold.alpha = this.highlightOpacity;
-            this.hiveHighlightHold.x = this.player.x;
-            this.hiveHighlightHold.y = this.player.y + 35;
-            this.hiveHighlightHold.depth = this.hiveHighlightHold.y / 10 - 5;
+            if(loc != null) {
+                let coords = this.gridToCoord(loc[1], loc[0]);
+                this.hiveHighlightHold.x = coords[0];
+                this.hiveHighlightHold.y = coords[1] + 35;
+            } else {
+                this.hiveHighlightHold.x = this.player.x;
+                this.hiveHighlightHold.y = this.player.y + 35;
+            }
+            this.hiveHighlightHold.depth = this.hiveHighlightHold.y / 10 + 5;
             this.sprinklerHighlightHold.alpha = 0;
         } else {
             this.sprinklerHighlightHold.alpha = 0;
@@ -904,14 +927,14 @@ class Hub extends Phaser.Scene {
                 let coords = this.gridToCoord(loc[1], loc[0]);
                 this.hiveHighlight.x = coords[0];
                 this.hiveHighlight.y = coords[1] + 35;
-                this.hiveHighlight.depth = this.hiveHighlight.y / 10 - 5;
+                this.hiveHighlight.depth = this.hiveHighlight.y / 10 + 5;
                 this.sprinklerHighlight.alpha = 0;
             } else if (gardenGrid[loc[0]][loc[1]].item instanceof Sprinkler) {
                 this.sprinklerHighlight.alpha = this.highlightOpacity;
                 let coords = this.gridToCoord(loc[1], loc[0]);
                 this.sprinklerHighlight.x = coords[0];
                 this.sprinklerHighlight.y = coords[1] + 35;
-                this.sprinklerHighlight.depth = this.sprinklerHighlight.y / 10 - 5;
+                this.sprinklerHighlight.depth = this.sprinklerHighlight.y / 10 + 5;
                 this.hiveHighlight.alpha = 0;
             } else {
                 this.hiveHighlight.alpha = 0;
@@ -1058,7 +1081,7 @@ class Hub extends Phaser.Scene {
                         });
                     } else {
                         //If player does not have enough money
-                        this.fadeText("Not enough money!\nCosts $0.25 to water.");
+                        this.fadeText("Not enough money!\nCosts $0.25 to fill.");
                     }
                 } else if(heldItem == undefined && playerVariables.inventory.items["Watering Can"]) {
                     //If player has can in inventory, pull it out
@@ -1082,7 +1105,7 @@ class Hub extends Phaser.Scene {
                         });
                     } else {
                         //If player does not have enough money
-                        this.fadeText("Not enough money!\nCosts $0.25 to water.");
+                        this.fadeText("Not enough money!\nCosts $0.25 to fill.");
                         //Give them an empty can
                         heldItem = new WateringCan();
                         heldType = "items";
@@ -1292,11 +1315,13 @@ class Hub extends Phaser.Scene {
         //check to see if holding stack of seeds
         console.log(playerVariables.inventory[heldType]);
         console.log(heldItem.type);
-        if (playerVariables.inventory[heldType][heldItem.type] > 0) {
+        let addition = "";
+        if(heldItem instanceof Flower && heldItem.age <= 1) { addition = "\nSeeds"; }
+        if (playerVariables.inventory[heldType][heldItem.type+addition] > 0) {
             //if yes, repopulate hand
             //console.log("holding another " + heldItem.type);
             this.heldImg = 0;
-            playerVariables.inventory[heldType][heldItem.type]--;
+            playerVariables.inventory[heldType][heldItem.type+addition]--;
             if(heldItem instanceof Hive) {
                 heldItem = new Hive(-1, -1);
             } else if(heldItem instanceof Sprinkler) {
@@ -1381,7 +1406,7 @@ class Hub extends Phaser.Scene {
             //console.log(`Storing held flower ${heldItem.type} in inventory.`)
             //console.log(`before storage ${playerVariables.inventory.flowers[heldItem.type]}`)
             if(heldItem.age <= 1){
-                playerVariables.inventory.seeds[heldItem.type] += 1;
+                playerVariables.inventory.seeds[heldItem.type+"\nSeeds"] += 1;
             } else{
                 playerVariables.inventory.flowers[heldItem.type] += 1;
             }
@@ -1448,7 +1473,13 @@ class Hub extends Phaser.Scene {
         priceMap = loadedData.bucksMap;
         console.log("priceMap: " + priceMap);
         pHistory = loadedData.bucksHist;
-        console.log("priceHistory: " + pHistory);       
+        console.log("priceHistory: " + pHistory);     
+        
+        if(playerVariables.waterLvl == 1) {
+            idImages["Watering Can"][0] = "bluewater0";
+        } else if (playerVariables.waterLvl == 2) {
+            idImages["Watering Can"][0] = "purplewater0";
+        }
         
         /*
         var saveData = {

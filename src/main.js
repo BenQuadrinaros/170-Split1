@@ -101,6 +101,7 @@ let playerVariables = {
     waterLvl: 0,
     beeBump: false,
     completedMarketTutorial: false,
+    gotCamera: false,
     hasWon: false,
     name: "Bearry",
     score: [false, false, false, false, false],
@@ -125,10 +126,10 @@ let playerVariables = {
             "Tulip": 0
         },
         seeds: {
-            "Daisy": 2,
-            "Delphinium": 0,
-            "Lavender": 0,
-            "Tulip": 0
+            "Daisy\nSeeds": 2,
+            "Delphinium\nSeeds": 0,
+            "Lavender\nSeeds": 0,
+            "Tulip\nSeeds": 0
         },
         decorations: {
             "Bench": 0,
@@ -148,10 +149,10 @@ let inventoryTabsUpdated = {
 
 let shopInventory = {
     "Seeds": {
-        "Daisy": {"amount": 2,"cost":2},
-        "Lavender":{"amount": 3,"cost": 3},
-        "Delphinium":{"amount": 3,"cost": 4},
-        "Tulip":{"amount": 3,"cost": 4}
+        "Daisy\nSeeds": {"amount": 2,"cost":2},
+        "Lavender\nSeeds":{"amount": 3,"cost": 3},
+        "Delphinium\nSeeds":{"amount": 3,"cost": 4},
+        "Tulip\nSeeds":{"amount": 3,"cost": 4}
     },
     "Items":{
         "Sprinkler":{"amount": 2,"cost":11},

@@ -40,6 +40,11 @@ class Shop extends Phaser.Scene {
             this.player = new HubPlayer(this, 'player', 0, config.width/3, 3*config.height/4, game.config.width, game.config.height, [[135, 330], [380, 295], [game.config.width+50, 350]]).setDepth(-1);
         }
         this.player.setScale(0.65);
+        this.player.shadow.setScale(0.65);
+        if(hasSoldForDay) { 
+            this.player.shadow.alpha = .35;
+            this.player.shadow.setScale(1.25, .5);
+         }
 
         //Create the text around the scene
         this.createText();
@@ -60,6 +65,8 @@ class Shop extends Phaser.Scene {
 
         //Update the player
         this.player.update();
+        this.player.shadow.y = this.player.shadow.y - 25;
+        if(hasSoldForDay) { this.player.shadow.x = this.player.x - 35; }
         
         //Check if the player is near any locations
         this.updateCheckNearLocation();

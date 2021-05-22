@@ -1,5 +1,5 @@
 class NPC extends Phaser.GameObjects.Sprite{
-    constructor(scene, initx = 2 * game.config.width / 3, inity = 4 * game.config.height / 7,
+    constructor(scene, initx = 2 * game.config.width / 3, inity = game.config.height,
         texture = 'basicDogNPC', frame = 0, name = "Unnamed", personality = "easy",
         voiceLines = [["Hullo", "Good day"], ["Thanks", "Bye"]]){
         
@@ -7,17 +7,18 @@ class NPC extends Phaser.GameObjects.Sprite{
         if(name === "Unnamed"){ //If a random npc was requested
             let idNum = Math.floor(11 * Math.random());
             let generatedTexture = generateNPCSprite(idNum);
-            let variation = Phaser.Math.Between(25, 75);
-            super(scene, initx, inity + variation, generatedTexture, frame);
-            this.setPosition(initx, inity + variation);
+            let variation = Phaser.Math.Between(25, 50);
+            super(scene, initx, inity - variation, generatedTexture, frame);
+            this.setPosition(initx, inity - variation);
             this.generateNPCCharacteristics(idNum);
         }
         else{ //If a specific npc was requested
-            super(scene, initx, inity, texture, frame);
+            super(scene, initx, inity, texture, frame, hop);
             this.setPosition(initx, inity);
             this.name = name;
             this.personality = personality;
             this.voiceLines = voiceLines;
+            this.hopHeight = hop;
         }
 
         //Flip the cats
@@ -25,7 +26,7 @@ class NPC extends Phaser.GameObjects.Sprite{
             this.flipX = true;
         }
 
-        this.setOrigin(1, 0.5);
+        this.setOrigin(1, 1);
         //Add to the scene
         scene.add.existing(this);
         this.scene = scene;
@@ -37,7 +38,7 @@ class NPC extends Phaser.GameObjects.Sprite{
     }
 
     approach(animDelay = 0){
-        console.log("NPC has been asked to approach");
+        console.log("NPC has been asked to approach",this.hopHeight,"hop height");
         this.scene.time.delayedCall(animDelay, () => {
             this.scene.tweens.add({
                 targets: this,
@@ -49,7 +50,7 @@ class NPC extends Phaser.GameObjects.Sprite{
             });
             this.scene.tweens.add({
                 targets: this,
-                y: 4 * game.config.height / 7,
+                y: this.y - this.hopHeight,
                 ease: 'Power2',
                 yoyo: true,
                 duration: 250,
@@ -71,7 +72,7 @@ class NPC extends Phaser.GameObjects.Sprite{
         });
         this.scene.tweens.add({
             targets: this,
-            y: 4 * game.config.height / 7,
+            y: this.y - this.hopHeight,
             ease: 'Power2',
             yoyo: true,
             duration: 250,
@@ -86,6 +87,7 @@ class NPC extends Phaser.GameObjects.Sprite{
         this.personality = NPCTable[idNum].personality;
         this.voiceLines = NPCTable[idNum].voiceLines;
         this.type = npcTypes[this.personality];
+        this.hopHeight = NPCTable[idNum].hopHeight;
 
         return NPCTable[idNum].texture;
     }
@@ -96,73 +98,85 @@ let NPCTable = [
         name: "Bagel",
         texture: "basicDogNPC",
         personality: "C",
-        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
+        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]],
+        hopHeight: 50
     },
     {
         name: "Dolly Mation",
         texture: "dalmationDogNPC",
         personality: "C",
-        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
+        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]],
+        hopHeight: 35
     },
     {
         name: "Dobby",
         texture: "dobermanDogNPC",
         personality: "C",
-        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
+        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]],
+        hopHeight: 50
     },
     {
         name: "Huskgrid",
         texture: "huskyDogNPC",
         personality: "B",
-        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
+        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]],
+        hopHeight: 35
     },
     {
         name: "Spot",
         texture: "spotDogNPC",
         personality: "B",
-        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
+        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]],
+        hopHeight: 35
     },
     {
         name: "Bunderson",
         texture: "basicBunNPC",
         personality: "B",
-        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
+        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]],
+        hopHeight: 65
     },
     {
         name: "Bonabell",
         texture: "pinkBunNPC",
         personality: "B",
-        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
+        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]],
+        hopHeight: 75
     },
     {
         name: "Jacob",
         texture: "brownBunNPC",
         personality: "B",
-        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
+        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]],
+        hopHeight: 65
     },
     {
         name: "Robert",
         texture: "bluegreyBunNPC",
         personality: "A",
-        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
+        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]],
+        hopHeight: 65
     },
     {
         name: "Ra Bitcoin",
         texture: "albinoBunNPC",
         personality: "A",
-        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
+        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]],
+        hopHeight: 80
     },
     {
         name: "Catlico",
         texture: "whiteCatNPC",
         personality: "C",
-        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
+        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]],
+        hopHeight: 25
     },
     {
         name: "Cougar",
         texture: "orangeCatNPC",
         personality: "B",
-        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]]
+        voiceLines: [["Hullo", "Good day"], ["Thanks", "Bye"]],
+        hopHeight: 35
     }
 ];
 //Npc types to determine range for each npc

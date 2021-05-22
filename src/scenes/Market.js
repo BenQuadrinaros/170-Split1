@@ -399,6 +399,7 @@ class Market extends Phaser.Scene {
         let amt = Math.floor(offer.amt);
         let scale = offer.scale;
         let category = offer.category;
+        if(category == "seeds") { item += "\nSeeds"; }
         let yOffset = offer.yOffset;
         console.log(`NPC barter value ${barterValue} and are offering ${amt} ${item} `);
         let barterBox = this.add.image(this.npc.x + 50, this.npc.y - 150,'marketBubble')
