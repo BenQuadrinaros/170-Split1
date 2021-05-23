@@ -58,20 +58,10 @@ class Hive {
         }
 
         if(this.hasStock() && (this.honeyIndicator !== null)) {
-            console.log("Setting honey indicator to not be transparent");
+            //console.log("Setting honey indicator to not be transparent");
             //this.honeyIndicator = scene.add.ellipse(initx, inity + 40, config.width / 10, config.height / 10, 0xE5A515);
             this.honeyIndicator.alpha = .75;
-        } else{
-            if(!this.hasStock()){
-                console.log("this.beehive does not have stock or");
-            }
-            else if(!(this.honeyIndicator !== null)){
-                console.log("honey indicator is null");
-            }
-            else{
-                console.log("no fucking clue");
-            }
-        }
+        } 
     }
 
     hasStock() {

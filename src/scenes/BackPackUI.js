@@ -258,6 +258,10 @@ class BackPackUI extends Phaser.Scene {
                                     heldType = "items";
                                     heldItem = new WateringCan();
                                     playerVariables.inventory[uiScene.selectedTab][item] -= 1;
+                                } else if(item == "Camera") {
+                                    heldType = "items";
+                                    heldItem = new Camera();
+                                    playerVariables.inventory[uiScene.selectedTab][item] -= 1;
                                 } else if (item == "Bench") {
                                     heldType = "decorations";
                                     heldItem = new DecorativeWide("Bench", true);

@@ -87,6 +87,12 @@ class HubPopup extends Phaser.Scene {
         //If from tutorial, extra text
         if(this.fromTutorial) {
             this.createFromTutorialText();
+        } else if (!(playerVariables.gotCamera)) {
+            let points = 0;
+            for(let score of playerVariables.score) { if(score) { points++; } }
+            if(points >= 3) {
+                this.getCameraDialogue();
+            }
         }
 
         this.createEvents();
@@ -165,15 +171,11 @@ as you restore this garden. *B*ee you around!`;
         this.spaceContinue.depth = 205;
         this.spaceContinue.x = this.cameras.main.scrollX + 4*config.width/5 - 15;
         this.spaceContinue.y = this.cameras.main.scrollY + 4*config.height/5 + 35;
-        
-
 
         this.tutorialDialog.text =
 `You can collect your first jar of honey from the hive.
 Otherwise, you should be good to go. You can sell jars
 of honey at the farmer's market in town.`;
-
-
 
         this.input.on('pointerdown', function (pointer) {
             if(this.currDialogSelection === 1){
@@ -190,5 +192,46 @@ as you restore this garden. *B*ee you around!`;
                 this.currDialogSelection = 3;
             }
         }, this);
+    }
+
+    getCameraDialogue() { 
+        let tutorialTextBackdrop = this.add.image(0, 0, 'tutorialDialogBox')
+                .setOrigin(0, 0).setScale(0.5);
+        tutorialTextBackdrop.depth = 150;
+        let tutorialConfig = {
+            fontFamily: font,
+            fontSize: "27.5px",
+            color: "#000000",
+            align: "left",
+            stroke: "#000000",
+            strokeThickness: 1,
+            padding: {
+                top: 5,
+                bottom: 5
+            },
+        };
+        let tutorialDialog = this.add.text(0,0, "", tutorialConfig);
+        tutorialDialog.setOrigin(0, 0);
+        tutorialDialog.depth = 200;
+        tutorialDialog.x = this.cameras.main.scrollX + 185;
+        tutorialDialog.y = this.cameras.main.scrollY + 3.25*config.height/5 - 25;
+        tutorialConfig.fontSize = "16px";
+        let spaceContinue = this.add.text(0, 0, "SPACE to continue", tutorialConfig);
+        spaceContinue.depth = 205;
+        spaceContinue.x = this.cameras.main.scrollX + 4*config.width/5 - 15;
+        spaceContinue.y = this.cameras.main.scrollY + 4*config.height/5 + 35;
+
+        tutorialDialog.text =
+`We are very impressed with your progress so far. We
+all chipped in to get you this camera. Feel free to
+take some pics of the garden and share them!`;
+        
+                this.input.on('pointerdown', function (pointer) {
+                    tutorialTextBackdrop.alpha = 0;
+                    tutorialDialog.setVisible(false);
+                    spaceContinue.setVisible(false);
+                }, this);
+        playerVariables.gotCamera = true;
+        playerVariables.inventory.items["Camera"] = 1;
     }
 }

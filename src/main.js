@@ -100,6 +100,7 @@ let playerVariables = {
     water: 0,
     waterLvl: 0,
     beeBump: false,
+    snapshotHideUI: true,
     completedMarketTutorial: false,
     gotCamera: false,
     hasWon: false,
@@ -117,7 +118,8 @@ let playerVariables = {
             "Beehive": 0,
             "Sprinkler": 0,
             "Clipper": 3,
-            "Watering Can": 0
+            "Watering Can": 0,
+            "Camera": 0
         },
         flowers: {
             "Daisy": 0,

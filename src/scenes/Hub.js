@@ -88,8 +88,6 @@ class Hub extends Phaser.Scene {
                     this.scene.start("winScene");
                 }
             }
-            //console.log("Sending to popup");
-            //isPaused = true;
             this.popupVisited = true;
             this.scene.pause();
             dailySprinklerCost = this.startingMoneyForPopup - playerVariables.money;
@@ -393,35 +391,6 @@ class Hub extends Phaser.Scene {
         //Tracker for Money and total Honey
         this.infoDisplay = new InfoDisplay(this, "infoBox", 0, "Hub");
 
-        //Camera button for snapshots
-        this.snapshot = this.add.image(this.infoDisplay.x + 125, this.infoDisplay.y, "snapshot");
-        this.snapshot.setAlpha(.9).setDepth(200).setScale(.25, .25).setInteractive();
-        this.snapshot.on('pointerover', () => {
-                console.log("over camera");
-                this.snapshot.setAlpha(1);
-                this.pointerCurrentlyOver = "snapshot";
-            })
-            .on('pointerout', () => {
-                this.snapshot.setAlpha(.9);
-                this.pointerCurrentlyOver = "";
-            })
-            .on('pointerdown', () => {
-                //Take snapshot
-                game.renderer.snapshotArea(this.cameras.main.scrollX, this.cameras.main.scrollY,
-                    config.width, config.height, function (image) {
-                        //Code taken from https://phaser.discourse.group/t/save-canvas-using-phaser3/2786
-                        var MIME_TYPE = "image/png";
-                        var imgURL = image.src;
-                        var dlLink = document.createElement('a');
-                        dlLink.download = "HoneybearSnapshot";
-                        dlLink.href = imgURL;
-                        dlLink.dataset.downloadurl = [MIME_TYPE, dlLink.download, dlLink.href].join(':');
-                        document.body.appendChild(dlLink);
-                        dlLink.click();
-                        document.body.removeChild(dlLink);
-                    });
-            }
-        );
 
         //Popups under the backpack for collecting Honey
         this.popupTimers = {
@@ -633,8 +602,6 @@ class Hub extends Phaser.Scene {
         this.infoDisplay.update(this.cameras.main.scrollX + config.width * .145, 
             this.cameras.main.scrollY + config.height * .185, 
             playerVariables.money, playerVariables.inventory.honey["total"]);
-        this.snapshot.x = this.infoDisplay.x + 125;
-        this.snapshot.y = this.infoDisplay.y;
     }
 
     updateHeldItemBehavior() {
@@ -1041,210 +1008,266 @@ class Hub extends Phaser.Scene {
     }
 
     textHover() {
-        //find the closest interactable point
-        let plot = this.closestPlot();
-        //If close to water spigot
-        if (Math.sqrt(Math.pow(this.spigot.x - this.player.x, 2) +
-            Math.pow(this.spigot.y - this.player.y - this.player.height/5, 2)) < 65) {
-            //Move display to this spot
-            this.plotHighlight.alpha = 1;
-            this.plotHighlight.x = this.spigot.x;
-            this.plotHighlight.y = this.spigot.y + this.spigot.height/3;
-            //Logic for if player presses space near water spigot
-            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
-                if(this.tempCan) {
-                    //Spigot animation is currently happening
-                    //Do nothing
+        if(heldItem instanceof Camera && Phaser.Input.Keyboard.JustDown(keySPACE)) {
+            //Take a picture of the garden
+            if(!(this.flash)) {
+                //Flicker UI to hide from snapshot
+                if(playerVariables.snapshotHideUI) {
+                    this.backpack.alpha = 0;
+                    this.infoDisplay.setTransparency(0);
                 }
-                else if(heldItem instanceof WateringCan) {
-                    //If the player is holding the can
-                    if(playerVariables.water == 4 + playerVariables.waterLvl) {
-                        //If the can is already full
-                        this.fadeText("My watering can\nis already full.");
-                    } else if(playerVariables.money >= .25) {
-                        //If the player can afford to buy water
-                        playerVariables.money -= .25;
-                        //Play fill animation
-                        heldItem.destroy();
-                        this.spigotAnimate();
-                        //Create a new Watering Can
-                        this.time.addEvent({
-                            delay: 500 + (250 * (4 + playerVariables.waterLvl)) - (playerVariables.water * 250),
-                            callback: () => {
-                                playerVariables.water = 4 + playerVariables.waterLvl;
-                                heldItem = new WateringCan();
-                                heldType = "items";
-                                this.heldImg = 0;
-                            },
-                            loop: false,
-                            callbackScope: this
-                        });
-                    } else {
-                        //If player does not have enough money
-                        this.fadeText("Not enough money!\nCosts $0.25 to fill.");
-                    }
-                } else if(heldItem == undefined && playerVariables.inventory.items["Watering Can"]) {
-                    //If player has can in inventory, pull it out
-                    playerVariables.inventory.items["Watering Can"] = 0;
-                    if(playerVariables.money >= .25) {
-                        //If the player can afford to buy water
-                        playerVariables.money -= .25;
-                        //Play fill animation
-                        this.spigotAnimate();
-                        //Create a new Watering Can
-                        this.time.addEvent({
-                            delay: 500 + (250 * (4 + playerVariables.waterLvl)) - (playerVariables.water * 250),
-                            callback: () => {
-                                playerVariables.water = 4 + playerVariables.waterLvl;
-                                heldItem = new WateringCan();
-                                heldType = "items";
-                                this.heldImg = 0;
-                            },
-                            loop: false,
-                            callbackScope: this
-                        });
-                    } else {
-                        //If player does not have enough money
-                        this.fadeText("Not enough money!\nCosts $0.25 to fill.");
-                        //Give them an empty can
-                        heldItem = new WateringCan();
-                        heldType = "items";
-                        this.heldImg = 0;
-                    }
-                } else {
-                    this.fadeText("I need something to\nhold the water.");
-                }
-            }
-        } else if (plot == null) {
-            //If closest plot is far away, clear highlight
-            this.plotHighlight.alpha = 0;
-        } else {
-            //Else, move highlight to that location
-            this.plotHighlight.alpha = 1;
-            let coords = this.gridToCoord(plot[1], plot[0]);
-            this.plotHighlight.x = coords[0];
-            this.plotHighlight.y = coords[1] + 40;
-            //Logic for if player presses space near a plot
-            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
-                let row = plot[0];
-                let col = plot[1];
-                //If the space is a weed, remove it
-                if(gardenGrid[row][col].item instanceof Weed){
-                    this.music.playSFX("dig");
-                    gardenGrid[row][col].item = null;
-                    //recreate the plot
-                    gardenGrid[row][col].dug = true;
-                    gardenGrid[row][col].renderPlot(this, this.gridToCoord(col, row));
 
-                    return;
+                game.renderer.snapshotArea(0, 0, this.worldWidth, this.worldHeight, function (image) {
+                    //Code taken from https://phaser.discourse.group/t/save-canvas-using-phaser3/2786
+                    var MIME_TYPE = "image/png";
+                    var imgURL = image.src;
+                    var dlLink = document.createElement('a');
+                    dlLink.download = "HoneybearSnapshot";
+                    dlLink.href = imgURL;
+                    dlLink.dataset.downloadurl = [MIME_TYPE, dlLink.download, dlLink.href].join(':');
+                    document.body.appendChild(dlLink);
+                    dlLink.click();
+                    document.body.removeChild(dlLink);
+                });
+                
+                if(playerVariables.snapshotHideUI) {
+                    this.backpack.alpha = .9;
+                    this.infoDisplay.setTransparency(1);
                 }
-                //If player holding the watering can
-                if (heldItem instanceof WateringCan && gardenGrid[row][col].item instanceof Flower) {
-                    let spot = gardenGrid[row][col];
-                    if(this.wateringEmitter.on) {
-                        //Watering animation is currently happening
-                        //Do nothing
-                    } else if(playerVariables.water > 0) {
-                        this.music.playSFX("waterFlowers");
-                        spot.item.addWater();
-                        //Then wet the spot and reduce water
-                        spot.water = true;
-                        playerVariables.water--;
-                        //clear image of item held so it can be rerendered
-                        this.imageFlip = heldItem.image.flipX;
-                        heldItem.image.destroy();
-                        this.heldImg = -1;
-                        spot.renderPlot(this, this.gridToCoord(col, row));
-                    } else {
-                        this.fadeText("I need to go refill\nmy watering can.")
-                    }
-                }
-                //If the player is holding an item, modify garden plots and add image to scene
-                else if (heldItem !== undefined) {
-                    //If that spot is empty, place item there
-                    if (gardenGrid[row][col].item == null || heldItem instanceof Clipper) {
-                        //console.log(heldItem);
-                        //place held object in the spot
-                        this.placeItemHandler(row, col);
-                    } else {
-                        this.fadeText("This plot is\noccupied");
-                    }
-                } else {
-                    //if the player is attempting to interact with a flower or item, pick it up for now
-                    let loc = gardenGrid[row][col];
-                    let obj = loc.item;
+                
+                /*
+                //Create a flash to visually represent camera flash
+                this.flash = this.add.rectangle(this.worldWidth/2, this.worldHeight/2, this.worldWidth, this.worldHeight, 0xFFFFFF);
+                this.flash.depth = 1000;
 
-                    if (!(obj instanceof Bramble) && !(obj instanceof Hive && obj.hasStock()) 
-                        && !(obj instanceof DecorativeWide && this.checkBenchOccupied(row, col))) { 
-                        loc.item = null; 
-                        //console.log("plot is now",gardenGrid[row][col].item);
-                    }
-                    if(obj instanceof Hive && obj.hasStock()) {
-                        //If there is honey to collect from this Hive
-                        let i = 0;
-                        for(let honey in obj.stock) {
-                            let jars = Math.floor(obj.stock[honey]);
-                            if(jars > 0) {
-                                playerVariables.inventory.honey[honey] += jars;
-                                playerVariables.inventory.honey["total"] += jars;
-                                obj.stock[honey] -= jars;
-                                this.time.delayedCall(250*(i), () => {
-                                    this.honeyFadePopup(honey, jars);
-                                });
-                                i++;
-                            }
-                        }
-                        obj.weeksSinceCollection = 0;
-                        loc.renderPlot(this, this.gridToCoord(col, row));
-                    } else {
-                        //If able to pick up this item
-                        if (!(obj == null || obj instanceof Weed || obj instanceof Bramble)) {
-                            if(obj instanceof DecorativeWide) {
-                                //Special case, picking up double wide decorative
-                                if(!this.checkBenchOccupied(row, col)){
-                                    if(obj.isLeft) {
-                                        //Clear spot to the right
-                                        console.log("picking up left side",obj,gardenGrid[row][col+1].item);
-                                        gardenGrid[row][col+1].item = null;
-                                        heldItem = obj;
-                                        this.heldImg = 0;
-                                    } else {
-                                        //Clear spot to the left
-                                        console.log("picking up right side",gardenGrid[row][col-1].item,obj);
-                                        gardenGrid[row][col-1].item = null;
-                                        gardenGrid[row][col-1].renderPlot(this, this.gridToCoord(col-1, row));
-                                        heldItem = obj;
-                                        heldItem.isLeft = true;
-                                        this.heldImg = 0;
-                                    }
-                                }
-                                else{
-                                    console.log("Bench was occupied");
-                                }
+                this.flashFade = this.time.addEvent({
+                    delay: 350,
+                    callback: () => {
+                        if(!(this.flash)) { this.flashFade = null; }
+                        else {
+                            if(this.flash.alpha <= 0) {
+                                this.flash.alpha -= .01;
                             } else {
-                                //If on the bee path, remove it
-                                if ((obj instanceof Flower && obj.isFullyGrown()) || obj instanceof Hive) {
-                                    this.path = this.removeFromPath(obj.image, this.path);
-                                }
-                                heldItem = obj;
-                                this.heldImg = 0;
+                                this.flash.destroy();
+                                this.flash = null;
+                                this.flashFade.loop = false;
                             }
-                        } else if(obj == null && loc.dug) {
-                            this.music.playSFX("dig");
-                            loc.dug = false;
-                        } else if(!(obj instanceof Bramble)) {
-                            this.music.playSFX("dig");
-                            loc.dug = true;
                         }
-                        if(heldItem instanceof Hive || heldItem instanceof Sprinkler || heldItem instanceof WateringCan) {
+                    },
+                    loop: true,
+                    callbackScope: this
+                });
+                */
+
+            } else {
+                //Camera animation is currently happening
+                //Do nothing
+            }
+        } else {
+            //find the closest interactable point
+            let plot = this.closestPlot();
+            //If close to water spigot
+            if (Math.sqrt(Math.pow(this.spigot.x - this.player.x, 2) +
+                Math.pow(this.spigot.y - this.player.y - this.player.height/5, 2)) < 65) {
+                //Move display to this spot
+                this.plotHighlight.alpha = 1;
+                this.plotHighlight.x = this.spigot.x;
+                this.plotHighlight.y = this.spigot.y + this.spigot.height/3;
+                //Logic for if player presses space near water spigot
+                if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+                    if(this.tempCan) {
+                        //Spigot animation is currently happening
+                        //Do nothing
+                    } else if(heldItem instanceof WateringCan) {
+                        //If the player is holding the can
+                        if(playerVariables.water == 4 + playerVariables.waterLvl) {
+                            //If the can is already full
+                            this.fadeText("My watering can\nis already full.");
+                        } else if(playerVariables.money >= .25) {
+                            //If the player can afford to buy water
+                            playerVariables.money -= .25;
+                            //Play fill animation
+                            heldItem.destroy();
+                            this.spigotAnimate();
+                            //Create a new Watering Can
+                            this.time.addEvent({
+                                delay: 500 + (250 * (4 + playerVariables.waterLvl)) - (playerVariables.water * 250),
+                                callback: () => {
+                                    playerVariables.water = 4 + playerVariables.waterLvl;
+                                    heldItem = new WateringCan();
+                                    heldType = "items";
+                                    this.heldImg = 0;
+                                },
+                                loop: false,
+                                callbackScope: this
+                            });
+                        } else {
+                            //If player does not have enough money
+                            this.fadeText("Not enough money!\nCosts $0.25 to fill.");
+                        }
+                    } else if(heldItem == undefined && playerVariables.inventory.items["Watering Can"]) {
+                        //If player has can in inventory, pull it out
+                        playerVariables.inventory.items["Watering Can"] = 0;
+                        if(playerVariables.money >= .25) {
+                            //If the player can afford to buy water
+                            playerVariables.money -= .25;
+                            //Play fill animation
+                            this.spigotAnimate();
+                            //Create a new Watering Can
+                            this.time.addEvent({
+                                delay: 500 + (250 * (4 + playerVariables.waterLvl)) - (playerVariables.water * 250),
+                                callback: () => {
+                                    playerVariables.water = 4 + playerVariables.waterLvl;
+                                    heldItem = new WateringCan();
+                                    heldType = "items";
+                                    this.heldImg = 0;
+                                },
+                                loop: false,
+                                callbackScope: this
+                            });
+                        } else {
+                            //If player does not have enough money
+                            this.fadeText("Not enough money!\nCosts $0.25 to fill.");
+                            //Give them an empty can
+                            heldItem = new WateringCan();
                             heldType = "items";
-                        } else if (heldItem instanceof Flower) {
-                            heldType = "flowers";
-                        } else if (heldItem instanceof DecorativeWide || heldItem instanceof Decorative) {
-                            heldType = "decorations";
+                            this.heldImg = 0;
                         }
+                    } else {
+                        this.fadeText("I need something to\nhold the water.");
+                    }
+                }
+            } else if (plot == null) {
+                //If closest plot is far away, clear highlight
+                this.plotHighlight.alpha = 0;
+            } else {
+                //Else, move highlight to that location
+                this.plotHighlight.alpha = 1;
+                let coords = this.gridToCoord(plot[1], plot[0]);
+                this.plotHighlight.x = coords[0];
+                this.plotHighlight.y = coords[1] + 40;
+                //Logic for if player presses space near a plot
+                if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+                    let row = plot[0];
+                    let col = plot[1];
+                    //If the space is a weed, remove it
+                    if(gardenGrid[row][col].item instanceof Weed){
+                        this.music.playSFX("dig");
+                        gardenGrid[row][col].item = null;
                         //recreate the plot
-                        loc.renderPlot(this, this.gridToCoord(col, row));
+                        gardenGrid[row][col].dug = true;
+                        gardenGrid[row][col].renderPlot(this, this.gridToCoord(col, row));
+
+                        return;
+                    }
+                    //If player holding the watering can
+                    if (heldItem instanceof WateringCan && gardenGrid[row][col].item instanceof Flower) {
+                        let spot = gardenGrid[row][col];
+                        if(this.wateringEmitter.on) {
+                            //Watering animation is currently happening
+                            //Do nothing
+                        } else if(playerVariables.water > 0) {
+                            this.music.playSFX("waterFlowers");
+                            spot.item.addWater();
+                            //Then wet the spot and reduce water
+                            spot.water = true;
+                            playerVariables.water--;
+                            //clear image of item held so it can be rerendered
+                            this.imageFlip = heldItem.image.flipX;
+                            heldItem.image.destroy();
+                            this.heldImg = -1;
+                            spot.renderPlot(this, this.gridToCoord(col, row));
+                        } else {
+                            this.fadeText("I need to go refill\nmy watering can.")
+                        }
+                    }
+                    //If the player is holding an item, modify garden plots and add image to scene
+                    else if (heldItem !== undefined) {
+                        //If that spot is empty, place item there
+                        if (gardenGrid[row][col].item == null || heldItem instanceof Clipper) {
+                            //console.log(heldItem);
+                            //place held object in the spot
+                            this.placeItemHandler(row, col);
+                        } else {
+                            this.fadeText("This plot is\noccupied");
+                        }
+                    } else {
+                        //if the player is attempting to interact with a flower or item, pick it up for now
+                        let loc = gardenGrid[row][col];
+                        let obj = loc.item;
+
+                        if (!(obj instanceof Bramble) && !(obj instanceof Hive && obj.hasStock()) 
+                            && !(obj instanceof DecorativeWide && this.checkBenchOccupied(row, col))) { 
+                            loc.item = null; 
+                            //console.log("plot is now",gardenGrid[row][col].item);
+                        }
+                        if(obj instanceof Hive && obj.hasStock()) {
+                            //If there is honey to collect from this Hive
+                            let i = 0;
+                            for(let honey in obj.stock) {
+                                let jars = Math.floor(obj.stock[honey]);
+                                if(jars > 0) {
+                                    playerVariables.inventory.honey[honey] += jars;
+                                    playerVariables.inventory.honey["total"] += jars;
+                                    obj.stock[honey] -= jars;
+                                    this.time.delayedCall(250*(i), () => {
+                                        this.honeyFadePopup(honey, jars);
+                                    });
+                                    i++;
+                                }
+                            }
+                            obj.weeksSinceCollection = 0;
+                            loc.renderPlot(this, this.gridToCoord(col, row));
+                        } else {
+                            //If able to pick up this item
+                            if (!(obj == null || obj instanceof Weed || obj instanceof Bramble)) {
+                                if(obj instanceof DecorativeWide) {
+                                    //Special case, picking up double wide decorative
+                                    if(!this.checkBenchOccupied(row, col)){
+                                        if(obj.isLeft) {
+                                            //Clear spot to the right
+                                            console.log("picking up left side",obj,gardenGrid[row][col+1].item);
+                                            gardenGrid[row][col+1].item = null;
+                                            heldItem = obj;
+                                            this.heldImg = 0;
+                                        } else {
+                                            //Clear spot to the left
+                                            console.log("picking up right side",gardenGrid[row][col-1].item,obj);
+                                            gardenGrid[row][col-1].item = null;
+                                            gardenGrid[row][col-1].renderPlot(this, this.gridToCoord(col-1, row));
+                                            heldItem = obj;
+                                            heldItem.isLeft = true;
+                                            this.heldImg = 0;
+                                        }
+                                    }
+                                    else{
+                                        console.log("Bench was occupied");
+                                    }
+                                } else {
+                                    //If on the bee path, remove it
+                                    if ((obj instanceof Flower && obj.isFullyGrown()) || obj instanceof Hive) {
+                                        this.path = this.removeFromPath(obj.image, this.path);
+                                    }
+                                    heldItem = obj;
+                                    this.heldImg = 0;
+                                }
+                            } else if(obj == null && loc.dug) {
+                                this.music.playSFX("dig");
+                                loc.dug = false;
+                            } else if(!(obj instanceof Bramble)) {
+                                this.music.playSFX("dig");
+                                loc.dug = true;
+                            }
+                            if(heldItem instanceof Hive || heldItem instanceof Sprinkler || heldItem instanceof WateringCan) {
+                                heldType = "items";
+                            } else if (heldItem instanceof Flower) {
+                                heldType = "flowers";
+                            } else if (heldItem instanceof DecorativeWide || heldItem instanceof Decorative) {
+                                heldType = "decorations";
+                            }
+                            //recreate the plot
+                            loc.renderPlot(this, this.gridToCoord(col, row));
+                        }
                     }
                 }
             }
@@ -1422,9 +1445,11 @@ class Hub extends Phaser.Scene {
             playerVariables.inventory.items["Clipper"] += 1;
         } else if (heldItem instanceof WateringCan) {
             playerVariables.inventory.items["Watering Can"] += 1;
+        } else if (heldItem instanceof Camera) {
+            playerVariables.inventory.items["Camera"] += 1;
         } else if (heldItem instanceof Decorative || heldItem instanceof DecorativeWide) {
             playerVariables.inventory.decorations[heldItem.type] += 1;
-        }
+        } 
          else {
              //Nothing special to do, but we don't want to reach the normal else case
             return;

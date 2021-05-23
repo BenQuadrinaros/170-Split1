@@ -77,7 +77,7 @@ class Flower {
             texture = sprites[0];
         } else if (this.age / this.ref["grow"] < .5) {
             //Level 1 - Sprout
-            console.log("mid grow " + this.age + " of type " + this.type);
+            //console.log("mid grow " + this.age + " of type " + this.type);
             texture = sprites[1];
         } else if (!this.isFullyGrown()) {
             //Level 2 - Growing

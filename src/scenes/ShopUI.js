@@ -14,6 +14,7 @@ let idImages = {
     "Sprinkler": ["sprinkler", .15],
     "Beehive": ["hive", .15],
     "Clipper": ["clipper", .75],
+    "Camera": ["snapshot", .75],
     "Watering Can": ["redwater0", .45],
     "Blue Can": ["bluewater5", .55],
     "Purple Can": ["purplewater6", .55],

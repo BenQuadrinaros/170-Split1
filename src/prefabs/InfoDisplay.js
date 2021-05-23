@@ -48,4 +48,11 @@ class InfoDisplay extends Phaser.GameObjects.Sprite {
         this.moneyText.text = Math.floor(money) + "." + (Math.floor(money*10)%10) + (Math.floor(money*100)%10);
         this.honeyText.text = honey;
     }
+
+    setTransparency(alpha) {
+        this.alpha = alpha;
+        this.moneyText.alpha = alpha;
+        this.honeyText.alpha = alpha;
+
+    }
 }
