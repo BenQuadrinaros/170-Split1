@@ -919,7 +919,7 @@ class Hub extends Phaser.Scene {
             if(loc[0] + 1 > 0 && loc[0] + 1 < gardenGrid.length) {
                 for(let col = loc[1] - 1; col <= loc[1] + 1; col++) {
                     if(col >= 0 && col < gardenGrid[0].length) {
-                        gardenGrid[loc[0]+1][col].setTransparency(.3);
+                        gardenGrid[loc[0]+1][col].setTransparency(playerVariables.frontAlpha);
                     }
                 }
             }
@@ -932,6 +932,7 @@ class Hub extends Phaser.Scene {
                     gardenGrid[j][i].setTransparency(1);
                 }
             }
+            this.player.slow = false;
         }
     }
 

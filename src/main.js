@@ -101,6 +101,7 @@ let playerVariables = {
     waterLvl: 0,
     beeBump: false,
     snapshotHideUI: true,
+    frontAlpha: .3,
     completedMarketTutorial: false,
     gotCamera: false,
     hasWon: false,
