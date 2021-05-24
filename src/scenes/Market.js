@@ -19,6 +19,21 @@ class Market extends Phaser.Scene {
             purple:"honeyPurple"
 
         }
+
+        this.headMap = {
+            basicDogNPC:"dogHead",
+            dalmationDogNPC:"dalmationHead",
+            dobermanDogNPC:"dobbermanHead",
+            huskyDogNPC:"huskeyHead",
+            spotDogNPC:"spotDogHead",
+            basicBunNPC:"bunnyHead",
+            pinkBunNPC:"pinkBunnyHead",
+            brownBunNPC:"brownBunnyHead",
+            bluegreyBunNPC:"blueGreyBunnyHead",
+            albinoBunNPC:"albinoBunnyHead",
+            whiteCatNPC:"catWhiteHead",
+            orangeCatNPC:"catOrangeHead"
+        }
         this.createControls(); //Sets the various controls
         this.createBackground(); //Creates backdrop
         this.createPopulatedTable(); //Create table and fill with jars of honey
@@ -178,25 +193,30 @@ class Market extends Phaser.Scene {
     }
 
     makeTransaction(type, amount, mood){
-        console.log(`Money made from ${amount} ${type} honey is ${amount*priceMap[type]}`);
+        console.log("key for NPC IS " + this.npc.texture.key);
+        //console.log(`Money made from ${amount} ${type} honey is ${amount*priceMap[type]}`);
         if (pHistory[currentDay]) {
-            console.log("1")
+            //console.log("1")
             pHistory[currentDay].unshift({
                 type: type,
                 price: priceMap[type],
                 mood: mood,
                 mode: "money",
-                week: currentDay
+                week: currentDay,
+                amt:amount,
+                head:this.headMap[this.npc.texture.key]
             });
         } else {
-            console.log("2")
+            //console.log("2")
             pHistory[currentDay] = [];
             pHistory[currentDay].unshift({
                 type: type,
                 price: priceMap[type],
                 mood: mood,
                 mode: "money",
-                week: currentDay
+                week: currentDay,
+                amt:amount,
+                head:this.headMap[this.npc.texture.key]
             });
         }
         let bearBucks = this.add.image(this.npc.x,this.infoDisplay.y,'bearbucks')
@@ -268,7 +288,7 @@ class Market extends Phaser.Scene {
             console.log("initiating request.");
             console.log(`npc wants to buy ${amt} jars of ${type}`);
             //Create icons for npc asking to make purchase
-            this.initiatePrice = this.add.image(this.npc.x+50, this.npc.y -150, 'marketBubble')
+            this.initiatePrice = this.add.image(this.npc.x+50, this.npc.y - 350, 'marketBubble')
                 .setDepth(100).setOrigin(.5, .5).setScale(.25,.25);
             this.honeyIMG = this.add.image(this.initiatePrice.x+10,this.initiatePrice.y-5, this.imgMap[type])
                 .setDepth(125).setOrigin(.5,.5).setScale(.85,.85);
@@ -404,7 +424,7 @@ class Market extends Phaser.Scene {
         if(category == "seeds") { item += "\nSeeds"; }
         let yOffset = offer.yOffset;
         console.log(`NPC barter value ${barterValue} and are offering ${amt} ${item} `);
-        let barterBox = this.add.image(this.npc.x + 50, this.npc.y - 150,'marketBubble')
+        let barterBox = this.add.image(this.npc.x + 50, this.npc.y - 350,'marketBubble')
             .setDepth(100).setOrigin(.5, .5).setScale(.3,.3);
         let offerImg = this.add.image(barterBox.x+25,barterBox.y+20 - yOffset,img)
             .setOrigin(.5,.5).setDepth(100).setScale(scale,scale);
@@ -484,6 +504,7 @@ class Market extends Phaser.Scene {
 
     }
     logBarter(offer, hType, typeBought){
+        console.log("key for NPC IS " + this.npc.texture.key);
         if (pHistory[currentDay]) {
             pHistory[currentDay].unshift({
                 mode: "barter",
@@ -493,7 +514,8 @@ class Market extends Phaser.Scene {
                 scale: offer.scale,
                 img: offer.img,
                 bought: typeBought,
-                week: currentDay
+                week: currentDay,
+                head:this.headMap[this.npc.texture.key]
             });
         } else {
             console.log("No history for week " + currentDay + " creating one");
@@ -506,7 +528,8 @@ class Market extends Phaser.Scene {
                 scale: offer.scale,
                 img: offer.img,
                 bought: typeBought,
-                week: currentDay
+                week: currentDay,
+                head:this.headMap[this.npc.texture.key]
             });
         }
         //console.log(pHistory);
@@ -549,7 +572,7 @@ class Market extends Phaser.Scene {
         //Alpha: from .6
         //this.npc.x, this.npc.y - 200
         //Scale from .3 to .25
-        this.moodPopUp = this.add.image(this.npc.x, this.npc.y - 200, mood).setAlpha(0).setDepth(100).setScale(0.235);
+        this.moodPopUp = this.add.image(this.npc.x, this.npc.y - 300, mood).setAlpha(0).setDepth(100).setScale(0.235);
         let basicTween = this.tweens.add({
             targets: this.moodPopUp,
             alpha: {from: .6, to: 1},
@@ -585,28 +608,28 @@ class Market extends Phaser.Scene {
         Daisy:{
             val:2,
             img:"DaisySeeds",
-            scale:.35,
+            scale:.25,
             category:"seeds",
             yOffset: - 3
         },
         Lavender:{
             val:2,
             img:"LavenderSeeds",
-            scale:.35,
+            scale:.25,
             category:"seeds",
             yOffset: - 3
         },
         Delphinium:{
             val:2,
             img:"DelphiniumSeeds",
-            scale:.35,
+            scale:.25,
             category:"seeds",
             yOffset: - 3
         },
         Tulip:{
             val:3,
             img:"TulipSeeds",
-            scale:.35,
+            scale:.25,
             category:"seeds",
             yOffset: - 3
         },
@@ -620,7 +643,7 @@ class Market extends Phaser.Scene {
         Clipper:{
             val:3,
             img:"clipper",
-            scale:.75,
+            scale:.6,
             category:"items",
             yOffset: 0
         },

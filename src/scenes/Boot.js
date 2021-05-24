@@ -116,6 +116,19 @@ class Boot extends Phaser.Scene {
             this.load.image('pinkBunNPC', './assets/sprites/character/pinkbunny.png');
             this.load.image('whiteCatNPC', './assets/sprites/character/catnpcWH_246x456.png');
             this.load.image('orangeCatNPC', './assets/sprites/character/catnpcOR_246x456.png');
+        //npc heads
+            this.load.image("albinoBunnyHead",'./assets/sprites/UI/albinobunnyHEAD.png');
+            this.load.image("blueGreyBunnyHead",'./assets/sprites/UI/bluegreybunnyHEAD.png');
+            this.load.image("brownBunnyHead",'./assets/sprites/UI/brownbunnyHEAD.png');
+            this.load.image("bunnyHead",'./assets/sprites/UI/bunnynpcHEAD.png');
+            this.load.image("catOrangeHead",'./assets/sprites/UI/catnpcORhead.png');
+            this.load.image("catWhiteHead",'./assets/sprites/UI/catnpcWHhead.png');
+            this.load.image("dalmationHead",'./assets/sprites/UI/dalmatianHEAD.png');
+            this.load.image("dobbermanHead",'./assets/sprites/UI/dobbermanHEAD.png');
+            this.load.image("dogHead",'./assets/sprites/UI/dognpcHEAD.png');
+            this.load.image("huskeyHead",'./assets/sprites/UI/huskyHEAD.png');
+            this.load.image("pinkBunnyHead",'./assets/sprites/UI/pinkbunnyHEAD.png');
+            this.load.image("spotDogHead",'./assets/sprites/UI/spotdogHEAD.png');
             this.load.image('marketSky', './assets/sprites/background/sky.png');
             this.load.image('marketBackground', './assets/sprites/background/marketbg.png');
             this.load.image('booth', './assets/sprites/background/boothTall.png');
@@ -150,6 +163,8 @@ class Boot extends Phaser.Scene {
             this.load.image('barterArrows','./assets/sprites/UI/barterArrows.png');
             this.load.image('plus','./assets/sprites/UI/plus.png');
             this.load.image('minus','./assets/sprites/UI/minus.png');
+            this.load.image('arrowRight','./assets/sprites/UI/arrowRight.png');
+            this.load.image('arrowLeft','./assets/sprites/UI/arrowLeft.png');
             //For pricehistory scene
             this.load.image('notebookBG', './assets/sprites/UI/notebookHalfLined.png');
             this.load.image('noteBook','./assets/sprites/UI/notebookIcon.png');

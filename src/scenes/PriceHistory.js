@@ -89,10 +89,10 @@ class PriceHistory extends Phaser.Scene{
     }
 
     createPageTurningIcons(){
-        this.weekText = this.add.text(this.bg.x-90,this.bg.y-175,"Week : " + currentDay,this.textConfiguration).setOrigin(.5,.5);
+        this.weekText = this.add.text(this.bg.x,this.bg.y-175,"Week : " + currentDay,this.textConfiguration).setOrigin(.5,.5);
 
-        this.add.image(this.bg.x-110,this.bg.y-200,'minus')
-            .setOrigin(.5,.5).setScale(.25,.25).setInteractive()
+        this.add.image(this.bg.x-60,this.bg.y-175,'arrowLeft')
+            .setOrigin(.5,.5).setScale(.5,.5).setInteractive()
             .on('pointerdown', () => {
                 console.log("clicked minus")
                 if (this.currentPage <= 0){
@@ -105,8 +105,8 @@ class PriceHistory extends Phaser.Scene{
                 }
             });
 
-        this.add.image(this.bg.x-70,this.bg.y-200,'plus')
-            .setOrigin(.5,.5).setScale(.25,.25).setInteractive()
+        this.add.image(this.bg.x+60,this.bg.y-175,'arrowRight')
+            .setOrigin(.5,.5).setScale(.5,.5).setInteractive()
             .on('pointerdown', () => {
                 console.log("clicked plus")
                 if (this.currentPage >= currentDay){
@@ -133,22 +133,36 @@ class PriceHistory extends Phaser.Scene{
         }
         for (let i = 1; i <= amt; i++){
             let entry = pArr[i-1]
+            console.log("HEAD FOR ENTRY IS " + entry.head);
             if (entry.mode === "money") {
                 console.log(this.imgMap[entry.type]);
-                this.entries.push(this.add.image((2 * config.width / 5) + 200, (i * (config.height / 12 - 9)) + 90, entry.mood,).setScale(.09, .09).setOrigin(.5, .5));
-                this.entries.push(this.add.text((2 * config.width / 5) + 100, (i * (config.height / 12 - 9)) + 90, "$" + entry.price.toFixed(2) + "/jar", this.textConfiguration)
+                //create mood image
+                this.entries.push(this.add.image((2 * config.width / 5) + 225, (i * (config.height / 12 - 9)) + 90, entry.mood,).setScale(.09, .09).setOrigin(.5, .5));
+                //create Price text per honey
+                this.entries.push(this.add.text((2 * config.width / 5) + 90, (i * (config.height / 12 - 9)) + 90, "$" + entry.price.toFixed(2) , this.textConfiguration)
                     .setOrigin(.5, .5));
-                this.entries.push(this.add.image((2 * config.width / 5), (i * (config.height / 12 - 9)) + 90, this.imgMap[entry.type]).setOrigin(.5, .5).setScale(.35, .35));
-
+                //create honey type image
+                this.entries.push(this.add.image((2 * config.width / 5)+150, (i * (config.height / 12 - 9)) + 90, this.imgMap[entry.type]).setOrigin(.5, .5).setScale(.35, .35));
+                //create text for amount sold
+                this.entries.push(this.add.text((2 * config.width / 5) + 175, (i * (config.height / 12 - 9)) + 90, entry.amt + "x", this.textConfiguration)
+                    .setOrigin(.5, .5));
+                //create slash
+                this.entries.push(this.add.text((2 * config.width / 5) + 130, (i * (config.height / 12 - 9)) + 90, "/", this.textConfiguration)
+                    .setOrigin(.5, .5));
+                //create npc head
+                this.entries.push(this.add.image((2 * config.width / 5)+20, (i * (config.height / 12 - 9)) + 105, entry.head).setOrigin(.5, 1).setScale(.2, .2));
             } else if (entry.mode === "barter"){
                 console.log("** ** logging barter ** **");
                 console.log(entry);
-                this.entries.push(this.add.image((2 * config.width / 5) + 200, (i * (config.height / 12 - 9)) + 90, entry.img)
+                this.entries.push(this.add.image((2 * config.width / 5) + 100, (i * (config.height / 12 - 9)) + 90, entry.img)
                     .setScale(entry.scale, entry.scale).setOrigin(.5, .5));
-                this.entries.push(this.add.image((2 * config.width / 5) + 100, (i * (config.height / 12 - 9)) + 90, "barterIcon").setScale(.09, .09).setOrigin(.5, .5));
-                this.entries.push(this.add.text((2 * config.width / 5) + 50, (i * (config.height / 12 - 9)) + 90, entry.bought, this.textConfiguration).setOrigin(.5, .5));
-                this.entries.push(this.add.text((2 * config.width / 5) + 150, (i * (config.height / 12 - 9)) + 90, entry.amt, this.textConfiguration).setOrigin(.5, .5));
-                this.entries.push(this.add.image((2 * config.width / 5), (i * (config.height / 12 - 9)) + 90, this.imgMap[entry.type]).setOrigin(.5, .5).setScale(.35, .35));
+                this.entries.push(this.add.image((2 * config.width / 5) + 225, (i * (config.height / 12 - 9)) + 90, 'pleased',).setScale(.09, .09).setOrigin(.5, .5));
+                this.entries.push(this.add.text((2 * config.width / 5) + 175, (i * (config.height / 12 - 9)) + 90, entry.bought+"x", this.textConfiguration).setOrigin(.5, .5));
+                this.entries.push(this.add.text((2 * config.width / 5) + 70, (i * (config.height / 12 - 9)) + 90, entry.amt+"x", this.textConfiguration).setOrigin(.5, .5));
+                this.entries.push(this.add.text((2 * config.width / 5) + 130, (i * (config.height / 12 - 9)) + 90, "/", this.textConfiguration)
+                    .setOrigin(.5, .5));
+                this.entries.push(this.add.image((2 * config.width / 5)+150, (i * (config.height / 12 - 9)) + 90, this.imgMap[entry.type]).setOrigin(.5, .5).setScale(.35, .35));
+                this.entries.push(this.add.image((2 * config.width / 5)+20, (i * (config.height / 12 - 9)) + 105, entry.head).setOrigin(.5, 1).setScale(.2, .2));
 
             }
             console.log("entries")
