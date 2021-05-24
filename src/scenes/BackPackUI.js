@@ -36,8 +36,8 @@ class BackPackUI extends Phaser.Scene {
             fontSize: "16px",
             color: "#ffffff",
             align: "center",
-            stroke: "#000000",
-            strokeThickness: 4,
+            stroke: "#ffffff",
+            strokeThickness: 0.5,
             padding: {
                 top: 5,
                 bottom: 5
