@@ -2,7 +2,7 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
 
     constructor(scene, texture, frame, initX, initY, sceneWidth = game.config.width, sceneHeight = game.config.height, 
             verticalLimit = [[config.width, 135]]) {
-        super(scene, initX, initY, texture, frame);
+        super(scene, initX, initY, texture + playerVariables.currentOutfit, frame);
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.scene = scene;
@@ -20,6 +20,8 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         this.movingDirection = "right";
         //Vertical limit: [(x, y)], x is rightmost bound at the height, y is the height
         this.verticalLimits = verticalLimit;
+        this.currentOutfit = playerVariables.currentOutfit;
+        console.log("Curr")
 
         //Add shadow under player
         this.shadow = scene.add.image(this.x, this.y + this.height/3, "bearShadow");
@@ -118,48 +120,79 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
 
     createAnimations(){
         //Establish its animations
-        this.scene.anims.create({
-            key: 'playerBackIdle',
-            repeat: -1,
-            frames: this.scene.anims.generateFrameNumbers('player', {start: 4, end: 5}),
-            frameRate: 2
-        });
-        this.scene.anims.create({
-            key: 'playerFrontIdle',
-            repeat: -1,
-            frames: this.scene.anims.generateFrameNumbers('player', {start: 2, end: 3}),
-            frameRate: 2
-        });
-        this.scene.anims.create({
-            key: 'playerWalkBack',
-            repeat: -1,
-            frames: this.scene.anims.generateFrameNumbers('player', {start: 0, end: 1}),
-            frameRate: 3
-        });
-        this.scene.anims.create({
-            key: 'playerWalkFront',
-            repeat: -1,
-            frames: this.scene.anims.generateFrameNumbers('player', {start: 6, end: 7}),
-            frameRate: 3
-        });
+            //Create the regular outfit anims
+            this.scene.anims.create({
+                key: 'playerBackIdle',
+                repeat: -1,
+                frames: this.scene.anims.generateFrameNumbers('player' + playerVariables.currentOutfit, {start: 4, end: 5}),
+                frameRate: 2
+            });
+            this.scene.anims.create({
+                key: 'playerFrontIdle',
+                repeat: -1,
+                frames: this.scene.anims.generateFrameNumbers('player' + playerVariables.currentOutfit, {start: 2, end: 3}),
+                frameRate: 2
+            });
+            this.scene.anims.create({
+                key: 'playerWalkBack',
+                repeat: -1,
+                frames: this.scene.anims.generateFrameNumbers('player' + playerVariables.currentOutfit, {start: 0, end: 1}),
+                frameRate: 3
+            });
+            this.scene.anims.create({
+                key: 'playerWalkFront',
+                repeat: -1,
+                frames: this.scene.anims.generateFrameNumbers('player' + playerVariables.currentOutfit, {start: 6, end: 7}),
+                frameRate: 3
+            });
+        
+        //Create anims for other outfits
+        let outfits = ["Bee", "Flower", "Helicopter", "Legacy", "Sunhat", "Tophat"];
+        for(let i = 0; i < outfits.length; ++i){
+            this.scene.anims.create({
+                key: 'playerBackIdle' + outfits[i],
+                repeat: -1,
+                frames: this.scene.anims.generateFrameNumbers('player' + outfits[i], {start: 2, end: 3}),
+                frameRate: 2
+            });
+            this.scene.anims.create({
+                key: 'playerFrontIdle' + outfits[i],
+                repeat: -1,
+                frames: this.scene.anims.generateFrameNumbers('player' + outfits[i], {start: 0, end: 1}),
+                frameRate: 2
+            });
+            this.scene.anims.create({
+                key: 'playerWalkBack' + outfits[i],
+                repeat: -1,
+                frames: this.scene.anims.generateFrameNumbers('player' + outfits[i], {start: 6, end: 7}),
+                frameRate: 3
+            });
+            this.scene.anims.create({
+                key: 'playerWalkFront' + outfits[i],
+                repeat: -1,
+                frames: this.scene.anims.generateFrameNumbers('player' + outfits[i], {start: 4, end: 5}),
+                frameRate: 3
+            });
+        }
+        
     }
 
     chooseAnimation(){
         if(this.startedMoving){
             if(this.movingUp){
-                this.anims.play("playerWalkBack", true);
+                this.anims.play("playerWalkBack" + playerVariables.currentOutfit, true);
             }
             else{
-                this.anims.play("playerWalkFront", true);
+                this.anims.play("playerWalkFront" + playerVariables.currentOutfit, true);
             }
             this.startedMoving = false;
         }
         else{
             if(this.movingUp){
-                this.anims.play("playerBackIdle", true);
+                this.anims.play("playerBackIdle" + playerVariables.currentOutfit, true);
             }
             else{
-                this.anims.play("playerFrontIdle", true);
+                this.anims.play("playerFrontIdle" + playerVariables.currentOutfit, true);
             }
         }
     }

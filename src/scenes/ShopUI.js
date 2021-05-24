@@ -14,7 +14,7 @@ let idImages = {
     "Sprinkler": ["sprinkler", .15],
     "Beehive": ["hive", .15],
     "Clipper": ["clipper", .75],
-    "Camera": ["snapshot", .75],
+    "Camera": ["snapshot", .65],
     "Watering Can": ["redwater0", .45],
     "Blue Can": ["bluewater5", .55],
     "Purple Can": ["purplewater6", .55],
@@ -22,7 +22,7 @@ let idImages = {
     "yellow": ["honeyYellow", .5],
     "blue": ["honeyBlue", .5],
     "pink": ["honeyPink", .5],
-    "purple": ["honeyPurple", .5]
+    "purple": ["honeyPurple", .5],
 };
 
 class ShopUI extends Phaser.Scene {

@@ -62,7 +62,8 @@ class BackPackUI extends Phaser.Scene {
             'items': null,
             'flowers': null,
             'seeds': null,
-            'decorations': null
+            'decorations': null,
+            'outfits': null,
         };
         this.createExclamationMarks();
         
@@ -149,6 +150,7 @@ class BackPackUI extends Phaser.Scene {
                 createButton(this, 2, 'honey'),
                 createButton(this, 2, 'flowers'),
                 createButton(this, 2, 'decorations'),
+                createButton(this, 2, 'outfits'),
             ],
 
             rightButtons: [
@@ -266,6 +268,14 @@ class BackPackUI extends Phaser.Scene {
                                     heldType = "decorations";
                                     heldItem = new DecorativeWide("Bench", true);
                                     playerVariables.inventory[uiScene.selectedTab][item] -= 1;
+                                } else if(uiScene.selectedTab == "outfits"){
+                                    if(item === "Regular"){
+                                        playerVariables.currentOutfit = "";
+                                    }
+                                    else{
+                                        playerVariables.currentOutfit = item;
+                                    }
+                                    console.log("Curr outfit", playerVariables.currentOutfit);
                                 } else {
                                     console.log("Holding invalid object");
                                 }
@@ -341,6 +351,8 @@ class BackPackUI extends Phaser.Scene {
         if(inventoryTabsUpdated['flowers']){ this.updatedMarks['flowers'].setAlpha(1); }
         this.updatedMarks['decorations'] = this.add.image(60, 362, "!").setDepth(80).setAngle(350).setAlpha(0);
         if(inventoryTabsUpdated['decorations']){ this.updatedMarks['decorations'].setAlpha(1); }
+        this.updatedMarks['outfits'] = this.add.image(60, 405, "!").setDepth(80).setAngle(350).setAlpha(0);
+        if(inventoryTabsUpdated['outfits']){ this.updatedMarks['outfits'].setAlpha(1); }
     }
 }
 
