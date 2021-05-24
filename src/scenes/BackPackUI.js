@@ -98,7 +98,7 @@ class BackPackUI extends Phaser.Scene {
 
                 table: {
                     width: 475,
-                    height: 300,
+                    height: 350,
 
                     cellWidth: 230,
                     cellHeight: 150,
