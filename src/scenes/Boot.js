@@ -198,6 +198,13 @@ class Boot extends Phaser.Scene {
             //For hubScene
             //this.load.spritesheet('player', './assets/spritesheets/bearFrontBack.png', {frameWidth:40, frameHeight:72, startFrame:0, endFrame:1});
             this.load.spritesheet('player', './assets/spritesheets/bearAnims.png', {frameWidth: 140, frameHeight:247, startFrame:0, endFrame:7});
+            this.load.spritesheet('playerBee', './assets/spritesheets/beecostume.png', {frameWidth: 139.5, frameHeight:250, startFrame:0, endFrame:7});
+            this.load.spritesheet('playerFlower', './assets/spritesheets/flowercrown.png', {frameWidth: 139.5, frameHeight:288, startFrame:0, endFrame:7});
+            this.load.spritesheet('playerHelicopter', './assets/spritesheets/helicopterhat.png', {frameWidth: 139.5, frameHeight:254, startFrame:0, endFrame:7});
+            this.load.spritesheet('playerLegacy', './assets/spritesheets/legacyhat.png', {frameWidth: 139.5, frameHeight:248, startFrame:0, endFrame:7});
+            this.load.spritesheet('playerSunhat', './assets/spritesheets/sunhat.png', {frameWidth: 139.5, frameHeight:288, startFrame:0, endFrame:7});
+            this.load.spritesheet('playerTophat', './assets/spritesheets/tophat.png', {frameWidth: 139.5, frameHeight:288, startFrame:0, endFrame:7});
+            
             this.load.image("bearShadow", "./assets/img/bearShadow.png");
             this.load.spritesheet('backpackFrames', "./assets/spritesheets/backpackSheet.png", {frameWidth: 120, frameHeight:121, startFrame:0, endFrame:1});
             //For start of day

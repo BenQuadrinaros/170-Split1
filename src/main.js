@@ -106,6 +106,7 @@ let playerVariables = {
     gotCamera: false,
     hasWon: false,
     name: "Bearry",
+    currentOutfit: "",
     score: [false, false, false, false, false],
     inventory: {
         honey: {
@@ -138,6 +139,15 @@ let playerVariables = {
             "Bench": 0,
             "Bush": 0,
             "Fence": 0
+        },
+        outfits: {
+            "Bee": 1,
+            "Flower": 1,
+            "Helicopter": 1,
+            "Legacy": 1,
+            "Regular": 1,
+            "Sunhat": 1,
+            "Tophat": 1
         }
     }
 }
@@ -147,7 +157,8 @@ let inventoryTabsUpdated = {
     'items': false,
     'flowers': false,
     'seeds': false,
-    'decorations': false
+    'decorations': false,
+    'outfits': false
 }
 
 let shopInventory = {
