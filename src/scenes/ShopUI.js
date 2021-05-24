@@ -4,7 +4,7 @@ let pointer;
 let shopCosts = {};
 let idImages = {
     "Daisy\nSeeds": ["DaisySeeds", .45],
-    "Delphinium\nSeeds": ["DelphiniumSeeds", .45],
+    "Delphinium\nSeeds": ["DelphiniumSeeds", .35],
     "Tulip\nSeeds": ["TulipSeeds", .45],
     "Lavender\nSeeds": ["LavenderSeeds", .45],
     "Daisy": ["flowerWhite3", .15],
@@ -23,6 +23,13 @@ let idImages = {
     "blue": ["honeyBlue", .5],
     "pink": ["honeyPink", .5],
     "purple": ["honeyPurple", .5],
+    "Bee": ["playerBee", .35],
+    "Flower": ["playerFlower", .35],
+    "Helicopter": ["playerHelicopter", .35],
+    "Legacy": ["playerLegacy", .35],
+    "Regular": ["player", .35],
+    "Sunhat": ["playerSunhat", .35],
+    "Tophat": ["playerTophat", .35],
 };
 
 class ShopUI extends Phaser.Scene {
@@ -82,8 +89,8 @@ class ShopUI extends Phaser.Scene {
             fontSize: "24px",
             color: "#ffffff",
             align: "center",
-            stroke: "#000000",
-            strokeThickness: 4,
+            stroke: "#ffffff",
+            strokeThickness: 0.5,
             padding: {
                 top: 5,
                 bottom: 5
