@@ -281,6 +281,9 @@ class ShopUI extends Phaser.Scene {
                                 if (button.text === allText){
                                     cost = cost*stock;
                                     amtToBuy = stock;
+                                    if (cost > playerVariables.money){
+                                        return ;
+                                    }
                                 }
                                 console.log("Added cell " + cellIndex + " which contains " + item +
                                     " to player inventory");
