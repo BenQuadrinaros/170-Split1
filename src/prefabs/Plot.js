@@ -37,13 +37,14 @@ class Plot {
             if(this.item instanceof Hive && this.item.hasStock() && !this.honeyIndicator) {
                 let hexColor = 0xF9D55C;
                 let stock = this.item.stock;
-                if(stock['blue']>stock['yellow']+stock['pink']+stock['purple']) { hexColor = 0x4E6FD3; }
-                if(stock['purple']>stock['yellow']+stock['pink']+stock['blue']) { hexColor = 0xB58FC2; }
-                if(stock['pink']>stock['yellow']+stock['blue']+stock['purple']) { hexColor = 0xDC715D; }
+                let exclamationKey = "!";
+                if(stock['blue']>stock['yellow']+stock['pink']+stock['purple']) { hexColor = 0x4E6FD3; exclamationKey = "!blue"; }
+                if(stock['purple']>stock['yellow']+stock['pink']+stock['blue']) { hexColor = 0xB58FC2; exclamationKey = "!purple"; }
+                if(stock['pink']>stock['yellow']+stock['blue']+stock['purple']) { hexColor = 0xDC715D; exclamationKey = "!pink"; }
                 this.honeyIndicator = scene.add.ellipse(coords[0], coords[1] + 40, config.width / 10,
                     config.height / 10, hexColor);
                 this.honeyIndicator.depth = this.spot.depth - 1;
-                this.exclamation = scene.add.image(coords[0] + 25, coords[1] - 45, "!");
+                this.exclamation = scene.add.image(coords[0] + 25, coords[1] - 45, exclamationKey);
                 this.exclamation.depth = this.spot.depth + 1;
             }
         } 

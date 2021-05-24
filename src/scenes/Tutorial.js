@@ -417,12 +417,6 @@ class Tutorial extends Phaser.Scene {
         this.fadeMessage.depth = 100;
         this.fadeMessage.setVisible(false);
 
-        //Text of variable visibility
-        this.caveText = this.add.text(5 * game.config.width / 7, (game.config.height / 4) + 25, "", this.textConfig).setOrigin(.5);
-        this.caveText.depth = 100;
-        this.caveText.text = "Press SPACE to go to sleep";
-        this.caveText.setVisible(false);
-
         //UI Text elements
         this.fadeMessage = this.add.text(0, 0, "Nada", this.textConfig);
         this.fadeMessage.setOrigin(0.5).setVisible(false);
@@ -431,7 +425,7 @@ class Tutorial extends Phaser.Scene {
         //Tutorial Dialog
         this.tutorialConfig = {
             fontFamily: 'realize_my_passionregular',
-            fontSize: "24px",
+            fontSize: "22px",
             color: "#000000",
             align: "left",
             stroke: "#000000",
@@ -448,6 +442,11 @@ class Tutorial extends Phaser.Scene {
         this.tutorialConfig.fontSize = "14px";
         this.spaceContinue = this.add.text(0, 0, "SPACE to continue", this.tutorialConfig).setVisible(false);
         this.spaceContinue.depth = 205;
+        //Text of variable visibility
+        this.caveText = this.add.text(5 * game.config.width / 7, (game.config.height / 4) + 25, "", this.tutorialConfig).setOrigin(.5);
+        this.caveText.depth = 100;
+        this.caveText.text = "Press SPACE to go to sleep";
+        this.caveText.setVisible(false);
     }
 
     createEvents() {
@@ -885,22 +884,45 @@ class Tutorial extends Phaser.Scene {
                 let coords = this.gridToCoord(loc[1], loc[0]);
                 this.hiveHighlight.x = coords[0];
                 this.hiveHighlight.y = coords[1] + 35;
-                this.hiveHighlight.depth = this.hiveHighlight.y / 10 - 5;
+                this.hiveHighlight.depth = this.hiveHighlight.y / 10 + 5;
                 this.sprinklerHighlight.alpha = 0;
             } else if (gardenGrid[loc[0]][loc[1]].item instanceof Sprinkler) {
                 this.sprinklerHighlight.alpha = this.highlightOpacity;
                 let coords = this.gridToCoord(loc[1], loc[0]);
                 this.sprinklerHighlight.x = coords[0];
                 this.sprinklerHighlight.y = coords[1] + 35;
-                this.sprinklerHighlight.depth = this.sprinklerHighlight.y / 10 - 5;
+                this.sprinklerHighlight.depth = this.sprinklerHighlight.y / 10 + 5;
                 this.hiveHighlight.alpha = 0;
             } else {
                 this.hiveHighlight.alpha = 0;
                 this.sprinklerHighlight.alpha = 0;
             }
+            for(let row = loc[0]; row <= loc[0] + 2; row++) {
+                if(row >= 0 && row < gardenGrid.length) {
+                    for(let col = loc[1] - 2; col <= loc[1] + 2; col++) {
+                        if(col >= 0 && col < gardenGrid[0].length) {
+                            gardenGrid[row][col].setTransparency(1);
+                        }
+                    }
+                }
+            }
+            if(loc[0] + 1 > 0 && loc[0] + 1 < gardenGrid.length) {
+                for(let col = loc[1] - 1; col <= loc[1] + 1; col++) {
+                    if(col >= 0 && col < gardenGrid[0].length) {
+                        gardenGrid[loc[0]+1][col].setTransparency(playerVariables.frontAlpha);
+                    }
+                }
+            }
         } else {
             this.hiveHighlight.alpha = 0;
             this.sprinklerHighlight.alpha = 0;
+            for(let i = 0; i < gardenGrid[0].length; i++) {
+                for(let j = 0; j < gardenGrid.length; j++) {
+                    gardenGrid[j][i].setTransparency(1);
+                    gardenGrid[j][i].setTransparency(1);
+                }
+            }
+            this.player.slow = false;
         }
     }
 
@@ -1291,20 +1313,20 @@ class Tutorial extends Phaser.Scene {
                 return;
             }
             this.advanceTutorialDialog(4);
-            this.currDialogMaximum = 4;
+            this.currDialogMaximum = 5;
         }
         else if(!this.playerHasWateredFirstSeed){
-            if(this.currDialogMaximum != 4){
+            if(this.currDialogMaximum != 5){
                 return;
             }
-            this.advanceTutorialDialog(5);
-            this.currDialogMaximum = 6;
+            this.advanceTutorialDialog(6);
+            this.currDialogMaximum = 7;
         }
         else if(!this.playerHasPlantedFullFlower){
-            if(this.currDialogMaximum != 6){
+            if(this.currDialogMaximum != 7){
                 return;
             }
-            this.advanceTutorialDialog(7);
+            this.advanceTutorialDialog(8);
             this.currDialogMaximum = 8;
             playerVariables.inventory.flowers["Daisy"] += 2;
             playerInventoryUpdated = true;
@@ -1359,7 +1381,7 @@ class Tutorial extends Phaser.Scene {
                 return;
             }
             this.advanceTutorialDialog(11);
-            this.currDialogMaximum = 15;
+            this.currDialogMaximum = 14;
         }
     }
 
@@ -1384,91 +1406,108 @@ class Tutorial extends Phaser.Scene {
         switch(num){
             case 1:
                 this.tutorialDialog.text =
-`Hi, I'm Beetholomew, your local honey making helper. Thank
-you for agreeing to help us restore this garden.`;
+`Hi! I’m Beatrice, but you can call me Bea. I’m so glad you agreed
+to help us fix up the garden! My hive has always wanted a lush
+garden that the Happy Honey Association will recognize, but
+there’s only so much we can do by ourselves. Now that you’re
+here, I’m sure we’ll be able to get a good score.`;
                 break;
             case 2:
                 this.tutorialDialog.text =
-`First things first, if you want to make honey to fundraise, you
-are going to need some flowers. Open your inventory and
-equip a daisy seed.`;
+`First things first, we’ll need some money for supplies. The good
+news is that everyone in town loves honey, and that’s what bees
+do best! We can make honey for you to sell every week at the local
+Farmers’ Market. But for us to make honey, we’ll need flowers.
+It’s a good thing you brought some seeds with you!`;
                 break;
             case 3:
                 this.tutorialDialog.text =
-`You can open your inventory by clicking on the backpack icon,
-or by pressing I. This will also put away whatever you are
-currently holding.`;
+`Open your backpack by clicking on the backpack icon, or by
+pressing [ I ] on your keyboard. Once it’s open, click on a
+packet of daisy seeds to hold it. If you’re already holding
+something, opening your backpack will stow that item under the
+appropriate tab.`;
                 break;
+            //Once player equips seed
             case 4:
                 this.tutorialDialog.text =
-`Great. Now find a nice plot of dirt to plant it in. You can use
-SPACE to use whatever is in your hands, or to interact with
-things that are nearby.`;
+`Great! Now we just need to plant them. First, find an empty patch
+of dirt or grass with the highlighted indicator on the ground.
+When you find a spot you like, press the [Space] key on your
+keyboard to plant the seeds on the highlighted spot.`;
                 break;
             case 5:
                 this.tutorialDialog.text =
-`Of course, to make it grow, it will need some water. Go and
-grab the watering can and water it.`;
+`If you put it somewhere you don’t like, don’t worry: The [Space]
+key can be used to place, pick up, or use different items, and to
+dig up or fill in dirt plots, so you can always change it later.`;
                 break;
+            //Once player plants seed
             case 6:
                 this.tutorialDialog.text =
-`It does cost 25 cents to fill the watering can, so you'll need to
-make sure you always save a little extra for the plants.`;
-                break;
-            case 7:
-                this.tutorialDialog.text =
-`Some flowers are more expensive and take longer to grow,
-but people want their honey more. Here are a few fully
-grown daisies to make sure we can make some honey for you
-by next week.`;
-                break;
-            case 8:
-                this.tutorialDialog.text =
-`If you want to dig up a patch of dirt, or cover one with
-grass, all you have to do is interact with it.`;
-                break;
-            case 9:
-                this.tutorialDialog.text =
-`Weeds interfere with the ability of nearby flowers to make
-pollen. Luckily, all you have to do to get rid of a weed is to
-interact with it. Could you deal with the one by the spigot?`;
+`Of course, flowers need water to grow. Pick up the watering
+can and fill it up at the spigot, then water your new daisy
+sprout! Remember that you use items by pressing the [Space] key.`;
                 break;
             
+            case 7:
+                this.tutorialDialog.text =
+`We get our water from the county, so we pay a small fee to
+use it. This watering can holds enough water for four flowers,
+and it costs about 25 cents to fill. No matter how much money
+you make, make sure you always save a little extra for
+the plants!`;
+                break;
+            //Once player has watered the daisy
+            case 8:
+                this.tutorialDialog.text =
+`We can only use the flowers to make honey once they’re
+fully grown. Daisies might grow faster than other kinds of
+flowers, but even they can’t grow completely overnight. Luckily,
+we found some fully grown daisies for you. Why don’t you plant
+those, too?`;
+                break;
+            //Once player has planted fully grown daisies
+            case 9:
+                this.tutorialDialog.text =
+`Uh oh. Is that a weed? Bees don’t like weeds.   At all.
+If there are weeds near flowers, most of us won’t go near them,
+which means less honey. Could you dig up the weed by the spigot?`;
+                break;
+            //Once player has removed weed
             case 10:
                 this.tutorialDialog.text =
-`Now, to actually make some delicious honey, you are going to
-need a few friends like me to help. Here's a beehive for you
-to place.`;
+`Now that that’s over with, I’m sure the rest of the hive will
+be more than happy to move in, but we’ll need somewhere to live.
+Here’s a new beehive. Would you find a good spot to place it?`;
                 break;
+            //Once player has placed beehive
             case 11:
                 this.tutorialDialog.text =
-`Beehives only collect pollen from nearby flowers, and make
-honey based on what the most populous type around it is. If
-you want to control that, you can pick up and move your
-flowers and seedlings.`;
+`Bees tend to stay close to their hive, so they’ll only visit
+nearby flowers. Naturally, the more the flowers near the hive,
+the better! Just remember that the more flowers there are, the
+harder it is for us to make the most of them.`;
                 break;
             case 12:
                 this.tutorialDialog.text =
-`As the number of flowers around a beehive increases, the
-harder it becomes for us to turn all of the pollen into honey,
-so flowers do have some diminishing returns.`;
+`Each hive can also only produce one kind of honey—it all gets
+mixed together, so place your flowers with care! The kind of honey
+that comes out depends on which flower is in the majority. If you
+want more honey per flower, or if you want multiple kinds of honey,
+you can get more beehives in town!`;
                 break;
             case 13:
                 this.tutorialDialog.text = 
-`Getting multiple beehives will help with making more honey. If
-a beehive is mostly collecting from one type of flower, it will
-create that type of honey.`;
+`One more thing before I leave—these brambles don’t just look bad,
+they’re wasting space we could be using. You can clear away
+brambles with clippers! I meant to bring some today, but I must have
+left them in my other pants. They’ll be here next week for sure,
+but you can always get more in town.`;
                 break;
             case 14:
                 this.tutorialDialog.text =
-`To deal with all of those brambles cluttering up the place,
-you are going to need some clippers. We have some coming
-for you next week, but you can also get more in town if
-you need.`;
-                break;
-            case 15:
-                this.tutorialDialog.text =
-`That's all for today. Before you go to sleep at your cave,
+`That's all for today. Before you cozy up in your cave to sleep,
 make sure to water that new flower. See you next week!`;
                 break;
             default:
