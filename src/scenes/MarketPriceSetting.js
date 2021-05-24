@@ -340,7 +340,7 @@ class MarketPriceSetting extends Phaser.Scene {
         this.tutorialTextBackdrop.depth = 150;
         this.tutorialConfig = {
             fontFamily: font,
-            fontSize: "27.5px",
+            fontSize: "25.5px",
             color: "#000000",
             align: "left",
             stroke: "#000000",
@@ -367,7 +367,7 @@ class MarketPriceSetting extends Phaser.Scene {
 
 
         this.input.on('pointerdown', function (pointer) {
-            if(this.currDialogSelection < 3){
+            if(this.currDialogSelection < 2){
                 ++this.currDialogSelection;
                 this.tutorialDialog.text = this.getNextDialogSection(this.currDialogSelection);
             }
@@ -381,34 +381,27 @@ class MarketPriceSetting extends Phaser.Scene {
     }
 
     getNextDialogSection(num){
-        let text = ""
+        let text = "";
         switch(num){
             case 0:
                 text =
-`Welcome to the Farmer's Market. This is where you can sell
-the honey we've been producing. On the chalkboard right now
-is a relatively standard price for a jar of regular honey.
-When you bring other types of honey here, we can start you
-off with regular prices for those as well.`;
+`Welcome to the Farmer's Market! This is where you can sell
+the honey we've been making.`;
                 break;
             case 1:
                 text = 
-`When a customer approaches, this is the price you are asking
-them to pay. If you realize that your price isn't quite working,
-feel free to change it up. Your customers will understand
-that you are new to this.`;
+`I took a guess at a fair price, but I can’t say I buy honey
+very often, so you might want to play around with the price a
+bit and see what works. You can change your prices
+whenever you like.`;
                 break;
             case 2:
                 text = 
-`If a customer isn't satisfied with your price, but doesn't think
-that it was too much, they might try to barter with you
-instead, which can get you some nice deals on various items.`;
-                break;
-            case 3:
-                text =
-`Each customer has their own budget, so don't get too
-discouraged if some people aren't big fans of your prices.
-Good luck!`;
+`Each customer is going to be different than the one before —
+some are frugal, and some have money to spare, so don’t be
+surprised if customers have different reactions to the same price.
+But be careful! If you have a reputation for prices that are too
+high, you run the risk of driving customers away.`;
                 break;
             default:
                 console.log("No dialog of matching section");
