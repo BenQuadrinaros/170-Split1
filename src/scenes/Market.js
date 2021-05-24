@@ -19,6 +19,21 @@ class Market extends Phaser.Scene {
             purple:"honeyPurple"
 
         }
+
+        this.headMap = {
+            basicDogNPC:"dogHead",
+            dalmationDogNPC:"dalmationHead",
+            dobermanDogNPC:"dobbermanHead",
+            huskyDogNPC:"huskeyHead",
+            spotDogNPC:"spotDogHead",
+            basicBunNPC:"bunnyHead",
+            pinkBunNPC:"pinkBunnyHead",
+            brownBunNPC:"brownBunnyHead",
+            bluegreyBunNPC:"blueGreyBunnyHead",
+            albinoBunNPC:"albinoBunnyHead",
+            whiteCatNPC:"catWhiteHead",
+            orangeCatNPC:"catOrangeHead"
+        }
         this.createControls(); //Sets the various controls
         this.createBackground(); //Creates backdrop
         this.createPopulatedTable(); //Create table and fill with jars of honey
@@ -178,19 +193,21 @@ class Market extends Phaser.Scene {
     }
 
     makeTransaction(type, amount, mood){
-        console.log(`Money made from ${amount} ${type} honey is ${amount*priceMap[type]}`);
+        console.log("key for NPC IS " + this.npc.texture.key);
+        //console.log(`Money made from ${amount} ${type} honey is ${amount*priceMap[type]}`);
         if (pHistory[currentDay]) {
-            console.log("1")
+            //console.log("1")
             pHistory[currentDay].unshift({
                 type: type,
                 price: priceMap[type],
                 mood: mood,
                 mode: "money",
                 week: currentDay,
-                amt:amount
+                amt:amount,
+                head:this.headMap[this.npc.texture.key]
             });
         } else {
-            console.log("2")
+            //console.log("2")
             pHistory[currentDay] = [];
             pHistory[currentDay].unshift({
                 type: type,
@@ -198,7 +215,8 @@ class Market extends Phaser.Scene {
                 mood: mood,
                 mode: "money",
                 week: currentDay,
-                amt:amount
+                amt:amount,
+                head:this.headMap[this.npc.texture.key]
             });
         }
         let bearBucks = this.add.image(this.npc.x,this.infoDisplay.y,'bearbucks')
@@ -486,6 +504,7 @@ class Market extends Phaser.Scene {
 
     }
     logBarter(offer, hType, typeBought){
+        console.log("key for NPC IS " + this.npc.texture.key);
         if (pHistory[currentDay]) {
             pHistory[currentDay].unshift({
                 mode: "barter",
@@ -495,7 +514,8 @@ class Market extends Phaser.Scene {
                 scale: offer.scale,
                 img: offer.img,
                 bought: typeBought,
-                week: currentDay
+                week: currentDay,
+                head:this.headMap[this.npc.texture.key]
             });
         } else {
             console.log("No history for week " + currentDay + " creating one");
@@ -508,7 +528,8 @@ class Market extends Phaser.Scene {
                 scale: offer.scale,
                 img: offer.img,
                 bought: typeBought,
-                week: currentDay
+                week: currentDay,
+                head:this.headMap[this.npc.texture.key]
             });
         }
         //console.log(pHistory);

@@ -133,6 +133,7 @@ class PriceHistory extends Phaser.Scene{
         }
         for (let i = 1; i <= amt; i++){
             let entry = pArr[i-1]
+            console.log("HEAD FOR ENTRY IS " + entry.head);
             if (entry.mode === "money") {
                 console.log(this.imgMap[entry.type]);
                 //create mood image
@@ -149,7 +150,7 @@ class PriceHistory extends Phaser.Scene{
                 this.entries.push(this.add.text((2 * config.width / 5) + 130, (i * (config.height / 12 - 9)) + 90, "/", this.textConfiguration)
                     .setOrigin(.5, .5));
                 //create npc head
-                this.entries.push(this.add.image((2 * config.width / 5)+20, (i * (config.height / 12 - 9)) + 90, 'PlayerIcon').setOrigin(.5, .5).setScale(.35, .35));
+                this.entries.push(this.add.image((2 * config.width / 5)+20, (i * (config.height / 12 - 9)) + 105, entry.head).setOrigin(.5, 1).setScale(.2, .2));
             } else if (entry.mode === "barter"){
                 console.log("** ** logging barter ** **");
                 console.log(entry);
@@ -161,7 +162,7 @@ class PriceHistory extends Phaser.Scene{
                 this.entries.push(this.add.text((2 * config.width / 5) + 130, (i * (config.height / 12 - 9)) + 90, "/", this.textConfiguration)
                     .setOrigin(.5, .5));
                 this.entries.push(this.add.image((2 * config.width / 5)+150, (i * (config.height / 12 - 9)) + 90, this.imgMap[entry.type]).setOrigin(.5, .5).setScale(.35, .35));
-                this.entries.push(this.add.image((2 * config.width / 5)+20, (i * (config.height / 12 - 9)) + 90, 'PlayerIcon').setOrigin(.5, .5).setScale(.35, .35));
+                this.entries.push(this.add.image((2 * config.width / 5)+20, (i * (config.height / 12 - 9)) + 105, entry.head).setOrigin(.5, 1).setScale(.2, .2));
 
             }
             console.log("entries")
