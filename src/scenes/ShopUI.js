@@ -180,6 +180,7 @@ class ShopUI extends Phaser.Scene {
                 createButton(this, 2, 'Seeds'),
                 createButton(this, 2, 'Items'),
                 createButton(this, 2, 'Decorations'),
+                createButton(this, 2, 'Outfits')
             ],
 
             rightButtons: [
@@ -281,6 +282,9 @@ class ShopUI extends Phaser.Scene {
                                 if (button.text === allText){
                                     cost = cost*stock;
                                     amtToBuy = stock;
+                                    if(cost > playerVariables.money){
+                                        return;
+                                    }
                                 }
                                 console.log("Added cell " + cellIndex + " which contains " + item +
                                     " to player inventory");

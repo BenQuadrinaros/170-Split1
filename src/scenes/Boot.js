@@ -197,7 +197,7 @@ class Boot extends Phaser.Scene {
             //this.load.spritesheet('flowerSheet', './assets/spritesheets/flowerStages.png', { frameWidth: 407, frameHeight: 456, startFrame: 0, endFrame: 4 });
             //For hubScene
             //this.load.spritesheet('player', './assets/spritesheets/bearFrontBack.png', {frameWidth:40, frameHeight:72, startFrame:0, endFrame:1});
-            this.load.spritesheet('player', './assets/spritesheets/bearAnims.png', {frameWidth: 140, frameHeight:247, startFrame:0, endFrame:7});
+            this.load.spritesheet('player', './assets/spritesheets/bearAnims.png', {frameWidth: 139.5, frameHeight:247, startFrame:0, endFrame:7});
             this.load.spritesheet('playerBee', './assets/spritesheets/beecostume.png', {frameWidth: 139.5, frameHeight:250, startFrame:0, endFrame:7});
             this.load.spritesheet('playerFlower', './assets/spritesheets/flowercrown.png', {frameWidth: 139.5, frameHeight:288, startFrame:0, endFrame:7});
             this.load.spritesheet('playerHelicopter', './assets/spritesheets/helicopterhat.png', {frameWidth: 139.5, frameHeight:254, startFrame:0, endFrame:7});
