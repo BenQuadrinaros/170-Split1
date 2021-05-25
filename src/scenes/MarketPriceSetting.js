@@ -31,7 +31,7 @@ class MarketPriceSetting extends Phaser.Scene {
             playerVariables.money, playerVariables.inventory.honey["total"]);
 
         if(!playerVariables.completedMarketTutorial && Phaser.Input.Keyboard.JustDown(keySPACE)){
-            if(this.currDialogSelection < 3){
+            if(this.currDialogSelection < 2){
                 ++this.currDialogSelection;
                 this.tutorialDialog.text = this.getNextDialogSection(this.currDialogSelection);
             }
