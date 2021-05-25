@@ -119,35 +119,8 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
     }
 
     createAnimations(){
-        //Establish its animations
-            //Create the regular outfit anims
-            this.scene.anims.create({
-                key: 'playerBackIdle',
-                repeat: -1,
-                frames: this.scene.anims.generateFrameNumbers('player' + playerVariables.currentOutfit, {start: 4, end: 5}),
-                frameRate: 2
-            });
-            this.scene.anims.create({
-                key: 'playerFrontIdle',
-                repeat: -1,
-                frames: this.scene.anims.generateFrameNumbers('player' + playerVariables.currentOutfit, {start: 2, end: 3}),
-                frameRate: 2
-            });
-            this.scene.anims.create({
-                key: 'playerWalkBack',
-                repeat: -1,
-                frames: this.scene.anims.generateFrameNumbers('player' + playerVariables.currentOutfit, {start: 0, end: 1}),
-                frameRate: 3
-            });
-            this.scene.anims.create({
-                key: 'playerWalkFront',
-                repeat: -1,
-                frames: this.scene.anims.generateFrameNumbers('player' + playerVariables.currentOutfit, {start: 6, end: 7}),
-                frameRate: 3
-            });
-        
         //Create anims for other outfits
-        let outfits = ["Bee", "Flower", "Helicopter", "Legacy", "Sunhat", "Tophat"];
+        let outfits = ["", "Bee", "Flower", "Helicopter", "Legacy", "Sunhat", "Tophat"];
         for(let i = 0; i < outfits.length; ++i){
             this.scene.anims.create({
                 key: 'playerBackIdle' + outfits[i],

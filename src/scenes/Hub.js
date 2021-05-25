@@ -543,7 +543,7 @@ class Hub extends Phaser.Scene {
                 console.log("An npc has been selected to sit here");
                 console.log("Getting world pos of [", this.benchList[i][0], ", ", this.benchList[i][1], "]");
                 let leftLoc = this.gridToCoord(this.benchList[i][0], this.benchList[i][1]);
-                let currNPC = new NPC(this, leftLoc[0] + 30, leftLoc[1] - 70);
+                let currNPC = new NPC(this, leftLoc[0] + 30, leftLoc[1]);
                 currNPC.setOrigin(0.5, 0.5);
                 currNPC.setScale(0.35, 0.35);
                 currNPC.depth = (leftLoc[1] - 30)/10  + 5;

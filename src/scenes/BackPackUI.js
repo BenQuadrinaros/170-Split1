@@ -341,17 +341,17 @@ class BackPackUI extends Phaser.Scene {
     }
 
     createExclamationMarks(){
-        this.updatedMarks['seeds'] = this.add.image(60, 190, "!").setDepth(80).setAngle(350).setAlpha(0);
+        this.updatedMarks['seeds'] = this.add.image(60, 165, "!").setDepth(80).setAngle(350).setAlpha(0);
         if(inventoryTabsUpdated['seeds']){ this.updatedMarks['seeds'].setAlpha(1); }
-        this.updatedMarks['items'] = this.add.image(60, 233, "!").setDepth(80).setAngle(350).setAlpha(0);
+        this.updatedMarks['items'] = this.add.image(60, 208, "!").setDepth(80).setAngle(350).setAlpha(0);
         if(inventoryTabsUpdated['items']){ this.updatedMarks['items'].setAlpha(1); }
-        this.updatedMarks['honey'] = this.add.image(60, 276, "!").setDepth(80).setAngle(350).setAlpha(0);
+        this.updatedMarks['honey'] = this.add.image(60, 251, "!").setDepth(80).setAngle(350).setAlpha(0);
         if(inventoryTabsUpdated['honey']){ this.updatedMarks['honey'].setAlpha(1); }
-        this.updatedMarks['flowers'] = this.add.image(60, 319, "!").setDepth(80).setAngle(350).setAlpha(0);
+        this.updatedMarks['flowers'] = this.add.image(60, 294, "!").setDepth(80).setAngle(350).setAlpha(0);
         if(inventoryTabsUpdated['flowers']){ this.updatedMarks['flowers'].setAlpha(1); }
-        this.updatedMarks['decorations'] = this.add.image(60, 362, "!").setDepth(80).setAngle(350).setAlpha(0);
+        this.updatedMarks['decorations'] = this.add.image(60, 337, "!").setDepth(80).setAngle(350).setAlpha(0);
         if(inventoryTabsUpdated['decorations']){ this.updatedMarks['decorations'].setAlpha(1); }
-        this.updatedMarks['outfits'] = this.add.image(60, 405, "!").setDepth(80).setAngle(350).setAlpha(0);
+        this.updatedMarks['outfits'] = this.add.image(60, 380, "!").setDepth(80).setAngle(350).setAlpha(0);
         if(inventoryTabsUpdated['outfits']){ this.updatedMarks['outfits'].setAlpha(1); }
     }
 }
