@@ -318,6 +318,7 @@ class Hub extends Phaser.Scene {
             this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 3, this.worldWidth, this.worldHeight, [[game.config.width + 50, 115]]);
         }
         this.player.depth = this.player.y / 10;
+        this.player.setLowerLeftLimit(2 * config.height / 5 + 40);
         
         if(hasSoldForDay) { 
             this.player.shadow.alpha = .35;
@@ -543,7 +544,7 @@ class Hub extends Phaser.Scene {
                 console.log("An npc has been selected to sit here");
                 console.log("Getting world pos of [", this.benchList[i][0], ", ", this.benchList[i][1], "]");
                 let leftLoc = this.gridToCoord(this.benchList[i][0], this.benchList[i][1]);
-                let currNPC = new NPC(this, leftLoc[0] + 30, leftLoc[1] - 70);
+                let currNPC = new NPC(this, leftLoc[0] + 30, leftLoc[1]);
                 currNPC.setOrigin(0.5, 0.5);
                 currNPC.setScale(0.35, 0.35);
                 currNPC.depth = (leftLoc[1] - 30)/10  + 5;
@@ -710,7 +711,7 @@ class Hub extends Phaser.Scene {
     updateCheckNearLocation() {
         //Check if the player is close enough to the cave to rest
         if (Math.abs(Phaser.Math.Distance.Between(this.caveText.x, this.caveText.y,
-            this.player.x, this.player.y)) < 100) {
+            this.player.x, this.player.y)) < 120) {
             if (!hasSoldForDay) {
                 this.caveText.setVisible(true);
             }
@@ -938,12 +939,10 @@ class Hub extends Phaser.Scene {
 
     updateCheckCollisions() {
         //Check if the player is close enough to the way to town
-        if (Math.abs(Phaser.Math.Distance.Between(this.townAccess.x, this.townAccess.y,
-            this.player.x, this.player.y)) < 55) {
+        if (this.player.x < -35 && this.player.x > -300) {
             this.music.stop();
             this.music.playSFX("mapTransition");
-            this.player.x = -100;
-            this.player.y = -100;
+            this.player.x -= 500;
             this.time.delayedCall(300, () => {
                 this.music.stop();
                 this.placeHeldItemInBag();

@@ -141,13 +141,13 @@ let playerVariables = {
             "Fence": 0
         },
         outfits: {
-            "Bee": 1,
-            "Flower": 1,
-            "Helicopter": 1,
-            "Legacy": 1,
+            "Bee": 0,
+            "Flower": 0,
+            "Helicopter": 0,
+            "Legacy": 0,
             "Regular": 1,
-            "Sunhat": 1,
-            "Tophat": 1
+            "Sunhat": 0,
+            "Tophat": 0
         }
     }
 }
@@ -177,6 +177,9 @@ let shopInventory = {
     },
     "Decorations":{
         "Bench":{"amount": 4,"cost":7}
+    },
+    "Outfits":{
+        "Tophat":{"amount": 1, "cost":99.75}
     }
 }
 
@@ -248,15 +251,50 @@ function calculateEcologyScore() {
         })
     });
     let score = [false, false, false, false, false];
-    if(totalWeeds <= 0) { score[0] = true; }
+    if(totalWeeds <= 0) {
+        score[0] = true;
+        if(playerVariables.inventory.outfits["Legacy"] === 0){
+            playerVariables.inventory.outfits["Legacy"] = 1;
+            inventoryTabsUpdated["outfits"] = true;
+            playerInventoryUpdated = true;
+        }
+    }
     let variety = 0;
     for(let flow in flowerVariety) {
         if(flowerVariety[flow]) { variety++; }
     };
-    if(variety > 2) { score[1] = true; }
-    if(totalHives > 2) { score[2] = true; }
-    if(flowerTotal > 15) { score[3] = true; }
-    if(totalBrambles == 0) { score[4] = true; }
+    if(variety > 2) {
+        score[1] = true;
+        if(playerVariables.inventory.outfits["Helicopter"] === 0){
+            playerVariables.inventory.outfits["Helicopter"] = 1;
+            inventoryTabsUpdated["outfits"] = true;
+            playerInventoryUpdated = true;
+        }
+    }
+    if(totalHives > 2) {
+        score[2] = true;
+        if(playerVariables.inventory.outfits["Sunhat"] === 0){
+            playerVariables.inventory.outfits["Sunhat"] = 1;
+            inventoryTabsUpdated["outfits"] = true;
+            playerInventoryUpdated = true;
+        }
+    }
+    if(flowerTotal > 15) {
+        score[3] = true;
+        if(playerVariables.inventory.outfits["Flower"] === 0){
+            playerVariables.inventory.outfits["Flower"] = 1;
+            inventoryTabsUpdated["outfits"] = true;
+            playerInventoryUpdated = true;
+        }
+    }
+    if(totalBrambles == 0) {
+        score[4] = true;
+        if(playerVariables.inventory.outfits["Bee"] === 0){
+            playerVariables.inventory.outfits["Bee"] = 1;
+            inventoryTabsUpdated["outfits"] = true;
+            playerInventoryUpdated = true;
+        }
+    }
     
     return score;
 }

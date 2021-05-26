@@ -5,11 +5,11 @@ class NPC extends Phaser.GameObjects.Sprite{
         
         
         if(name === "Unnamed"){ //If a random npc was requested
-            let idNum = Math.floor(11 * Math.random());
+            let idNum = Phaser.Math.Between(0, NPCTable.length -1);
             let generatedTexture = generateNPCSprite(idNum);
             let variation = Phaser.Math.Between(25, 50);
             super(scene, initx, inity - variation, generatedTexture, frame);
-            this.setPosition(initx, inity - variation);
+            this.setPosition(initx, inity - variation + 35);
             this.generateNPCCharacteristics(idNum);
         }
         else{ //If a specific npc was requested

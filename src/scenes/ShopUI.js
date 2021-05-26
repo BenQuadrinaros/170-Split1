@@ -4,7 +4,7 @@ let pointer;
 let shopCosts = {};
 let idImages = {
     "Daisy\nSeeds": ["DaisySeeds", .45],
-    "Delphinium\nSeeds": ["DelphiniumSeeds", .35],
+    "Delphinium\nSeeds": ["DelphiniumSeeds", .45],
     "Tulip\nSeeds": ["TulipSeeds", .45],
     "Lavender\nSeeds": ["LavenderSeeds", .45],
     "Daisy": ["flowerWhite3", .15],
@@ -180,6 +180,7 @@ class ShopUI extends Phaser.Scene {
                 createButton(this, 2, 'Seeds'),
                 createButton(this, 2, 'Items'),
                 createButton(this, 2, 'Decorations'),
+                createButton(this, 2, 'Outfits')
             ],
 
             rightButtons: [
@@ -281,8 +282,8 @@ class ShopUI extends Phaser.Scene {
                                 if (button.text === allText){
                                     cost = cost*stock;
                                     amtToBuy = stock;
-                                    if (cost > playerVariables.money){
-                                        return ;
+                                    if(cost > playerVariables.money){
+                                        return;
                                     }
                                 }
                                 console.log("Added cell " + cellIndex + " which contains " + item +

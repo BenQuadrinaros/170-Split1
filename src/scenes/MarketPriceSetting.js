@@ -31,7 +31,7 @@ class MarketPriceSetting extends Phaser.Scene {
             playerVariables.money, playerVariables.inventory.honey["total"]);
 
         if(!playerVariables.completedMarketTutorial && Phaser.Input.Keyboard.JustDown(keySPACE)){
-            if(this.currDialogSelection < 3){
+            if(this.currDialogSelection < 2){
                 ++this.currDialogSelection;
                 this.tutorialDialog.text = this.getNextDialogSection(this.currDialogSelection);
             }
@@ -139,7 +139,9 @@ class MarketPriceSetting extends Phaser.Scene {
                     this.yellowPlus.alpha = .75;
                 })
                 .on("pointerdown", () => {
-                    priceMap["yellow"] += .25;
+                    if(priceMap["yellow"] < 18.00){
+                        priceMap["yellow"] += .25;
+                    }
                     //let tempPrice = priceMap["yellow"];
                     this.yellowPriceText.text = "$" + priceMap["yellow"].toFixed(2) + "\n" + playerVariables.inventory.honey["yellow"] + " jars";
                     this.yellowPlus.setFrame(1);
@@ -187,7 +189,9 @@ class MarketPriceSetting extends Phaser.Scene {
                     this.bluePlus.alpha = .75;
                 })
                 .on("pointerdown", () => {
-                    priceMap["blue"] += .25;
+                    if(priceMap["blue"] < 18.00){
+                        priceMap["blue"] += .25;
+                    }
                     this.bluePriceText.text = "$" + priceMap["blue"].toFixed(2) + "\n" + playerVariables.inventory.honey["blue"] + " jars";
                     this.bluePlus.setFrame(1);
                 })
@@ -233,7 +237,9 @@ class MarketPriceSetting extends Phaser.Scene {
                     this.pinkPlus.alpha = .75;
                 })
                 .on("pointerdown", () => {
-                    priceMap["pink"] += .25;
+                    if(priceMap["pink"] < 18.00){
+                        priceMap["pink"] += .25;
+                    }
                     this.pinkPriceText.text = "$" + priceMap["pink"].toFixed(2) + "\n" + playerVariables.inventory.honey["pink"] + " jars";
                     this.pinkPlus.setFrame(1);
                 })
@@ -279,7 +285,9 @@ class MarketPriceSetting extends Phaser.Scene {
                     this.purplePlus.alpha = .75;
                 })
                 .on("pointerdown", () => {
-                    priceMap["purple"] += .25;
+                    if(priceMap["purple"] < 18.00){
+                        priceMap["purple"] += .25;
+                    }
                     this.purplePriceText.text = "$" + priceMap["purple"].toFixed(2) + "\n" + playerVariables.inventory.honey["purple"] + " jars";
                     this.purplePlus.setFrame(1);
                 })

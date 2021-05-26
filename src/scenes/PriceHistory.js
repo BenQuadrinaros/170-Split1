@@ -18,6 +18,11 @@ class PriceHistory extends Phaser.Scene{
         };
     }
 
+    init(data){
+        this.previousScene = data.previousScene;
+        this.previousSceneDone = data.previousSceneDone;
+    }
+
     
 
     create(){
@@ -56,7 +61,7 @@ class PriceHistory extends Phaser.Scene{
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
         if(this.previousSceneDone !== "false"){
-            this.priceTitle = this.add.text(game.config.width/2 + 60, game.config.height/6 + 5, this.previousSceneDone, this.textConfiguration).setOrigin(.5, .5);
+            this.priceTitle = this.add.text(game.config.width/2 + 120, (10 * (config.height / 12 - 9)) + 90, this.previousSceneDone, this.textConfiguration).setOrigin(.5, .5).setAngle(25);
         }
         this.textConfiguration.fontSize = "28px";
         this.continueText = this.add.text(config.width - 125, config.height - 50, "Continue", this.textConfiguration).setOrigin(0.5, 0.5).setDepth(5);
@@ -75,11 +80,6 @@ class PriceHistory extends Phaser.Scene{
         this.continueText.setAlpha(.5);
 
         this.textConfiguration.fontSize = "20px";
-    }
-
-    init(data){
-        this.previousScene = data.previousScene;
-        this.previousSceneDone = data.previousSceneDone;
     }
 
     update(){
@@ -122,7 +122,7 @@ class PriceHistory extends Phaser.Scene{
     createPriceHistory(week){
         console.log("creating price history;");
         console.log("Text Config: ", this.textConfiguration);
-        let amt = 10;
+        let amt = 9;
         let pArr = pHistory[week];
         if (!pArr){
             amt = 0;
