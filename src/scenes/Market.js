@@ -64,10 +64,10 @@ class Market extends Phaser.Scene {
                 this.music.stop();
                 this.music.playSFX("mapTransition");
                 if(playerVariables.inventory.honey["total"] === 0){
-                    this.scene.launch('priceHistory', {previousScene: "marketScene", previousSceneDone:"SOLD OUT"});
+                    this.scene.launch('priceHistory', {previousScene: "marketScene", previousSceneDone:"out of\nstock!"});
                 }
                 else{
-                    this.scene.launch('priceHistory', {previousScene: "marketScene", previousSceneDone:"NO MORE CUSTOMERS"});
+                    this.scene.launch('priceHistory', {previousScene: "marketScene", previousSceneDone:"end of\nday!"});
                 }
             },
             loop: false,
@@ -668,7 +668,7 @@ class Market extends Phaser.Scene {
     }
 
     createPriceHistoryIcon() {
-        this.priceHistory = this.add.image(110, 4*config.height / 5 + 15, 'noteBook', 0)
+        this.priceHistory = this.add.image(80, 4*config.height / 5 + 50, 'noteBook', 0)
             .setDepth(100).setScale(.125, .125).setOrigin(.5, .5).setAlpha(.9).setInteractive()
             .on('pointerover', () => {
                 this.priceHistory.alpha = 1;
@@ -871,7 +871,9 @@ class Market extends Phaser.Scene {
         let typesUsed = 1;
         //this.add.image(config.width / 5, config.height / 2, "simpleBox").setScale(2, 4.5).setDepth(99);
         this.chalkBoard = this.add.image(1.9*config.width/5,config.height+60,'chalkboard')
-            .setOrigin(.5,.5).setDepth(99).setScale(.5,.5);
+            .setOrigin(.5,.5).setDepth(99).setScale(.5,.5).setAlpha(0);
+        this.priceBoard = this.add.image(1.9*config.width/5, config.height-160, 'priceboardShort')
+            .setOrigin(0.5, 0).setDepth(99).setScale(0.58, 0.5);
         //Price Setting Yellow
         if (playerVariables.inventory.honey["yellow"]) {
             typesUsed += 1;
@@ -890,7 +892,9 @@ class Market extends Phaser.Scene {
                     this.yellowPlus.alpha = .75;
                 })
                 .on("pointerdown", () => {
-                    priceMap["yellow"] += .25;
+                    if(priceMap["yellow"] < 18.00){
+                        priceMap["yellow"] += .25;
+                    }
                     this.yellowPriceText.text = "\t$" + priceMap["yellow"].toFixed(2) + "/";
                     this.yellowPlus.setFrame(1);
                 })
@@ -936,7 +940,9 @@ class Market extends Phaser.Scene {
                     this.bluePlus.alpha = .75;
                 })
                 .on("pointerdown", () => {
-                    priceMap["blue"] += .25;
+                    if(priceMap["blue"] < 18.00){
+                        priceMap["blue"] += .25;
+                    }
                     this.bluePriceText.text = "\t$" + priceMap["blue"].toFixed(2) + "/";
                     this.bluePlus.setFrame(1);
                 })
@@ -983,7 +989,9 @@ class Market extends Phaser.Scene {
 
                 })
                 .on("pointerdown", () => {
-                    priceMap["pink"] += .25;
+                    if(priceMap["pink"] < 18.00){
+                        priceMap["pink"] += .25;
+                    }
                     this.pinkPriceText.text =  "\t$" + priceMap["pink"].toFixed(2) + "/";
                     this.pinkPlus.setFrame(1);
                 })
@@ -1028,7 +1036,9 @@ class Market extends Phaser.Scene {
                     this.purplePlus.alpha = .75;
                 })
                 .on("pointerdown", () => {
-                    priceMap["purple"] += .25;
+                    if(priceMap["purple"] < 18.00){
+                        priceMap["purple"] += .25;
+                    }
                     this.purplePriceText.text = "\t$" + priceMap["purple"].toFixed(2) + "/";
                     this.purplePlus.setFrame(1);
                 })

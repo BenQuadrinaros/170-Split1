@@ -55,7 +55,7 @@ class Menu extends Phaser.Scene {
         }
 
         //Setting Background
-        this.coloredBackdrop = this.add.rectangle(0, 0, config.width, config.height, 0xffe298, 1).setOrigin(0, 0).setDepth(-4);
+        this.backdrop = this.add.image(centerX, centerY, 'titleScreenBG').setScale(0.5, 0.5).setDepth(-4);
         this.screen1 = this.add.image(centerX, centerY, 'titleScreen1').setScale(0.5).setDepth(-3);
         this.screen2 = this.add.image(centerX, centerY, 'titleScreen2').setScale(0.5).setDepth(-2).setAlpha(0);
         this.screen3 = this.add.image(centerX, centerY, 'titleScreen3').setScale(0.5).setDepth(-1).setAlpha(0);

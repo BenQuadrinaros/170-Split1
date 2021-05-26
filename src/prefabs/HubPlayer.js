@@ -18,6 +18,7 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         this.movingUp = false;
         this.slow = false;
         this.movingDirection = "right";
+        this.leftBound = -100;
         //Vertical limit: [(x, y)], x is rightmost bound at the height, y is the height
         this.verticalLimits = verticalLimit;
         this.currentOutfit = playerVariables.currentOutfit;
@@ -48,7 +49,7 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         if (keyLEFT.isDown || keyA.isDown) {
             this.scene.tweens.killTweensOf(this); //Kills any click movement if it is occurring
             this.flipX = true;
-            if (this.x > 0 && this.notCrossingVerticalSides(true)){
+            if (this.checkLeftLimit() && this.notCrossingVerticalSides(true)){
                 if(this.slow) {
                     this.x -= this.xMoveRate/2;
                 } else {
@@ -225,4 +226,18 @@ class HubPlayer extends Phaser.GameObjects.Sprite {
         return returnVal;
     }
 
+    //Sets a height on the left side at which the left side of the screen is a boundary
+    setLowerLeftLimit(y){
+        this.leftBound = y;
+    }
+
+    //Checks if player is above any potential left bound
+    checkLeftLimit(){
+        if(this.x > 0 || this.y < this.leftBound){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }
