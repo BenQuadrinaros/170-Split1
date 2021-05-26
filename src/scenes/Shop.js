@@ -34,10 +34,10 @@ class Shop extends Phaser.Scene {
         this.player;
         console.log("Previous scene was :", this.previousScene);
         if(this.previousScene === "hubScene"){
-            this.player = new HubPlayer(this, 'player', 0, 4*config.width/5, 5*config.height/6, game.config.width, game.config.height, [[135, 330], [380, 295], [game.config.width+50, 350]]).setDepth(-1);
+            this.player = new HubPlayer(this, 'player', 0, 4*config.width/5, 5*config.height/6, game.config.width + 100, game.config.height, [[135, 330], [380, 295], [game.config.width+200, 350]]).setDepth(-1);
         }
         else{
-            this.player = new HubPlayer(this, 'player', 0, config.width/3, 3*config.height/4, game.config.width, game.config.height, [[135, 330], [380, 295], [game.config.width+50, 350]]).setDepth(-1);
+            this.player = new HubPlayer(this, 'player', 0, config.width/3, 3*config.height/4, game.config.width + 100, game.config.height, [[135, 330], [380, 295], [game.config.width+200, 350]]).setDepth(-1);
         }
         this.player.setScale(0.65);
         this.player.shadow.setScale(0.65);
@@ -247,7 +247,7 @@ class Shop extends Phaser.Scene {
     }
 
     updateCheckNearLocation(){
-        if (Math.abs(Phaser.Math.Distance.Between(this.townExit.x,this.townExit.y, this.player.x,this.player.y)) < 75) {
+        if (this.player.x - config.width > 50) {
             if(!this.leaving) {
                 this.leaving = true;
                 console.log("returning to hub");
@@ -261,7 +261,7 @@ class Shop extends Phaser.Scene {
         }
 
         if (!this.leaving && Math.abs(Phaser.Math.Distance.Between(this.toadLeckman.x,this.toadLeckman.y, 
-                this.player.x,this.player.y)) < 100) {
+                this.player.x,this.player.y)) < 120) {
             this.toadTextInteract.setVisible(true);
             if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
                 this.backpack.setAlpha(0.0);

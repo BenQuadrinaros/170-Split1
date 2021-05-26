@@ -4,7 +4,7 @@ let pointer;
 let shopCosts = {};
 let idImages = {
     "Daisy\nSeeds": ["DaisySeeds", .45],
-    "Delphinium\nSeeds": ["DelphiniumSeeds", .35],
+    "Delphinium\nSeeds": ["DelphiniumSeeds", .45],
     "Tulip\nSeeds": ["TulipSeeds", .45],
     "Lavender\nSeeds": ["LavenderSeeds", .45],
     "Daisy": ["flowerWhite3", .15],

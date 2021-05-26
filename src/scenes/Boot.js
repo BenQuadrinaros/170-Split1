@@ -61,17 +61,18 @@ class Boot extends Phaser.Scene {
             this.load.image("TulipSeeds","./assets/img/tulipSeeds.png");
             this.load.image("DaisySeeds","./assets/img/daisySeeds.png");
             this.load.image("LavenderSeeds","./assets/img/lavenderSeeds.png");
-            this.load.image("DelphiniumSeeds","./assets/sprites/UI/blueIcon.png");
+            this.load.image("DelphiniumSeeds","./assets/img/delphiniumSeeds.png");
             this.load.image("seedling", "./assets/sprites/spritesheetFrames/uni0.png");
             this.load.image("sprout", "./assets/sprites/spritesheetFrames/uni1.png");
             this.load.image("flowerWhite2", "./assets/sprites/spritesheetFrames/daisy2.png");
             this.load.image("flowerWhite3", "./assets/sprites/spritesheetFrames/daisy3.png");
             this.load.image("flowerWhite4", "./assets/sprites/spritesheetFrames/daisy4.png");
             this.load.image("flowerWhite5", "./assets/sprites/spritesheetFrames/daisy5.png");
-            this.load.image("flowerBlue2", "./assets/sprites/spritesheetFrames/blue2.png");
-            this.load.image("flowerBlue3", "./assets/sprites/spritesheetFrames/blue3.png");
-            this.load.image("flowerBlue4", "./assets/sprites/spritesheetFrames/blue4.png");
-            this.load.image("flowerBlue5", "./assets/sprites/spritesheetFrames/blue5.png");
+            this.load.image("flowerBlue1", "./assets/sprites/spritesheetFrames/delphinium1.png");
+            this.load.image("flowerBlue2", "./assets/sprites/spritesheetFrames/delphinium2.png");
+            this.load.image("flowerBlue3", "./assets/sprites/spritesheetFrames/delphinium3.png");
+            this.load.image("flowerBlue4", "./assets/sprites/spritesheetFrames/delphinium4.png");
+            this.load.image("flowerBlue5", "./assets/sprites/spritesheetFrames/delphinium5.png");
             this.load.image("flowerRed1", "./assets/sprites/spritesheetFrames/tulip1.png");
             this.load.image("flowerRed2", "./assets/sprites/spritesheetFrames/tulip2.png");
             this.load.image("flowerRed3", "./assets/sprites/spritesheetFrames/tulip3.png");
@@ -103,6 +104,7 @@ class Boot extends Phaser.Scene {
             this.load.image('chalkboard', './assets/sprites/UI/chalkboardBlank.png');
             this.load.image('brickFence', './assets/sprites/background/brickFence.png');
             //For Market
+            this.load.image('priceboardShort', './assets/sprites/UI/priceBoardShort.png');
             this.load.image('basicDogNPC', './assets/sprites/character/dognpc_275x458.png');
             this.load.image('dalmationDogNPC', './assets/sprites/character/dalmatian.png');
             this.load.image('dobermanDogNPC', './assets/sprites/character/dobberman.png');
@@ -172,7 +174,8 @@ class Boot extends Phaser.Scene {
             this.load.image('TownMap', './assets/sprites/background/WhiteBackground.png');
             this.load.image('PlayerIcon', './assets/sprites/character/playerMapIcon.png');
             //For menuScene
-            this.load.image('titleScreen1', './assets/sprites/background/title_screen_illust1.png');
+            this.load.image('titleScreenBG', './assets/sprites/background/titleBG.png');
+            this.load.image('titleScreen1', './assets/sprites/background/title1.png');
             this.load.image('titleScreen2', './assets/sprites/background/title_screen_illust2.png');
             this.load.image('titleScreen3', './assets/sprites/background/title_screen_illust3.png');
             //For playScene
@@ -197,7 +200,7 @@ class Boot extends Phaser.Scene {
             //this.load.spritesheet('flowerSheet', './assets/spritesheets/flowerStages.png', { frameWidth: 407, frameHeight: 456, startFrame: 0, endFrame: 4 });
             //For hubScene
             //this.load.spritesheet('player', './assets/spritesheets/bearFrontBack.png', {frameWidth:40, frameHeight:72, startFrame:0, endFrame:1});
-            this.load.spritesheet('player', './assets/spritesheets/bearAnims.png', {frameWidth: 139.5, frameHeight:247, startFrame:0, endFrame:7});
+            this.load.spritesheet('player', './assets/spritesheets/bearAnims.png', {frameWidth: 139.5, frameHeight:248, startFrame:0, endFrame:7});
             this.load.spritesheet('playerBee', './assets/spritesheets/beecostume.png', {frameWidth: 139.5, frameHeight:250, startFrame:0, endFrame:7});
             this.load.spritesheet('playerFlower', './assets/spritesheets/flowercrown.png', {frameWidth: 139.5, frameHeight:288, startFrame:0, endFrame:7});
             this.load.spritesheet('playerHelicopter', './assets/spritesheets/helicopterhat.png', {frameWidth: 139.5, frameHeight:254, startFrame:0, endFrame:7});
