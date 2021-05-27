@@ -544,11 +544,13 @@ class Hub extends Phaser.Scene {
                 console.log("An npc has been selected to sit here");
                 console.log("Getting world pos of [", this.benchList[i][0], ", ", this.benchList[i][1], "]");
                 let leftLoc = this.gridToCoord(this.benchList[i][0], this.benchList[i][1]);
-                let currNPC = new NPC(this, leftLoc[0] + 30, leftLoc[1]);
-                currNPC.setOrigin(0.5, 0.5);
+                let currNPC = new NPC(this, leftLoc[0] + 75, leftLoc[1] + 45);
                 currNPC.setScale(0.35, 0.35);
                 currNPC.depth = (leftLoc[1] - 30)/10  + 5;
                 usedNPCs.push(currNPC);
+                //Give 'em a shadow
+                this.add.image(currNPC.x - 35, currNPC.y - 10, "bearShadow")
+                    .setScale(.5,.5).setDepth(currNPC.depth-1).setAlpha(.9);
             }
             else{
                 usedNPCs.push(null);
@@ -930,7 +932,6 @@ class Hub extends Phaser.Scene {
             for(let i = 0; i < gardenGrid[0].length; i++) {
                 for(let j = 0; j < gardenGrid.length; j++) {
                     gardenGrid[j][i].setTransparency(1);
-                    gardenGrid[j][i].setTransparency(1);
                 }
             }
             this.player.slow = false;
@@ -1010,14 +1011,17 @@ class Hub extends Phaser.Scene {
     textHover() {
         if(heldItem instanceof Camera && Phaser.Input.Keyboard.JustDown(keySPACE)) {
             //Take a picture of the garden
-            if(!(this.flash)) {
+            if(!(this.flash) || this.flash.alpha <= 0.1) {
                 //Flicker UI to hide from snapshot
                 if(playerVariables.snapshotHideUI) {
                     this.backpack.alpha = 0;
                     this.infoDisplay.setTransparency(0);
+                    this.plotHighlight.alpha = 0;
                 }
 
-                game.renderer.snapshotArea(0, 0, this.worldWidth, this.worldHeight, function (image) {
+                this.cameras.main.setZoom(.5);
+
+                game.renderer.snapshotArea(0, 0, this.worldWidth/2, this.worldHeight, function (image) {
                     //Code taken from https://phaser.discourse.group/t/save-canvas-using-phaser3/2786
                     var MIME_TYPE = "image/png";
                     var imgURL = image.src;
@@ -1030,34 +1034,38 @@ class Hub extends Phaser.Scene {
                     document.body.removeChild(dlLink);
                 });
                 
-                if(playerVariables.snapshotHideUI) {
-                    this.backpack.alpha = .9;
-                    this.infoDisplay.setTransparency(1);
-                }
-                
-                /*
-                //Create a flash to visually represent camera flash
-                this.flash = this.add.rectangle(this.worldWidth/2, this.worldHeight/2, this.worldWidth, this.worldHeight, 0xFFFFFF);
-                this.flash.depth = 1000;
 
-                this.flashFade = this.time.addEvent({
+                this.time.addEvent({
                     delay: 350,
                     callback: () => {
-                        if(!(this.flash)) { this.flashFade = null; }
-                        else {
-                            if(this.flash.alpha <= 0) {
-                                this.flash.alpha -= .01;
-                            } else {
-                                this.flash.destroy();
-                                this.flash = null;
-                                this.flashFade.loop = false;
-                            }
+                        this.cameras.main.setZoom(1.15);
+                        if(playerVariables.snapshotHideUI) {
+                            this.backpack.alpha = .9;
+                            this.infoDisplay.setTransparency(1);
+                            this.plotHighlight.alpha = 1;
                         }
+
+                        //Create a flash to visually represent camera flash
+                        this.flash = this.add.rectangle(this.worldWidth/2, this.worldHeight/2, this.worldWidth,
+                            this.worldHeight, 0xFFFFFF);
+                        this.flash.depth = 1000;
+
+                        this.flashFade = this.time.addEvent({
+                            delay: 100,
+                            callback: () => {
+                                if(this.flash.alpha >= 0) {
+                                    this.flash.alpha -= .05;
+                                }
+                            },
+                            loop: true,
+                            callbackScope: this
+                        });
                     },
-                    loop: true,
+                    loop: false,
                     callbackScope: this
                 });
-                */
+
+                
 
             } else {
                 //Camera animation is currently happening

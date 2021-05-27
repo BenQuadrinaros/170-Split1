@@ -745,7 +745,7 @@ class Market extends Phaser.Scene {
             this.blueStock.push(temp);
         }
         this.purpleStock = [];
-        for (let i = 0; i < Math.min(20, playerVariables.inventory.honey["purple"]); i++) {
+        for (let i = 0; i < Math.min(7, playerVariables.inventory.honey["purple"]); i++) {
             let temp;
             if(i < 3) {
                 temp = this.add.image(2*game.config.width/3 + 170 - (i * game.config.width / 45), 
@@ -764,7 +764,7 @@ class Market extends Phaser.Scene {
             this.purpleStock.push(temp);
         }
         this.pinkStock = [];
-        for (let i = 0; i < Math.min(20, playerVariables.inventory.honey["pink"]); i++) {
+        for (let i = 0; i < Math.min(7, playerVariables.inventory.honey["pink"]); i++) {
             let temp;
             if(i < 3) {
                 temp = this.add.image(2*game.config.width/3 + 255 - (i * game.config.width / 45), 

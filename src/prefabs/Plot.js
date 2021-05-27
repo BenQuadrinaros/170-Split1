@@ -12,6 +12,7 @@ class Plot {
         //Images
         this.dirt = null;
         this.spot = null;
+        this.shadow = null;
 
         //Interaction Markers
         this.honeyIndicator = null;
@@ -46,6 +47,9 @@ class Plot {
                 this.honeyIndicator.depth = this.spot.depth - 1;
                 this.exclamation = scene.add.image(coords[0] + 25, coords[1] - 45, exclamationKey);
                 this.exclamation.depth = this.spot.depth + 1;
+            } else if(this.item instanceof Bramble) {
+                this.shadow = scene.add.image(coords[0], coords[1] + 45, "bearShadow");
+                this.shadow.setScale(.5,.5).setDepth(this.spot.depth-1).setAlpha(.9);
             }
         } 
         
@@ -71,6 +75,10 @@ class Plot {
             this.honeyIndicator = null;
             this.exclamation.destroy();
             this.exclamation = null;
+        }
+        if(this.shadow) {
+            this.shadow.destroy();
+            this.shadow = null;
         }
     }
 }

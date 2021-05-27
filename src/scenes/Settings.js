@@ -154,7 +154,7 @@ class Settings extends Phaser.Scene {
         //Display area for seeing effects if alpha slider
         this.createDisplayArea(col2, centerY/3+3.25*textSpacer/2, 1.5*textSpacer);
 
-        let diableUIText = this.add.text(col2, centerY/3 + 9*textSpacer/2, "Disable UI for Camera:\nOFF", 
+        let diableUIText = this.add.text(col2, centerY/3 + 9*textSpacer/2, "Disable UI for Camera:\nON", 
             this.textConfig).setOrigin(.5, .5).setAlpha(.75);
         diableUIText.setInteractive();
         diableUIText.on('pointerover', () => {
