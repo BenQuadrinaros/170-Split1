@@ -28,6 +28,7 @@ class PriceHistory extends Phaser.Scene{
     create(){
         //console.log(priceHistory);
         //uiScene = this;
+        this.music = new BGMManager(this);
         this.bg = this.add.image(config.width/2,config.height/2,'notebookBG').setScale(.5,.5).setOrigin(.5,.5);
         this.currentPage = currentDay;
         this.imgMap = {
@@ -49,7 +50,7 @@ class PriceHistory extends Phaser.Scene{
             color: "#000000",
             align: "center",
             stroke: "#000000",
-            strokeThickness: 1,
+            strokeThickness: .5,
             padding: {
                 top: 5,
                 bottom: 5
@@ -98,6 +99,7 @@ class PriceHistory extends Phaser.Scene{
                 if (this.currentPage <= 0){
                     return ;
                 } else {
+                    this.music.playSFX("notebook");
                     this.currentPage -=1;
                     this.clearPage();
                     this.createPriceHistory(this.currentPage);
@@ -112,6 +114,7 @@ class PriceHistory extends Phaser.Scene{
                 if (this.currentPage >= currentDay){
                     return ;
                 } else {
+                    this.music.playSFX("notebook");
                     this.currentPage +=1;
                     this.clearPage();
                     this.createPriceHistory(this.currentPage);
@@ -120,8 +123,8 @@ class PriceHistory extends Phaser.Scene{
             });;
     }
     createPriceHistory(week){
-        console.log("creating price history;");
-        console.log("Text Config: ", this.textConfiguration);
+        // console.log("creating price history;");
+        // console.log("Text Config: ", this.textConfiguration);
         let amt = 9;
         let pArr = pHistory[week];
         if (!pArr){
@@ -133,9 +136,9 @@ class PriceHistory extends Phaser.Scene{
         }
         for (let i = 1; i <= amt; i++){
             let entry = pArr[i-1]
-            console.log("HEAD FOR ENTRY IS " + entry.head);
+            //console.log("HEAD FOR ENTRY IS " + entry.head);
             if (entry.mode === "money") {
-                console.log(this.imgMap[entry.type]);
+                //console.log(this.imgMap[entry.type]);
                 //create mood image
                 this.entries.push(this.add.image((2 * config.width / 5) + 225, (i * (config.height / 12 - 9)) + 90, entry.mood,).setScale(.09, .09).setOrigin(.5, .5));
                 //create Price text per honey
@@ -152,8 +155,8 @@ class PriceHistory extends Phaser.Scene{
                 //create npc head
                 this.entries.push(this.add.image((2 * config.width / 5)+20, (i * (config.height / 12 - 9)) + 105, entry.head).setOrigin(.5, 1).setScale(.2, .2));
             } else if (entry.mode === "barter"){
-                console.log("** ** logging barter ** **");
-                console.log(entry);
+                // console.log("** ** logging barter ** **");
+                // console.log(entry);
                 this.entries.push(this.add.image((2 * config.width / 5) + 100, (i * (config.height / 12 - 9)) + 90, entry.img)
                     .setScale(entry.scale, entry.scale).setOrigin(.5, .5));
                 this.entries.push(this.add.image((2 * config.width / 5) + 225, (i * (config.height / 12 - 9)) + 90, 'pleased',).setScale(.09, .09).setOrigin(.5, .5));
@@ -165,11 +168,12 @@ class PriceHistory extends Phaser.Scene{
                 this.entries.push(this.add.image((2 * config.width / 5)+20, (i * (config.height / 12 - 9)) + 105, entry.head).setOrigin(.5, 1).setScale(.2, .2));
 
             }
-            console.log("entries")
-            console.log(this.entries);
+            // .log("entries")
+            // console.log(this.entries);
         }
     }
     clearPage(){
+
         for (let i = 0; i < this.entries.length; i ++){
             this.entries[i].destroy();
         }
@@ -177,7 +181,7 @@ class PriceHistory extends Phaser.Scene{
 
 
     createBackIcon(){
-        this.priceHistory = this.add.image(110, 4*config.height / 5 + 15, 'noteBook', 0)
+        this.priceHistory = this.add.image(80, 4*config.height / 5 + 50, 'noteBook', 0)
             .setDepth(100).setScale(.125,.125).setOrigin(.5, .5).setAlpha(.9).setInteractive()
             .on('pointerover', () => {
                 this.priceHistory.alpha = 1;

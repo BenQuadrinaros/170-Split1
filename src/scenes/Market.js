@@ -153,7 +153,6 @@ class Market extends Phaser.Scene {
                 if (this.moodPopUp !== undefined){
                     this.moodPopUp.destroy();
                 }
-                this.createMoodPopup(mood);
                 this.initiateNPCDecision(percent,mood);
 
             }
@@ -288,7 +287,7 @@ class Market extends Phaser.Scene {
             console.log("initiating request.");
             console.log(`npc wants to buy ${amt} jars of ${type}`);
             //Create icons for npc asking to make purchase
-            this.initiatePrice = this.add.image(this.npc.x+50, this.npc.y - 350, 'marketBubble')
+            this.initiatePrice = this.add.image(this.npc.x+60, this.npc.y - 350, 'marketBubble')
                 .setDepth(100).setOrigin(.5, .5).setScale(.25,.25);
             this.honeyIMG = this.add.image(this.initiatePrice.x+10,this.initiatePrice.y-5, this.imgMap[type])
                 .setDepth(125).setOrigin(.5,.5).setScale(.85,.85);
@@ -339,6 +338,7 @@ class Market extends Phaser.Scene {
         if (percent > 1){ //above 1, "high" price, npc will either leave or haggle
             if (Math.random() <= .5){ //npc just leaves
                 playerVariables.reputation -=1;
+                this.createMoodPopup(mood);
                 this.resetStage();
             }
             else { //npc will ask to barter or lower price
@@ -355,8 +355,10 @@ class Market extends Phaser.Scene {
                     return ;
                 }
             }
+
             playerVariables.reputation+=1;
             this.makeTransaction(this.typeToBuy, this.npcAmount, mood);
+            this.createMoodPopup(mood);
             this.resetStage();
         }else if (.8 <= percent && percent < 1){ //between 80% and 100%, npc will accept or haggle (75/25) respectively
             if (Math.random() <= .75){
@@ -366,9 +368,11 @@ class Market extends Phaser.Scene {
             } else {
                 playerVariables.reputation -=1;
                 this.makeTransaction(this.typeToBuy, this.npcAmount, mood);
+                this.createMoodPopup(mood);
                 this.resetStage();
             }
         } else {
+            this.createMoodPopup(mood);
             this.resetStage();
         }
     }
@@ -424,7 +428,7 @@ class Market extends Phaser.Scene {
         if(category == "seeds") { item += "\nSeeds"; }
         let yOffset = offer.yOffset;
         console.log(`NPC barter value ${barterValue} and are offering ${amt} ${item} `);
-        let barterBox = this.add.image(this.npc.x + 50, this.npc.y - 350,'marketBubble')
+        let barterBox = this.add.image(this.npc.x + 60, this.npc.y - 350,'marketBubble')
             .setDepth(100).setOrigin(.5, .5).setScale(.3,.3);
         let offerImg = this.add.image(barterBox.x+25,barterBox.y+20 - yOffset,img)
             .setOrigin(.5,.5).setDepth(100).setScale(scale,scale);
@@ -466,11 +470,12 @@ class Market extends Phaser.Scene {
                 accept.alpha = .75;
             })
             .on('pointerdown', () => {
+                this.createMoodPopup("pleased");
                 console.log("before changing player inv is " + playerVariables.inventory[category][item]);
                 playerVariables.inventory[category][item] += amt;
                 console.log("after changing player inv is " + playerVariables.inventory[category][item]);
                 this.reduceStock(this.typeToBuy, this.npcAmount);
-                let tempimg = this.add.image(this.npc.x-100, this.npc.y-100, img).setScale(scale, scale)
+                let tempimg = this.add.image(this.npc.x-150, this.npc.y-300, img).setScale(scale, scale)
                     .setDepth(100);
                 let txt = this.add.text(tempimg.x+10,tempimg.y,"+" + amt.toString(), this.textConfig)
                     .setDepth(100);
@@ -572,18 +577,19 @@ class Market extends Phaser.Scene {
         //Alpha: from .6
         //this.npc.x, this.npc.y - 200
         //Scale from .3 to .25
-        this.moodPopUp = this.add.image(this.npc.x, this.npc.y - 300, mood).setAlpha(0).setDepth(100).setScale(0.235);
+        this.moodPopUp = this.add.image(this.npc.x+60, this.npc.y - 350, mood)
+            .setAlpha(0).setDepth(100).setScale(0.75);
         let basicTween = this.tweens.add({
             targets: this.moodPopUp,
             alpha: {from: .6, to: 1},
-            scale: {from: 0.235, to: 0.18},
+            scale: {from: 0.35, to: 0.2},
             ease: 'Sine.easeInOut',
             duration: 650,
             repeat: 1,
             yoyo: true,
             hold: 0,
             onComplete: function () {
-                console.log("done tweening mood");
+                //console.log("done tweening mood");
                 this.moodPopUp.destroy();
             },
             onCompleteScope: this
@@ -594,7 +600,7 @@ class Market extends Phaser.Scene {
         this.customersInLine = [];
         console.log(`Creating ${amt} customers in line...`);
         for (let i = 0; i < amt; i++) {
-            this.customersInLine.push(this.generateNPC((2*config.width/3) - ((i) * (config.width/5 + 30)) - 15));
+            this.customersInLine.push(this.generateNPC(((2*config.width/3)-20) - ((i) * (config.width/5 + 30)) - 15));
             this.customersInLine[i].setVisible(true);
             this.customersInLine[i].depth = 90 - i;
             console.log(`creating npc ${i}...`);
@@ -810,7 +816,7 @@ class Market extends Phaser.Scene {
             color: "#ffffff",
             align: "center",
             stroke: "#ffffff",
-            strokeThickness: 1,
+            strokeThickness: 0,
             padding: {
                 top: 5,
                 bottom: 5
@@ -877,7 +883,7 @@ class Market extends Phaser.Scene {
         //Price Setting Yellow
         if (playerVariables.inventory.honey["yellow"]) {
             typesUsed += 1;
-            let YellowIMG = this.add.image(this.chalkBoard.x-20,this.chalkBoard.y-150,'honeyYellow')
+            let YellowIMG = this.add.image(this.chalkBoard.x-30,this.chalkBoard.y-160,'honeyYellow')
                 .setOrigin(.5,.5).setScale(.5,.5).setDepth(100);
             this.yellowPriceText = this.add.text(YellowIMG.x-75,YellowIMG.y,
                 "\t$" + priceMap["yellow"].toFixed(2) + "/", this.priceChangeTextConfig)
@@ -926,7 +932,7 @@ class Market extends Phaser.Scene {
         if (playerVariables.inventory.honey["blue"]) {
             ++typesUsed;
 
-            let BlueIMG = this.add.image(this.chalkBoard.x+150,this.chalkBoard.y-150,'honeyBlue')
+            let BlueIMG = this.add.image(this.chalkBoard.x+160,this.chalkBoard.y-160,'honeyBlue')
                 .setOrigin(.5,.5).setScale(.5,.5).setDepth(100);
             this.bluePriceText = this.add.text(BlueIMG.x-75,BlueIMG.y,
                 "\t$" + priceMap["blue"].toFixed(2) + "/", this.priceChangeTextConfig)
@@ -973,7 +979,7 @@ class Market extends Phaser.Scene {
         if (playerVariables.inventory.honey["pink"]) {
             ++typesUsed;
             //create plus and minus icon with events for pink price
-            let PinkIMG = this.add.image(this.chalkBoard.x+150,this.chalkBoard.y-100,'honeyPink')
+            let PinkIMG = this.add.image(this.chalkBoard.x+160,this.chalkBoard.y-100,'honeyPink')
                 .setOrigin(.5,.5).setScale(.5,.5).setDepth(100);
             this.pinkPriceText = this.add.text(PinkIMG.x-75,PinkIMG.y,
                 "\t$" + priceMap["pink"].toFixed(2) + "/", this.priceChangeTextConfig)
@@ -1022,7 +1028,7 @@ class Market extends Phaser.Scene {
         //Price Setting Purple
         if (playerVariables.inventory.honey["purple"]) {
             ++typesUsed;
-            let PurpleIMG = this.add.image(this.chalkBoard.x-20,this.chalkBoard.y-100,'honeyPurple')
+            let PurpleIMG = this.add.image(this.chalkBoard.x-30,this.chalkBoard.y-100,'honeyPurple')
                 .setOrigin(.5,.5).setScale(.5,.5).setDepth(100);
             this.purplePriceText = this.add.text(PurpleIMG.x-75,PurpleIMG.y,
                 "\t$" + priceMap["purple"].toFixed(2) + "/", this.priceChangeTextConfig)
