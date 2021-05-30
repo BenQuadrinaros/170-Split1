@@ -54,7 +54,7 @@ class ShopUI extends Phaser.Scene {
         console.log("in ShopUI Scene")
         this.load.scenePlugin({
             key: 'rexuiplugin',
-            url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+            url: './lib/rexUI.js',
             sceneKey: 'rexUI'
         });
     }

@@ -17,7 +17,7 @@ class BackPackUI extends Phaser.Scene {
     preload() {
         this.load.scenePlugin({
             key: 'rexuiplugin',
-            url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+            url: './lib/rexUI.js',
             sceneKey: 'rexUI'
         });
     }
