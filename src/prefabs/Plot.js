@@ -20,6 +20,7 @@ class Plot {
     }
 
     renderPlot(scene, coords) {
+        console.log("REDNERING PLOT");
         this.destroyImages();
         let img = "";
         let spotx = coords[0];
@@ -34,7 +35,13 @@ class Plot {
         }
         if(this.item) {
             //console.log("putting",this.item,"at",spotx," ",spoty);
-            this.spot = this.item.addToScene(scene, spotx, spoty);
+            if(this.item instanceof Flower) {
+                // If Flower, give swayDelay proportional to position in garden
+                this.spot = this.item.addToScene(scene, spotx, spoty, 2*coords[0] + coords[1]/10);
+                console.log("delay this wave by "+(2*coords[0] + coords[1]/10)+" ms");
+            } else {
+                this.spot = this.item.addToScene(scene, spotx, spoty);
+            }
             if(this.item instanceof Hive && this.item.hasStock() && !this.honeyIndicator) {
                 let hexColor = 0xF9D55C;
                 let stock = this.item.stock;

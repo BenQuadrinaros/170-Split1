@@ -5,9 +5,11 @@ class Flower {
         this.age = Math.min(age, this.ref["grow"]);     //Int between 0 and its max, only produces Honey above 0
         this.collected = false;                          //Can only produce pollen once a day
         this.type = type;                                //Daisy, Lavender, Delphinium, Tulip, Orchid
+        this.waveRight = null;
+        this.waveLeft = null;
     }
 
-    addToScene(scene, initx, inity) {
+    addToScene(scene, initx, inity, swayDelay = -1) {
         this.image = this.updateImg(scene);
         this.image.x = initx;
         this.image.y = inity;
@@ -27,6 +29,36 @@ class Flower {
         else if(this.type === "Delphinium" && this.age > 0){
             this.image.setScale(0.45, 0.45);
         }
+
+        // If planted in the ground, start playing tweens on loop
+        if(swayDelay > -1) {
+            scene.time.delayedCall(swayDelay, () => {
+                this.waveRight = scene.tweens.add({
+                    targets: this.image,
+                    angle: this.image.angle + 10,
+                    x: this.image.x + 7,
+                    ease: 'Power2',
+                    yoyo: true,
+                    duration: 2500,
+                    delay: 0,
+                    onComplete: () => {
+                        this.waveLeft = scene.tweens.add({
+                            targets: this.image,
+                            angle: this.image.angle - 10,
+                            x: this.image.x - 7,
+                            ease: 'Power2',
+                            yoyo: true,
+                            duration: 2500,
+                            delay: 0,
+                            onComplete: () => {
+                                this.waveRight.play(); 
+                            }
+                        });
+                    }
+                });
+            });
+        }
+
         return this.image;
     }
 
