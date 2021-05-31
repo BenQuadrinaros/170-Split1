@@ -17,9 +17,37 @@ class Boot extends Phaser.Scene {
         }
         
         //Load images
-            //For gardenScene
-            this.load.image("extraLargeGrass", "./assets/sprites/background/massiveGrassbackdrop.png")
-            this.load.image("gardenBackground", "./assets/sprites/background/3xEmpty.png");
+            //For gardenScene            
+            this.load.image("gardenBackground", "./assets/sprites/background/caveGrassDaytime.png");
+            this.load.image("gardenBackgroundEvening", "./assets/sprites/background/caveGrassEvening.png");
+
+            this.load.image("hubBackTrees", "./assets/sprites/background/backtreesDaytime.png");
+            this.load.image("hubBackTreesEvening", "./assets/sprites/background/backtreesEvening.png");
+
+            this.load.image("hubClouds", "./assets/sprites/background/clouds.png");
+            this.load.image("hubSky", "./assets/sprites/background/skyDaytime.png");
+            this.load.image("hubSkyEvening", "./assets/sprites/background/skyEvening.png");
+
+            this.load.image("hubEveningOverlay", "./assets/sprites/background/eveningOverlay.png");
+
+            this.load.image("hubFenceIron", "./assets/sprites/background/fenceIron.png");
+            this.load.image("hubFenceWood", "./assets/sprites/background/fenceWood.png");
+
+            this.load.image("hubTrailBrick", "./assets/sprites/background/pathBrickGray.png");
+            this.load.image("hubTrailDirt", "./assets/sprites/background/pathDirt.png");
+
+            this.load.image("hubShadowsBackTreesIronFence", "./assets/sprites/background/sh_backtreesIronDaytime.png");
+            this.load.image("hubShadowsBackTreesIronFenceEvening", "./assets/sprites/background/sh_backtreesIronEvening.png");
+            this.load.image("hubShadowsBackTreesWoodFence", "./assets/sprites/background/sh_backtreesWoodDaytime.png");
+            this.load.image("hubShadowsBackTreesWoodFenceEvening", "./assets/sprites/background/sh_backtreesWoodEvening.png");
+            this.load.image("hubShadowsIronFence", "./assets/sprites/background/sh_ironDaytime.png");
+            this.load.image("hubShadowsIronFenceEvening", "./assets/sprites/background/sh_ironEvening.png");
+            this.load.image("hubShadowsWoodFence", "./assets/sprites/background/sh_woodDaytime.png");
+            this.load.image("hubShadowsWoodFenceEvening", "./assets/sprites/background/sh_woodEvening.png");
+
+
+            
+            
             this.load.image("exit", "./assets/sprites/background/LeftArrowGREEN.png");
             this.load.image("dirtDry", "./assets/img/dirtDry.png");
             this.load.image("dirtWet", "./assets/img/dirtWet.png");
@@ -84,7 +112,6 @@ class Boot extends Phaser.Scene {
             this.load.image("flowerPurple4", "./assets/sprites/spritesheetFrames/lavender4.png");
             this.load.image("flowerPurple5", "./assets/sprites/spritesheetFrames/lavender5.png");
             //For hubScene
-            this.load.image('background', './assets/sprites/background/garden_base.png');
             this.load.image('dialogbox', './assets/img/dialogbox.png');
             this.load.image('tutorialDialogBox', './assets/sprites/UI/beeboxTut.png');
             this.load.image('filledStar', './assets/sprites/old/orange.png');
@@ -99,7 +126,14 @@ class Boot extends Phaser.Scene {
             //For shop
             this.load.image('toadLeckman', './assets/sprites/character/mrleckman_510x300.png');
             this.load.image('townBackground', './assets/img/TOWNTEST.png');
+            this.load.image("townBackgroundEvening", "./assets/sprites/background/townEvening.png");
             this.load.image('Bench', './assets/img/bench.png');
+
+            this.load.image("townClouds", "./assets/sprites/background/townClouds.png");
+            this.load.image("townSky", "./assets/sprites/background/townDaytimeSky.png");
+            this.load.image("townSkyEvening", "./assets/sprites/background/townEveningSky.png");
+            this.load.image("townEveningOverlay", "./assets/sprites/background/townEveningOverlay.png");
+
             //For market price setting
             this.load.image('chalkboard', './assets/sprites/UI/chalkboardBlank.png');
             this.load.image('brickFence', './assets/sprites/background/brickFence.png');
@@ -176,14 +210,11 @@ class Boot extends Phaser.Scene {
             //For menuScene
             this.load.image('titleScreenBG', './assets/sprites/background/titleBG.png');
             this.load.image('titleScreen1', './assets/sprites/background/title1.png');
-            this.load.image('titleScreen2', './assets/sprites/background/title_screen_illust2.png');
-            this.load.image('titleScreen3', './assets/sprites/background/title_screen_illust3.png');
+            this.load.image('titleScreen2', './assets/sprites/background/title2.png');
+            this.load.image('titleScreen3', './assets/sprites/background/title3.png');
             //For playScene
             this.load.image("Player", "./assets/sprites/character/bearOnBike.png");
-            this.load.image("Road", "./assets/sprites/background/roadFullEX-02.png");
             this.load.image("Obstacle_1", './assets/sprites/character/playerMapIcon.png');
-            //For pauseScene
-            this.load.image("TempPause", "./assets/sprites/background/tempPause.png");
             //For settingsScene
             this.load.image("TempSettingsScreen", "./assets/img/TempSettings3_3_21.png");
             //For creditsScene
@@ -250,6 +281,7 @@ class Boot extends Phaser.Scene {
             this.load.audio("buyFlowers", "./assets/audio/sfx/buyflowers(loud).mp3");
             this.load.audio("successfulSell", "./assets/audio/sfx/successful_sell(loud).mp3");
             this.load.audio("mapFlip", "./assets/audio/sfx/mapflip.mp3");
+            this.load.audio("spigotFill", "./assets/audio/sfx/spigotfill.mp3");
             //New
             this.load.audio("clipperCut", "./assets/audio/sfx/clipper_cut.mp3");
             this.load.audio("dig", "./assets/audio/sfx/dig.mp3");

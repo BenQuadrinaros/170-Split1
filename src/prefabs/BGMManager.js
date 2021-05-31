@@ -23,6 +23,10 @@ class BGMManager {
         this.musicPlayer.stop();
     }
 
+    stopSFX(){
+        this.sfxPlayer.stop();
+    }
+
     //plays a song immediately
     playSong(fileName, loop){
         var config = {

@@ -10,7 +10,7 @@ class PriceHistory extends Phaser.Scene{
             color: "#000000",
             align: "center",
             stroke: "#000000",
-            strokeThickness: 1,
+            strokeThickness: 0,
             padding: {
                 top: 5,
                 bottom: 5
@@ -50,7 +50,7 @@ class PriceHistory extends Phaser.Scene{
             color: "#000000",
             align: "center",
             stroke: "#000000",
-            strokeThickness: .5,
+            strokeThickness: 0,
             padding: {
                 top: 5,
                 bottom: 5
@@ -66,7 +66,7 @@ class PriceHistory extends Phaser.Scene{
         }
         this.textConfiguration.fontSize = "28px";
         this.continueText = this.add.text(config.width - 125, config.height - 50, "Continue", this.textConfiguration).setOrigin(0.5, 0.5).setDepth(5);
-        this.continueBackground = this.add.rectangle(config.width - 125, config.height - 50, 150, 75, 0xffffff, .5).setOrigin(0.5, 0.5).setInteractive()
+        this.continueBackground = this.add.rectangle(config.width - 125, config.height - 50, 150, 75, 0xffffff, 1).setOrigin(0.5, 0.5).setInteractive().setAlpha(0.5)
         .on("pointerover", () => {
             this.continueText.alpha = 1;
             this.continueBackground.alpha = 1;
