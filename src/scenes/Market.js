@@ -792,7 +792,7 @@ class Market extends Phaser.Scene {
             color: "#000000",
             align: "center",
             stroke: "#000000",
-            strokeThickness: 2,
+            strokeThickness: 0,
             padding: {
                 top: 5,
                 bottom: 5
@@ -804,7 +804,7 @@ class Market extends Phaser.Scene {
             color: "#000000",
             align: "center",
             stroke: "#000000",
-            strokeThickness: 1,
+            strokeThickness: 0,
             padding: {
                 top: 5,
                 bottom: 5

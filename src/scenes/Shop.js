@@ -60,6 +60,9 @@ class Shop extends Phaser.Scene {
     }
 
     update(){
+        //Scroll clouds
+        this.sky.tilePositionX += 0.08;
+        
         //Pause Game
         this.updateCheckPause();
 
@@ -113,15 +116,27 @@ class Shop extends Phaser.Scene {
     }
 
     createBackgroundImages(){
-        this.background = this.add.image(config.width/2, config.height/2, 'townBackground')
-        this.background.setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-10);
+        let timeMod = "";
+        if(hasSoldForDay){
+            timeMod = "Evening";
+
+            this.sunsetTint = this.add.image(0, 0, "townEveningOverlay")
+            .setOrigin(0, 0).setScale(0.5).setDepth(100);
+        }
+
+        this.skyBox = this.add.image(0, 0, "townSky" + timeMod)
+        .setOrigin(0, 0).setScale(0.5, 0.5).setDepth(-20);
+
+        this.sky = this.add.tileSprite(0, 0, config.width, config.height, 'townClouds').setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-15);
+
+        this.background = this.add.image(0, 0, 'townBackground' + timeMod)
+        this.background.setOrigin(0, 0).setScale(0.5, 0.5).setDepth(-10);
+        
+        
         this.toadLeckman = this.add.image(2*config.width/3,2*config.height/3, 'toadLeckman')
         this.toadLeckman.setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-5);
         this.toadLeckman.alpha = 0;
-        if(hasSoldForDay){
-            this.sunsetTint = this.add.rectangle(0, 0, 2000, 2000, 0xFD5E53, 0.25);
-            this.sunsetTint.depth = 1000;
-        }
+
     }
 
     createText(){
@@ -195,6 +210,7 @@ class Shop extends Phaser.Scene {
                 this.scene.launch("backpackUI", {previousScene:"shopScene"});
             });
         this.backpack.setFrame(0);
+        this.backpack.setDepth(300);
 
         //Tracker for Money and total Honey
         this.infoDisplay = new InfoDisplay(this, "infoBox", 0, "Shop");
