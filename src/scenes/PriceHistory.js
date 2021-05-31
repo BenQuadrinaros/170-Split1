@@ -80,7 +80,27 @@ class PriceHistory extends Phaser.Scene{
         });
         this.continueText.setAlpha(.5);
 
+
         this.textConfiguration.fontSize = "20px";
+        //this.endDayText = this.add.text( this.bg.x, this.bg.y+180, "End day \nearly", this.textConfiguration).setOrigin(0.5, 0.5).setDepth(5);
+        //this.endDayBackground = this.add.rectangle(  this.bg.x, this.bg.y+180, 150, 75, 0xffffff, .5).setOrigin(0.5, 0.5).setInteractive();
+        this.endDayText = this.add.text( this.bg.x, this.bg.y+190, "End day \nearly", this.textConfiguration).setOrigin(0.5, 0.5)
+            .setDepth(5).setAlpha(.5).setInteractive()
+            .on("pointerover", () => {
+                this.endDayText.alpha = 1;
+                //this.endDayBackground.alpha = 1;
+            })
+            .on("pointerout", () => {
+                this.endDayText.alpha = .5;
+                //this.endDayBackground.alpha = .5;
+            })
+            .on("pointerdown", () => {
+                //console.log("ending early")
+                hasSoldForDay = true;
+                this.music.playSFX("mapTransition");
+                this.endDayEarly();
+            });
+
     }
 
     update(){
@@ -208,5 +228,12 @@ class PriceHistory extends Phaser.Scene{
         }
         
         
+    }
+    endDayEarly(){
+        console.log(this.previousScene);
+        hasSoldForDay = true;
+        this.scene.stop(this.previousScene);
+        this.scene.stop();
+        this.scene.start("shopScene", {previousScene: "marketScene"});
     }
 }
