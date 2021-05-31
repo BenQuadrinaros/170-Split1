@@ -5,8 +5,7 @@ class Flower {
         this.age = Math.min(age, this.ref["grow"]);     //Int between 0 and its max, only produces Honey above 0
         this.collected = false;                          //Can only produce pollen once a day
         this.type = type;                                //Daisy, Lavender, Delphinium, Tulip, Orchid
-        this.waveRight = null;
-        this.waveLeft = null;
+        this.waveStart = false;
     }
 
     addToScene(scene, initx, inity, swayDelay = -1) {
@@ -31,8 +30,9 @@ class Flower {
         }
 
         // If planted in the ground, start playing tweens on loop
-        if(swayDelay > -1 && !(this.waveRight)) {
+        if(swayDelay > -1 && !(this.waveStart)) {
             scene.time.delayedCall(swayDelay, () => {
+                this.waveStart = true;
                 this.swayRight(scene);
             });
         }
