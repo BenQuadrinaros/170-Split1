@@ -34,17 +34,17 @@ class Hub extends Phaser.Scene {
             this.saveData();
         }
 
-        //Initialize Controls
-        this.createControls();
-        //Initialize Background Elements
-        this.createBackgroundImages();
-
         //If coming from the menu or the market, advance to the next day
         if (this.previousScene === "hubScene" || this.previousScene === "marketScene" 
          || this.previousScene === "tutorialScene") {
             //Advance to the next day
             this.advanceDay();
         }
+
+        //Initialize Controls
+        this.createControls();
+        //Initialize Background Elements
+        this.createBackgroundImages();
 
         //background music for the hub
         this.music = new BGMManager(this);
@@ -110,6 +110,9 @@ class Hub extends Phaser.Scene {
     }
 
     update() {
+        //Scroll clouds
+        this.sky.tilePositionX += 0.08;
+
         //Check if the pause menu should be activated
         this.updateCheckPause();
 
@@ -339,14 +342,76 @@ class Hub extends Phaser.Scene {
     }
 
     createBackgroundImages() {
-        //this.extraGrassBackdrop = this.add.image(0, 0, "extraLargeGrass").setOrigin(0, 0).setScale(0.5);
-        this.background = this.add.image(0, 0, 'gardenBackground').setOrigin(0, 0).setScale(0.5);
-        this.sunsetTint = this.add.rectangle(0, 0, 2 * this.worldWidth, 2 * this.worldHeight, 0xFD5E53, 0.25);
+        //If the player has sold for day, load evening sprites instead
+        let timeMod = "";
+        if(hasSoldForDay){
+            timeMod = "Evening";
+        }
+
+        //Load the sky
+        this.skybox = this.add.image(0, 0, "hubSky" + timeMod).setOrigin(0, 0).setScale(0.5).setDepth(-5);
+
+        //Load the clouds
+        this.sky = this.add.tileSprite(0, 0, config.width, config.height, 'hubClouds').setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-4);
+
+        //Load back trees if desired
+        this.backTrees = null;
+        this.loadBackTrees(timeMod);
+        
+        //Load the fence/sign
+        this.backgroundFence = null;
+        this.loadFence();
+
+        //Load the background
+        this.background = this.add.image(0, 0, 'gardenBackground' + timeMod).setOrigin(0, 0).setScale(0.5).setDepth(-1);
+
+        //Load the path
+        this.backgroundTrail = null;
+        this.loadTrail();
+
+        //Load the shadows
+        this.backgroundShadows = null;
+        this.loadShadows(timeMod);
+
+        this.sunsetTint = this.add.image(0, 0, "hubEveningOverlay").setOrigin(0, 0).setScale(0.5).setDepth(288);
         this.sunsetTint.alpha = 0;
         if (hasSoldForDay) {
             this.sunsetTint.alpha = 1;
-            this.sunsetTint.depth = 1000;
         }
+    }
+
+    loadBackTrees(timeMod){
+        this.backTrees = null;
+        return;
+    }
+
+    loadFence(){
+        let fenceKey = "hubFenceWood";
+        this.backgroundFence = this.add.image(0, 0, fenceKey).setOrigin(0, 0).setScale(0.5).setDepth(-2);
+    }
+
+    loadTrail(){
+        let trailStyleKey = "hubTrail";
+
+        //Set the path's type
+        trailStyleKey += "Dirt";
+
+        this.backgroundTrail = this.add.image(0, 0, trailStyleKey).setOrigin(0, 0).setScale(0.5).setDepth(0);
+        return;
+    }
+
+    loadShadows(timeMod){
+        let shadowKey = "hubShadows";
+
+        //Check back trees
+
+        //Check fence
+        shadowKey += "WoodFence";
+
+        //Add in time
+        shadowKey += timeMod;
+
+        this.backgroundShadows = this.add.image(0, 0, shadowKey).setOrigin(0, 0).setScale(0.5).setDepth(1);
     }
 
     createUIElements() {
@@ -366,7 +431,7 @@ class Hub extends Phaser.Scene {
         //create interactible backpack image
         this.backpack = this.add.image(this.cameras.main.scrollX + config.width - 122, 
             this.cameras.main.scrollY + config.height/5 - 10, 'backpackFrames')
-            .setInteractive().setAlpha(.9).setScale(.87);
+            .setInteractive().setAlpha(.9).setScale(.87).setDepth(300);
         this.backpack.on('pointerover', () => {
                 this.backpack.setAlpha(1);
                 this.pointerCurrentlyOver = "backpack";
@@ -387,10 +452,10 @@ class Hub extends Phaser.Scene {
                 this.scene.pause('hubScene');
                 this.scene.launch("backpackUI", {previousScene: "hubScene"});
             });
-        this.backpack.depth = 200;
 
         //Tracker for Money and total Honey
         this.infoDisplay = new InfoDisplay(this, "infoBox", 0, "Hub");
+        this.infoDisplay.setDepth(295);
 
 
         //Popups under the backpack for collecting Honey
@@ -422,9 +487,6 @@ class Hub extends Phaser.Scene {
                 bottom: 5
             },
         };
-
-        //Text that starts visible
-        this.townAccess = this.add.text(15, 2 * config.height / 5 + 20, "Path to Town", this.textConfig).setOrigin(0, 0);
 
         //Text that starts invisible
         this.interactText = this.add.text(this.player.x, this.player.y, "'SPACE' to interact", this.textConfig).setOrigin(.5, .5).setVisible(false);
@@ -713,7 +775,7 @@ class Hub extends Phaser.Scene {
     updateCheckNearLocation() {
         //Check if the player is close enough to the cave to rest
         if (Math.abs(Phaser.Math.Distance.Between(this.caveText.x, this.caveText.y,
-            this.player.x, this.player.y)) < 120) {
+            this.player.x, this.player.y)) < 100) {
             if (!hasSoldForDay) {
                 this.caveText.setVisible(true);
             }
@@ -860,6 +922,8 @@ class Hub extends Phaser.Scene {
         this.spigotEmitter.setAngle({min: 75, max: 105});
         this.spigotEmitter.on = true;
 
+        this.music.playSFX("spigotFill");
+
         //After a scaling delay, stop the emitter
         this.time.addEvent({
             delay: 250 + (250 * (4 + playerVariables.waterLvl)) - (playerVariables.water * 250),
@@ -869,6 +933,7 @@ class Hub extends Phaser.Scene {
                     callback: () => {
                         this.tempCan.destroy();
                         this.tempCan = null;
+                        this.music.stopSFX();
                     },
                     loop: false,
                     callbackScope: this

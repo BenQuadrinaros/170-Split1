@@ -52,8 +52,8 @@ class MarketPriceSetting extends Phaser.Scene {
     }
 
     createBackgroundImages(){
-        this.brickFenceBackground = this.add.image(config.width/2, config.height/2, "brickFence").setScale(0.5);
-        this.backgroundChalkboard = this.add.image(config.width/2, config.height/2, "chalkboard").setScale(.65);
+        this.sky = this.add.tileSprite(config.width/2, config.height/2, 2*config.width, 2*config.height, 'marketSky').setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-5);
+        this.background = this.add.image(config.width / 2, config.height / 2, 'marketBackground').setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-1);        this.backgroundChalkboard = this.add.image(config.width/2, config.height/2, "chalkboard").setScale(.65);
         //this.playerWealthTracker = this.add.image(config.width/2, config.height/3.5, "playerWealthTracker").setOrigin(0.5, .5);
     }
     
@@ -75,7 +75,7 @@ class MarketPriceSetting extends Phaser.Scene {
             color: "#ffffff",
             align: "center",
             stroke: "#000000",
-            strokeThickness: 4,
+            strokeThickness: 0,
             padding: {
                 top: 5,
                 bottom: 5
@@ -89,8 +89,9 @@ class MarketPriceSetting extends Phaser.Scene {
         //this.honeyText.depth = 100;
         this.priceTitle = this.add.text(game.config.width/2, game.config.height/5.5 - 55, "PRICE", this.textConfig).setOrigin(.5, .5);
         this.textConfig.fontSize = "28px";
+        this.textConfig.color = "#000000";
         this.continueText = this.add.text(config.width - 125, config.height - 50, "Continue", this.textConfig).setOrigin(0.5, 0.5).setDepth(5);
-        this.continueBackground = this.add.rectangle(config.width - 125, config.height - 50, 150, 75, 0xffffff, .5).setOrigin(0.5, 0.5).setInteractive()
+        this.continueBackground = this.add.rectangle(config.width - 125, config.height - 50, 150, 75, 0xffffff, 1).setOrigin(0.5, 0.5).setInteractive().setAlpha(0.5)
         .on("pointerover", () => {
             this.continueText.alpha = 1;
             this.continueBackground.alpha = 1;
@@ -119,7 +120,7 @@ class MarketPriceSetting extends Phaser.Scene {
             color: "#ffffff",
             align: "center",
             stroke: "#000000",
-            strokeThickness: 4,
+            strokeThickness: 0,
             lineSpacing: -1,
         };
 
@@ -352,7 +353,7 @@ class MarketPriceSetting extends Phaser.Scene {
             color: "#000000",
             align: "left",
             stroke: "#000000",
-            strokeThickness: 1,
+            strokeThickness: 0,
             padding: {
                 top: 5,
                 bottom: 5

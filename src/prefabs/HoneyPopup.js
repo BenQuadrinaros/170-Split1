@@ -10,10 +10,10 @@ class HoneyPopup extends Phaser.GameObjects.Sprite {
         let textConfig = {
             fontFamily: font,
             fontSize: "14px",
-            color: "#ffffff",
+            color: "#000000",
             align: "center",
             stroke: "#000000",
-            strokeThickness: 4,
+            strokeThickness: 0,
             padding: {
                 top: 5,
                 bottom: 5
