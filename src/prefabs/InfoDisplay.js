@@ -10,10 +10,10 @@ class InfoDisplay extends Phaser.GameObjects.Sprite {
         let textConfig = {
             fontFamily: font,
             fontSize: "23px",
-            color: "#000",
+            color: "#000000",
             align: "right",
             stroke: "#000000",
-            strokeThickness: 1,
+            strokeThickness: 0,
             padding: {
                 top: 5,
                 bottom: 5
