@@ -20,7 +20,6 @@ class Plot {
     }
 
     renderPlot(scene, coords) {
-        console.log("REDNERING PLOT");
         this.destroyImages();
         let img = "";
         let spotx = coords[0];

@@ -31,35 +31,45 @@ class Flower {
         }
 
         // If planted in the ground, start playing tweens on loop
-        if(swayDelay > -1) {
+        if(swayDelay > -1 && !(this.waveRight)) {
             scene.time.delayedCall(swayDelay, () => {
-                this.waveRight = scene.tweens.add({
-                    targets: this.image,
-                    angle: this.image.angle + 10,
-                    x: this.image.x + 7,
-                    ease: 'Power2',
-                    yoyo: true,
-                    duration: 2500,
-                    delay: 0,
-                    onComplete: () => {
-                        this.waveLeft = scene.tweens.add({
-                            targets: this.image,
-                            angle: this.image.angle - 10,
-                            x: this.image.x - 7,
-                            ease: 'Power2',
-                            yoyo: true,
-                            duration: 2500,
-                            delay: 0,
-                            onComplete: () => {
-                                this.waveRight.play(); 
-                            }
-                        });
-                    }
-                });
+                this.swayRight(scene);
             });
         }
 
         return this.image;
+    }
+
+    swayRight(scene) {
+        console.log("starting right sway");
+        this.waveRight = scene.tweens.add({
+            targets: this.image,
+            angle: this.image.angle + 5,
+            x: this.image.x + 5,
+            ease: 'Power2',
+            yoyo: true,
+            duration: 2500,
+            delay: 0,
+            onComplete: () => {
+                this.swayLeft(scene);
+            }
+        });
+    }
+
+    swayLeft(scene) {
+        console.log("starting left sway");
+        this.waveLeft = scene.tweens.add({
+            targets: this.image,
+            angle: this.image.angle - 5,
+            x: this.image.x - 5,
+            ease: 'Power2',
+            yoyo: true,
+            duration: 2500,
+            delay: 0,
+            onComplete: () => {
+                this.swayRight(scene);
+            }
+        });
     }
 
     addWater() {
@@ -101,7 +111,7 @@ class Flower {
     updateImg(scene) {
         //If there is an image, clear it
         if(this.image) {
-            this.image.destroy();
+            this.destroy();
         }
         //Change the texture depending on the age and water level of the Flower
         let sprites = this.ref["sprites"];
