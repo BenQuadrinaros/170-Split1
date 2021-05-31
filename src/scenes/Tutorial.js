@@ -338,11 +338,29 @@ class Tutorial extends Phaser.Scene {
     }
 
     createBackgroundImages() {
-        //this.extraGrassBackdrop = this.add.image(0, 0, "extraLargeGrass").setOrigin(0, 0).setScale(0.5);
-        this.background = this.add.image(0, 0, 'gardenBackground').setOrigin(0, 0).setScale(0.5);
-        //this.talkingBee = this.add.image(config.width, 3*config.height/5, 'largeBee').setOrigin(0.5).setScale(1, 1);
-        //this.talkingBee.alpha = 0;
-        //this.talkingBee.depth = 120;
+        //Load the sky
+        this.skybox = this.add.image(0, 0, "hubSky").setOrigin(0, 0).setScale(0.5).setDepth(-5);
+
+        //Load the clouds
+        this.sky = this.add.tileSprite(0, 0, config.width, config.height, 'hubClouds').setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-4);
+       
+        //Load the fence/sign
+        let fenceKey = "hubFenceWood";
+        this.backgroundFence = this.add.image(0, 0, fenceKey).setOrigin(0, 0).setScale(0.5).setDepth(-2);
+
+        //Load the background
+        this.background = this.add.image(0, 0, 'gardenBackground').setOrigin(0, 0).setScale(0.5).setDepth(-1);
+
+        //Load the path
+        let trailStyleKey = "hubTrail";
+        trailStyleKey += "Dirt";
+        this.backgroundTrail = this.add.image(0, 0, trailStyleKey).setOrigin(0, 0).setScale(0.5).setDepth(0);
+
+        //Load the shadows
+        let shadowKey = "hubShadows";
+        shadowKey += "WoodFence";
+        this.backgroundShadows = this.add.image(0, 0, shadowKey).setOrigin(0, 0).setScale(0.5).setDepth(1);
+
     }
 
     createUIElements() {
@@ -846,6 +864,8 @@ class Tutorial extends Phaser.Scene {
         this.spigotEmitter.setAngle({min: 75, max: 105});
         this.spigotEmitter.on = true;
 
+        this.music.playSFX("spigotFill");
+
         //After a short delay, stop the emitter
         this.time.addEvent({
             delay: 1000 - playerVariables.water * 250,
@@ -855,6 +875,7 @@ class Tutorial extends Phaser.Scene {
                     callback: () => {
                         this.tempCan.destroy();
                         this.tempCan = null;
+                        this.music.stopSFX();
                     },
                     loop: false,
                     callbackScope: this
@@ -1423,7 +1444,7 @@ It’s a good thing you brought some seeds with you!`;
             case 3:
                 this.tutorialDialog.text =
 `Open your backpack by clicking on the backpack icon, or by
-pressing [ I ] on your keyboard. Once it’s open, click on a
+pressing [ i ] on your keyboard. Once it’s open, click on a
 packet of daisy seeds to hold it. If you’re already holding
 something, opening your backpack will stow that item under the
 appropriate tab.`;
