@@ -353,7 +353,7 @@ class MarketPriceSetting extends Phaser.Scene {
             color: "#000000",
             align: "left",
             stroke: "#000000",
-            strokeThickness: 0,
+            strokeThickness: 1,
             padding: {
                 top: 5,
                 bottom: 5

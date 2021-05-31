@@ -20,18 +20,18 @@ class InfoDisplay extends Phaser.GameObjects.Sprite {
             },
         };
         this.setScale(0.575, 0.575);
-        if(sceneName == "Market") { this.depth = 201; }
+        if(sceneName == "Market") { this.depth = 301; }
         if(sceneName == "Hub") {
             this.setScale(0.5, 0.5);
             textConfig.fontSize = "20px";
-            this.depth = 200;
+            this.depth = 300;
         }
 
         this.moneyText = scene.add.text(0, 0, "X", textConfig);
-        this.moneyText.depth = 201;
+        this.moneyText.depth = 351;
         this.moneyText.setOrigin(1, 0);
         this.honeyText = scene.add.text(0, 0, "O", textConfig);
-        this.honeyText.depth = 201;
+        this.honeyText.depth = 351;
         this.honeyText.setOrigin(1, 0);
     }
 

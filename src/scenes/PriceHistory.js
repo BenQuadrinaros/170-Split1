@@ -10,7 +10,7 @@ class PriceHistory extends Phaser.Scene{
             color: "#000000",
             align: "center",
             stroke: "#000000",
-            strokeThickness: 0,
+            strokeThickness: 1,
             padding: {
                 top: 5,
                 bottom: 5

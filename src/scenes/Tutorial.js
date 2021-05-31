@@ -447,7 +447,7 @@ class Tutorial extends Phaser.Scene {
             color: "#000000",
             align: "left",
             stroke: "#000000",
-            strokeThickness: 1,
+            strokeThickness: 0.87,
             padding: {
                 top: 5,
                 bottom: 5
