@@ -31,6 +31,7 @@ class Flower {
 
         // If planted in the ground, start playing tweens on loop
         if(swayDelay > -1 && !(this.waveStart)) {
+            this.waveStart = true;
             scene.time.delayedCall(swayDelay, () => {
                 this.waveStart = true;
                 this.swayRight(scene);

@@ -545,6 +545,9 @@ class Hub extends Phaser.Scene {
             for (let col = 0; col < gardenGrid[0].length; col++) {
                 let plot = gardenGrid[row][col];
                 let coords = this.gridToCoord(col, row);
+                if(plot.item instanceof Flower){
+                    plot.item.waveStart = false;
+                }
                 plot.renderPlot(this, coords);
                 if(plot.item instanceof Hive || (plot.item instanceof Flower && plot.item.isFullyGrown())) {
                     this.path.push([coords[0], coords[1] - 25]);
