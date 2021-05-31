@@ -683,6 +683,7 @@ class Market extends Phaser.Scene {
                 this.priceHistory.alpha = .9;
             })
             .on('pointerdown', () => {
+                this.music.stop();
                 this.music.playSFX("notebook");
                 this.scene.pause();
                 this.priceHistory.alpha = 0.9;
@@ -1079,6 +1080,7 @@ class Market extends Phaser.Scene {
         //Rebinds escape
         this.events.on("resume", () => {
             console.log("ReenableEsc called");
+            this.music.playSong("marketMusic", true);
             this.music.setVolume(config.volume);
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
             keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);

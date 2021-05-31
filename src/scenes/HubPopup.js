@@ -64,7 +64,21 @@ class HubPopup extends Phaser.Scene {
             textSpacer += 40.5;
             if(playerVariables.score[i]) {
                 //Put in a filled star
-                this.add.image(scrollX + config.width/2  - 54 + 3*i, scrollY + config.height/3 - 60 + textSpacer, "pauseCheckmark").setScale(.5).setAngle(-5);
+                let a = this.add.image(scrollX + config.width/2  - 54 + 3*i, scrollY + config.height/3 - 60 + textSpacer, "pauseCheckmark").setScale(.5).setAngle(-5);
+                this.tweens.add({
+                    targets: a,
+                    alpha: {from: .7, to: 1},
+                    scale: {from: .8, to :.5},
+                    ease: 'Sine.easeInOut',
+                    duration: 500,
+                    repeat: 0,
+                    yoyo: false,
+                    hold: 0,
+                    onComplete: function () {
+                        //console.log("done tweening mood");
+                    },
+                    onCompleteScope: this
+                });
                 grade++;
             }
         }
