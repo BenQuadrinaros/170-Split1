@@ -162,7 +162,6 @@ class Hub extends Phaser.Scene {
     advanceDay() {
         currentDay += 1;
         hasSoldForDay = false;
-        this.sunsetTint.alpha = 0;
         //console.log("Advancing to day " + currentDay);
         //If you are returning to the hub
         //console.log("Welcome back. Honey was " + playerVariables.inventory.honey["total"]);
@@ -352,7 +351,7 @@ class Hub extends Phaser.Scene {
         this.skybox = this.add.image(0, 0, "hubSky" + timeMod).setOrigin(0, 0).setScale(0.5).setDepth(-5);
 
         //Load the clouds
-        this.sky = this.add.tileSprite(0, 0, config.width, config.height, 'hubClouds').setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-4);
+        this.sky = this.add.tileSprite(0, 0, 1920, 3240, 'hubClouds').setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-4);
 
         //Load back trees if desired
         this.backTrees = null;
