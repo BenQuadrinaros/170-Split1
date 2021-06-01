@@ -63,9 +63,9 @@ class NPC extends Phaser.GameObjects.Sprite{
         console.log("NPC has been asked to leave");
         this.scene.tweens.add({
             targets: this,
-            x: this.x + 1.75*config.width/5,
+            x: (this.x + 3*config.width/5)+100,
             ease: 'Sine.easeOut',
-            duration: 1500,
+            duration: 2500,
             delay: 0,
             repeat: 0
         });

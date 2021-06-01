@@ -53,7 +53,8 @@ class MarketPriceSetting extends Phaser.Scene {
 
     createBackgroundImages(){
         this.sky = this.add.tileSprite(config.width/2, config.height/2, 2*config.width, 2*config.height, 'marketSky').setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-5);
-        this.background = this.add.image(config.width / 2, config.height / 2, 'marketBackground').setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-1);        this.backgroundChalkboard = this.add.image(config.width/2, config.height/2, "chalkboard").setScale(.65);
+        this.background = this.add.image(config.width / 2, config.height / 2, 'marketBackground').setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-1);
+        this.backgroundChalkboard = this.add.image(config.width/2, config.height/2, "chalkboard").setScale(.5,.65);
         //this.playerWealthTracker = this.add.image(config.width/2, config.height/3.5, "playerWealthTracker").setOrigin(0.5, .5);
     }
     
@@ -87,7 +88,7 @@ class MarketPriceSetting extends Phaser.Scene {
         //this.moneyText.depth = 100;
         //this.honeyText = this.add.text(game.config.width / 2 + 15, (game.config.height /3.5) + 40, playerVariables.inventory.honey["total"], this.textConfig).setOrigin(.5, .5);
         //this.honeyText.depth = 100;
-        this.priceTitle = this.add.text(game.config.width/2, game.config.height/5.5 - 55, "PRICE", this.textConfig).setOrigin(.5, .5);
+        this.priceTitle = this.add.text(game.config.width/2, game.config.height/5.5 - 45, "PRICE", this.textConfig).setOrigin(.5, .5);
         this.textConfig.fontSize = "28px";
         this.textConfig.color = "#000000";
         this.continueText = this.add.text(config.width - 125, config.height - 50, "Continue", this.textConfig).setOrigin(0.5, 0.5).setDepth(5);
@@ -174,7 +175,7 @@ class MarketPriceSetting extends Phaser.Scene {
                 .setOrigin(.5, .5).setDepth(100).setAlpha(1);
 
             //Add a yellow honey jar
-            this.yellowHoneyJar = this.add.image(yellowCenter - 95, yellowHeight, "honeyYellow", 0);
+            this.yellowHoneyJar = this.add.image(yellowCenter - 95, yellowHeight, "honeyYellow", 0).setScale(.8);
         }
         //Price Setting Blue
         if(playerVariables.inventory.honey["blue"]){
@@ -221,7 +222,7 @@ class MarketPriceSetting extends Phaser.Scene {
                 "$" + priceMap["blue"].toFixed(2) + "\n" + playerVariables.inventory.honey["blue"] + " jars", this.textConfig)
                 .setOrigin(.5, .5).setDepth(100).setAlpha(1);
             //Add a blue honey jar
-            this.blueHoneyJar = this.add.image(blueCenter - 95, blueHeight, "honeyBlue", 0);
+            this.blueHoneyJar = this.add.image(blueCenter - 95, blueHeight, "honeyBlue", 0).setScale(.8);;
         }
         //Price Setting Pink
         if(playerVariables.inventory.honey["pink"]){
@@ -270,7 +271,7 @@ class MarketPriceSetting extends Phaser.Scene {
                 "$" + priceMap["pink"].toFixed(2) + "\n" + playerVariables.inventory.honey["pink"] + " jars", this.textConfig)
                 .setOrigin(.5, .5).setDepth(100).setAlpha(1);
             //Add a pink honey jar
-            this.pinkHoneyJar = this.add.image(pinkCenter - 95, pinkHeight, "honeyPink", 0);
+            this.pinkHoneyJar = this.add.image(pinkCenter - 95, pinkHeight, "honeyPink", 0).setScale(.8);;
         }
         //Price Setting Purple
         if(playerVariables.inventory.honey["purple"]){
@@ -319,7 +320,7 @@ class MarketPriceSetting extends Phaser.Scene {
                 "$" + priceMap["purple"].toFixed(2) + "\n" + playerVariables.inventory.honey["purple"] + " jars", this.textConfig)
                 .setOrigin(.5, .5).setDepth(100).setAlpha(.9);
             //Add a purple honey jar
-            this.purpleHoneyJar = this.add.image(purpleCenter - 95, purpleHeight, "honeyPurple", 0);
+            this.purpleHoneyJar = this.add.image(purpleCenter - 95, purpleHeight, "honeyPurple", 0).setScale(.8);;
         }
     }
 
