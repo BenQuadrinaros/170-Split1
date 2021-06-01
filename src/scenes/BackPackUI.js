@@ -268,6 +268,18 @@ class BackPackUI extends Phaser.Scene {
                                     heldType = "decorations";
                                     heldItem = new DecorativeWide("Bench", true);
                                     playerVariables.inventory[uiScene.selectedTab][item] -= 1;
+                                } else if (item == "No Trees") {
+                                    playerVariables.hubBackgroundTrees = false;
+                                } else if (item == "Background\nTrees") {
+                                    playerVariables.hubBackgroundTrees = true;
+                                } else if (item == "Wooden\nFence") {
+                                    playerVariables.hubIronFence = false;
+                                } else if (item == "Iron\nFence") {
+                                    playerVariables.hubIronFence = true;
+                                } else if (item == "Brick\nPath") {
+                                    playerVariables.hubBrickPath = true;
+                                } else if (item == "Dirt Path") {
+                                    playerVariables.hubBrickPath = false;
                                 } else if(uiScene.selectedTab == "outfits"){
                                     if(item === "Regular"){
                                         playerVariables.currentOutfit = "";

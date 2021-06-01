@@ -61,7 +61,7 @@ class MarketPriceSetting extends Phaser.Scene {
         //Rebinds escape
         this.events.on("resume", () => {
             console.log("ReenableEsc called");
-            this.music.setVolume(config.volume);
+            this.music.resumeBetweenScenes();
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
             keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         });
@@ -101,7 +101,7 @@ class MarketPriceSetting extends Phaser.Scene {
             this.continueBackground.alpha = .5;
         })
         .on("pointerdown", () => {
-            this.music.stop();
+            this.music.pauseBetweenScenes();
             this.scene.launch("marketScene", {previousScene: "marketPriceSettingScene"});
             this.scene.stop();
         });
@@ -328,6 +328,7 @@ class MarketPriceSetting extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keyESCAPE)) {
             console.log("Pausing Game");
             //isPaused = true;
+            this.music.pauseBetweenScenes();
             this.scene.pause();
             //this.scene.launch("pauseScene", {previousScene: "marketPriceSettingScene"});
             this.scene.launch("hubPopupScene", {previousScene: "marketPriceSettingScene",
@@ -338,6 +339,7 @@ class MarketPriceSetting extends Phaser.Scene {
     updateCheckContinue(){
         //Check if they hit enter
         if (Phaser.Input.Keyboard.JustDown(keyENTER)) {
+            this.music.pauseBetweenScenes();
             this.scene.launch("marketScene", {previousScene: "marketPriceSettingScene"});
             this.scene.stop();
         }

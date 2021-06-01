@@ -11,6 +11,12 @@ class HubPopup extends Phaser.Scene {
     }
 
     create(){
+        this.music = new BGMManager(this);
+        this.music.resumeBetweenScenes();
+
+        this.pointerCurrentlyOver = "";
+
+
         let scrollX = this.cameras.main.scrollX;
         let scrollY = this.cameras.main.scrollY;
         //Enable escape key
@@ -29,9 +35,10 @@ class HubPopup extends Phaser.Scene {
         //Create settings frames
         this.settings = this.add.image(scrollX + config.width/2 - 160, scrollY + config.height/3- 75, "settingsPause")
                         .setOrigin(.5, .5).setAngle(8).setInteractive().setScale(0.55);
-        this.settings.on('pointerover', () => this.settings.setFrame(1));
-        this.settings.on("pointerout", () => this.settings.setFrame(0));
+        this.settings.on('pointerover', () => {this.settings.setFrame(1); this.pointerCurrentlyOver = "Settings"});
+        this.settings.on("pointerout", () => {this.settings.setFrame(0); this.pointerCurrentlyOver = ""});
         this.settings.on('pointerup', () => {
+            this.music.pauseBetweenScenes();
             this.scene.pause();
             this.scene.launch("settingsScene", {previousScene: "hubPopupScene"});
         });
@@ -98,6 +105,7 @@ class HubPopup extends Phaser.Scene {
         this.textConfig.fontSize = "20px";
         this.add.text(this.cameras.main.scrollX + config.width/2 + 77, this.cameras.main.scrollY + config.height/5 + 45, grades[grade], this.textConfig).setOrigin(.5, .5).setAngle(-5);
         
+        this.tutorialTextBackdrop = null;
 
         //Money spent on watering
         if(deltaMoney > 0) {
@@ -128,6 +136,7 @@ class HubPopup extends Phaser.Scene {
         //Pause Game
         if(Phaser.Input.Keyboard.JustDown(this.keyESC)){
             console.log("Resuming Hub Activities");
+            this.music.pauseBetweenScenes();
             this.scene.resume(this.prevScene);
             this.scene.stop();
         }
@@ -147,6 +156,7 @@ Bee you around!`;
             }
             else{
                 console.log("Resuming Hub Activities");
+                this.music.pauseBetweenScenes();
                 this.scene.resume(this.prevScene);
                 this.scene.stop();
             }
@@ -160,12 +170,14 @@ Bee you around!`;
             }
             else{
                 console.log("Resuming Hub Activities");
+                this.music.pauseBetweenScenes();
                 this.scene.resume(this.prevScene);
                 this.scene.stop();
             }
         }
         else if(Phaser.Input.Keyboard.JustDown(keySPACE)){
             console.log("Resuming Hub Activities");
+            this.music.pauseBetweenScenes();
             this.scene.resume(this.prevScene);
             this.scene.stop();
         }
@@ -181,6 +193,18 @@ Bee you around!`;
                 this.scene.stop();
             }
         });
+
+        this.input.on('pointerdown', function (pointer) {
+                    if(!this.tutorialTextBackdrop && this.pointerCurrentlyOver === ""){
+                        console.log("Resuming Hub Activities");
+                        this.music.pauseBetweenScenes();
+                        this.scene.resume(this.prevScene);
+                        this.scene.stop();
+                    }
+                    else{
+                        console.log("Tutorial Text Backdrop exists or over something");
+                    }
+                }, this);
     }
 
     createFromTutorialText(){
@@ -231,6 +255,12 @@ Bee you around!`;
                 this.spaceContinue.setVisible(false);
                 this.currDialogSelection = 3;
             }
+            else{
+                console.log("Resuming Hub Activities");
+                this.music.pauseBetweenScenes();
+                this.scene.resume(this.prevScene);
+                this.scene.stop();
+            }
         }, this);
     }
 
@@ -269,9 +299,18 @@ take some pics of the garden and share them!`;
         this.currDialogSelection = 1;
         
                 this.input.on('pointerdown', function (pointer) {
-                    this.tutorialTextBackdrop.alpha = 0;
-                    this.tutorialDialog.setVisible(false);
-                    this.spaceContinue.setVisible(false);
+                    if(this.tutorialTextBackdrop.alpha === 0){
+                        console.log("Resuming Hub Activities");
+                        this.music.pauseBetweenScenes();
+                        this.scene.resume(this.prevScene);
+                        this.scene.stop();
+                    }
+                    else{
+                        this.tutorialTextBackdrop.alpha = 0;
+                        this.tutorialDialog.setVisible(false);
+                        this.spaceContinue.setVisible(false);
+                    }
+
                 }, this);
         playerVariables.gotCamera = true;
         playerVariables.inventory.items["Camera"] = 1;

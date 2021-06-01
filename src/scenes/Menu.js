@@ -82,7 +82,7 @@ class Menu extends Phaser.Scene {
         //Setting interactive behaviors
         this.events.on("resume", () => {
             console.log("ReenableEsc called");
-            this.music.setVolume(config.volume);
+            this.music.resumeBetweenScenes();
         });
 
         
@@ -276,11 +276,13 @@ class Menu extends Phaser.Scene {
         //Settings is being pressed
         else if(newScene === 3) {
             this.scene.pause();
+            this.music.pauseBetweenScenes();
             this.scene.launch("settingsScene", {previousScene: "menuScene"});
         }
         //Credits is being pressed
         else if(newScene === 4) {
             this.scene.pause();
+            this.music.pauseBetweenScenes();
             this.scene.launch("creditsScene", {previousScene: "menuScene"});
         }
         //Other result

@@ -25,6 +25,9 @@ class Settings extends Phaser.Scene {
         let col2 = 2 * game.config.width / 3;
         let centerY = game.config.height / 2;
         let textSpacer = 64;
+
+        this.music = new BGMManager(this);
+        this.music.resumeBetweenScenes();
         
         //Create general background
         this.whiteSquare = this.add.rectangle(0, 0, config.width+50, config.height+50, 0xffffff, 1).setOrigin(0, 0);
@@ -40,6 +43,7 @@ class Settings extends Phaser.Scene {
             this.continueBackground.alpha = .5;
         })
         .on("pointerdown", () => {
+            this.music.pauseBetweenScenes();
             this.scene.resume(this.prevScene);
             this.scene.stop();
         });
@@ -87,6 +91,10 @@ class Settings extends Phaser.Scene {
             },
             input: 'drag', // 'drag'|'click'
         }).layout();
+
+        this.slider.on('valuechange', function(newValue, oldValue, slider){
+            this.music.setVolume(newValue)
+        }, this);
 
         let sfxText = this.add.text(col1, centerY/3 + 5.25*textSpacer/2, "Sound Effects Volume", this.textConfig).setOrigin(0.5, 0.5);
         this.sfxSlider = this.rexUI.add.slider({
