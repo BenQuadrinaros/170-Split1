@@ -268,13 +268,25 @@ class BackPackUI extends Phaser.Scene {
                                     heldType = "decorations";
                                     heldItem = new DecorativeWide("Bench", true);
                                     playerVariables.inventory[uiScene.selectedTab][item] -= 1;
-                                } else if (item == "No Trees") {
+                                } else if (item == "Bush") {
+                                    heldType = "decorations";
+                                    heldItem = new Decorative("Bush", true);
+                                    playerVariables.inventory[uiScene.selectedTab][item] -= 1;
+                                } else if (item == "Hedge") {
+                                    heldType = "decorations";
+                                    heldItem = new Decorative("Hedge", true);
+                                    playerVariables.inventory[uiScene.selectedTab][item] -= 1;
+                                } else if (item == "Fence") {
+                                    heldType = "decorations";
+                                    heldItem = new Decorative("Fence", true);
+                                    playerVariables.inventory[uiScene.selectedTab][item] -= 1;
+                                } else if (item == "Back\nNo Trees") {
                                     playerVariables.hubBackgroundTrees = false;
-                                } else if (item == "Background\nTrees") {
+                                } else if (item == "Back\nTrees") {
                                     playerVariables.hubBackgroundTrees = true;
-                                } else if (item == "Wooden\nFence") {
+                                } else if (item == "Back\nWooden\nFence") {
                                     playerVariables.hubIronFence = false;
-                                } else if (item == "Iron\nFence") {
+                                } else if (item == "Back\nIron\nFence") {
                                     playerVariables.hubIronFence = true;
                                 } else if (item == "Brick\nPath") {
                                     playerVariables.hubBrickPath = true;

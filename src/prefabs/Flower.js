@@ -42,7 +42,6 @@ class Flower {
     }
 
     swayRight(scene) {
-        console.log("starting right sway");
         scene.tweens.add({
             targets: this.image,
             angle: this.image.angle + 5,
@@ -58,7 +57,6 @@ class Flower {
     }
 
     swayLeft(scene) {
-        console.log("starting left sway");
         scene.tweens.add({
             targets: this.image,
             angle: this.image.angle - 5,

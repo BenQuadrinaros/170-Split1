@@ -45,7 +45,10 @@ class Boot extends Phaser.Scene {
             this.load.image("hubShadowsWoodFence", "./assets/sprites/background/sh_woodDaytime.png");
             this.load.image("hubShadowsWoodFenceEvening", "./assets/sprites/background/sh_woodEvening.png");
 
-
+            this.load.image('Bench', './assets/img/bench.png');
+            this.load.image("Bush","./assets/img/circlebushsmallrecolor.png");
+            this.load.image("Hedge","./assets/img/hedgerecolor.png");
+            this.load.image("Fence","./assets/img/fencetall.png");
             
             
             this.load.image("exit", "./assets/sprites/background/LeftArrowGREEN.png");
@@ -125,15 +128,21 @@ class Boot extends Phaser.Scene {
             this.load.image('pauseCheckmark', './assets/sprites/UI/checkmark_85x85.png');
             //For shop
             this.load.image('toadLeckman', './assets/sprites/character/mrleckman_510x300.png');
-            this.load.image('toadLeckmanHead', './assets/sprites/UI/mrleckmanHEAD_285x180.png');
+            this.load.image('toadLeckmanHead', './assets/sprites/UI/mrleckmanHEAD_285x180.png')
             this.load.image('townBackground', './assets/img/TOWNTEST.png');
             this.load.image("townBackgroundEvening", "./assets/sprites/background/townEvening.png");
-            this.load.image('Bench', './assets/img/bench.png');
 
             this.load.image("townClouds", "./assets/sprites/background/townClouds.png");
             this.load.image("townSky", "./assets/sprites/background/townDaytimeSky.png");
             this.load.image("townSkyEvening", "./assets/sprites/background/townEveningSky.png");
             this.load.image("townEveningOverlay", "./assets/sprites/background/townEveningOverlay.png");
+
+            this.load.image("ironFenceDisplay","./assets/img/iron_fence_display.png");
+            this.load.image("woodFenceDisplay","./assets/img/wooden_fence_display.png");
+            this.load.image("backgroundTreesDisplay","./assets/img/background_trees_display.png");
+            this.load.image("dirtPathDisplay","./assets/img/dirt_path_display.png");
+            this.load.image("brickPathDisplay","./assets/img/brick_path_display.png");
+
 
             //For market price setting
             this.load.image('chalkboard', './assets/sprites/UI/chalkboardBlank.png');

@@ -286,6 +286,10 @@ class Hub extends Phaser.Scene {
         shopInventory["Items"]["Clipper"]["amount"] = 4 + Math.floor(currentDay/4);
         shopInventory["Items"]["Clipper"]["cost"] = Math.max(2, 3 - .25* Math.floor(currentDay/6));
         if(playerVariables.waterLvl == 1) { shopInventory["Items"]["Purple Can"]["amount"] = 1; }
+        shopInventory["Decorations"]["Bench"]["amount"] = 1;
+        shopInventory["Decorations"]["Bush"]["amount"] = 2;
+        shopInventory["Decorations"]["Hedge"]["amount"] = 2;
+        shopInventory["Decorations"]["Fence"]["amount"] = 4;
     }
 
     createControls() {
@@ -1526,7 +1530,7 @@ class Hub extends Phaser.Scene {
 
     gridToCoord(gridx, gridy) {
         //takes grid coords and returns world coords in [x, y]
-        return [(1 + gridx) * game.config.width / 12, (6 + gridy) * game.config.height / 9 + 35];
+        return [(1 + gridx) * game.config.width / 12, (6 + gridy) * game.config.height / 9 + 40];
     }
 
     placeHeldItemInBag(){
