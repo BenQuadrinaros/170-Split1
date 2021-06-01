@@ -78,6 +78,7 @@ class HubPopup extends Phaser.Scene {
         for(let i = 0; i < 5; i++) {
             //Checklist of tasks needed to win
             if(playerVariables.score[i]) {
+                grade++;
                 // Move down the list slapping on checks and bursting bees
                 this.time.delayedCall(250 * (i+1), () => {
                     let a = this.add.image(scrollX + config.width/2  - 105 + 3*i, scrollY + config.height/3 - 60
@@ -98,7 +99,7 @@ class HubPopup extends Phaser.Scene {
                     this.beeEmitter.on = true;
                     console.log("bees on",i);
                     this.time.delayedCall(225, () => { this.beeEmitter.on = false;console.log("bees off",i); });
-                    grade++;
+
                 });
             }
         }
