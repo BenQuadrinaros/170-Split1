@@ -53,33 +53,45 @@ class HubPopup extends Phaser.Scene {
         var textSpacer = -15;
 
         //Current Week
-        this.add.text(scrollX + 3*config.width/5 + 50, scrollY + config.height/5 , currentDay, this.textConfig).setOrigin(.5, .5).setAngle(-5);
+        this.add.text(scrollX + 3*config.width/5 + 50, scrollY + config.height/5 , currentDay, this.textConfig)
+            .setOrigin(.5, .5).setAngle(-5);
 
         //Display ecology score below
         textSpacer += 58.5;
         let grades = ["F", "D", "C", "B", "A", "A+"];
         let grade = 0;
+
+        //Create an emitter system
+        this.beeParticle = this.add.particles('bearBee');
+        this.beeEmitter = this.beeParticle.createEmitter();
+        this.beeEmitter.setLifespan(1500).setGravityY(300).setScale(.5).setSpeed({min: 125, max: 350})
+            .setAngle({min: 0, max: 360});
+        this.beeEmitter.on = false;
         for(let i = 0; i < 5; i++) {
             //Checklist of tasks needed to win
-            textSpacer += 40.5;
             if(playerVariables.score[i]) {
-                //Put in a filled star
-                let a = this.add.image(scrollX + config.width/2  - 54 + 3*i, scrollY + config.height/3 - 60 + textSpacer, "pauseCheckmark").setScale(.5).setAngle(-5);
-                this.tweens.add({
-                    targets: a,
-                    alpha: {from: .7, to: 1},
-                    scale: {from: .8, to :.5},
-                    ease: 'Sine.easeInOut',
-                    duration: 500,
-                    repeat: 0,
-                    yoyo: false,
-                    hold: 0,
-                    onComplete: function () {
-                        //console.log("done tweening mood");
-                    },
-                    onCompleteScope: this
+                // Move down the list slapping on checks and bursting bees
+                this.time.delayedCall(250 * (i+1), () => {
+                    let a = this.add.image(scrollX + config.width/2  - 54 + 3*i, scrollY + config.height/3 - 60 
+                        + textSpacer + (i+1) * 40.5, "pauseCheckmark").setScale(.5).setAngle(-5);
+                    // Slap down the check
+                    this.tweens.add({
+                        targets: a,
+                        alpha: {from: .7, to: 1},
+                        scale: {from: .8, to :.5},
+                        ease: 'Sine.easeInOut',
+                        duration: 500,
+                        repeat: 0,
+                        yoyo: false,
+                        hold: 0
+                    });
+                    // Spew some bees
+                    this.beeEmitter.setPosition(a.x, a.y);
+                    this.beeEmitter.on = true;
+                    console.log("bees on",i);
+                    this.time.delayedCall(225, () => { this.beeEmitter.on = false;console.log("bees off",i); });
+                    grade++;
                 });
-                grade++;
             }
         }
         //Could replace this with a more stylized stamp image

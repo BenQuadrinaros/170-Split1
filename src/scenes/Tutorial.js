@@ -1273,7 +1273,7 @@ class Tutorial extends Phaser.Scene {
     }
 
     gridToCoord(gridx, gridy) {
-        return [(1 + gridx) * game.config.width / 12, (6 + gridy) * game.config.height / 9 + 15];
+        return [(1 + gridx) * game.config.width / 12, (6 + gridy) * game.config.height / 9 + 30];
     }
 
     placeHeldItemInBag(){

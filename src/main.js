@@ -100,6 +100,7 @@ let playerVariables = {
     water: 0,
     waterLvl: 0,
     beeBump: false,
+    flowerWavingEnabled: true,
     snapshotHideUI: true,
     frontAlpha: .3,
     completedMarketTutorial: false,

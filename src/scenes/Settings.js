@@ -111,8 +111,10 @@ class Settings extends Phaser.Scene {
             input: 'drag', // 'drag'|'click'
         }).layout();
 
-        let beeBumpText = this.add.text(col1, centerY/3 + 9*textSpacer/2, "Bee Bump Collisions:\nOFF", 
+        let beeBumpText = this.add.text(col1, centerY/3 + 9.25*textSpacer/2, "Bee Bump Collisions:\nOFF", 
             this.textConfig).setOrigin(.5, .5).setAlpha(.75);
+        if(playerVariables.beeBump) { beeBumpText.text = "Bee Bump Collisions:\nON"; }
+        else { beeBumpText.text = "Bee Bump Collisions:\nOFF"; }
         beeBumpText.setInteractive();
         beeBumpText.on('pointerover', () => {
             beeBumpText.setAlpha(1);
@@ -124,6 +126,23 @@ class Settings extends Phaser.Scene {
             playerVariables.beeBump = !(playerVariables.beeBump);
             if(playerVariables.beeBump) { beeBumpText.text = "Bee Bump Collisions:\nON"; }
             else { beeBumpText.text = "Bee Bump Collisions:\nOFF"; }
+        });
+
+        let flowerWavingEnabledText = this.add.text(col1, centerY/3 + 12.25*textSpacer/2, "Flower Waving Animation:\nON", 
+            this.textConfig).setOrigin(.5, .5).setAlpha(.75);
+        if(playerVariables.flowerWavingEnabled) { flowerWavingEnabledText.text = "Flower Waving Animation:\nON"; }
+        else { flowerWavingEnabledText.text = "Flower Waving Animation:\nOFF"; }
+        flowerWavingEnabledText.setInteractive();
+        flowerWavingEnabledText.on('pointerover', () => {
+            flowerWavingEnabledText.setAlpha(1);
+        });
+        flowerWavingEnabledText.on("pointerout", () => {
+            flowerWavingEnabledText.setAlpha(.75);
+        });
+        flowerWavingEnabledText.on('pointerup', () => {
+            playerVariables.flowerWavingEnabled = !(playerVariables.flowerWavingEnabled);
+            if(playerVariables.flowerWavingEnabled) { flowerWavingEnabledText.text = "Flower Waving Animation:\nON"; }
+            else { flowerWavingEnabledText.text = "Flower Waving Animation:\nOFF"; }
         });
 
         //Right side settings
@@ -156,6 +175,8 @@ class Settings extends Phaser.Scene {
 
         let diableUIText = this.add.text(col2, centerY/3 + 9*textSpacer/2, "Disable UI when using Camera:\nON", 
             this.textConfig).setOrigin(.5, .5).setAlpha(.75);
+        if(playerVariables.snapshotHideUI) { diableUIText.text = "Disable UI when using Camera:\nON"; }
+        else { diableUIText.text = "Disable UI when using Camera:\nOFF"; }
         diableUIText.setInteractive();
         diableUIText.on('pointerover', () => {
             diableUIText.setAlpha(1);
