@@ -164,7 +164,7 @@ class Shop extends Phaser.Scene {
         //Make sure the escape keybinding isn't consumed by the backpack UI
         this.events.on("resume", () => {
             console.log("ReenableEsc called");
-            this.music.setVolume(config.volume);
+            this.music.resumeBetweenScenes();
             this.backpack.setAlpha(0.9);
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
             keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -252,6 +252,7 @@ class Shop extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keyESCAPE)) {
             console.log("Pausing Game");
             //isPaused = true;
+            this.music.pauseBetweenScenes();
             this.scene.pause();
             //this.scene.launch("pauseScene", { previousScene: "shopScene" });
             this.scene.launch("hubPopupScene", {previousScene: "shopScene",

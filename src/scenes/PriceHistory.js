@@ -29,6 +29,7 @@ class PriceHistory extends Phaser.Scene{
         //console.log(priceHistory);
         //uiScene = this;
         this.music = new BGMManager(this);
+        this.music.resumeBetweenScenes();
         this.bg = this.add.image(config.width/2,config.height/2,'notebookBG').setScale(.5,.5).setOrigin(.5,.5);
         this.currentPage = currentDay;
         this.imgMap = {
@@ -56,8 +57,6 @@ class PriceHistory extends Phaser.Scene{
                 bottom: 5
             },
         };
-
-        this.music = new BGMManager(this);
 
         keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
@@ -217,6 +216,7 @@ class PriceHistory extends Phaser.Scene{
 
     endScene(){
         this.music.playSFX("notebook");
+        this.music.pauseBetweenScenes();
         console.log("resuming market...");
         console.log(this.previousScene);
         this.scene.stop();

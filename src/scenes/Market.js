@@ -54,14 +54,14 @@ class Market extends Phaser.Scene {
         //background music for the hub
         //CHNAGE SONG FOR MARKET
         this.music = new BGMManager(this);
-        this.music.playSong("marketMusic", true);
+        this.music.resumeBetweenScenes();
 
         //Start the timer for the selling portion
         this.timer = this.time.addEvent({
             delay: 9000000,
             callback: () => {
                 hasSoldForDay = true;
-                this.music.stop();
+                this.music.pauseBetweenScenes();
                 this.music.playSFX("mapTransition");
                 if(playerVariables.inventory.honey["total"] === 0){
                     this.scene.launch('priceHistory', {previousScene: "marketScene", previousSceneDone:"out of\nstock!"});
@@ -683,7 +683,7 @@ class Market extends Phaser.Scene {
                 this.priceHistory.alpha = .9;
             })
             .on('pointerdown', () => {
-                this.music.stop();
+                this.music.pauseBetweenScenes();
                 this.music.playSFX("notebook");
                 this.scene.pause();
                 this.priceHistory.alpha = 0.9;
@@ -1080,8 +1080,7 @@ class Market extends Phaser.Scene {
         //Rebinds escape
         this.events.on("resume", () => {
             console.log("ReenableEsc called");
-            this.music.playSong("marketMusic", true);
-            this.music.setVolume(config.volume);
+            this.music.resumeBetweenScenes();
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
             keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         });
@@ -1092,6 +1091,7 @@ class Market extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keyESCAPE)) {
             console.log("Pausing Game");
             //isPaused = true;
+            this.music.pauseBetweenScenes();
             this.scene.pause();
             //this.scene.launch("pauseScene", {previousScene: "marketScene"});
             this.scene.launch("hubPopupScene", {previousScene: "marketScene",
@@ -1103,7 +1103,7 @@ class Market extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keyDOWN) || Phaser.Input.Keyboard.JustDown(keyS)) {
             //Go to hub and start next day
             hasSoldForDay = true;
-            this.music.stop();
+            this.music.pauseBetweenScenes();
             this.music.playSFX("mapTransition");
             if(playerVariables.inventory.honey["total"] === 0){
                 this.scene.launch('priceHistory', {previousScene: "marketScene", previousSceneDone:"SOLD OUT"});

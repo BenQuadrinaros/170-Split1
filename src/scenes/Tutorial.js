@@ -65,6 +65,8 @@ class Tutorial extends Phaser.Scene {
         this.setTutorialGlobalVars();
         this.setTutorialFlags();
 
+        
+
         //Initialize various global variables
         this.worldWidth = 960; //Set the width of the scene
         this.worldHeight = 640; //Set the height of the scene
@@ -128,7 +130,7 @@ class Tutorial extends Phaser.Scene {
         this.updateCheckNearLocation();
 
         //Place flower text over nearest spot for interaction
-        this.textHover();
+        this.textHover(false);
 
         //Put highlight over objects if standing near them
         this.updateMoveHighlight();
@@ -465,13 +467,43 @@ class Tutorial extends Phaser.Scene {
         this.caveText.depth = 100;
         this.caveText.text = "Press SPACE to go to sleep";
         this.caveText.setVisible(false);
+
+        //Create tutorial skip
+        let tutSkipX = this.cameras.main.scrollX + config.width * .145;
+        let tutSkipY = this.cameras.main.scrollY + config.height * .185 + 85;
+        this.tutorialSkipText = this.add.text(tutSkipX, tutSkipY, "Skip Tutorial", this.tutorialConfig).setOrigin(0.5).setDepth(352);
+        this.tutorialSkipBackground = this.add.rectangle(tutSkipX, tutSkipY, 100, 50, 0xffffff, 1)
+        .setOrigin(0.5, 0.5).setInteractive().setAlpha(0.5).setDepth(311)
+        .on("pointerover", () => {
+            this.tutorialSkipText.alpha = 1;
+            this.tutorialSkipBackground.alpha = 1;
+        })
+        .on("pointerout", () => {
+            this.tutorialSkipText.alpha = .5;
+            this.tutorialSkipBackground.alpha = .5;
+        })
+        .on("pointerdown", () => {
+            this.music.stop();
+            let flow0 = new Flower(2, 3, "Daisy");
+            let flow1 = new Flower(2, 3, "Daisy");
+            let hive = new Hive(5, 2);
+            gardenGrid[1][4].item = flow0;
+            gardenGrid[1][4].dug = true;
+            gardenGrid[1][6].item = flow1;
+            gardenGrid[1][6].dug = true;
+            gardenGrid[2][5].item = hive;
+            this.scene.launch("hubScene", {previousScene: "tutorialScene"});
+            this.scene.stop();
+        });
+        this.tutorialSkipText.setAlpha(.5);
+
     }
 
     createEvents() {
         //Make sure the escape keybinding isn't consumed by the backpack UI
         this.events.on("resume", () => {
             console.log("ReenableEsc called");
-            this.music.setVolume(config.volume);
+            this.music.resumeBetweenScenes();
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
             keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
             keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
@@ -500,6 +532,12 @@ class Tutorial extends Phaser.Scene {
                 else if(this.currDialogSection < this.currDialogMaximum){
                     ++this.currDialogSection;
                     this.advanceTutorialDialog(this.currDialogSection);
+                }
+                //Simulate a space press
+                else{
+                    console.log("Pointer currently not over anything interactable");
+                    //this.player.moveTo(pointer.worldX, pointer.worldY, this.pointerCurrentlyOver);
+                    this.textHover(true);
                 }
             }
         }, this);
@@ -579,6 +617,7 @@ class Tutorial extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keyESCAPE)) {
             console.log("Pausing Game");
             //isPaused = true;
+            this.music.pauseBetweenScenes();
             this.scene.pause();
             //this.scene.launch("pauseScene", {previousScene: "tutorialScene"});
             this.scene.launch("hubPopupScene", {previousScene: "tutorialScene",
@@ -593,6 +632,10 @@ class Tutorial extends Phaser.Scene {
         this.infoDisplay.update(this.cameras.main.scrollX + config.width * .145, 
             this.cameras.main.scrollY + config.height * .185, 
             playerVariables.money, playerVariables.inventory.honey["total"]);
+        this.tutorialSkipText.x = this.cameras.main.scrollX + config.width * .145;
+        this.tutorialSkipText.y = this.cameras.main.scrollY + config.height * .185 + 85;
+        this.tutorialSkipBackground.x = this.cameras.main.scrollX + config.width * .145;
+        this.tutorialSkipBackground.y = this.cameras.main.scrollY + config.height * .185 + 85;
     }
 
     updateHeldItemBehavior() {
@@ -947,7 +990,7 @@ class Tutorial extends Phaser.Scene {
         }
     }
 
-    textHover() {
+    textHover(receivedMouseInput) {
         //find the closest interactable point
         let plot = this.closestPlot();
         //If close to water spigot
@@ -958,7 +1001,7 @@ class Tutorial extends Phaser.Scene {
             this.plotHighlight.x = this.spigot.x;
             this.plotHighlight.y = this.spigot.y + 25;
             //Logic for if player presses space near water spigot
-            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+            if (Phaser.Input.Keyboard.JustDown(keySPACE) || receivedMouseInput) {
                 //If the player is holding the can
                 if(heldItem instanceof WateringCan) {
                     if(playerVariables.water == 4) {
@@ -1027,7 +1070,7 @@ class Tutorial extends Phaser.Scene {
             this.plotHighlight.x = coords[0];
             this.plotHighlight.y = coords[1] + 40;
             //Logic for if player presses space near a plot
-            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+            if (Phaser.Input.Keyboard.JustDown(keySPACE) || receivedMouseInput) {
                 let row = plot[0];
                 let col = plot[1];
                 //If the space is a weed, remove it
@@ -1315,6 +1358,9 @@ class Tutorial extends Phaser.Scene {
         this.currDialogSection = 1;
         this.playerIsInDialog = false;
         this.tutorialWeedCreated = false;
+
+
+
     }
 
     advanceTutorial(){
@@ -1333,6 +1379,8 @@ class Tutorial extends Phaser.Scene {
                 console.log("Not planted first seed, dialog max is" + this.currDialogMaximum);
                 return;
             }
+            this.tutorialSkipText.setVisible(false);
+            this.tutorialSkipBackground.setVisible(false);
             this.advanceTutorialDialog(4);
             this.currDialogMaximum = 5;
         }

@@ -68,8 +68,8 @@ class ShopUI extends Phaser.Scene {
         let music = new BGMManager(this);
         //eventDispacher.add(this.heardEvent ,this);
 
-        this.backpack = this.add.image(this.cameras.main.scrollX + config.width - 68, this.cameras.main.scrollY + config.height/5 - 36, 'PlayerIcon')
-            .setInteractive().setAlpha(.5)
+        this.backpack = this.add.image(this.cameras.main.scrollX + 5*config.width/6, this.cameras.main.scrollY + config.height/5 - 36, 'toadLeckmanHead')
+            .setInteractive().setAlpha(.5).setScale(0.5, 0.5)
             .on('pointerover', () => {
                 this.backpack.setAlpha(1);
             })
@@ -295,6 +295,15 @@ class ShopUI extends Phaser.Scene {
                                 } else if (item == "Purple Can") {
                                     playerVariables.waterLvl += 1;
                                     idImages["Watering Can"][0] = "purplewater0";
+                                } else if(item == "Background\nTrees") {
+                                    playerVariables.inventory[tab][item] += amtToBuy;
+                                    playerVariables.inventory[tab]["No Trees"] += amtToBuy;
+                                } else if(item == "Iron\nFence"){
+                                    playerVariables.inventory[tab][item] += amtToBuy;
+                                    playerVariables.inventory[tab]["Wooden\nFence"] += amtToBuy;
+                                } else if(item == "Brick\nPath"){
+                                    playerVariables.inventory[tab][item] += amtToBuy;
+                                    playerVariables.inventory[tab]["Dirt Path"] += amtToBuy;
                                 } else {
                                     playerVariables.inventory[tab][item] += amtToBuy;
                                 }
