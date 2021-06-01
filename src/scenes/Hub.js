@@ -108,11 +108,11 @@ class Hub extends Phaser.Scene {
     }
 
     update() {
-        //Scroll clouds
-        this.sky.tilePositionX += 0.08;
-
         //Check if the pause menu should be activated
         this.updateCheckPause();
+
+        //Scroll clouds
+        //this.sky.tilePositionX += 0.08;
 
         //Move the backpack icon to be be relative to the player
         this.updateMoveUI();
@@ -129,7 +129,7 @@ class Hub extends Phaser.Scene {
         this.updateCheckNearLocation();
 
         //Place flower text over nearest spot for interaction
-        this.textHover();
+        this.textHover(false);
 
         //Put highlight over objects if standing near them
         this.updateMoveHighlight();
@@ -288,6 +288,8 @@ class Hub extends Phaser.Scene {
 
     createControls() {
         //establish controls for gameplay
+        this.pointer = this.input.activePointer;
+
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -379,31 +381,51 @@ class Hub extends Phaser.Scene {
 
     loadBackTrees(timeMod){
         this.backTrees = null;
-        return;
+        if(playerVariables.hubBackgroundTrees){
+            this.backTrees = this.add.image(0, this.worldHeight, "hubBackTrees" + timeMod)
+            .setOrigin(0, 1).setScale(0.5).setDepth(30);
+        }
     }
 
     loadFence(){
         let fenceKey = "hubFenceWood";
-        this.backgroundFence = this.add.image(0, 0, fenceKey).setOrigin(0, 0).setScale(0.5).setDepth(-2);
+        if(playerVariables.hubIronFence){
+            fenceKey = "hubFenceIron";
+        }
+        this.backgroundFence = this.add.image(0, 0, fenceKey)
+        .setOrigin(0, 0).setScale(0.5).setDepth(-2);
     }
 
     loadTrail(){
         let trailStyleKey = "hubTrail";
 
         //Set the path's type
-        trailStyleKey += "Dirt";
+        if(playerVariables.hubBrickPath){
+            trailStyleKey += "Brick";
+        }
+        else{
+            trailStyleKey += "Dirt";
+        }
 
-        this.backgroundTrail = this.add.image(0, 0, trailStyleKey).setOrigin(0, 0).setScale(0.5).setDepth(0);
-        return;
+        this.backgroundTrail = this.add.image(0, 0, trailStyleKey)
+        .setOrigin(0, 0).setScale(0.5).setDepth(0);
     }
 
     loadShadows(timeMod){
         let shadowKey = "hubShadows";
 
         //Check back trees
+        if(playerVariables.hubBackgroundTrees){
+            shadowKey += "BackTrees";
+        }
 
         //Check fence
-        shadowKey += "WoodFence";
+        if(playerVariables.hubIronFence){
+            shadowKey += "IronFence";
+        }
+        else{
+            shadowKey += "WoodFence";
+        }
 
         //Add in time
         shadowKey += timeMod;
@@ -531,7 +553,8 @@ class Hub extends Phaser.Scene {
                 console.log("Pointer currently over backpack");
             } else {
                 console.log("Pointer currently not over anything interactable");
-                this.player.moveTo(pointer.worldX, pointer.worldY, this.pointerCurrentlyOver);
+                //this.player.moveTo(pointer.worldX, pointer.worldY, this.pointerCurrentlyOver);
+                this.textHover(true);
             }
         }, this);
     }
@@ -1079,8 +1102,9 @@ class Hub extends Phaser.Scene {
         return false;
     }
 
-    textHover() {
-        if(heldItem instanceof Camera && Phaser.Input.Keyboard.JustDown(keySPACE)) {
+    textHover(receivedMouseInput) {
+        if(heldItem instanceof Camera &&
+            (Phaser.Input.Keyboard.JustDown(keySPACE) || receivedMouseInput)) {
             //Take a picture of the garden
             if(!(this.flash) || this.flash.alpha <= 0.1) {
                 //Flicker UI to hide from snapshot
@@ -1153,7 +1177,7 @@ class Hub extends Phaser.Scene {
                 this.plotHighlight.x = this.spigot.x;
                 this.plotHighlight.y = this.spigot.y + this.spigot.height/3;
                 //Logic for if player presses space near water spigot
-                if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+                if (Phaser.Input.Keyboard.JustDown(keySPACE) || receivedMouseInput) {
                     if(this.tempCan) {
                         //Spigot animation is currently happening
                         //Do nothing
@@ -1226,7 +1250,7 @@ class Hub extends Phaser.Scene {
                 this.plotHighlight.x = coords[0];
                 this.plotHighlight.y = coords[1] + 40;
                 //Logic for if player presses space near a plot
-                if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+                if (Phaser.Input.Keyboard.JustDown(keySPACE) || receivedMouseInput) {
                     let row = plot[0];
                     let col = plot[1];
                     //If the space is a weed, remove it

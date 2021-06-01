@@ -109,6 +109,9 @@ let playerVariables = {
     name: "Bearry",
     currentOutfit: "",
     score: [false, false, false, false, false],
+    hubIronFence: false,
+    hubBackgroundTrees: false,
+    hubBrickPath: false,
     inventory: {
         honey: {
             "total": 3,
@@ -143,7 +146,9 @@ let playerVariables = {
             "No Trees": 0,
             "Background\nTrees": 0,
             "Wooden\nFence": 0,
-            "Iron\nFence": 0
+            "Iron\nFence": 0,
+            "Brick\nPath": 0,
+            "Dirt Path": 0
         },
         outfits: {
             "Bee": 0,
@@ -182,10 +187,9 @@ let shopInventory = {
     },
     "Decorations":{
         "Bench":{"amount": 4,"cost":7},
-        "No Trees":{"amount": 1,"cost":15},
         "Background\nTrees":{"amount": 1,"cost":15},
-        "Wooden\nFence":{"amount": 1,"cost":15},
-        "Iron\nFence":{"amount": 1,"cost":15}
+        "Iron\nFence":{"amount": 1,"cost":15},
+        "Brick\nPath":{"amount": 1,"cost":15}
     },
     "Outfits":{
         "Tophat":{"amount": 1, "cost":99.75}
