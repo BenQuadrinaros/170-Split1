@@ -287,13 +287,13 @@ class Market extends Phaser.Scene {
             console.log("initiating request.");
             console.log(`npc wants to buy ${amt} jars of ${type}`);
             //Create icons for npc asking to make purchase
-            this.initiatePrice = this.add.image(this.npc.x+60, this.npc.y - 350, 'marketBubble')
-                .setDepth(100).setOrigin(.5, .5).setScale(.25,.25);
+            this.initiatePrice = this.add.image(this.npc.x+90, this.npc.y - 350, 'marketBubble')
+                .setDepth(100).setOrigin(.5, .5).setScale(.35,.35);
             this.honeyIMG = this.add.image(this.initiatePrice.x+10,this.initiatePrice.y-5, this.imgMap[type])
-                .setDepth(125).setOrigin(.5,.5).setScale(.85,.85);
-            this.honeyAmtText = this.add.text(this.initiatePrice.x-35,this.initiatePrice.y-5,amt.toString(), this.requestTextConfig)
+                .setDepth(125).setOrigin(.5,.5).setScale(1);
+            this.honeyAmtText = this.add.text(this.initiatePrice.x-45,this.initiatePrice.y-5,amt.toString(), this.requestTextConfig)
                 .setDepth(125).setOrigin(.5,.5);
-            this.decline = this.add.image(this.initiatePrice.x - 40, this.initiatePrice.y + 80, 'sellNo',0)
+            this.decline = this.add.image(this.initiatePrice.x - 40, this.initiatePrice.y + 100, 'sellNo',0)
                 .setDepth(100).setOrigin(.5, .5).setScale(.35, .35).setAlpha(.9).setInteractive()
                 .on('pointerover', () => {
                     this.decline.alpha = 1;
@@ -312,7 +312,7 @@ class Market extends Phaser.Scene {
                 });
 
 
-            this.accept = this.add.image(this.initiatePrice.x + 40, this.initiatePrice.y + 80, 'sellYes',0)
+            this.accept = this.add.image(this.initiatePrice.x + 40, this.initiatePrice.y + 100, 'sellYes',0)
                 .setDepth(100).setOrigin(.5, .5).setAlpha(.9).setScale(.35, .35).setInteractive()
                 .on('pointerover', () => {
                     this.accept.alpha = 1;
@@ -428,20 +428,20 @@ class Market extends Phaser.Scene {
         if(category == "seeds") { item += "\nSeeds"; }
         let yOffset = offer.yOffset;
         console.log(`NPC barter value ${barterValue} and are offering ${amt} ${item} `);
-        let barterBox = this.add.image(this.npc.x + 60, this.npc.y - 350,'marketBubble')
-            .setDepth(100).setOrigin(.5, .5).setScale(.3,.3);
-        let offerImg = this.add.image(barterBox.x+25,barterBox.y+20 - yOffset,img)
-            .setOrigin(.5,.5).setDepth(100).setScale(scale,scale);
+        let barterBox = this.add.image(this.npc.x + 90, this.npc.y - 350,'marketBubble')
+            .setDepth(100).setOrigin(.5, .5).setScale(.4,.4);
+        let offerImg = this.add.image(barterBox.x+35,barterBox.y+30 - yOffset,img)
+            .setOrigin(.5,.5).setDepth(100).setScale(scale*1.4,scale*1.4);
         let barterArrows = this.add.image(barterBox.x,barterBox.y,"barterArrows")
-             .setDepth(100).setOrigin(.5,.5).setScale(.3,.3);
+             .setDepth(100).setOrigin(.5,.5).setScale(.4,.4);
         let offerText = this.add.text(offerImg.x+30,offerImg.y, amt.toString(), this.textConfig)
             .setDepth(100).setOrigin(.5,.5);
-        let honeyImg = this.add.image(barterBox.x-40,barterBox.y-30,this.imgMap[this.typeToBuy])
-            .setOrigin(.5,.5).setDepth(100).setScale(.5,.5);
-        let honeyText = this.add.text(honeyImg.x+25,honeyImg.y,this.npcAmount.toString(),this.textConfig)
+        let honeyImg = this.add.image(barterBox.x-55,barterBox.y-40,this.imgMap[this.typeToBuy])
+            .setOrigin(.5,.5).setDepth(100).setScale(.6,.6);
+        let honeyText = this.add.text(honeyImg.x+30,honeyImg.y,this.npcAmount.toString(),this.textConfig)
             .setDepth(100).setOrigin(.5,.5);
-        let decline = this.add.image(barterBox.x - 40, barterBox.y + 80, 'sellNo',0)
-            .setDepth(100).setOrigin(.5, .5).setScale(.25, .25).setAlpha(.75).setInteractive()
+        let decline = this.add.image(barterBox.x - 40, barterBox.y + 110, 'sellNo',0)
+            .setDepth(100).setOrigin(.5, .5).setScale(.35, .35).setAlpha(.75).setInteractive()
             .on('pointerover', () => {
                 decline.alpha = 1;
             })
@@ -461,8 +461,8 @@ class Market extends Phaser.Scene {
             });
 
 
-        let accept = this.add.image(barterBox.x + 40, barterBox.y + 80, 'sellYes',0)
-            .setDepth(100).setOrigin(.5, .5).setAlpha(.75).setScale(.25, .25).setInteractive()
+        let accept = this.add.image(barterBox.x + 40, barterBox.y + 110, 'sellYes',0)
+            .setDepth(100).setOrigin(.5, .5).setAlpha(.75).setScale(.35, .35).setInteractive()
             .on('pointerover', () => {
                 accept.alpha = 1;
             })
@@ -600,7 +600,7 @@ class Market extends Phaser.Scene {
         this.customersInLine = [];
         console.log(`Creating ${amt} customers in line...`);
         for (let i = 0; i < amt; i++) {
-            this.customersInLine.push(this.generateNPC(((2*config.width/3)-20) - ((i) * (config.width/5 + 30)) - 15));
+            this.customersInLine.push(this.generateNPC(((2*config.width/3)-100) - ((i) * (config.width/5 + 30)) - 15));
             this.customersInLine[i].setVisible(true);
             this.customersInLine[i].depth = 90 - i;
             console.log(`creating npc ${i}...`);
@@ -789,11 +789,11 @@ class Market extends Phaser.Scene {
         //Text config without a background, which blends better with the background
         this.textConfig = {
             fontFamily: font,
-            fontSize: "18px",
+            fontSize: "30px",
             color: "#000000",
             align: "center",
             stroke: "#000000",
-            strokeThickness: 0,
+            strokeThickness: 1,
             padding: {
                 top: 5,
                 bottom: 5
@@ -801,7 +801,7 @@ class Market extends Phaser.Scene {
         };
         this.requestTextConfig = {
             fontFamily: font,
-            fontSize: "38px",
+            fontSize: "42px",
             color: "#000000",
             align: "center",
             stroke: "#000000",
