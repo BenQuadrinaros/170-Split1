@@ -30,7 +30,7 @@ class Flower {
         }
 
         // If planted in the ground, start playing tweens on loop
-        if(swayDelay > -1 && !(this.waveStart)) {
+        if(swayDelay > -1 && !(this.waveStart) && playerVariables.flowerWavingEnabled) {
             this.waveStart = true;
             scene.time.delayedCall(swayDelay, () => {
                 this.waveStart = true;
@@ -52,7 +52,7 @@ class Flower {
             duration: 2500,
             delay: 0,
             onComplete: () => {
-                this.swayLeft(scene);
+                if(playerVariables.flowerWavingEnabled) { this.swayLeft(scene); }
             }
         });
     }
@@ -68,7 +68,7 @@ class Flower {
             duration: 2500,
             delay: 0,
             onComplete: () => {
-                this.swayRight(scene);
+                if(playerVariables.flowerWavingEnabled) { this.swayRight(scene); }
             }
         });
     }

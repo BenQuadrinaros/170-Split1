@@ -74,29 +74,27 @@ class Hub extends Phaser.Scene {
         this.createAnimations();
 
         //Check for special cases
-        if ((this.previousScene === "marketScene" || this.previousScene === "hubScene" 
-            || this.previousScene === "tutorialScene") && !this.popupVisited) {
-            if(this.previousScene === "hubScene" || this.previousScene === "tutorialScene") {
-                playerVariables.score = calculateEcologyScore();
-                //console.log("score is "+playerVariables.score)
-                let hasWon = true;
-                for(let star of playerVariables.score) { if(!star) { hasWon = false; break; } }
-                if (!(playerVariables.hasWon) && hasWon) {
-                    playerVariables.hasWon = true;
-                    this.scene.pause();
-                    this.music.stop();
-                    this.scene.start("winScene");
-                }
-            }
-            this.popupVisited = true;
-            this.scene.pause();
-            dailySprinklerCost = this.startingMoneyForPopup - playerVariables.money;
-            if(this.previousScene === "tutorialScene"){
-                this.scene.launch("hubPopupScene", {previousScene: "hubScene",
-                                                    fromTutorial:true});
+        if ((this.previousScene === "hubScene" || this.previousScene === "tutorialScene") && !(this.popupVisited)) {
+            playerVariables.score = calculateEcologyScore();
+            let hasWon = true;
+            for(let star of playerVariables.score) { if(!star) { hasWon = false; break; } }
+            if(!(playerVariables.hasWon) && hasWon && this.previousScene === "hubScene") {
+                this.popupVisited = true;
+                playerVariables.hasWon = true;
+                this.scene.pause();
+                this.music.stop();
+                this.scene.start("winScene");
             } else {
-                this.scene.launch("hubPopupScene", {previousScene: "hubScene",
-                                                    fromTutorial:false});
+                this.popupVisited = true;
+                this.scene.pause();
+                dailySprinklerCost = this.startingMoneyForPopup - playerVariables.money;
+                if(this.previousScene === "tutorialScene"){
+                    this.scene.launch("hubPopupScene", {previousScene: "hubScene",
+                                                        fromTutorial:true});
+                } else {
+                    this.scene.launch("hubPopupScene", {previousScene: "hubScene",
+                                                        fromTutorial:false});
+                }
             }
         } 
 
@@ -564,11 +562,17 @@ class Hub extends Phaser.Scene {
 
     createBees() {
         //Create bee swarm for simulated pollination
+        console.log("makin some beeeeeees");
         this.swarm = [];
         let numBees = 3 + 2 * this.numHives;     //5 seems to be a good base for flower following to look decent
         for (let i = 0; i < numBees; ++i) {
-            let rand = Phaser.Math.Between(0, this.path.length-1);
-            let temp = new Bee(this, 'bearBee', 0, this.path[rand][0], this.path[rand][1]);
+            let temp;
+            if(this.path.length > 0) {
+                let rand = Phaser.Math.Between(0, this.path.length-1);
+                temp = new Bee(this, 'bearBee', 0, this.path[rand][0], this.path[rand][1]);
+            } else {
+                temp = new Bee(this, 'bearBee', 0, this.worldWidth/2 + Phaser.Math.Between(-15, 15), this.worldHeight);
+            }
             temp.setOrigin(.5).setScale(.25, .25).setVisible(true);
             temp.depth = 101;
             this.swarm.push(temp);
@@ -1495,7 +1499,7 @@ class Hub extends Phaser.Scene {
 
     gridToCoord(gridx, gridy) {
         //takes grid coords and returns world coords in [x, y]
-        return [(1 + gridx) * game.config.width / 12, (6 + gridy) * game.config.height / 9 + 15];
+        return [(1 + gridx) * game.config.width / 12, (6 + gridy) * game.config.height / 9 + 35];
     }
 
     placeHeldItemInBag(){
@@ -1580,73 +1584,17 @@ class Hub extends Phaser.Scene {
         } else if (playerVariables.waterLvl == 2) {
             idImages["Watering Can"][0] = "purplewater0";
         }
-        
-        /*
-        var saveData = {
-            version: "0.3.15",
-            garden: gardenGrid,
-            currDay: currentDay,
-            hasSold: hasSoldForDay,
-            playerVals: playerVars,
-            shopInv: shopInventory,
-            bucksMap: priceMap,
-            bucksHist: priceHistory
-        };
-        
-        //Check Garden Grid
-        if(loadedData.garden.length !== 0){
-            if(loadedData.garden["gardenGrid"].length === 0){
-                console.log("No saved garden grid");
-            }
-            else{
-                gardenGrid = loadedData.garden["gardenGrid"];
-            }
-        }
 
-        //Check Player Variables
-        if(loadedData.playerVars.length !== 0){
-            //Get the current day
-            currentDay = loadedData.playerVars["currentDay"];
-            //Get the time of day
-            hasSoldForDay = loadedData.playerVars["hasSoldForDay"];
-            //Get other player variables
-            if(loadedData.playerVars["playerVariables"] === null){
-                console.log("No saved player data");
-            }
-            else{
-                playerVariables = loadedData.playerVars["playerVariables"];
-                console.log("playerVariables" + playerVariables);
+        //Retrieve list of Hives & Weeds for random collection
+        let beehives = [];
+        for (let row = 0; row < gardenGrid.length; row++) {
+            for (let col = 0; col < gardenGrid[0].length; col++) {
+                if (gardenGrid[row][col].item instanceof Hive) {
+                    beehives.push([row, col]);
+                }
             }
         }
-        
-        //Check Shop Inventory
-        if(loadedData.shopInventory.length !== 0){
-            if(loadedData.shopInventory["shopInventory"].length === 0){
-                console.log("No saved shop data");
-            }
-            else{
-                shopInventory = loadedData.shopInventory["shopInventory"];
-            }
-        }
-
-        //Check Price Data
-        if(loadedData.priceData.length !== 0){
-            //Check Price Map
-            if(loadedData.priceData["priceMap"].length === 0){
-                console.log("No saved price map");
-            }
-            else{
-                priceMap = loadedData.priceData["priceMap"];
-            }
-            //Check Price History
-            if(loadedData.priceData["priceHistory"].length === 0){
-                console.log("No saved price history");
-            }
-            else{
-                priceHistory = loadedData.priceData["priceHistory"];
-            }
-        }
-        */
+        this.numHives = beehives.length;
     }
 
     saveData() {

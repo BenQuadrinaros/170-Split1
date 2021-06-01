@@ -843,7 +843,7 @@ class Market extends Phaser.Scene {
         //Camera button for snapshots
         if(playerVariables.gotCamera) {
             this.snapshot = this.add.image(this.infoDisplay.x + 125, this.infoDisplay.y, "snapshot");
-            this.snapshot.setAlpha(.9).setDepth(200).setScale(.275, .275).setInteractive();
+            this.snapshot.setAlpha(.9).setDepth(200).setScale(.75, .75).setInteractive();
             this.snapshot.on('pointerover', () => {
                     console.log("over camera");
                     this.snapshot.setAlpha(1);
