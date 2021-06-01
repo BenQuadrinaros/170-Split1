@@ -29,11 +29,11 @@ class HubPopup extends Phaser.Scene {
             this.pauseMenu = this.add.image(scrollX + config.width/2, scrollY + config.height/2, "pauseBilled").setOrigin(0.5);
         }
         else{
-            this.pauseMenu = this.add.image(scrollX + config.width/2, scrollY + config.height/2, "pauseEmpty").setOrigin(0.5);
+            this.pauseMenu = this.add.image(scrollX + config.width/2, scrollY + config.height/2, "pauseBilled").setOrigin(0.5);
         }
 
         //Create settings frames
-        this.settings = this.add.image(scrollX + config.width/2 - 160, scrollY + config.height/3- 75, "settingsPause")
+        this.settings = this.add.image(scrollX + config.width/2 - 210, scrollY + config.height/3- 75, "settingsPause")
                         .setOrigin(.5, .5).setAngle(8).setInteractive().setScale(0.55);
         this.settings.on('pointerover', () => {this.settings.setFrame(1); this.pointerCurrentlyOver = "Settings"});
         this.settings.on("pointerout", () => {this.settings.setFrame(0); this.pointerCurrentlyOver = ""});
@@ -60,9 +60,10 @@ class HubPopup extends Phaser.Scene {
         var textSpacer = -15;
 
         //Current Week
-        this.add.text(scrollX + 3*config.width/5 + 50, scrollY + config.height/5 , currentDay, this.textConfig)
+        this.add.text(scrollX + 3*config.width/5 + 10, scrollY + config.height/5 , currentDay, this.textConfig)
             .setOrigin(.5, .5).setAngle(-5);
 
+        this.createPriceHistoryTab();
         //Display ecology score below
         textSpacer += 58.5;
         let grades = ["F", "D", "C", "B", "A", "A+"];
@@ -77,10 +78,11 @@ class HubPopup extends Phaser.Scene {
         for(let i = 0; i < 5; i++) {
             //Checklist of tasks needed to win
             if(playerVariables.score[i]) {
+                grade++;
                 // Move down the list slapping on checks and bursting bees
                 this.time.delayedCall(250 * (i+1), () => {
-                    let a = this.add.image(scrollX + config.width/2  - 54 + 3*i, scrollY + config.height/3 - 18
-                        + (i+1) * 40.5, "pauseCheckmark").setScale(.5).setAngle(-5);
+                    let a = this.add.image(scrollX + config.width/2  - 105 + 3*i, scrollY + config.height/3 - 60
+                        + textSpacer + (i+1) * 40.5, "pauseCheckmark").setScale(.5).setAngle(-5);
                     // Slap down the check
                     this.tweens.add({
                         targets: a,
@@ -97,13 +99,13 @@ class HubPopup extends Phaser.Scene {
                     this.beeEmitter.on = true;
                     console.log("bees on",i);
                     this.time.delayedCall(225, () => { this.beeEmitter.on = false;console.log("bees off",i); });
-                    grade++;
+
                 });
             }
         }
         //Could replace this with a more stylized stamp image
         this.textConfig.fontSize = "20px";
-        this.add.text(this.cameras.main.scrollX + config.width/2 + 77, this.cameras.main.scrollY + config.height/5 + 45, grades[grade], this.textConfig).setOrigin(.5, .5).setAngle(-5);
+        this.add.text(this.cameras.main.scrollX + config.width/2 + 30, this.cameras.main.scrollY + config.height/5 + 45, grades[grade], this.textConfig).setOrigin(.5, .5).setAngle(-5);
         
         this.tutorialTextBackdrop = null;
 
@@ -115,9 +117,9 @@ class HubPopup extends Phaser.Scene {
 
         //Display a random unused tool tip along the bottom of the card
         let rand = Phaser.Math.Between(0, toolTips.length-1);
-        this.add.text(scrollX + 2*config.width/3 + 10, scrollY + 4*config.height/5 - 23,(rand+1)+"/"+toolTips.length, this.textConfig).setOrigin(.5, .5).setAngle(-5);
+        this.add.text(scrollX + 2*config.width/3-30, scrollY + 4*config.height/5 - 23,(rand+1)+"/"+toolTips.length, this.textConfig).setOrigin(.5, .5).setAngle(-5);
         this.textConfig.fontSize = "12px";
-        this.add.text(scrollX + config.width/2 + 95, scrollY + 4*config.height/5 + 15, "\n" + toolTips[rand], this.textConfig).setOrigin(.5, .5).setAngle(-5);
+        this.add.text(scrollX + config.width/2 + 35, scrollY + 4*config.height/5 + 15, "\n" + toolTips[rand], this.textConfig).setOrigin(.5, .5).setAngle(-5);
         //If from tutorial, extra text
         if(this.fromTutorial) {
             this.createFromTutorialText();
@@ -188,9 +190,13 @@ Bee you around!`;
         this.events.on("resume", () => {
             console.log("ReenableEsc called");
             if(!this.fromTutorial || this.currDialogSelection === 3){
-                console.log("Resuming Hub Activities");
-                this.scene.resume(this.prevScene);
-                this.scene.stop();
+                // console.log("Resuming Hub Activities");
+                // this.scene.resume(this.prevScene);
+                // this.scene.stop();
+                this.pauseMenu.setVisible(true);
+                this.priceHistoryTabText.setVisible(true);
+                this.settings.setVisible(true);
+                this.music.resumeBetweenScenes();
             }
         });
 
@@ -205,6 +211,42 @@ Bee you around!`;
                         console.log("Tutorial Text Backdrop exists or over something");
                     }
                 }, this);
+    }
+    createPriceHistoryTab(){
+        this.tabTextConfig = {
+            fontFamily: font,
+            fontSize: "18px",
+            color: "#000000",
+            align: "left",
+            stroke: "#000000",
+            strokeThickness: .5,
+            padding: {
+                top: 5,
+                bottom: 5
+            },
+        }
+        this.priceHistoryTabText = this.add.text(scrollX + config.width/2 + 270, scrollY + config.height/5, "Price History", this.tabTextConfig)
+            .setOrigin(.5, .5).setAngle(2).setInteractive()
+            .on("pointerover", () => {
+              this.priceHistoryTabText.setColor(0xff0000);
+              this.pointerCurrentlyOver = "Price History";
+              console.log("over price history tab");
+            })
+            .on("pointerout", () => {
+                this.priceHistoryTabText.setColor(0x000000);
+                this.pointerCurrentlyOver = "";
+            })
+            .on("pointerdown", () => {
+                this.music.pauseBetweenScenes();
+                this.music.playSFX("notebook");
+                this.pauseMenu.setVisible(false);
+                this.priceHistoryTabText.setVisible(false);
+                this.settings.setVisible(false);
+                this.scene.pause();
+                this.scene.launch('priceHistory', {previousScene: "hubPopupScene", previousSceneDone: "false"});
+            });
+
+
     }
 
     createFromTutorialText(){
