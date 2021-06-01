@@ -376,15 +376,17 @@ var createDataBase = function (count) {
     for (const [tab, inv] of Object.entries(shopInventory)) {
         for (const [item, info] of Object.entries(inv)) {
             console.log(`${item}: ${info}`);
-            items.insert({
-                type: tab,
-                id: item,
-                color: Random(0, 0xffffff),
-                img: info.img,
-                amt: info.amount,
-                cost: info.cost
-            });
-            shopCosts[item] = info.cost;
+            if (info.amount > 0) {
+                items.insert({
+                    type: tab,
+                    id: item,
+                    color: Random(0, 0xffffff),
+                    img: info.img,
+                    amt: info.amount,
+                    cost: info.cost
+                });
+                shopCosts[item] = info.cost;
+            }
         }
 
     }
