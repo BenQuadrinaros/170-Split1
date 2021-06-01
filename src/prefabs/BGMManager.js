@@ -28,7 +28,7 @@ class BGMManager {
     }
 
     //plays a song immediately
-    playSong(fileName, loop){
+    playSong(fileName, loop, startTime = 0){
         var config = {
             mute: false,
             volume: this.volume,
@@ -41,6 +41,9 @@ class BGMManager {
         this.currentSong = fileName;
         this.musicPlayer = this.scene.sound.add(fileName);
         this.musicPlayer.play(config);
+        if(startTime > 0){
+            this.musicPlayer.setSeek(startTime);
+        }
         //this.scene.sound.play(fileName, config);
     }
 
@@ -116,6 +119,37 @@ class BGMManager {
             });
         });
 
+    }
+
+    resumeBetweenScenes(){
+        if(this.musicPlayer && this.musicPlayer.isPlaying){
+            return;
+        }
+        else{
+            this.playSong(currPlayingSongKey, true, currMusicPlaybackTime);
+            this.setVolume(config.volume);
+        }
+    }
+
+    pauseSong(){
+        this.musicPlayer.pause();
+    }
+
+    pauseBetweenScenes(){
+        currPlayingSongKey = this.currentSong;
+        currMusicPlaybackTime = this.getPlaybackTime();
+        this.stop();
+    }
+
+    resumeSong(playbackTime = 0){
+        if(playbackTime > 0){
+            this.musicPlayer.setSeek(playbackTime);
+        }
+        this.musicPlayer.resume();
+    }
+
+    getPlaybackTime(){
+        return this.musicPlayer.seek;
     }
 
     playSFX(fileName){

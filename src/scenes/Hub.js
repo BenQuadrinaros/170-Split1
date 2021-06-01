@@ -81,11 +81,13 @@ class Hub extends Phaser.Scene {
             if(!(playerVariables.hasWon) && hasWon && this.previousScene === "hubScene") {
                 this.popupVisited = true;
                 playerVariables.hasWon = true;
+                this.music.pauseBetweenScenes();
                 this.scene.pause();
                 this.music.stop();
                 this.scene.start("winScene");
             } else {
                 this.popupVisited = true;
+                this.music.pauseBetweenScenes();
                 this.scene.pause();
                 dailySprinklerCost = this.startingMoneyForPopup - playerVariables.money;
                 if(this.previousScene === "tutorialScene"){
@@ -382,8 +384,8 @@ class Hub extends Phaser.Scene {
     loadBackTrees(timeMod){
         this.backTrees = null;
         if(playerVariables.hubBackgroundTrees){
-            this.backTrees = this.add.image(0, this.worldHeight, "hubBackTrees" + timeMod)
-            .setOrigin(0, 1).setScale(0.5).setDepth(30);
+            this.backTrees = this.add.image(0, 0, "hubBackTrees" + timeMod)
+            .setOrigin(0, 0).setScale(0.5).setDepth(-3);
         }
     }
 
@@ -537,7 +539,7 @@ class Hub extends Phaser.Scene {
         //Make sure the escape keybinding isn't consumed by the backpack UI
         this.events.on("resume", () => {
             console.log("ReenableEsc called");
-            this.music.setVolume(config.volume);
+            this.music.resumeBetweenScenes();
             keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
             keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
             keyB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
@@ -546,7 +548,7 @@ class Hub extends Phaser.Scene {
             this.backpack.setAlpha(.9);
         });
 
-        //Have player move towards the mouse on pointer down
+        //Simulate a space press on pointer input
         this.input.on('pointerdown', function (pointer) {
             console.log("Pointer is currently over: " + this.pointerCurrentlyOver);
             if (this.pointerCurrentlyOver === "backpack") {
@@ -679,6 +681,7 @@ class Hub extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keyESCAPE)) {
             console.log("Pausing Game");
             //isPaused = true;
+            this.music.pauseBetweenScenes();
             this.scene.pause();
             this.scene.launch("hubPopupScene", {previousScene: "hubScene",
                                                     fromTutorial:false});

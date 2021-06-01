@@ -41,6 +41,8 @@ const font =  'realize_my_passionregular';
 let currentDay = 0;
 let hasSoldForDay = false;
 let dailySprinklerCost = 0.0;
+let currMusicPlaybackTime = 0.0;
+let currPlayingSongKey = "";
 
 //Starting garden state
 let flow0 = new Flower(2, 3, "Daisy");
