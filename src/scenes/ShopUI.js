@@ -19,6 +19,15 @@ let idImages = {
     "Blue Can": ["bluewater5", .55],
     "Purple Can": ["purplewater6", .55],
     "Bench": ["Bench", .25],
+    "Bush": ["Bush", .25],
+    "Hedge": ["Hedge", .25],
+    "Fence": ["Fence", .25],
+    "Back\nNo Trees": ["woodFenceDisplay", .25],
+    "Back\nTrees": ["backgroundTreesDisplay", .25],
+    "Back\nWooden\nFence": ["woodFenceDisplay", .25],
+    "Back\nIron\nFence": ["ironFenceDisplay", .325],
+    "Brick\nPath": ["brickPathDisplay", .345],
+    "Dirt Path": ["dirtPathDisplay", .375],
     "yellow": ["honeyYellow", .5],
     "blue": ["honeyBlue", .5],
     "pink": ["honeyPink", .5],
@@ -295,12 +304,12 @@ class ShopUI extends Phaser.Scene {
                                 } else if (item == "Purple Can") {
                                     playerVariables.waterLvl += 1;
                                     idImages["Watering Can"][0] = "purplewater0";
-                                } else if(item == "Background\nTrees") {
+                                } else if(item == "Back\nTrees") {
                                     playerVariables.inventory[tab][item] += amtToBuy;
-                                    playerVariables.inventory[tab]["No Trees"] += amtToBuy;
-                                } else if(item == "Iron\nFence"){
+                                    playerVariables.inventory[tab]["Back\nNo Trees"] += amtToBuy;
+                                } else if(item == "Back\nIron\nFence"){
                                     playerVariables.inventory[tab][item] += amtToBuy;
-                                    playerVariables.inventory[tab]["Wooden\nFence"] += amtToBuy;
+                                    playerVariables.inventory[tab]["Back\nWooden\nFence"] += amtToBuy;
                                 } else if(item == "Brick\nPath"){
                                     playerVariables.inventory[tab][item] += amtToBuy;
                                     playerVariables.inventory[tab]["Dirt Path"] += amtToBuy;

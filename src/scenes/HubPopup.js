@@ -79,8 +79,8 @@ class HubPopup extends Phaser.Scene {
             if(playerVariables.score[i]) {
                 // Move down the list slapping on checks and bursting bees
                 this.time.delayedCall(250 * (i+1), () => {
-                    let a = this.add.image(scrollX + config.width/2  - 54 + 3*i, scrollY + config.height/3 - 60 
-                        + textSpacer + (i+1) * 40.5, "pauseCheckmark").setScale(.5).setAngle(-5);
+                    let a = this.add.image(scrollX + config.width/2  - 54 + 3*i, scrollY + config.height/3 - 18
+                        + (i+1) * 40.5, "pauseCheckmark").setScale(.5).setAngle(-5);
                     // Slap down the check
                     this.tweens.add({
                         targets: a,

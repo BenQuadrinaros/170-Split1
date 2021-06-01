@@ -36,8 +36,11 @@ class Plot {
             //console.log("putting",this.item,"at",spotx," ",spoty);
             if(this.item instanceof Flower) {
                 // If Flower, give swayDelay proportional to position in garden
-                this.spot = this.item.addToScene(scene, spotx, spoty, 2*coords[0] + coords[1]/10);
-                console.log("delay this wave by "+(2*coords[0] + coords[1]/10)+" ms");
+                this.spot = this.item.addToScene(scene, spotx, spoty, 2*spotx + spoty/10);
+            } else if (this.item instanceof Decorative && (this.item.type == "Bush" || this.item.type == "Hedge")){
+                this.spot = this.item.addToScene(scene, spotx, spoty+12);
+            } else if (this.item instanceof Decorative && this.item.type == "Fence"){
+                this.spot = this.item.addToScene(scene, spotx, spoty-6);
             } else {
                 this.spot = this.item.addToScene(scene, spotx, spoty);
             }
@@ -48,13 +51,13 @@ class Plot {
                 if(stock['blue']>stock['yellow']+stock['pink']+stock['purple']) { hexColor = 0x4E6FD3; exclamationKey = "!blue"; }
                 if(stock['purple']>stock['yellow']+stock['pink']+stock['blue']) { hexColor = 0xB58FC2; exclamationKey = "!purple"; }
                 if(stock['pink']>stock['yellow']+stock['blue']+stock['purple']) { hexColor = 0xDC715D; exclamationKey = "!pink"; }
-                this.honeyIndicator = scene.add.ellipse(coords[0], coords[1] + 40, config.width / 10,
+                this.honeyIndicator = scene.add.ellipse(spotx, spoty + 40, config.width / 10,
                     config.height / 10, hexColor);
                 this.honeyIndicator.depth = this.spot.depth - 1;
-                this.exclamation = scene.add.image(coords[0] + 25, coords[1] - 45, exclamationKey);
+                this.exclamation = scene.add.image(spotx + 25, spoty - 45, exclamationKey);
                 this.exclamation.depth = this.spot.depth + 1;
-            } else if(this.item instanceof Bramble) {
-                this.shadow = scene.add.image(coords[0], coords[1] + 45, "bearShadow");
+            } else if(this.item instanceof Bramble || (this.item instanceof Decorative && this.item.type == "Bush")) {
+                this.shadow = scene.add.image(spotx, spoty + 39, "bearShadow");
                 this.shadow.setScale(.5,.5).setDepth(this.spot.depth-1).setAlpha(.9);
             }
         } 
@@ -132,6 +135,15 @@ function objToPlot(obj){
                 break;
             case "Bench":
                 plot.item = new DecorativeWide("Bench", obj.item.isLeft);
+                break;
+            case "Bush":
+                plot.item = new Decorative("Bush");
+                break;
+            case "Hedge":
+                plot.item = new Decorative("Hedge");
+                break;
+            case "Fence":
+                plot.item = new Decorative("Fence");
                 break;
             default:
                 plot.item = null;

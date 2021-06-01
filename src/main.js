@@ -144,11 +144,12 @@ let playerVariables = {
         decorations: {
             "Bench": 0,
             "Bush": 0,
+            "Hedge": 0,
             "Fence": 0,
-            "No Trees": 0,
-            "Background\nTrees": 0,
-            "Wooden\nFence": 0,
-            "Iron\nFence": 0,
+            "Back\nNo Trees": 0,
+            "Back\nTrees": 0,
+            "Back\nWooden\nFence": 0,
+            "Back\nIron\nFence": 0,
             "Brick\nPath": 0,
             "Dirt Path": 0
         },
@@ -188,9 +189,12 @@ let shopInventory = {
         "Purple Can":{"amount":0,"cost":12.75}
     },
     "Decorations":{
-        "Bench":{"amount": 4,"cost":7},
-        "Background\nTrees":{"amount": 1,"cost":15},
-        "Iron\nFence":{"amount": 1,"cost":15},
+        "Bench":{"amount": 1,"cost":7.25},
+        "Bush":{"amount": 2, "cost": 4.25},
+        "Hedge":{"amount": 2, "cost": 5.25},
+        "Fence":{"amount": 4, "cost": 3.75},
+        "Back\nTrees":{"amount": 1,"cost":15},
+        "Back\nIron\nFence":{"amount": 1,"cost":15},
         "Brick\nPath":{"amount": 1,"cost":15}
     },
     "Outfits":{
