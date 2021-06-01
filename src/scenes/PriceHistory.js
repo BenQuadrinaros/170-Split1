@@ -80,7 +80,7 @@ class PriceHistory extends Phaser.Scene{
         this.continueText.setAlpha(.5);
 
         console.log(this.previousSceneDone);
-        if (this.previousSceneDone === "false") {
+        if (this.previousSceneDone === "false" && this.previousScene !== "hubPopupScene") {
             this.textConfiguration.fontSize = "20px";
             //this.endDayText = this.add.text( this.bg.x, this.bg.y+180, "End day \nearly", this.textConfiguration).setOrigin(0.5, 0.5).setDepth(5);
             //this.endDayBackground = this.add.rectangle(  this.bg.x, this.bg.y+180, 150, 75, 0xffffff, .5).setOrigin(0.5, 0.5).setInteractive();
@@ -98,6 +98,7 @@ class PriceHistory extends Phaser.Scene{
                     //console.log("ending early")
                     hasSoldForDay = true;
                     this.music.playSFX("mapTransition");
+                    this.music.stop();
                     this.endDayEarly();
                 });
         }
