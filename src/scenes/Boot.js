@@ -29,6 +29,9 @@ class Boot extends Phaser.Scene {
             this.load.image("hubSkyEvening", "./assets/sprites/background/skyEvening.png");
 
             this.load.image("hubEveningOverlay", "./assets/sprites/background/eveningOverlay.png");
+            this.load.image("hubEveningBandaid", "./assets/sprites/background/caveBandaidEvening.png");
+            this.load.image("hubDaytimeBandaid", "./assets/sprites/background/caveBandaidDaytime.png");
+
 
             this.load.image("hubFenceIron", "./assets/sprites/background/fenceIron.png");
             this.load.image("hubFenceWood", "./assets/sprites/background/fenceWood.png");
@@ -124,8 +127,12 @@ class Boot extends Phaser.Scene {
             this.load.image('snapshot','./assets/sprites/UI/camera.png');
             //for hub start of day
             this.load.image('pauseBilled', './assets/sprites/background/pauseBILLED.png');
-            this.load.image('pauseEmpty', './assets/sprites/background/pauseEMPTY.png');
+            this.load.image('pauseEmpty', './assets/sprites/background/pauseEmpty.png');
             this.load.image('pauseCheckmark', './assets/sprites/UI/checkmark_85x85.png');
+            //For how to play
+            this.load.image("howToPlay1", "./assets/sprites/background/h2pBasics.png");
+            this.load.image("howToPlay2", "./assets/sprites/background/h2pBackpack.png");
+            this.load.image("howToPlay3", "./assets/sprites/background/h2pHoney.png");
             //For shop
             this.load.image('toadLeckman', './assets/sprites/character/mrleckman_510x300.png');
             this.load.image('toadLeckmanHead', './assets/sprites/UI/mrleckmanHEAD_285x180.png')
@@ -253,6 +260,8 @@ class Boot extends Phaser.Scene {
             this.load.spritesheet('backpackFrames', "./assets/spritesheets/backpackSheet.png", {frameWidth: 120, frameHeight:121, startFrame:0, endFrame:1});
             //For start of day
             this.load.spritesheet("settingsPause", './assets/spritesheets/settingsPAUSE_342x51.png', {frameWidth:171, frameHeight: 51, startFrame: 0, endFrame: 1});
+            this.load.spritesheet("popupPriceHistory", "./assets/spritesheets/priceHist_410x42.png", {frameWidth:205, frameHeight: 42, startFrame: 0, endFrame: 1});
+            this.load.spritesheet("popupHowToPlay", "./assets/spritesheets/howTo_392x42.png", {frameWidth:196, frameHeight: 42, startFrame: 0, endFrame: 1});
             //For menuScene
             this.load.spritesheet('Play','./assets/spritesheets/title_text_CONT_1770x115.png',{frameWidth: 885, frameHeight: 115, startFrame:0 , endFrame: 1});
             this.load.spritesheet('Settings','./assets/spritesheets/title_text_SET_1084x175.png',{frameWidth: 542, frameHeight: 175, startFrame:0 , endFrame: 1});

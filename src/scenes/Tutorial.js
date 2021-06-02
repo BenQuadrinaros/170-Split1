@@ -1554,7 +1554,7 @@ Here’s a new beehive. Would you find a good spot to place it?`;
             case 11:
                 this.tutorialDialog.text =
 `Bees tend to stay close to their hive, so they’ll only visit
-nearby flowers. Naturally, the more the flowers near the hive,
+nearby flowers. Naturally, the more flowers near the hive,
 the better! Just remember that the more flowers there are, the
 harder it is for us to make the most of them.`;
                 break;
@@ -1577,7 +1577,7 @@ but you can always get more in town.`;
             case 14:
                 this.tutorialDialog.text =
 `That's all for today. Before you cozy up in your cave to sleep,
-make sure to water that new flower. See you next week!`;
+make sure to water those new flowers. See you next week!`;
                 break;
             default:
                 console.log("Supposedly unreachable tutorial dialog reached");

@@ -296,7 +296,7 @@ class Shop extends Phaser.Scene {
                 this.marketEntrance.text = "Farmer's Market Entrance\nSPACE to sell for today";
             }
             else{
-                this.marketEntrance.text = "Come back tomorrow when it is earlier";
+                this.marketEntrance.text = "Come back next week!";
             }
             if (!hasSoldForDay && !this.leaving) {
                     if (Phaser.Input.Keyboard.JustDown(keySPACE)) {

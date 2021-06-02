@@ -47,7 +47,7 @@ class Menu extends Phaser.Scene {
             console.log("No save data found");
             this.loadedData = false;
         }
-        else if(this.loadedData.version != "0.3.19"){
+        else if(this.loadedData.version != "1.0.0"){
             console.log("Invalid Version Number");
             this.loadedData = false;
         } else {

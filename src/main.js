@@ -5,7 +5,7 @@ let config = {
     width: 960,
     height: 540,
     scene: [Boot, Hub, Garden, Map, Market, MarketPriceSetting, Play, Menu, Credits, Talking,
-        OldRhythm,  Shop, ShopUI, Tutorial, BackPackUI, HubPopup, Pause, Settings, Win, PriceHistory],
+        OldRhythm,  Shop, ShopUI, Tutorial, BackPackUI, HubPopup, Pause, Settings, Win, PriceHistory, HowToPlay],
     volume: .25,
     physics: {
         default: 'arcade',
@@ -25,7 +25,7 @@ let previousScene = null;
 const VERSION_NUMBER = "0.3.6";
 //reserve some keyboard variables
 let keyP, keyO, keyESCAPE, keyENTER, keyLEFT, keyRIGHT, keyDOWN, keyUP, keySPACE,
-    keyY, keyN, keyT, keyB, keyW, keyA, keyS, keyD, keyH, keyJ, keyK, keyL, keyE, keyI;
+    keyY, keyN, keyT, keyB, keyW, keyA, keyS, keyD, keyH, keyJ, keyK, keyL, keyE, keyI, keyZ;
 
 //colors for ui elements
 let uiScene; // global variable for current active ui scene

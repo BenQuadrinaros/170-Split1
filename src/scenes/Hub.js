@@ -114,7 +114,7 @@ class Hub extends Phaser.Scene {
         this.updateCheckPause();
 
         //Scroll clouds
-        //this.sky.tilePositionX += 0.08;
+        this.sky.tilePositionX += 0.08;
 
         //Move the backpack icon to be be relative to the player
         this.updateMoveUI();
@@ -315,6 +315,7 @@ class Hub extends Phaser.Scene {
         keyJ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.J);
         keyK = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.K);
         keyL = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.L);
+        keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
     }
 
     createPlayer() {
@@ -326,7 +327,7 @@ class Hub extends Phaser.Scene {
             this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 3, this.worldWidth, this.worldHeight, [[game.config.width + 50, 115]]);
         }
         this.player.depth = this.player.y / 10;
-        this.player.setLowerLeftLimit(2 * config.height / 5 + 40);
+        this.player.setLowerLeftLimit(2 * config.height / 5 + 65);
         
         if(hasSoldForDay) { 
             this.player.shadow.alpha = .35;
@@ -337,7 +338,7 @@ class Hub extends Phaser.Scene {
     createCamera() {
         //Provide basic controls
         this.cameras.main.setBackgroundColor(0x000000);
-        this.cameras.main.setBounds(0, 0, this.worldWidth, this.worldHeight);
+        this.cameras.main.setBounds(0, -240, this.worldWidth, this.worldHeight);
         this.cameras.main.setZoom(1);
         this.cameras.main.setZoom(1.15);
         //this.cameras.main.setTint(0x000000);
@@ -351,14 +352,14 @@ class Hub extends Phaser.Scene {
         let timeMod = "";
         if(hasSoldForDay){
             timeMod = "Evening";
+            this.skybox = this.add.image(0, -245, "hubEveningBandaid").setOrigin(0, 0).setScale(0.5).setDepth(1);
         }
 
         //Load the sky
-        this.skybox = this.add.image(0, 0, "hubSky" + timeMod).setOrigin(0, 0).setScale(0.5).setDepth(-5);
+        this.skybox = this.add.image(0, -241.5, "hubSky" + timeMod).setOrigin(0, 0).setScale(0.5).setDepth(-5);
 
         //Load the clouds
-        this.sky = this.add.tileSprite(0, 0, 1920, 3240, 'hubClouds').setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-4);
-
+        this.sky = this.add.tileSprite(0, -241.5 - 85, 0, 0, 'hubClouds').setOrigin(0, 0).setScale(0.5, 0.5).setDepth(-4);
         //Load back trees if desired
         this.backTrees = null;
         this.loadBackTrees(timeMod);
@@ -368,7 +369,7 @@ class Hub extends Phaser.Scene {
         this.loadFence();
 
         //Load the background
-        this.background = this.add.image(0, 0, 'gardenBackground' + timeMod).setOrigin(0, 0).setScale(0.5).setDepth(-1);
+        this.background = this.add.image(0, -241.5, 'gardenBackground' + timeMod).setOrigin(0, 0).setScale(0.5).setDepth(-1);
 
         //Load the path
         this.backgroundTrail = null;
@@ -378,7 +379,7 @@ class Hub extends Phaser.Scene {
         this.backgroundShadows = null;
         this.loadShadows(timeMod);
 
-        this.sunsetTint = this.add.image(0, 0, "hubEveningOverlay").setOrigin(0, 0).setScale(0.5).setDepth(288);
+        this.sunsetTint = this.add.image(0, -241.5, "hubEveningOverlay").setOrigin(0, 0).setScale(0.5).setDepth(288);
         this.sunsetTint.alpha = 0;
         if (hasSoldForDay) {
             this.sunsetTint.alpha = 1;
@@ -388,8 +389,11 @@ class Hub extends Phaser.Scene {
     loadBackTrees(timeMod){
         this.backTrees = null;
         if(playerVariables.hubBackgroundTrees){
-            this.backTrees = this.add.image(0, 0, "hubBackTrees" + timeMod)
+            this.backTrees = this.add.image(0, -241.5, "hubBackTrees" + timeMod)
             .setOrigin(0, 0).setScale(0.5).setDepth(-3);
+            if(!hasSoldForDay){
+                this.daytimeBandaid = this.add.image(0, -245, "hubDaytimeBandaid").setOrigin(0, 0).setScale(0.5).setDepth(1);
+            }
         }
     }
 
@@ -398,7 +402,7 @@ class Hub extends Phaser.Scene {
         if(playerVariables.hubIronFence){
             fenceKey = "hubFenceIron";
         }
-        this.backgroundFence = this.add.image(0, 0, fenceKey)
+        this.backgroundFence = this.add.image(0, -243.5, fenceKey)
         .setOrigin(0, 0).setScale(0.5).setDepth(-2);
     }
 
@@ -413,7 +417,7 @@ class Hub extends Phaser.Scene {
             trailStyleKey += "Dirt";
         }
 
-        this.backgroundTrail = this.add.image(0, 0, trailStyleKey)
+        this.backgroundTrail = this.add.image(0, -243.5, trailStyleKey)
         .setOrigin(0, 0).setScale(0.5).setDepth(0);
     }
 
@@ -525,7 +529,7 @@ class Hub extends Phaser.Scene {
         this.caveText.depth = 100;
         //If the player has already sold for the day, display text openly
         if (hasSoldForDay) {
-            this.caveText.text = "Press SPACE to rest until next week";
+            this.caveText.text = "Press SPACE to rest\nuntil next week";
         }
         //If the player has not sold yet, only show the text if they go over it
         else {
@@ -783,25 +787,25 @@ class Hub extends Phaser.Scene {
 
         // -------------------------------------------
         // Quick day advancement for testing purposes
-        if (Phaser.Input.Keyboard.JustDown(keyP)) {
+        if (Phaser.Input.Keyboard.JustDown(keyP) && Phaser.Input.Keyboard.JustDown(keyZ)) {
             this.advanceDay();
         }
-        if (Phaser.Input.Keyboard.JustDown(keyO)) {
+        if (Phaser.Input.Keyboard.JustDown(keyO) && Phaser.Input.Keyboard.JustDown(keyZ)) {
             playerVariables.money += 10;
         }
-        if (Phaser.Input.Keyboard.JustDown(keyH)) {
+        if (Phaser.Input.Keyboard.JustDown(keyH) && Phaser.Input.Keyboard.JustDown(keyZ)) {
             playerVariables.inventory.honey["yellow"] += 3;
             playerVariables.inventory.honey["total"] += 3;
         }
-        if (Phaser.Input.Keyboard.JustDown(keyJ)) {
+        if (Phaser.Input.Keyboard.JustDown(keyJ) && Phaser.Input.Keyboard.JustDown(keyZ)) {
             playerVariables.inventory.honey["blue"] += 3;
             playerVariables.inventory.honey["total"] += 3;
         }
-        if (Phaser.Input.Keyboard.JustDown(keyK)) {
+        if (Phaser.Input.Keyboard.JustDown(keyK) && Phaser.Input.Keyboard.JustDown(keyZ)) {
             playerVariables.inventory.honey["pink"] += 3;
             playerVariables.inventory.honey["total"] += 3;
         }
-        if (Phaser.Input.Keyboard.JustDown(keyL)) {
+        if (Phaser.Input.Keyboard.JustDown(keyL) && Phaser.Input.Keyboard.JustDown(keyZ)) {
             playerVariables.inventory.honey["purple"] += 3;
             playerVariables.inventory.honey["total"] += 3;
         }
@@ -1584,7 +1588,7 @@ class Hub extends Phaser.Scene {
 
         //Check version number
         console.log("Save Data Version: " + loadedData.version);
-        if(loadedData.version !== "0.3.19"){
+        if(loadedData.version !== "1.0.0"){
             console.log("Invalid Version Number");
             return;
         }
@@ -1631,7 +1635,7 @@ class Hub extends Phaser.Scene {
     saveData() {
         //TODO:: save data when previous scene is not the menu
         var saveData = {
-            version: "0.3.19",
+            version: "1.0.0",
             garden: gardenGrid,
             currDay: currentDay,
             hasSold: hasSoldForDay,
