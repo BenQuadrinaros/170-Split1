@@ -98,7 +98,6 @@ class PriceHistory extends Phaser.Scene{
                     //console.log("ending early")
                     hasSoldForDay = true;
                     this.music.playSFX("mapTransition");
-                    this.music.stop();
                     this.endDayEarly();
                 });
         }
@@ -234,6 +233,7 @@ class PriceHistory extends Phaser.Scene{
     endDayEarly(){
         console.log(this.previousScene);
         hasSoldForDay = true;
+        this.music.stop();
         this.scene.stop(this.previousScene);
         this.scene.stop();
         this.scene.start("shopScene", {previousScene: "marketScene"});

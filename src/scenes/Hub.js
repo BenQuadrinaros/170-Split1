@@ -338,7 +338,7 @@ class Hub extends Phaser.Scene {
     createCamera() {
         //Provide basic controls
         this.cameras.main.setBackgroundColor(0x000000);
-        this.cameras.main.setBounds(0, -240, this.worldWidth, this.worldHeight);
+        this.cameras.main.setBounds(0, -240, this.worldWidth, this.worldHeight +240);
         this.cameras.main.setZoom(1);
         this.cameras.main.setZoom(1.15);
         //this.cameras.main.setTint(0x000000);
@@ -402,7 +402,7 @@ class Hub extends Phaser.Scene {
         if(playerVariables.hubIronFence){
             fenceKey = "hubFenceIron";
         }
-        this.backgroundFence = this.add.image(0, -243.5, fenceKey)
+        this.backgroundFence = this.add.image(0, -241.5, fenceKey)
         .setOrigin(0, 0).setScale(0.5).setDepth(-2);
     }
 

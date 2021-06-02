@@ -341,22 +341,22 @@ class Tutorial extends Phaser.Scene {
 
     createBackgroundImages() {
         //Load the sky
-        this.skybox = this.add.image(0, 0, "hubSky").setOrigin(0, 0).setScale(0.5).setDepth(-5);
+        this.skybox = this.add.image(0, -241.5, "hubSky").setOrigin(0, 0).setScale(0.5).setDepth(-5);
 
         //Load the clouds
-        this.sky = this.add.tileSprite(0, 0, config.width, config.height, 'hubClouds').setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-4);
+        this.sky = this.add.tileSprite(0, -241.5 - 85, 0, 0, 'hubClouds').setOrigin(0.5, 0.5).setScale(0.5, 0.5).setDepth(-4);
        
         //Load the fence/sign
         let fenceKey = "hubFenceWood";
-        this.backgroundFence = this.add.image(0, 0, fenceKey).setOrigin(0, 0).setScale(0.5).setDepth(-2);
+        this.backgroundFence = this.add.image(0, -241.5, fenceKey).setOrigin(0, 0).setScale(0.5).setDepth(-2);
 
         //Load the background
-        this.background = this.add.image(0, 0, 'gardenBackground').setOrigin(0, 0).setScale(0.5).setDepth(-1);
+        this.background = this.add.image(0, -241.5, 'gardenBackground').setOrigin(0, 0).setScale(0.5).setDepth(-1);
 
         //Load the path
         let trailStyleKey = "hubTrail";
         trailStyleKey += "Dirt";
-        this.backgroundTrail = this.add.image(0, 0, trailStyleKey).setOrigin(0, 0).setScale(0.5).setDepth(0);
+        this.backgroundTrail = this.add.image(0, -243.5, trailStyleKey).setOrigin(0, 0).setScale(0.5).setDepth(0);
 
         //Load the shadows
         let shadowKey = "hubShadows";
