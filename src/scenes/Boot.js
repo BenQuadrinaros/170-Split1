@@ -29,6 +29,9 @@ class Boot extends Phaser.Scene {
             this.load.image("hubSkyEvening", "./assets/sprites/background/skyEvening.png");
 
             this.load.image("hubEveningOverlay", "./assets/sprites/background/eveningOverlay.png");
+            this.load.image("hubEveningBandaid", "./assets/sprites/background/caveBandaidEvening.png");
+            this.load.image("hubDaytimeBandaid", "./assets/sprites/background/caveBandaidDaytime.png");
+
 
             this.load.image("hubFenceIron", "./assets/sprites/background/fenceIron.png");
             this.load.image("hubFenceWood", "./assets/sprites/background/fenceWood.png");
