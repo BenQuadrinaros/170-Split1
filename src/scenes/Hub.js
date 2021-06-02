@@ -315,6 +315,7 @@ class Hub extends Phaser.Scene {
         keyJ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.J);
         keyK = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.K);
         keyL = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.L);
+        keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
     }
 
     createPlayer() {
@@ -326,7 +327,7 @@ class Hub extends Phaser.Scene {
             this.player = new HubPlayer(this, 'player', 0, config.width / 2, config.height / 3, this.worldWidth, this.worldHeight, [[game.config.width + 50, 115]]);
         }
         this.player.depth = this.player.y / 10;
-        this.player.setLowerLeftLimit(2 * config.height / 5 + 40);
+        this.player.setLowerLeftLimit(2 * config.height / 5 + 65);
         
         if(hasSoldForDay) { 
             this.player.shadow.alpha = .35;
@@ -783,25 +784,25 @@ class Hub extends Phaser.Scene {
 
         // -------------------------------------------
         // Quick day advancement for testing purposes
-        if (Phaser.Input.Keyboard.JustDown(keyP)) {
+        if (Phaser.Input.Keyboard.JustDown(keyP) && Phaser.Input.Keyboard.JustDown(keyZ)) {
             this.advanceDay();
         }
-        if (Phaser.Input.Keyboard.JustDown(keyO)) {
+        if (Phaser.Input.Keyboard.JustDown(keyO) && Phaser.Input.Keyboard.JustDown(keyZ)) {
             playerVariables.money += 10;
         }
-        if (Phaser.Input.Keyboard.JustDown(keyH)) {
+        if (Phaser.Input.Keyboard.JustDown(keyH) && Phaser.Input.Keyboard.JustDown(keyZ)) {
             playerVariables.inventory.honey["yellow"] += 3;
             playerVariables.inventory.honey["total"] += 3;
         }
-        if (Phaser.Input.Keyboard.JustDown(keyJ)) {
+        if (Phaser.Input.Keyboard.JustDown(keyJ) && Phaser.Input.Keyboard.JustDown(keyZ)) {
             playerVariables.inventory.honey["blue"] += 3;
             playerVariables.inventory.honey["total"] += 3;
         }
-        if (Phaser.Input.Keyboard.JustDown(keyK)) {
+        if (Phaser.Input.Keyboard.JustDown(keyK) && Phaser.Input.Keyboard.JustDown(keyZ)) {
             playerVariables.inventory.honey["pink"] += 3;
             playerVariables.inventory.honey["total"] += 3;
         }
-        if (Phaser.Input.Keyboard.JustDown(keyL)) {
+        if (Phaser.Input.Keyboard.JustDown(keyL) && Phaser.Input.Keyboard.JustDown(keyZ)) {
             playerVariables.inventory.honey["purple"] += 3;
             playerVariables.inventory.honey["total"] += 3;
         }
@@ -1584,7 +1585,7 @@ class Hub extends Phaser.Scene {
 
         //Check version number
         console.log("Save Data Version: " + loadedData.version);
-        if(loadedData.version !== "0.3.19"){
+        if(loadedData.version !== "1.0.0"){
             console.log("Invalid Version Number");
             return;
         }
@@ -1631,7 +1632,7 @@ class Hub extends Phaser.Scene {
     saveData() {
         //TODO:: save data when previous scene is not the menu
         var saveData = {
-            version: "0.3.19",
+            version: "1.0.0",
             garden: gardenGrid,
             currDay: currentDay,
             hasSold: hasSoldForDay,

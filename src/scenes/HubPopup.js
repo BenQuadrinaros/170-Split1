@@ -29,7 +29,7 @@ class HubPopup extends Phaser.Scene {
             this.pauseMenu = this.add.image(scrollX + config.width/2, scrollY + config.height/2, "pauseBilled").setOrigin(0.5);
         }
         else{
-            this.pauseMenu = this.add.image(scrollX + config.width/2, scrollY + config.height/2, "pauseBilled").setOrigin(0.5);
+            this.pauseMenu = this.add.image(scrollX + config.width/2, scrollY + config.height/2, 'pauseEmpty').setOrigin(0.5);
         }
 
         //Create settings frames
@@ -64,6 +64,7 @@ class HubPopup extends Phaser.Scene {
             .setOrigin(.5, .5).setAngle(-5);
 
         this.createPriceHistoryTab();
+        this.createHowToPlayTab();
         //Display ecology score below
         textSpacer += 58.5;
         let grades = ["F", "D", "C", "B", "A", "A+"];
@@ -111,8 +112,8 @@ class HubPopup extends Phaser.Scene {
 
         //Money spent on watering
         if(deltaMoney > 0) {
-            textSpacer += 20;
-            this.add.text(scrollX + config.width/2 - 88, scrollY + config.height/3- 22, deltaMoney, this.textConfig).setOrigin(.5, .5).setAngle(8);
+            //textSpacer += 20;
+            this.add.text(scrollX + config.width/2 - 138, scrollY + config.height/3- 19, deltaMoney, this.textConfig).setOrigin(.5, .5).setAngle(8);
         }
 
         //Display a random unused tool tip along the bottom of the card
@@ -195,6 +196,7 @@ Bee you around!`;
                 // this.scene.stop();
                 this.pauseMenu.setVisible(true);
                 this.priceHistoryTabText.setVisible(true);
+                this.howToPlayTabText.setVisible(true);
                 this.settings.setVisible(true);
                 this.music.resumeBetweenScenes();
             }
@@ -213,27 +215,15 @@ Bee you around!`;
                 }, this);
     }
     createPriceHistoryTab(){
-        this.tabTextConfig = {
-            fontFamily: font,
-            fontSize: "18px",
-            color: "#000000",
-            align: "left",
-            stroke: "#000000",
-            strokeThickness: .5,
-            padding: {
-                top: 5,
-                bottom: 5
-            },
-        }
-        this.priceHistoryTabText = this.add.text(scrollX + config.width/2 + 270, scrollY + config.height/5, "Price History", this.tabTextConfig)
-            .setOrigin(.5, .5).setAngle(2).setInteractive()
+        this.priceHistoryTabText = this.add.image(scrollX + config.width/2 + 268, scrollY + config.height/5 - 2, "popupPriceHistory")
+            .setOrigin(.5, .5).setAngle(2).setScale(0.5).setInteractive()
             .on("pointerover", () => {
-              this.priceHistoryTabText.setColor(0xff0000);
+              this.priceHistoryTabText.setFrame(1);
               this.pointerCurrentlyOver = "Price History";
               console.log("over price history tab");
             })
             .on("pointerout", () => {
-                this.priceHistoryTabText.setColor(0x000000);
+                this.priceHistoryTabText.setFrame(0);
                 this.pointerCurrentlyOver = "";
             })
             .on("pointerdown", () => {
@@ -241,9 +231,37 @@ Bee you around!`;
                 this.music.playSFX("notebook");
                 this.pauseMenu.setVisible(false);
                 this.priceHistoryTabText.setVisible(false);
+                this.howToPlayTabText.setVisible(false);
                 this.settings.setVisible(false);
                 this.scene.pause();
                 this.scene.launch('priceHistory', {previousScene: "hubPopupScene", previousSceneDone: "false"});
+            });
+
+
+    }
+
+    createHowToPlayTab(){
+        this.howToPlayTabText = this.add.image(scrollX + config.width/2 + 265, scrollY + config.height/5 + 69, "popupHowToPlay")
+            .setOrigin(.5, .5).setAngle(2).setScale(0.5).setInteractive()
+            .on("pointerover", () => {
+              this.howToPlayTabText.setFrame(1);
+              this.pointerCurrentlyOver = "Price History";
+              console.log("over price history tab");
+            })
+            .on("pointerout", () => {
+                this.howToPlayTabText.setFrame(0);
+                this.pointerCurrentlyOver = "";
+            })
+            .on("pointerdown", () => {
+                this.music.pauseBetweenScenes();
+                this.music.playSFX("notebook");
+                this.pauseMenu.setVisible(false);
+                this.howToPlayTabText.setVisible(false);
+                this.priceHistoryTabText.setVisible(false);
+                this.settings.setVisible(false);
+                console.log("About to enter how to play scene");
+                this.scene.pause();
+                this.scene.launch('HowToPlayScene', {previousScene: "hubPopupScene", previousSceneDone: "false"});
             });
 
 
