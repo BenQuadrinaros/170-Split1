@@ -103,7 +103,7 @@ class HowToPlay extends Phaser.Scene{
             .setOrigin(.5,.5).setScale(.5,.5).setInteractive()
             .on('pointerdown', () => {
                 console.log("clicked plus")
-                if (this.currentPage >= currentDay){
+                if (this.currentPage >= 2){
                     return ;
                 } else {
                     this.music.playSFX("notebook");

@@ -113,7 +113,9 @@ class HubPopup extends Phaser.Scene {
         //Money spent on watering
         if(deltaMoney > 0) {
             //textSpacer += 20;
-            this.add.text(scrollX + config.width/2 - 138, scrollY + config.height/3- 19, deltaMoney, this.textConfig).setOrigin(.5, .5).setAngle(8);
+            this.textConfig.fontSize = "40px";
+            this.add.text(scrollX + config.width/2 - 208, scrollY + 2*config.height/3 + 32, deltaMoney, this.textConfig).setOrigin(.5, .5).setAngle(-2);
+            this.textConfig.fontSize = "30px";
         }
 
         //Display a random unused tool tip along the bottom of the card
