@@ -33,13 +33,15 @@ class MarketPriceSetting extends Phaser.Scene {
         if(!playerVariables.completedMarketTutorial && Phaser.Input.Keyboard.JustDown(keySPACE)){
             if(this.currDialogSelection < 2){
                 ++this.currDialogSelection;
-                this.tutorialDialog.text = this.getNextDialogSection(this.currDialogSelection);
+                this.tutorialBakedText.setTexture(this.getNextDialogSection(this.currDialogSelection));
+                //this.tutorialDialog.text = this.getNextDialogSection(this.currDialogSelection);
             }
             else {
+                this.tutorialBakedText.setVisible(false);
                 playerVariables.completedMarketTutorial = true;
-                this.tutorialTextBackdrop.alpha = 0;
+                /*this.tutorialTextBackdrop.alpha = 0;
                 this.tutorialDialog.setVisible(false);
-                this.spaceContinue.setVisible(false);
+                this.spaceContinue.setVisible(false);*/
             }
         }
     }
@@ -347,7 +349,7 @@ class MarketPriceSetting extends Phaser.Scene {
     }
 
     createTutorialDialogText(){
-        this.tutorialTextBackdrop = this.add.image(0, 0, 'tutorialDialogBox')
+        /*this.tutorialTextBackdrop = this.add.image(0, 0, 'tutorialDialogBox')
                                             .setOrigin(0, 0).setScale(0.5);
         this.tutorialTextBackdrop.depth = 150;
         this.tutorialConfig = {
@@ -372,21 +374,25 @@ class MarketPriceSetting extends Phaser.Scene {
         this.spaceContinue = this.add.text(0, 0, "SPACE to continue", this.tutorialConfig);
         this.spaceContinue.depth = 205;
         this.spaceContinue.x = this.cameras.main.scrollX + 4*config.width/5 - 15;
-        this.spaceContinue.y = this.cameras.main.scrollY + 4*config.height/5 + 35;
+        this.spaceContinue.y = this.cameras.main.scrollY + 4*config.height/5 + 35;*/
         
-        this.tutorialDialog.text = this.getNextDialogSection(this.currDialogSelection);
+        this.tutorialBakedText = this.add.image(0, 0, 'marketDialog1').setOrigin(0, 0).setScale(0.5).setDepth(32);
+        this.currDialogSelection = 0;
+        //this.tutorialDialog.text = this.getNextDialogSection(this.currDialogSelection);
 
 
 
         this.input.on('pointerdown', function (pointer) {
             if(this.currDialogSelection < 2){
                 ++this.currDialogSelection;
-                this.tutorialDialog.text = this.getNextDialogSection(this.currDialogSelection);
+                this.tutorialBakedText.setTexture(this.getNextDialogSection(this.currDialogSelection));
+                //this.tutorialDialog.text = this.getNextDialogSection(this.currDialogSelection);
             }
             else {
-                this.tutorialTextBackdrop.alpha = 0;
+                /*this.tutorialTextBackdrop.alpha = 0;
                 this.tutorialDialog.setVisible(false);
-                this.spaceContinue.setVisible(false);
+                this.spaceContinue.setVisible(false);*/
+                this.tutorialBakedText.setVisible(false);
                 playerVariables.completedMarketTutorial = true;
             }
         }, this);
@@ -397,23 +403,24 @@ class MarketPriceSetting extends Phaser.Scene {
         switch(num){
             case 0:
                 text =
-`Welcome to the Farmer's Market! This is where you can sell
-the honey we've been making.`;
+                'marketDialog1';
+/*`Welcome to the Farmer's Market! This is where you can sell
+the honey we've been making.`;*/
                 break;
             case 1:
-                text = 
-`I took a guess at a fair price, but I can’t say I buy honey
+                text = 'marketDialog2';
+/*`I took a guess at a fair price, but I can’t say I buy honey
 very often, so you might want to play around with the price a
 bit and see what works. You can change your prices
-whenever you like.`;
+whenever you like.`;*/
                 break;
             case 2:
-                text = 
-`Each customer is going to be different than the one before —
+                text = 'marketDialog3';
+/*`Each customer is going to be different than the one before —
 some are frugal, and some have money to spare, so don’t be
 surprised if customers have different reactions to the same price.
 But be careful! If you have a reputation for prices that are too
-high, you run the risk of driving customers away.`;
+high, you run the risk of driving customers away.`;*/
                 break;
             default:
                 console.log("No dialog of matching section");
