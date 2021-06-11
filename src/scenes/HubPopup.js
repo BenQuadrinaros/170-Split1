@@ -147,16 +147,18 @@ class HubPopup extends Phaser.Scene {
         }
         if(this.fromTutorial && Phaser.Input.Keyboard.JustDown(keySPACE)){
             if(this.currDialogSelection === 1){
-                this.tutorialDialog.text =
+                this.tutorialBakedText.setTexture("day1Dialog2");
+                /*this.tutorialDialog.text =
 `We were able to collect a few extra jars to give you a head
 start. We’re looking forward to working with you!
-Bee you around!`;
+Bee you around!`;*/
                 this.currDialogSelection = 2;
             }
             else if(this.currDialogSelection === 2){
-                this.tutorialTextBackdrop.alpha = 0;
+                this.tutorialBakedText.setVisible(false);
+                /*this.tutorialTextBackdrop.alpha = 0;
                 this.tutorialDialog.setVisible(false);
-                this.spaceContinue.setVisible(false);
+                this.spaceContinue.setVisible(false);*/
                 this.currDialogSelection = 3;
             }
             else{
@@ -168,9 +170,10 @@ Bee you around!`;
         }
         else if(playerVariables.gotCamera && Phaser.Input.Keyboard.JustDown(keySPACE)){
             if(this.currDialogSelection === 1){
-                this.tutorialTextBackdrop.alpha = 0;
+                this.tutorialBakedText.setVisible(false);
+                /*this.tutorialTextBackdrop.alpha = 0;
                 this.tutorialDialog.setVisible(false);
-                this.spaceContinue.setVisible(false);
+                this.spaceContinue.setVisible(false);*/
                 this.currDialogSelection = 2;
             }
             else{
@@ -205,7 +208,8 @@ Bee you around!`;
         });
 
         this.input.on('pointerdown', function (pointer) {
-                    if(!this.tutorialTextBackdrop && this.pointerCurrentlyOver === ""){
+                    if((!this.tutorialBakedText || !this.tutorialBakedText.visible)
+                      && this.pointerCurrentlyOver === ""){
                         console.log("Resuming Hub Activities");
                         this.music.pauseBetweenScenes();
                         this.scene.resume(this.prevScene);
@@ -270,7 +274,8 @@ Bee you around!`;
     }
 
     createFromTutorialText(){
-        this.tutorialTextBackdrop = this.add.image(0, 0, 'tutorialDialogBox')
+        this.tutorialBakedText = this.add.image(0, 0, "day1Dialog1").setOrigin(0, 0).setScale(0.5).setDepth(150);
+        /*this.tutorialTextBackdrop = this.add.image(0, 0, 'tutorialDialogBox')
                                             .setOrigin(0, 0).setScale(0.5);
         this.tutorialTextBackdrop.depth = 150;
         this.tutorialConfig = {
@@ -301,20 +306,24 @@ Bee you around!`;
 `Your first jar of honey is ready to collect! Don’t worry
 if the number of jars changes a little from week to week —
 we save any excess honey from the previous week, and
-sometimes that means there will be enough for an extra jar!`;
+sometimes that means there will be enough for an extra jar!`;*/
+
+        this.currDialogSelection = 1;
 
         this.input.on('pointerdown', function (pointer) {
             if(this.currDialogSelection === 1){
-                this.tutorialDialog.text =
+                this.tutorialBakedText.setTexture("day1Dialog2");
+                /*this.tutorialDialog.text =
 `We were able to collect a few extra jars to give you a head
 start. We’re looking forward to working with you!
-Bee you around!`;
+Bee you around!`;*/
                 this.currDialogSelection = 2;
             }
             else if(this.currDialogSelection === 2){
-                this.tutorialTextBackdrop.alpha = 0;
+                this.tutorialBakedText.setVisible(false);
+                /*this.tutorialTextBackdrop.alpha = 0;
                 this.tutorialDialog.setVisible(false);
-                this.spaceContinue.setVisible(false);
+                this.spaceContinue.setVisible(false);*/
                 this.currDialogSelection = 3;
             }
             else{
@@ -326,8 +335,8 @@ Bee you around!`;
         }, this);
     }
 
-    getCameraDialogue() { 
-        this.tutorialTextBackdrop = this.add.image(0, 0, 'tutorialDialogBox')
+    getCameraDialogue() {
+        /*this.tutorialTextBackdrop = this.add.image(0, 0, 'tutorialDialogBox')
                 .setOrigin(0, 0).setScale(0.5);
         this.tutorialTextBackdrop.depth = 150;
         let tutorialConfig = {
@@ -356,21 +365,23 @@ Bee you around!`;
         this.tutorialDialog.text =
 `We are very impressed with your progress so far. We
 all chipped in to get you this camera. Feel free to
-take some pics of the garden and share them!`;
+take some pics of the garden and share them!`;*/
 
+        this.tutorialBakedText = this.add.image(0, 0, "cameraDialog").setOrigin(0, 0).setScale(0.5).setDepth(150);
         this.currDialogSelection = 1;
         
                 this.input.on('pointerdown', function (pointer) {
-                    if(this.tutorialTextBackdrop.alpha === 0){
+                    if(this.tutorialBakedText.visible){
                         console.log("Resuming Hub Activities");
                         this.music.pauseBetweenScenes();
                         this.scene.resume(this.prevScene);
                         this.scene.stop();
                     }
                     else{
-                        this.tutorialTextBackdrop.alpha = 0;
+                        this.tutorialBakedText.setVisible(false);
+                        /*this.tutorialTextBackdrop.alpha = 0;
                         this.tutorialDialog.setVisible(false);
-                        this.spaceContinue.setVisible(false);
+                        this.spaceContinue.setVisible(false);*/
                     }
 
                 }, this);

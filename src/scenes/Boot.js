@@ -133,6 +133,30 @@ class Boot extends Phaser.Scene {
             this.load.image("howToPlay1", "./assets/sprites/background/h2pBasics.png");
             this.load.image("howToPlay2", "./assets/sprites/background/h2pBackpack.png");
             this.load.image("howToPlay3", "./assets/sprites/background/h2pHoney.png");
+            //Tutorial baked dialog
+            this.load.image("tutorialDialog1", "./assets/sprites/dialog/tutorialDialog1-03.png");
+            this.load.image("tutorialDialog2", "./assets/sprites/dialog/tutorialDialog2-03.png");
+            this.load.image("tutorialDialog3", "./assets/sprites/dialog/tutorialDialog3-03.png");
+            this.load.image("tutorialDialog4", "./assets/sprites/dialog/tutorialDialog4-03.png");
+            this.load.image("tutorialDialog5", "./assets/sprites/dialog/tutorialDialog5-03.png");
+            this.load.image("tutorialDialog6", "./assets/sprites/dialog/tutorialDialog6-03.png");
+            this.load.image("tutorialDialog7", "./assets/sprites/dialog/tutorialDialog7-03.png");
+            this.load.image("tutorialDialog8", "./assets/sprites/dialog/tutorialDialog8-03.png");
+            this.load.image("tutorialDialog9", "./assets/sprites/dialog/tutorialDialog9-03.png");
+            this.load.image("tutorialDialog10", "./assets/sprites/dialog/tutorialDialog10-03.png");
+            this.load.image("tutorialDialog11", "./assets/sprites/dialog/tutorialDialog11-03.png");
+            this.load.image("tutorialDialog12", "./assets/sprites/dialog/tutorialDialog12-03.png");
+            this.load.image("tutorialDialog13", "./assets/sprites/dialog/tutorialDialog13-03.png");
+            this.load.image("tutorialDialog14", "./assets/sprites/dialog/tutorialDialog14-03.png");
+            //Day 1 baked dialog
+            this.load.image("day1Dialog1", "./assets/sprites/dialog/day1Dialog1-03.png");
+            this.load.image("day1Dialog2", "./assets/sprites/dialog/day1Dialog2-03.png");
+            //Camera acquisition baked dialog
+            this.load.image("cameraDialog", "./assets/sprites/dialog/cameraDialog-03.png");
+            //Market tutorial baked dialog
+            this.load.image("marketDialog1", "./assets/sprites/dialog/marketDialog1-03.png");
+            this.load.image("marketDialog2", "./assets/sprites/dialog/marketDialog2-03.png");
+            this.load.image("marketDialog3", "./assets/sprites/dialog/marketDialog3-03.png");
             //For shop
             this.load.image('toadLeckman', './assets/sprites/character/mrleckman_510x300.png');
             this.load.image('toadLeckmanHead', './assets/sprites/UI/mrleckmanHEAD_285x180.png')

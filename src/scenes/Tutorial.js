@@ -380,8 +380,10 @@ class Tutorial extends Phaser.Scene {
         this.hiveHighlightHold.alpha = 0;
         this.tutorialTextBackdrop = this.add.image(this.cameras.main.scrollX, this.cameras.main.scrollY,
             'tutorialDialogBox').setOrigin(0, 0).setScale(0.435);
+        this.tutorialBakedText = this.add.image(this.cameras.main.scrollX, this.cameras.main.scrollY,
+            "tutorialDialog1").setOrigin(0, 0).setScale(0.435).setVisible(false).setDepth(150);
         this.tutorialTextBackdrop.alpha = 0;
-        this.tutorialTextBackdrop.depth = 150;
+        this.tutorialTextBackdrop.depth = 149;
 
         //create interactible backpack image
         this.backpack = this.add.image(this.cameras.main.scrollX + config.width - 122, this.cameras.main.scrollY + config.height/5 - 10, 'backpackFrames')
@@ -455,13 +457,13 @@ class Tutorial extends Phaser.Scene {
                 bottom: 5
             },
         };
-        this.tutorialDialog = this.add.text(75, this.player.y, "", this.tutorialConfig);
-        this.tutorialDialog.setOrigin(0, 0).setVisible(false);
-        this.tutorialDialog.depth = 200;
+        //this.tutorialDialog = this.add.text(75, this.player.y, "", this.tutorialConfig);
+        //this.tutorialDialog.setOrigin(0, 0).setVisible(false);
+        //this.tutorialDialog.depth = 200;
         //Dialog popup metadata
         this.tutorialConfig.fontSize = "14px";
-        this.spaceContinue = this.add.text(0, 0, "SPACE to continue", this.tutorialConfig).setVisible(false);
-        this.spaceContinue.depth = 205;
+        //this.spaceContinue = this.add.text(0, 0, "SPACE to continue", this.tutorialConfig).setVisible(false);
+        //this.spaceContinue.depth = 205;
         //Text of variable visibility
         this.caveText = this.add.text(5 * game.config.width / 7, (game.config.height / 4) + 25, "", this.tutorialConfig).setOrigin(.5);
         this.caveText.depth = 100;
@@ -1456,16 +1458,19 @@ class Tutorial extends Phaser.Scene {
 
     advanceTutorialDialog(num){
         //Place the text and backdrop
-        this.tutorialTextBackdrop.x = this.cameras.main.scrollX + 62;
-        this.tutorialTextBackdrop.y = this.cameras.main.scrollY + 32;
+        //this.tutorialTextBackdrop.x = this.cameras.main.scrollX + 62;
+        //this.tutorialTextBackdrop.y = this.cameras.main.scrollY + 32;
         console.log("Tutorial Text: [", this.tutorialTextBackdrop.x, ", ", this.tutorialTextBackdrop.y, "]");
-        this.tutorialTextBackdrop.alpha = 1;
-        this.spaceContinue.x = this.cameras.main.scrollX + 4*config.width/5 - 15;
-        this.spaceContinue.y = this.cameras.main.scrollY + 4*config.height/5 + 8;
-        this.spaceContinue.setVisible(true);
-        this.tutorialDialog.x = this.cameras.main.scrollX + 220;
-        this.tutorialDialog.y = this.cameras.main.scrollY + 3.25*config.height/5 - 40;
-        this.tutorialDialog.setVisible(true);
+        //this.tutorialTextBackdrop.alpha = 1;
+        this.tutorialBakedText.x = this.cameras.main.scrollX + 62;
+        this.tutorialBakedText.y = this.cameras.main.scrollY + 32;
+        this.tutorialBakedText.setVisible(true);
+        //this.spaceContinue.x = this.cameras.main.scrollX + 4*config.width/5 - 15;
+        //this.spaceContinue.y = this.cameras.main.scrollY + 4*config.height/5 + 8;
+        //this.spaceContinue.setVisible(true);
+        //this.tutorialDialog.x = this.cameras.main.scrollX + 220;
+        //this.tutorialDialog.y = this.cameras.main.scrollY + 3.25*config.height/5 - 40;
+        //this.tutorialDialog.setVisible(true);
         //this.talkingBee.alpha = 1;
         //this.talkingBee.x = this.cameras.main.scrollX + config.width/3;
         //this.talkingBee.y = this.cameras.main.scrollY + config.height/3;
@@ -1474,110 +1479,123 @@ class Tutorial extends Phaser.Scene {
         //Set the current text
         switch(num){
             case 1:
-                this.tutorialDialog.text =
-`Hi! I’m Beatrice, but you can call me Bea. I’m so glad you agreed
+                //this.tutorialDialog.text = "";
+/*`Hi! I’m Beatrice, but you can call me Bea. I’m so glad you agreed
 to help us fix up the garden! My hive has always wanted a lush
 garden that the Happy Honey Association will recognize, but
 there’s only so much we can do by ourselves. Now that you’re
-here, I’m sure we’ll be able to get a good score.`;
+here, I’m sure we’ll be able to get a good score.`;*/
                 break;
             case 2:
-                this.tutorialDialog.text =
+                this.tutorialBakedText.setTexture("tutorialDialog2");
+                /*this.tutorialDialog.text =
 `First things first, we’ll need some money for supplies. The good
 news is that everyone in town loves honey, and that’s what bees
 do best! We can make honey for you to sell every week at the local
 Farmers’ Market. But for us to make honey, we’ll need flowers.
-It’s a good thing you brought some seeds with you!`;
+It’s a good thing you brought some seeds with you!`;*/
                 break;
             case 3:
-                this.tutorialDialog.text =
+                this.tutorialBakedText.setTexture("tutorialDialog3");
+                /*this.tutorialDialog.text =
 `Open your backpack by clicking on the backpack icon, or by
 pressing [ i ] on your keyboard. Once it’s open, click on a
 packet of daisy seeds to hold it. If you’re already holding
 something, opening your backpack will stow that item under the
-appropriate tab.`;
+appropriate tab.`;*/
                 break;
             //Once player equips seed
             case 4:
-                this.tutorialDialog.text =
+                this.tutorialBakedText.setTexture("tutorialDialog4");
+                /*this.tutorialDialog.text =
 `Great! Now we just need to plant them. First, find an empty patch
 of dirt or grass with the highlighted indicator on the ground.
 When you find a spot you like, press the [Space] key on your
-keyboard to plant the seeds on the highlighted spot.`;
+keyboard to plant the seeds on the highlighted spot.`;*/
                 break;
             case 5:
-                this.tutorialDialog.text =
+                this.tutorialBakedText.setTexture("tutorialDialog5");
+                /*this.tutorialDialog.text =
 `If you put it somewhere you don’t like, don’t worry: The [Space]
 key can be used to place, pick up, or use different items, and to
-dig up or fill in dirt plots, so you can always change it later.`;
+dig up or fill in dirt plots, so you can always change it later.`;*/
                 break;
             //Once player plants seed
             case 6:
-                this.tutorialDialog.text =
+                this.tutorialBakedText.setTexture("tutorialDialog6");
+                /*this.tutorialDialog.text =
 `Of course, flowers need water to grow. Pick up the watering
 can and fill it up at the spigot, then water your new daisy
-sprout! Remember that you use items by pressing the [Space] key.`;
+sprout! Remember that you use items by pressing the [Space] key.`;*/
                 break;
             
             case 7:
-                this.tutorialDialog.text =
+                this.tutorialBakedText.setTexture("tutorialDialog7");
+                /*this.tutorialDialog.text =
 `We get our water from the county, so we pay a small fee to
 use it. This watering can holds enough water for four flowers,
 and it costs about 25 cents to fill. No matter how much money
 you make, make sure you always save a little extra for
-the plants!`;
+the plants!`;*/
                 break;
             //Once player has watered the daisy
             case 8:
-                this.tutorialDialog.text =
+                this.tutorialBakedText.setTexture("tutorialDialog8");
+                /*this.tutorialDialog.text =
 `We can only use the flowers to make honey once they’re
 fully grown. Daisies might grow faster than other kinds of
 flowers, but even they can’t grow completely overnight. Luckily,
 we found some fully grown daisies for you. Why don’t you plant
-those, too?`;
+those, too?`;*/
                 break;
             //Once player has planted fully grown daisies
             case 9:
-                this.tutorialDialog.text =
+                this.tutorialBakedText.setTexture("tutorialDialog9");
+                /*this.tutorialDialog.text =
 `Uh oh. Is that a weed? Bees don’t like weeds.   At all.
 If there are weeds near flowers, most of us won’t go near them,
-which means less honey. Could you dig up the weed by the spigot?`;
+which means less honey. Could you dig up the weed by the spigot?`;*/
                 break;
             //Once player has removed weed
             case 10:
-                this.tutorialDialog.text =
+                this.tutorialBakedText.setTexture("tutorialDialog10");
+                /*this.tutorialDialog.text =
 `Now that that’s over with, I’m sure the rest of the hive will
 be more than happy to move in, but we’ll need somewhere to live.
-Here’s a new beehive. Would you find a good spot to place it?`;
+Here’s a new beehive. Would you find a good spot to place it?`;*/
                 break;
             //Once player has placed beehive
             case 11:
-                this.tutorialDialog.text =
+                this.tutorialBakedText.setTexture("tutorialDialog11");
+                /*this.tutorialDialog.text =
 `Bees tend to stay close to their hive, so they’ll only visit
 nearby flowers. Naturally, the more flowers near the hive,
 the better! Just remember that the more flowers there are, the
-harder it is for us to make the most of them.`;
+harder it is for us to make the most of them.`;*/
                 break;
             case 12:
-                this.tutorialDialog.text =
+                this.tutorialBakedText.setTexture("tutorialDialog12");
+                /*this.tutorialDialog.text =
 `Each hive can also only produce one kind of honey—it all gets
 mixed together, so place your flowers with care! The kind of honey
 that comes out depends on which flower is in the majority. If you
 want more honey per flower, or if you want multiple kinds of honey,
-you can get more beehives in town!`;
+you can get more beehives in town!`;*/
                 break;
             case 13:
-                this.tutorialDialog.text = 
+                this.tutorialBakedText.setTexture("tutorialDialog13");
+                /*this.tutorialDialog.text = 
 `One more thing before I leave—these brambles don’t just look bad,
 they’re wasting space we could be using. You can clear away
 brambles with clippers! I meant to bring some today, but I must have
 left them in my other pants. They’ll be here next week for sure,
-but you can always get more in town.`;
+but you can always get more in town.`;*/
                 break;
             case 14:
-                this.tutorialDialog.text =
+                this.tutorialBakedText.setTexture("tutorialDialog14");
+                /*this.tutorialDialog.text =
 `That's all for today. Before you cozy up in your cave to sleep,
-make sure to water those new flowers. See you next week!`;
+make sure to water those new flowers. See you next week!`;*/
                 break;
             default:
                 console.log("Supposedly unreachable tutorial dialog reached");
@@ -1585,9 +1603,10 @@ make sure to water those new flowers. See you next week!`;
     }
 
     concludeTutorialDialog(){
-        this.tutorialTextBackdrop.alpha = 0;
-        this.tutorialDialog.setVisible(false);
-        this.spaceContinue.setVisible(false);
+        //this.tutorialTextBackdrop.alpha = 0;
+        this.tutorialBakedText.setVisible(false);
+        //this.tutorialDialog.setVisible(false);
+        //this.spaceContinue.setVisible(false);
         //this.talkingBee.alpha = 0;
         this.playerIsInDialog = false;
     }
